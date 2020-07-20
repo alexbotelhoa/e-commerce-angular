@@ -1,0 +1,7 @@
+type Level {
+    id: ID!
+    name: String!
+    order: Int!
+    active: Boolean!
+    levelThemes: [LevelTheme!]!
+}

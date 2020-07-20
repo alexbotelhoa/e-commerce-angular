@@ -1,0 +1,4 @@
+interface ActivityData {
+    id: ID!
+    activityId: ID!
+}

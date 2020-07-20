@@ -1,0 +1,8 @@
+type Cycle {
+    id: ID!
+    name: String!
+    order: Int!
+    levelThemeId: ID!
+    levelTheme: LevelTheme!
+    activities: [Activity!]!
+}

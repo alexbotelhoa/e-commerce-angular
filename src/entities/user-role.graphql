@@ -1,0 +1,7 @@
+type UserRole {
+    id: ID!
+    userId: ID!
+    roleId: ID!
+    user: User!
+    role: Role!
+}

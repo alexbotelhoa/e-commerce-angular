@@ -1,0 +1,9 @@
+type LevelTheme {
+    id: ID!
+    levelId: ID!
+    themeId: ID!
+    order: Int!
+    level: Level!
+    theme: Theme!
+    cycles: [Cycle!]!
+}

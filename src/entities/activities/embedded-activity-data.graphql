@@ -1,0 +1,5 @@
+type EmbeddedActivityData implements ActivityData {
+    id: ID!
+    activityId: ID!
+    url: String!
+}

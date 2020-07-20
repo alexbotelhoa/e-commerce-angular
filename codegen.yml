@@ -1,0 +1,30 @@
+schema: 
+  './src/**/*.graphql': 
+    noRequire: true
+generates:
+  ./src/resolvers-types.ts:
+    plugins:
+      - typescript
+      - typescript-resolvers
+    config: 
+      namingConvention:
+        typeNames: keep
+        enumValues: keep
+      immutableTypes: true
+      avoidOptionals: false
+      useIndexSignature: false
+      typesPrefix: GQL
+      defaultMapper: Partial<{T}>
+      contextType: ./shared/types/context.type#GraphQLContext
+      mappers:
+        User: ./entities/user.entity#UserEntity
+        ActivityType: ./domain/activity/types/activity-type.type-#ActivityType
+        EmbeddedActivityData: ./entities/activities/embedded-activity-data.entity#EmbeddedActivityDataEntity
+        HtmlActivityData: ./entities/activities/html-activity-data.entity#HtmlActivityDataEntity
+        Activity: ./entities/activity.entity#ActivityEntity
+        Cycle: ./entities/cycle.entity#CycleEntity
+        LevelTheme: ./entities/level-theme.entity#LevelThemeEntity
+        Level: ./entities/level.entity#LevelEntity
+        Role: ./entities/role.entity#RoleEntity
+        Theme: ./entities/theme.entity#ThemeEntity
+        UserRole: ./entities/user-role.entity#UserRoleEntity

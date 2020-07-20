@@ -1,0 +1,12 @@
+type Activity {
+    id: ID!
+    name: String!
+    description: String
+    order: Int!
+    typeId: ActivityTypeId
+    cycleId: ID!
+    cycle: Cycle!
+    type: ActivityType!
+    data: ActivityDataUnion!
+}
+
