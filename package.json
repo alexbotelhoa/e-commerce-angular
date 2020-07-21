@@ -9,8 +9,8 @@
     "codegen": "graphql-codegen --config ./codegen.yml",
     "codegen:watch": "npm run codegen -- --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate": "knex migration:latest",
-    "migration:make": "knex migration:make -x ts",
+    "migrate": "knex migrate:latest",
+    "migration:make": "knex migrate:make -x ts",
     "seed:make": "knex seed:make -x ts",
     "seed:run": "knex seed:run"
   },
