@@ -18,7 +18,7 @@ generates:
       contextType: ./shared/types/context.type#GraphQLContext
       mappers:
         User: ./entities/user.entity#UserEntity
-        ActivityType: ./domain/activity/types/activity-type.type-#ActivityType
+        ActivityType: ./domain/activity/types/activity-type.type#ActivityType
         EmbeddedActivityData: ./entities/activities/embedded-activity-data.entity#EmbeddedActivityDataEntity
         HtmlActivityData: ./entities/activities/html-activity-data.entity#HtmlActivityDataEntity
         Activity: ./entities/activity.entity#ActivityEntity

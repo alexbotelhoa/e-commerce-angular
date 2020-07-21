@@ -1,5 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { UserEntity } from './entities/user.entity';
+import { ActivityType } from './domain/activity/types/activity-type.type';
 import { EmbeddedActivityDataEntity } from './entities/activities/embedded-activity-data.entity';
 import { HtmlActivityDataEntity } from './entities/activities/html-activity-data.entity';
 import { ActivityEntity } from './entities/activity.entity';
@@ -22,11 +23,13 @@ export type Scalars = {
 };
 
 export enum GQLActivityTypeId {
-  EMBEDDED = 'EMBEDDED'
+  EMBEDDED = 'EMBEDDED',
+  HTML = 'HTML'
 }
 
 export type GQLQuery = {
   readonly __typename?: 'Query';
+  readonly activities: ReadonlyArray<GQLActivity>;
   readonly levels: ReadonlyArray<GQLLevel>;
 };
 
@@ -38,7 +41,6 @@ export type GQLActivityType = {
 };
 
 export type GQLActivityData = {
-  readonly id: Scalars['ID'];
   readonly activityId: Scalars['ID'];
 };
 
@@ -109,7 +111,7 @@ export type GQLRole = {
 
 export type GQLTheme = {
   readonly __typename?: 'Theme';
-  readonly id: Scalars['String'];
+  readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
   readonly description?: Maybe<Scalars['String']>;
 };
@@ -254,6 +256,7 @@ export type GQLResolversParentTypes = {
 };
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
+  activities?: Resolver<ReadonlyArray<GQLResolversTypes['Activity']>, ParentType, ContextType>;
   levels?: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
 };
 
@@ -266,7 +269,6 @@ export type GQLActivityTypeResolvers<ContextType = GraphQLContext, ParentType ex
 
 export type GQLActivityDataResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ActivityData'] = GQLResolversParentTypes['ActivityData']> = {
   __resolveType: TypeResolveFn<'EmbeddedActivityData' | 'HtmlActivityData', ParentType, ContextType>;
-  id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   activityId?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -338,7 +340,7 @@ export type GQLRoleResolvers<ContextType = GraphQLContext, ParentType extends GQ
 };
 
 export type GQLThemeResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Theme'] = GQLResolversParentTypes['Theme']> = {
-  id?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;

@@ -1,4 +1,3 @@
 export interface ActivityData {
-    id: number;
-    activityId: string;
+    activityId: number;
 }

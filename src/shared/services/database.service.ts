@@ -1,8 +1,7 @@
 import knex from 'knex';
 import { DatabaseConfiguration, databaseConfiguration } from '../constants/configuration.constant';
-import Knex from 'knex';
 
-export const databaseServiceFactory = (config: DatabaseConfiguration): Knex => knex({
+export const databaseServiceFactory = (config: DatabaseConfiguration): knex => knex({
     client: config.client,
     connection: {
         host : config.host,
