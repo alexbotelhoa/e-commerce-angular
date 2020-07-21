@@ -2,7 +2,7 @@ import * as Knex from "knex";
 import { insertLevel, deleteAllLevels } from "../../src/shared/repositories/level.repository";
 import { LevelEntity } from "../../src/entities/level.entity";
 
-export async function seed(knex: Knex<LevelEntity, LevelEntity>): Promise<void> {
+export async function seed(knex: Knex<LevelEntity, LevelEntity[]>): Promise<void> {
     // Deletes ALL existing entries
     await deleteAllLevels(knex);
 

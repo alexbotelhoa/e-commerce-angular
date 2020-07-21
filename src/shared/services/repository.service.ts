@@ -32,26 +32,26 @@ export const insertEntity =
 
 export const updateEntity =
     <T>(table: string) =>
-        (db: DatabaseService<T, T[]>) =>
+        (db: DatabaseService<T, number>) =>
             (data: Partial<T>) =>
-                (where: Knex.QueryCallback<T, T[]>): Promise<any> => db.table(table).update(data).where(where);
+                (where: Knex.QueryCallback<T, number>)=> 
+                    db.table(table).update(data).where(where);
 
 export const deleteEntity =
     <T>(table: string) =>
-        (db: DatabaseService<T, T[]>) =>
-            (where: Knex.QueryCallback<T, T[]>): Promise<any> =>
-                db.table(table).del().where(where);
+        (db: DatabaseService<T, number>) =>
+            (where: Knex.QueryCallback<T, number>) =>
+                db.table<T, number>(table).del().where(where);
 
 export const deleteAllEntities =
     <T>(table: string) =>
-        (db: DatabaseService<T, T[]>): Promise<any> =>
+        (db: DatabaseService<T, T[]>): Knex.QueryBuilder<T, T[]> =>
             db.table(table).del();
 
 export const selectEntity =
     <T>(table: string) =>
-        (db: DatabaseService<T, T[]>) =>
-            async (where: Knex.QueryCallback<T, T>): Promise<T[]> =>
-                db.select('*').from(table).where(where);
+        (db: DatabaseService<T, T[]>): Knex.QueryBuilder<T, T[]> =>
+                db.select('*').from<T, T[]>(table);
 
 export const createRepository = <T, IdType extends string | number = string | number>(table: string, primaryColumn: StringKeyof<T>) => {
     return {
