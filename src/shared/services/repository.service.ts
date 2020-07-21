@@ -9,9 +9,19 @@ export const getEntityById =
             (db: DatabaseService<T, T>) =>
                 (id: IdType): Promise<T | null> => {
                     return db.table(table)
-                    .select('*')
-                    .where(idKey, id)
-                    .then(getOneOrNull) as Promise<T | null>
+                        .select('*')
+                        .where(idKey, id)
+                        .then(getOneOrNull) as Promise<T | null>
+                }
+
+export const getEntitiesByIds =
+    <T, IdType extends string | number = string | number>(table: string) =>
+        (idKey: StringKeyof<T>) =>
+            (db: DatabaseService<T, T>) =>
+                (ids: IdType[]): Promise<T[]> => {
+                    return db.table(table)
+                        .select('*')
+                        .whereIn(idKey, ids)
                 }
 
 export const insertEntity =
@@ -45,6 +55,7 @@ export const selectEntity =
 export const createRepository = <T, IdType extends string | number = string | number>(table: string, idKey: StringKeyof<T>) => {
     return {
         getById: getEntityById<T, IdType>(table)(idKey),
+        getManyByIds: getEntitiesByIds<T, IdType>(table)(idKey),
         select: selectEntity<T>(table),
         insert: insertEntity<T>(table),
         update: updateEntity<T>(table),
