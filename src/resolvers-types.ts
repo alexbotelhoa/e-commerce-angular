@@ -28,6 +28,32 @@ export enum GQLActivityTypeId {
   HTML = 'HTML'
 }
 
+export type GQLMutation = {
+  readonly __typename?: 'Mutation';
+  readonly createTheme?: Maybe<GQLTheme>;
+  readonly deactivateTheme?: Maybe<GQLTheme>;
+  readonly activateTheme?: Maybe<GQLTheme>;
+};
+
+
+export type GQLMutationcreateThemeArgs = {
+  data: GQLThemeData;
+};
+
+
+export type GQLMutationdeactivateThemeArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type GQLMutationactivateThemeArgs = {
+  id: Scalars['ID'];
+};
+
+export type GQLThemeData = {
+  readonly name: Scalars['String'];
+};
+
 export type GQLQuery = {
   readonly __typename?: 'Query';
   readonly levels: ReadonlyArray<GQLLevel>;
@@ -220,10 +246,12 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type GQLResolversTypes = {
   ActivityTypeId: ResolverTypeWrapper<Partial<GQLActivityTypeId>>;
-  Query: ResolverTypeWrapper<{}>;
+  Mutation: ResolverTypeWrapper<{}>;
   ID: ResolverTypeWrapper<Partial<Scalars['ID']>>;
-  ActivityType: ResolverTypeWrapper<ActivityType>;
+  ThemeData: ResolverTypeWrapper<Partial<GQLThemeData>>;
   String: ResolverTypeWrapper<Partial<Scalars['String']>>;
+  Query: ResolverTypeWrapper<{}>;
+  ActivityType: ResolverTypeWrapper<ActivityType>;
   ActivityData: GQLResolversTypes['EmbeddedActivityData'] | GQLResolversTypes['HtmlActivityData'];
   ActivityDataUnion: Partial<GQLResolversTypes['EmbeddedActivityData'] | GQLResolversTypes['HtmlActivityData']>;
   EmbeddedActivityData: ResolverTypeWrapper<EmbeddedActivityDataEntity>;
@@ -242,10 +270,12 @@ export type GQLResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type GQLResolversParentTypes = {
-  Query: {};
+  Mutation: {};
   ID: Partial<Scalars['ID']>;
-  ActivityType: ActivityType;
+  ThemeData: Partial<GQLThemeData>;
   String: Partial<Scalars['String']>;
+  Query: {};
+  ActivityType: ActivityType;
   ActivityData: GQLResolversParentTypes['EmbeddedActivityData'] | GQLResolversParentTypes['HtmlActivityData'];
   ActivityDataUnion: Partial<GQLResolversParentTypes['EmbeddedActivityData'] | GQLResolversParentTypes['HtmlActivityData']>;
   EmbeddedActivityData: EmbeddedActivityDataEntity;
@@ -260,6 +290,12 @@ export type GQLResolversParentTypes = {
   Theme: ThemeEntity;
   UserRole: UserRoleEntity;
   User: UserEntity;
+};
+
+export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
+  createTheme?: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationcreateThemeArgs, 'data'>>;
+  deactivateTheme?: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationdeactivateThemeArgs, 'id'>>;
+  activateTheme?: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationactivateThemeArgs, 'id'>>;
 };
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
@@ -373,6 +409,7 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
 };
 
 export type GQLResolvers<ContextType = GraphQLContext> = {
+  Mutation?: GQLMutationResolvers<ContextType>;
   Query?: GQLQueryResolvers<ContextType>;
   ActivityType?: GQLActivityTypeResolvers<ContextType>;
   ActivityData?: GQLActivityDataResolvers;

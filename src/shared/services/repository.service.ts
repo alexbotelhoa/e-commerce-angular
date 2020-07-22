@@ -27,14 +27,14 @@ export const getEntitiesByIds =
 
 export const insertEntity =
     <T>(table: string) =>
-            (db: DatabaseService) =>
-                (data: Partial<T> | Array<Partial<T>>): Promise<number> => db.insert(data).into(table).then(getOneOrFail);
+        (db: DatabaseService) =>
+            (data: Partial<T> | Array<Partial<T>>): Promise<number> => db.insert(data).into(table).then(getOneOrFail);
 
 export const updateEntity =
     <T>(table: string) =>
         (db: DatabaseService<T, number>) =>
             (data: Partial<T>) =>
-                (where: Knex.QueryCallback<T, number>)=> 
+                (where: Knex.QueryCallback<T, number>) =>
                     db.table(table).update(data).where(where);
 
 export const deleteEntity =
@@ -51,7 +51,7 @@ export const deleteAllEntities =
 export const selectEntity =
     <T>(table: string) =>
         (db: DatabaseService<T, T[]>): Knex.QueryBuilder<T, T[]> =>
-                db.select('*').from<T, T[]>(table);
+            db.select('*').from<T, T[]>(table);
 
 export const createRepository = <T, IdType extends string | number = string | number>(table: string, primaryColumn: StringKeyof<T>) => {
     return {
