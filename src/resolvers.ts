@@ -1,6 +1,7 @@
 import { GQLResolvers, GQLUserResolvers } from "./resolvers-types";
 import { UserEntity } from "./entities/user.entity";
 import { levelsQueryResolver } from "./domain/activity/queries/levels.query";
+import { themeQueryResolver } from "./domain/activity/queries/theme.query";
 import { themesQueryResolver } from "./domain/activity/queries/themes.query";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
@@ -12,7 +13,8 @@ const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
 export const resolvers: GQLResolvers = {
     Query: {
         levels: levelsQueryResolver,
-        themes:  themesQueryResolver
+        themes: themesQueryResolver,
+        theme: themeQueryResolver
     },
     User: userEntityResolvers,
 }
