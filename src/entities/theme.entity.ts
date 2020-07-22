@@ -1,7 +1,7 @@
 export interface ThemeEntity {
     id: number;
     name: string;
-    order: number;
+    active: boolean;
 }
 
 export const THEME_TABLE = 'theme';
