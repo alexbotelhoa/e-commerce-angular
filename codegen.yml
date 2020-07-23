@@ -28,6 +28,5 @@ generates:
         Cycle: ./entities/cycle.entity#CycleEntity
         LevelTheme: ./entities/level-theme.entity#LevelThemeEntity
         Level: ./entities/level.entity#LevelEntity
-        Role: ./entities/role.entity#RoleEntity
         Theme: ./entities/theme.entity#ThemeEntity
         UserRole: ./entities/user-role.entity#UserRoleEntity

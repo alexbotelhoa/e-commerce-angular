@@ -8,7 +8,6 @@ import { HtmlActivityDataEntity } from './entities/activities/html-activity-data
 import { CycleEntity } from './entities/cycle.entity';
 import { LevelThemeEntity } from './entities/level-theme.entity';
 import { LevelEntity } from './entities/level.entity';
-import { RoleEntity } from './entities/role.entity';
 import { ThemeEntity } from './entities/theme.entity';
 import { UserRoleEntity } from './entities/user-role.entity';
 import { GraphQLContext } from './shared/types/context.type';
@@ -101,6 +100,34 @@ export type GQLHtmlActivity = GQLActivity & {
 
 export type GQLActivityUnion = GQLEmbeddedActivity | GQLHtmlActivity;
 
+export enum GQLPermissionId {
+  MANAGE_LEVEL = 'MANAGE_LEVEL',
+  MANAGE_THEME = 'MANAGE_THEME',
+  MANAGE_CYCLE = 'MANAGE_CYCLE',
+  MANAGE_ACTIVITY = 'MANAGE_ACTIVITY',
+  EXECUTE_ACTIVITY = 'EXECUTE_ACTIVITY'
+}
+
+export enum GQLRoleId {
+  ADMIN = 'ADMIN',
+  STUDENT = 'STUDENT',
+  TEACHER = 'TEACHER'
+}
+
+export type GQLPermission = {
+  readonly __typename?: 'Permission';
+  readonly id: GQLPermissionId;
+  readonly name: Scalars['String'];
+  readonly description: Scalars['String'];
+};
+
+export type GQLRole = {
+  readonly __typename?: 'Role';
+  readonly id: Maybe<GQLRoleId>;
+  readonly name: Scalars['String'];
+  readonly permissions: ReadonlyArray<GQLPermission>;
+};
+
 export type GQLActivityData = {
   readonly activityId: Scalars['ID'];
 };
@@ -155,12 +182,6 @@ export type GQLLevel = {
   readonly levelThemes: ReadonlyArray<GQLLevelTheme>;
 };
 
-export type GQLRole = {
-  readonly __typename?: 'Role';
-  readonly id: Scalars['ID'];
-  readonly name: Scalars['String'];
-};
-
 export type GQLTheme = {
   readonly __typename?: 'Theme';
   readonly id: Scalars['ID'];
@@ -172,7 +193,7 @@ export type GQLUserRole = {
   readonly __typename?: 'UserRole';
   readonly id: Scalars['ID'];
   readonly userId: Scalars['ID'];
-  readonly roleId: Scalars['ID'];
+  readonly roleId: GQLRoleId;
   readonly user: GQLUser;
   readonly role: GQLRole;
 };
@@ -274,6 +295,10 @@ export type GQLResolversTypes = {
   EmbeddedActivity: ResolverTypeWrapper<ActivityEntity>;
   HtmlActivity: ResolverTypeWrapper<ActivityEntity>;
   ActivityUnion: GQLResolversTypes['EmbeddedActivity'] | GQLResolversTypes['HtmlActivity'];
+  PermissionId: GQLPermissionId;
+  RoleId: GQLRoleId;
+  Permission: ResolverTypeWrapper<GQLPermission>;
+  Role: ResolverTypeWrapper<GQLRole>;
   ActivityData: GQLResolversTypes['EmbeddedActivityData'] | GQLResolversTypes['HtmlActivityData'];
   EmbeddedActivityData: ResolverTypeWrapper<EmbeddedActivityDataEntity>;
   HtmlActivityData: ResolverTypeWrapper<HtmlActivityDataEntity>;
@@ -283,7 +308,6 @@ export type GQLResolversTypes = {
   LevelTheme: ResolverTypeWrapper<LevelThemeEntity>;
   Level: ResolverTypeWrapper<LevelEntity>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Role: ResolverTypeWrapper<RoleEntity>;
   Theme: ResolverTypeWrapper<ThemeEntity>;
   UserRole: ResolverTypeWrapper<UserRoleEntity>;
   User: ResolverTypeWrapper<UserEntity>;
@@ -300,6 +324,8 @@ export type GQLResolversParentTypes = {
   EmbeddedActivity: ActivityEntity;
   HtmlActivity: ActivityEntity;
   ActivityUnion: GQLResolversParentTypes['EmbeddedActivity'] | GQLResolversParentTypes['HtmlActivity'];
+  Permission: GQLPermission;
+  Role: GQLRole;
   ActivityData: GQLResolversParentTypes['EmbeddedActivityData'] | GQLResolversParentTypes['HtmlActivityData'];
   EmbeddedActivityData: EmbeddedActivityDataEntity;
   HtmlActivityData: HtmlActivityDataEntity;
@@ -309,7 +335,6 @@ export type GQLResolversParentTypes = {
   LevelTheme: LevelThemeEntity;
   Level: LevelEntity;
   Boolean: Scalars['Boolean'];
-  Role: RoleEntity;
   Theme: ThemeEntity;
   UserRole: UserRoleEntity;
   User: UserEntity;
@@ -360,6 +385,20 @@ export type GQLHtmlActivityResolvers<ContextType = GraphQLContext, ParentType ex
 
 export type GQLActivityUnionResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ActivityUnion'] = GQLResolversParentTypes['ActivityUnion']> = {
   __resolveType: TypeResolveFn<'EmbeddedActivity' | 'HtmlActivity', ParentType, ContextType>;
+};
+
+export type GQLPermissionResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Permission'] = GQLResolversParentTypes['Permission']> = {
+  id: Resolver<GQLResolversTypes['PermissionId'], ParentType, ContextType>;
+  name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  description: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type GQLRoleResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Role'] = GQLResolversParentTypes['Role']> = {
+  id: Resolver<Maybe<GQLResolversTypes['RoleId']>, ParentType, ContextType>;
+  name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  permissions: Resolver<ReadonlyArray<GQLResolversTypes['Permission']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type GQLActivityDataResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ActivityData'] = GQLResolversParentTypes['ActivityData']> = {
@@ -418,12 +457,6 @@ export type GQLLevelResolvers<ContextType = GraphQLContext, ParentType extends G
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
-export type GQLRoleResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Role'] = GQLResolversParentTypes['Role']> = {
-  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
-  name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
-};
-
 export type GQLThemeResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Theme'] = GQLResolversParentTypes['Theme']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
@@ -434,7 +467,7 @@ export type GQLThemeResolvers<ContextType = GraphQLContext, ParentType extends G
 export type GQLUserRoleResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['UserRole'] = GQLResolversParentTypes['UserRole']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   userId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
-  roleId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  roleId: Resolver<GQLResolversTypes['RoleId'], ParentType, ContextType>;
   user: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
   role: Resolver<GQLResolversTypes['Role'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
@@ -457,6 +490,8 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   EmbeddedActivity: GQLEmbeddedActivityResolvers<ContextType>;
   HtmlActivity: GQLHtmlActivityResolvers<ContextType>;
   ActivityUnion: GQLActivityUnionResolvers;
+  Permission: GQLPermissionResolvers<ContextType>;
+  Role: GQLRoleResolvers<ContextType>;
   ActivityData: GQLActivityDataResolvers;
   EmbeddedActivityData: GQLEmbeddedActivityDataResolvers<ContextType>;
   HtmlActivityData: GQLHtmlActivityDataResolvers<ContextType>;
@@ -464,7 +499,6 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Cycle: GQLCycleResolvers<ContextType>;
   LevelTheme: GQLLevelThemeResolvers<ContextType>;
   Level: GQLLevelResolvers<ContextType>;
-  Role: GQLRoleResolvers<ContextType>;
   Theme: GQLThemeResolvers<ContextType>;
   UserRole: GQLUserRoleResolvers<ContextType>;
   User: GQLUserResolvers<ContextType>;

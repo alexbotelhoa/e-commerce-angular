@@ -1,0 +1,7 @@
+enum PermissionId {
+    MANAGE_LEVEL
+    MANAGE_THEME
+    MANAGE_CYCLE
+    MANAGE_ACTIVITY
+    EXECUTE_ACTIVITY
+}

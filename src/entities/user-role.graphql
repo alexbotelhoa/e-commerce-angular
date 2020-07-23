@@ -1,7 +1,7 @@
 type UserRole {
     id: ID!
     userId: ID!
-    roleId: ID!
+    roleId: RoleId!
     user: User!
     role: Role!
 }
