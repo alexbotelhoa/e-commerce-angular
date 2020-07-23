@@ -1,0 +1,9 @@
+type Mutation {
+  createTheme(data: ThemeData!) : Theme
+  deactivateTheme(id:ID!) : Theme
+  activateTheme(id:ID!) : Theme
+}
+
+input ThemeData {
+  name: String!
+}
