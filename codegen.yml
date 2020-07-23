@@ -11,10 +11,10 @@ generates:
         typeNames: keep
         enumValues: keep
       immutableTypes: true
-      avoidOptionals: false
+      avoidOptionals: true
       useIndexSignature: false
       typesPrefix: GQL
-      defaultMapper: Partial<{T}>
+      # defaultMapper: Partial<{T}>
       contextType: ./shared/types/context.type#GraphQLContext
       enumValues:
         ActivityTypeId: ./domain/activity/enums/activity-type.enum#ActivityTypeId

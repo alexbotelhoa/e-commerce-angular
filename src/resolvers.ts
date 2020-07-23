@@ -8,17 +8,20 @@ import { activitiesQuery } from "./domain/activity/queries/activities/activities
 import { activityUnionResolvers } from "./domain/activity/types/activity.union";
 import { embeddedActivityResolvers } from "./domain/activity/types/activity-types/embedded/embedded-activity.resolvers";
 import { htmlActivityResolvers } from "./domain/activity/types/activity-types/html/html-activity.resolvers";
+import { activityQuery } from "./domain/activity/queries/activity/activity.query";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
     email: obj => obj.email,
     name: obj => obj.name,
+
 }
 
-export const resolvers: GQLResolvers = {
+export const resolvers: GQLResolvers = <GQLResolvers>{
     Query: {
         theme: themeQueryResolver,
         levels: levelsQueryResolver,
+        activity: activityQuery,
         activities: activitiesQuery,
         themes: themesQueryResolver,
     },
@@ -27,12 +30,14 @@ export const resolvers: GQLResolvers = {
         activateTheme: activateThemeMutationResolver,
         deactivateTheme: deactivateThemeMutationResolver
     },
-    User: userEntityResolvers,
+    User: {
+        ...userEntityResolvers,
+    },
     ActivityUnion: activityUnionResolvers,
     ActivityTypeId: ActivityTypeId,
     EmbeddedActivity: embeddedActivityResolvers,
     HtmlActivity: htmlActivityResolvers,
-}
+};
 
 
 

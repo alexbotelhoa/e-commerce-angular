@@ -10,7 +10,6 @@ export const databaseServiceFactory = (config: DatabaseConfiguration): knex => k
         database: config.name,
     },
     debug: true,
-
 });
 
 export type DatabaseService<TRecord = any, TResult = any> = knex<TRecord, TResult>;
