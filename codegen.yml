@@ -1,12 +1,12 @@
-schema: 
-  './src/**/*.graphql': 
+schema:
+  "./src/**/*.graphql":
     noRequire: true
 generates:
   ./src/resolvers-types.ts:
     plugins:
       - typescript
       - typescript-resolvers
-    config: 
+    config:
       namingConvention:
         typeNames: keep
         enumValues: keep
@@ -16,12 +16,15 @@ generates:
       typesPrefix: GQL
       defaultMapper: Partial<{T}>
       contextType: ./shared/types/context.type#GraphQLContext
+      enumValues:
+        ActivityTypeId: ./domain/activity/enums/activity-type.enum#ActivityTypeId
       mappers:
         User: ./entities/user.entity#UserEntity
         ActivityType: ./domain/activity/types/activity-type.type#ActivityType
+        EmbeddedActivity: ./entities/activity.entity#ActivityEntity
         EmbeddedActivityData: ./entities/activities/embedded-activity-data.entity#EmbeddedActivityDataEntity
+        HtmlActivity: ./entities/activity.entity#ActivityEntity
         HtmlActivityData: ./entities/activities/html-activity-data.entity#HtmlActivityDataEntity
-        Activity: ./entities/activity.entity#ActivityEntity
         Cycle: ./entities/cycle.entity#CycleEntity
         LevelTheme: ./entities/level-theme.entity#LevelThemeEntity
         Level: ./entities/level.entity#LevelEntity

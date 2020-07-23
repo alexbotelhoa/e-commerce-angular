@@ -1,7 +1,8 @@
-interface Activity {
+type EmbeddedActivity implements Activity {
     id: ID!
     name: String!
     description: String
     typeId: ActivityTypeId!
     type: ActivityType!
+    data: EmbeddedActivityData!
 }

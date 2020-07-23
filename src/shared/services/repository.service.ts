@@ -18,7 +18,7 @@ export const getEntitiesByIds =
     <T, IdType extends string | number = string | number>(table: string) =>
         (idKey: StringKeyof<T>) =>
             (db: DatabaseService<T, T[]>) =>
-                (ids: IdType[]): Knex.QueryBuilder<T, T[]> => {
+                (ids: ReadonlyArray<IdType>): Knex.QueryBuilder<T, T[]> => {
                     return db
                         .select('*')
                         .from<T, T[]>(table)

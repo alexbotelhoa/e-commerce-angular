@@ -1,5 +1,4 @@
 type HtmlActivityData implements ActivityData {
-    id: ID!
     activityId: ID!
     html: String!
 }

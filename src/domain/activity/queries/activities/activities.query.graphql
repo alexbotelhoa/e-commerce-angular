@@ -1,0 +1,7 @@
+type Query {
+    activities: [ActivityUnion!]!
+}
+
+# input ActivitiesQueryWhereInput {
+    
+# }

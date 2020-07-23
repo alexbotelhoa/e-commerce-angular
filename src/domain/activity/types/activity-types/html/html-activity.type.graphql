@@ -1,7 +1,8 @@
-interface Activity {
+type HtmlActivity implements Activity {
     id: ID!
     name: String!
     description: String
     typeId: ActivityTypeId!
     type: ActivityType!
+    data: HtmlActivityData!
 }
