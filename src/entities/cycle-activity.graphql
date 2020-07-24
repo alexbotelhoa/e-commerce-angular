@@ -1,0 +1,10 @@
+type CycleActivity {
+    id: ID!
+    cycleId: ID!
+    activityId: ID!
+    order: Int!
+    cycle: Cycle!
+    activity: Activity!
+    activities: [Activity!]!
+}
+

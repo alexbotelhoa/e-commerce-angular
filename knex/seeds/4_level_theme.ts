@@ -9,8 +9,8 @@ export async function seed(knex: Knex<LevelThemeEntity, LevelThemeEntity[]>): Pr
     // Inserts seed entries
     await insertLevelTheme(knex)([
         { id: 1, themeId: 1, levelId: 1, order: 1 },
-        { id: 2, themeId: 1, levelId: 2, order: 1 },
-        { id: 3, themeId: 1, levelId: 3, order: 1 }
+        { id: 2, themeId: 2, levelId: 1, order: 2 },
+        { id: 3, themeId: 3, levelId: 1, order: 3 }
     ]);
 }
 

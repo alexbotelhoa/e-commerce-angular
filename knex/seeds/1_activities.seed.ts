@@ -9,17 +9,18 @@ export async function seed(knex: DatabaseService): Promise<void> {
     // Deletes ALL existing entries
     await deleteAllActivities(knex);
 
-    for (let index = 0; index < 2; index++) {
-        await generateEmbeddedActivity(knex)
+    for (let index = 1; index <= 2; index++) {
+        await generateEmbeddedActivity(knex, index)
     }
 
-    for (let index = 0; index < 2; index++) {
-        await generateHtmlActivity(knex)
+    for (let index = 3; index <= 4; index++) {
+        await generateHtmlActivity(knex, index)
     }
 }
 
-async function generateEmbeddedActivity(db: DatabaseService): Promise<number> {
+async function generateEmbeddedActivity(db: DatabaseService, index: number): Promise<number> {
     const activityId = await insertActivity(db)({
+        id: index,
         name: faker.company.catchPhraseDescriptor(),
         description: faker.lorem.paragraphs(2),
         typeId: ActivityTypeId.EMBEDDED,
@@ -33,8 +34,9 @@ async function generateEmbeddedActivity(db: DatabaseService): Promise<number> {
     return activityId;
 }
 
-async function generateHtmlActivity(db: DatabaseService): Promise<number> {
+async function generateHtmlActivity(db: DatabaseService, index: number): Promise<number> {
     const activityId = await insertActivity(db)({
+        id: index,
         name: faker.company.catchPhraseDescriptor(),
         description: faker.lorem.paragraphs(2),
         typeId: ActivityTypeId.HTML,

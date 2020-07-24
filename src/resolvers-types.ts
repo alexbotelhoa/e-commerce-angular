@@ -6,6 +6,7 @@ import { ActivityEntity } from './entities/activity.entity';
 import { EmbeddedActivityDataEntity } from './entities/activities/embedded-activity-data.entity';
 import { HtmlActivityDataEntity } from './entities/activities/html-activity-data.entity';
 import { CycleEntity } from './entities/cycle.entity';
+import { CycleActivityEntity } from './entities/cycle-activity.entity';
 import { LevelThemeEntity } from './entities/level-theme.entity';
 import { LevelEntity } from './entities/level.entity';
 import { RoleEntity } from './entities/role.entity';
@@ -83,7 +84,12 @@ export type GQLQuery = {
   readonly activities: ReadonlyArray<GQLActivityUnion>;
   readonly activity: Maybe<GQLActivityUnion>;
   readonly cycle: Maybe<GQLCycle>;
+  readonly cycleActivities: ReadonlyArray<GQLCycleActivity>;
+  readonly cycleActivity: Maybe<GQLCycleActivity>;
   readonly cycles: ReadonlyArray<GQLCycle>;
+  readonly level: Maybe<GQLLevel>;
+  readonly levelTheme: Maybe<GQLLevelTheme>;
+  readonly levelThemes: ReadonlyArray<GQLLevelTheme>;
   readonly levels: ReadonlyArray<GQLLevel>;
   readonly theme: Maybe<GQLTheme>;
   readonly themes: ReadonlyArray<GQLTheme>;
@@ -96,6 +102,21 @@ export type GQLQueryactivityArgs = {
 
 
 export type GQLQuerycycleArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type GQLQuerycycleActivityArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type GQLQuerylevelArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type GQLQuerylevelThemeArgs = {
   id: Scalars['ID'];
 };
 
@@ -155,6 +176,17 @@ export type GQLActivity = {
   readonly description: Maybe<Scalars['String']>;
   readonly typeId: ActivityTypeId;
   readonly type: GQLActivityType;
+};
+
+export type GQLCycleActivity = {
+  readonly __typename?: 'CycleActivity';
+  readonly id: Scalars['ID'];
+  readonly cycleId: Scalars['ID'];
+  readonly activityId: Scalars['ID'];
+  readonly order: Scalars['Int'];
+  readonly cycle: GQLCycle;
+  readonly activity: GQLActivity;
+  readonly activities: ReadonlyArray<GQLActivity>;
 };
 
 export type GQLCycle = {
@@ -312,9 +344,10 @@ export type GQLResolversTypes = {
   EmbeddedActivityData: ResolverTypeWrapper<EmbeddedActivityDataEntity>;
   HtmlActivityData: ResolverTypeWrapper<HtmlActivityDataEntity>;
   Activity: GQLResolversTypes['EmbeddedActivity'] | GQLResolversTypes['HtmlActivity'];
+  CycleActivity: ResolverTypeWrapper<CycleActivityEntity>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Cycle: ResolverTypeWrapper<CycleEntity>;
   LevelTheme: ResolverTypeWrapper<LevelThemeEntity>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   Level: ResolverTypeWrapper<LevelEntity>;
   Role: ResolverTypeWrapper<RoleEntity>;
   Theme: ResolverTypeWrapper<ThemeEntity>;
@@ -339,9 +372,10 @@ export type GQLResolversParentTypes = {
   EmbeddedActivityData: EmbeddedActivityDataEntity;
   HtmlActivityData: HtmlActivityDataEntity;
   Activity: GQLResolversParentTypes['EmbeddedActivity'] | GQLResolversParentTypes['HtmlActivity'];
+  CycleActivity: CycleActivityEntity;
+  Int: Scalars['Int'];
   Cycle: CycleEntity;
   LevelTheme: LevelThemeEntity;
-  Int: Scalars['Int'];
   Level: LevelEntity;
   Role: RoleEntity;
   Theme: ThemeEntity;
@@ -364,7 +398,12 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   activities: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType>;
   activity: Resolver<Maybe<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryactivityArgs, 'id'>>;
   cycle: Resolver<Maybe<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLQuerycycleArgs, 'id'>>;
+  cycleActivities: Resolver<ReadonlyArray<GQLResolversTypes['CycleActivity']>, ParentType, ContextType>;
+  cycleActivity: Resolver<Maybe<GQLResolversTypes['CycleActivity']>, ParentType, ContextType, RequireFields<GQLQuerycycleActivityArgs, 'id'>>;
   cycles: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType>;
+  level: Resolver<Maybe<GQLResolversTypes['Level']>, ParentType, ContextType, RequireFields<GQLQuerylevelArgs, 'id'>>;
+  levelTheme: Resolver<Maybe<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQuerylevelThemeArgs, 'id'>>;
+  levelThemes: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType>;
   levels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
   theme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQuerythemeArgs, 'id'>>;
   themes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType>;
@@ -425,6 +464,17 @@ export type GQLActivityResolvers<ContextType = GraphQLContext, ParentType extend
   description: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   typeId: Resolver<GQLResolversTypes['ActivityTypeId'], ParentType, ContextType>;
   type: Resolver<GQLResolversTypes['ActivityType'], ParentType, ContextType>;
+};
+
+export type GQLCycleActivityResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['CycleActivity'] = GQLResolversParentTypes['CycleActivity']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  cycleId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  activityId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  order: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  cycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType>;
+  activity: Resolver<GQLResolversTypes['Activity'], ParentType, ContextType>;
+  activities: Resolver<ReadonlyArray<GQLResolversTypes['Activity']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type GQLCycleResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Cycle'] = GQLResolversParentTypes['Cycle']> = {
@@ -500,6 +550,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   EmbeddedActivityData: GQLEmbeddedActivityDataResolvers<ContextType>;
   HtmlActivityData: GQLHtmlActivityDataResolvers<ContextType>;
   Activity: GQLActivityResolvers;
+  CycleActivity: GQLCycleActivityResolvers<ContextType>;
   Cycle: GQLCycleResolvers<ContextType>;
   LevelTheme: GQLLevelThemeResolvers<ContextType>;
   Level: GQLLevelResolvers<ContextType>;

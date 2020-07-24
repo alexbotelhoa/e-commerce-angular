@@ -26,6 +26,7 @@ generates:
         HtmlActivity: ./entities/activity.entity#ActivityEntity
         HtmlActivityData: ./entities/activities/html-activity-data.entity#HtmlActivityDataEntity
         Cycle: ./entities/cycle.entity#CycleEntity
+        CycleActivity: ./entities/cycle-activity.entity#CycleActivityEntity
         LevelTheme: ./entities/level-theme.entity#LevelThemeEntity
         Level: ./entities/level.entity#LevelEntity
         Role: ./entities/role.entity#RoleEntity
