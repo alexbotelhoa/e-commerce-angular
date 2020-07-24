@@ -1,7 +1,7 @@
 type Cycle {
     id: ID!
     name: String!
-    order: Int!
+    active: Boolean!
     levelThemeId: ID!
     levelTheme: LevelTheme!
     activities: [Activity!]!
