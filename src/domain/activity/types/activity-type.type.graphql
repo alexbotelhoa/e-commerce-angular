@@ -1,5 +1,5 @@
 type ActivityType {
-    id: ActivityTypeId
+    id: ActivityTypeId!
     name: String!
     description: String!
 }
