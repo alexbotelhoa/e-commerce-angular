@@ -5,6 +5,5 @@ type CycleActivity {
     order: Int!
     cycle: Cycle!
     activity: Activity!
-    activities: [Activity!]!
 }
 

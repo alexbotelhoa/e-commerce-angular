@@ -8,8 +8,11 @@ export async function up(knex: Knex): Promise<void> {
         table.string('name', 100);
         table.boolean('active').notNullable().defaultTo(true);
 
-        table.integer('levelThemeId').unsigned();
+        table.integer('levelThemeId').unsigned().notNullable();
         table.foreign('levelThemeId').references('level_theme.id').onDelete('CASCADE');
+
+        table.index('active');
+        table.index('levelThemeId');
     })
 }
 

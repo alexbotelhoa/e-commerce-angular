@@ -4,5 +4,5 @@ type Cycle {
     active: Boolean!
     levelThemeId: ID!
     levelTheme: LevelTheme!
-    activities: [Activity!]!
+    activities: [CycleActivity!]!
 }

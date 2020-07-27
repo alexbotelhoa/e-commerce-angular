@@ -7,13 +7,15 @@ export async function up(knex: Knex): Promise<void> {
         table.increments('id');
         table.integer('order', 3);
 
-        table.integer('themeId').unsigned();
-        table.integer('levelId').unsigned();
+        table.integer('themeId').unsigned().notNullable();
+        table.integer('levelId').unsigned().notNullable();
 
         table.foreign('themeId').references('theme.id').onDelete('CASCADE');
         table.foreign('levelId').references('level.id').onDelete('CASCADE');
 
         table.index('order');
+        table.index('themeId');
+        table.index('levelId');
     })
 }
 
