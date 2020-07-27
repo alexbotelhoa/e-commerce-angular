@@ -1,7 +1,8 @@
 export interface LevelThemeEntity {
     id: number;
-    levelId: string;
-    themeId: string;
+    levelId: number;
+    themeId: number;
+    order: number;
 }
 
 export const LEVEL_THEME_TABLE = 'level_theme';

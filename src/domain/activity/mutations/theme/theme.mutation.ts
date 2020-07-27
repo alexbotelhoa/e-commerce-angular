@@ -1,5 +1,5 @@
-import { GQLMutationResolvers } from "../../../resolvers-types";
-import { getThemeById, insertTheme, updateTheme } from "../../../shared/repositories/theme.repository";
+import { GQLMutationResolvers } from "../../../../resolvers-types";
+import { getThemeById, insertTheme, updateTheme } from "../../../../shared/repositories/theme.repository";
 
 export const createThemeMutationResolver: GQLMutationResolvers['createTheme'] = async (obj, { data }, context) => {
     return getThemeById(context.database)(await insertTheme(context.database)(data));

@@ -1,5 +1,5 @@
-import { DatabaseService } from "./database.service";
 import Knex from "knex";
+import { DatabaseService } from "./database.service";
 import { StringKeyof } from "../types/string-keyof.type";
 import { getOneOrNull, getOneOrFail } from "../utils/get-one-or-null.util";
 

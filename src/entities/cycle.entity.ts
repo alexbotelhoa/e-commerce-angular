@@ -1,7 +1,8 @@
 export interface CycleEntity {
     id: number
     name: string
-    order: number;
+    active: boolean
+    levelThemeId: number
 }
 
 export const CYCLE_TABLE = 'cycle';
