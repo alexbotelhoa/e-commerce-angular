@@ -1,0 +1,5 @@
+type ActivityType {
+    id: ActivityTypeId!
+    name: String!
+    description: String!
+}

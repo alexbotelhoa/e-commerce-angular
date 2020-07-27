@@ -4,13 +4,14 @@ dotenv.config({
   debug: true,
 });
 
-import fastify from 'fastify';
+import fastify, { FastifyRequest } from 'fastify';
 import fastifyGQL from 'fastify-gql';
 import { makeExecutableSchema, addMocksToSchema, loadTypedefs, GraphQLFileLoader, mergeTypeDefs } from 'graphql-tools';
 import { resolvers } from './resolvers';
 import { GraphQLContext } from './shared/types/context.type';
 import { databaseService } from './shared/services/database.service';
 import { getDatabaseLoaderFactory } from './shared/services/get-database-loader.service';
+import { createCurrentUserFromRequest } from './domain/authorization/services/authorization.service';
 
 // Require the framework and instantiate it
 const app = fastify({
@@ -33,9 +34,10 @@ const app = fastify({
       preserveResolvers: true,
     }),
     resolvers: {},
-    context: async () => {
+    context: async (request: FastifyRequest) => {
       const context: GraphQLContext = {
         database: databaseService,
+        currentUser: createCurrentUserFromRequest(request),
         getDatabaseLoader: getDatabaseLoaderFactory(databaseService),
       };
       return context;

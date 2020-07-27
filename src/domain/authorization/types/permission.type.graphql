@@ -1,5 +1,5 @@
-type ActivityType {
-    id: ActivityTypeId
+type Permission {
+    id: PermissionId!
     name: String!
     description: String!
 }
