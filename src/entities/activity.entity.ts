@@ -5,7 +5,7 @@ export interface ActivityEntity<T extends ActivityTypeId = ActivityTypeId> {
     id: number;
     name: string;
     description: string | null;
-    typeId: T
+    typeId: T;
 }
 
 export const ACTIVITY_TABLE = 'activity';

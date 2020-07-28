@@ -2,4 +2,5 @@ enum RoleId {
     ADMIN
     STUDENT
     TEACHER
+    GUARDIAN
 }

@@ -18,6 +18,7 @@ generates:
       contextType: ./shared/types/context.type#GraphQLContext
       enumValues:
         ActivityTypeId: ./domain/activity/enums/activity-type.enum#ActivityTypeId
+        RoleId: ./domain/authorization/enums/role-id.enum#RoleId
       mappers:
         User: ./entities/user.entity#UserEntity
         ActivityType: ./domain/activity/types/activity-type.type#ActivityType

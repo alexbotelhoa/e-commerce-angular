@@ -1,8 +1,10 @@
-import { CurrentUser } from "../../../shared/types/authenticated-user.type"
+import { AuthenticatedUser } from "../../../shared/types/authenticated-user.type"
 import { PermissionId } from "../enums/permission-id.enum"
-import { FastifyRequest } from "fastify";
+import { FastifyRequest, FastifyInstance } from "fastify";
 import { Role } from "../types/role.type";
 import { PermissionMap } from "../types/permission-map.type";
+import { JWTPayload } from "../../authentication/types/jwt-payload.type";
+import { getRoleById } from "../constants/roles.constants";
 
 /**
  * Checks if user has a permission
@@ -10,7 +12,7 @@ import { PermissionMap } from "../types/permission-map.type";
  */
 export const userHasPermission =
     (permission: PermissionId) =>
-        (user: CurrentUser | null): boolean => {
+        (user: AuthenticatedUser | null): boolean => {
             if (!user) {
                 return false;
             }
@@ -21,25 +23,32 @@ export const userHasPermission =
  * Extracts currentUser from the request's JWT, returning null if user is not authenticated
  * @param request 
  */
-export const createCurrentUserFromRequest = (request: FastifyRequest): CurrentUser | null => {
-    if (!request.headers.authorization) {
+export const createCurrentUserFromRequest = (jwtLib: FastifyInstance['jwt'], request: FastifyRequest): AuthenticatedUser | null => {
+    const token = request.headers.authorization;
+    if (!token) {
         return null;
     }
-    const currentUser: CurrentUser = {
-        entity: {
-            id: 1,
-            email: 'alan.sa@mjv.com.br',
-            name: 'Alan Jhonnes',
-        },
-        sessionId: '883e105e-64bb-4614-b392-83a4c3d8a7a3',
-        permissionMap: {
-            MANAGE_ACTIVITY: true,
-            MANAGE_CYCLE: true,
-        }
+
+    // this will throw if token is not valid
+    const tokenData = jwtLib.verify<JWTPayload>(token);
+
+    const roles: Role[] = tokenData.roles.map(getRoleById);
+
+    const permissionMap = mergePermissionFromRoles(roles);
+
+    const currentUser: AuthenticatedUser = {
+        id: tokenData.userId,
+        roleIds: tokenData.roles,
+        roles: roles,
+        permissionMap: permissionMap,
     };
     return currentUser;
 }
 
+/**
+ * Merge permissions from an array of roles into a single permissionMap
+ * @param roles 
+ */
 export const mergePermissionFromRoles = (roles: Role[]): PermissionMap => roles.reduce<PermissionMap>((map, role) => {
     return {
         ...map,

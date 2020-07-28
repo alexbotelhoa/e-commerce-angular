@@ -1,3 +1,5 @@
+import { Environment } from "../types/environment.type";
+
 export interface DatabaseConfiguration {
     readonly client: string;
     readonly host: string;
@@ -6,10 +8,10 @@ export interface DatabaseConfiguration {
     readonly password: string;
 }
 
-export const databaseConfiguration: DatabaseConfiguration = {
-    client: process.env.DB_CLIENT!,
-    host: process.env.DB_HOST!,
-    name: process.env.DB_NAME!,
-    user: process.env.DB_USER!,
-    password: process.env.DB_PASSWORD!,
-}
+export const databaseConfigurationFromEnvironment = (env: Environment): DatabaseConfiguration => ({
+    client: env.DB_CLIENT,
+    host: env.DB_HOST,
+    name: env.DB_NAME,
+    user: env.DB_USER,
+    password: env.DB_PASSWORD,
+})

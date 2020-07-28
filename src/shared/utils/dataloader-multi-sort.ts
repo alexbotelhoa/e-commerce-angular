@@ -21,6 +21,7 @@ export function groupEntitiesById<T, IdKeyType extends string | number>(idKey: E
     return (map, entity) => {
         // get or create the array that will hold the entities for the id
         const array: T[] = map[entity[idKey] as unknown as IdKeyType] || [];
+        map[entity[idKey] as unknown as IdKeyType] = array;
         // push the entity into the array to group it with others of the same id
         array.push(entity);
         return map;

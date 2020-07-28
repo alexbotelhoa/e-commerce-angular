@@ -5,6 +5,7 @@
         "oderwat.indent-rainbow",
         "visualstudioexptteam.vscodeintellicode",
         "vscode-icons-team.vscode-icons",
-        "coenraads.bracket-pair-colorizer"
+        "coenraads.bracket-pair-colorizer",
+        "apollographql.vscode-apollo"
     ]
 }
