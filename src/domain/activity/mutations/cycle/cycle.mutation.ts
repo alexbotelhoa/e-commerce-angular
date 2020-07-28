@@ -10,9 +10,11 @@ export const createCycleMutationResolver: GQLMutationResolvers['createCycle'] = 
 }
 
 export const activateCycleMutationResolver: GQLMutationResolvers['activateCycle'] = async (obj, { id }, context) => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return (await getCycleById(context.database)(await updateCycle(context.database)({ active: true })(builder => builder.andWhere('id', id))))!;
 }
 
 export const deactivateCycleMutationResolver: GQLMutationResolvers['deactivateCycle'] = async (obj, { id }, context) => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return (await getCycleById(context.database)(await updateCycle(context.database)({ active: false })(builder => builder.andWhere('id', id))))!;
 }

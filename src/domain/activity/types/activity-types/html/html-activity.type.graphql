@@ -5,4 +5,5 @@ type HtmlActivity implements Activity {
     typeId: ActivityTypeId!
     type: ActivityType!
     data: HtmlActivityData!
+    active: Boolean!
 }

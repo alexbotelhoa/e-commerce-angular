@@ -144,6 +144,7 @@ export type GQLEmbeddedActivity = GQLActivity & {
   readonly typeId: ActivityTypeId;
   readonly type: GQLActivityType;
   readonly data: GQLEmbeddedActivityData;
+  readonly active: Scalars['Boolean'];
 };
 
 export type GQLHtmlActivity = GQLActivity & {
@@ -154,6 +155,7 @@ export type GQLHtmlActivity = GQLActivity & {
   readonly typeId: ActivityTypeId;
   readonly type: GQLActivityType;
   readonly data: GQLHtmlActivityData;
+  readonly active: Scalars['Boolean'];
 };
 
 export type GQLActivityUnion = GQLEmbeddedActivity | GQLHtmlActivity;
@@ -198,6 +200,7 @@ export type GQLActivity = {
   readonly description: Maybe<Scalars['String']>;
   readonly typeId: ActivityTypeId;
   readonly type: GQLActivityType;
+  readonly active: Scalars['Boolean'];
 };
 
 export type GQLCycleActivity = {
@@ -443,6 +446,7 @@ export type GQLEmbeddedActivityResolvers<ContextType = GraphQLContext, ParentTyp
   typeId: Resolver<GQLResolversTypes['ActivityTypeId'], ParentType, ContextType>;
   type: Resolver<GQLResolversTypes['ActivityType'], ParentType, ContextType>;
   data: Resolver<GQLResolversTypes['EmbeddedActivityData'], ParentType, ContextType>;
+  active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -453,6 +457,7 @@ export type GQLHtmlActivityResolvers<ContextType = GraphQLContext, ParentType ex
   typeId: Resolver<GQLResolversTypes['ActivityTypeId'], ParentType, ContextType>;
   type: Resolver<GQLResolversTypes['ActivityType'], ParentType, ContextType>;
   data: Resolver<GQLResolversTypes['HtmlActivityData'], ParentType, ContextType>;
+  active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -502,6 +507,7 @@ export type GQLActivityResolvers<ContextType = GraphQLContext, ParentType extend
   description: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   typeId: Resolver<GQLResolversTypes['ActivityTypeId'], ParentType, ContextType>;
   type: Resolver<GQLResolversTypes['ActivityType'], ParentType, ContextType>;
+  active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
 };
 
 export type GQLCycleActivityResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['CycleActivity'] = GQLResolversParentTypes['CycleActivity']> = {

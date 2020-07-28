@@ -5,4 +5,5 @@ type EmbeddedActivity implements Activity {
     typeId: ActivityTypeId!
     type: ActivityType!
     data: EmbeddedActivityData!
+    active: Boolean!
 }
