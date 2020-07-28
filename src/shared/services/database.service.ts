@@ -1,5 +1,5 @@
 import knex from 'knex';
-import { DatabaseConfiguration, databaseConfiguration } from '../constants/configuration.constant';
+import { DatabaseConfiguration } from '../constants/configuration.constant';
 
 export const databaseServiceFactory = (config: DatabaseConfiguration): knex => knex({
     client: config.client,
@@ -13,5 +13,3 @@ export const databaseServiceFactory = (config: DatabaseConfiguration): knex => k
 });
 
 export type DatabaseService<TRecord = any, TResult = any> = knex<TRecord, TResult>;
-
-export const databaseService: DatabaseService = databaseServiceFactory(databaseConfiguration);

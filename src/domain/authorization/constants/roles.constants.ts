@@ -26,10 +26,17 @@ export const teacherRole: Role = {
     }
 }
 
+export const guardianRole: Role = {
+    id: RoleId.GUARDIAN,
+    permissionMap: {
+    }
+}
+
 export const rolesById: Readonly<Record<RoleId, Role>> = {
     [RoleId.ADMIN]: adminRole,
     [RoleId.STUDENT]: studentRole,
     [RoleId.TEACHER]: teacherRole,
+    [RoleId.GUARDIAN]: guardianRole,
 };
 
 export const rolesList: ReadonlyArray<Role> = objectKeys(rolesById)
