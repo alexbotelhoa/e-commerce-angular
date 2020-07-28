@@ -23,14 +23,14 @@ export const userHasPermission =
  * Extracts currentUser from the request's JWT, returning null if user is not authenticated
  * @param request 
  */
-export const createCurrentUserFromRequest = (jwtLib: FastifyInstance['jwt'], request: FastifyRequest): AuthenticatedUser | null => {
+export const createCurrentUserFromRequest = async (request: FastifyRequest): Promise<AuthenticatedUser | null> => {
     const token = request.headers.authorization;
     if (!token) {
         return null;
     }
 
     // this will throw if token is not valid
-    const tokenData = jwtLib.verify<JWTPayload>(token);
+    const tokenData = await request.jwtVerify<JWTPayload>();
 
     const roles: Role[] = tokenData.roles.map(getRoleById);
 

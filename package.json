@@ -29,6 +29,7 @@
     "dotenv": "^8.2.0",
     "faker": "^4.1.0",
     "fastify": "^3.0.3",
+    "fastify-cors": "^4.1.0",
     "fastify-formbody": "^4.0.3",
     "fastify-gql": "^5.1.0",
     "fastify-jwt": "^2.1.2",

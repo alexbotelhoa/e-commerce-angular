@@ -1,7 +1,8 @@
-import fastify, { FastifyRequest } from 'fastify';
+import fastify from 'fastify';
 import fastifyGQL from 'fastify-gql';
 import fastifyFormbody from 'fastify-formbody';
 import fastifyJwt from 'fastify-jwt';
+import fastifyCors from 'fastify-cors';
 import { makeExecutableSchema, addMocksToSchema, loadTypedefs, GraphQLFileLoader, mergeTypeDefs } from 'graphql-tools';
 import { resolvers } from './resolvers';
 import { environmentFactory } from './shared/services/environment.service';
@@ -31,6 +32,7 @@ const app = fastify({
 
   // this is only necessary if we're receiving the post data via formBody, otherwise we can remove it
   app.register(fastifyFormbody);
+  app.register(fastifyCors);
 
   // register jwt handler with secret
   app.register(fastifyJwt, {
@@ -45,7 +47,7 @@ const app = fastify({
       preserveResolvers: true,
     }),
     resolvers: {},
-    context: graphQLContextFactory(app.jwt, databaseService),
+    context: graphQLContextFactory(databaseService),
     jit: 5,
     queryDepth: 20,
     allowBatchedQueries: true,
