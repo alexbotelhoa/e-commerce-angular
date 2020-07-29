@@ -19,6 +19,7 @@ generates:
       enumValues:
         ActivityTypeId: ./domain/activity/enums/activity-type.enum#ActivityTypeId
         RoleId: ./domain/authorization/enums/role-id.enum#RoleId
+        PermissionId: ./domain/authorization/enums/permission-id.enum#PermissionId
       mappers:
         User: ./entities/user.entity#UserEntity
         ActivityType: ./domain/activity/types/activity-type.type#ActivityType
@@ -32,3 +33,5 @@ generates:
         Level: ./entities/level.entity#LevelEntity
         Theme: ./entities/theme.entity#ThemeEntity
         UserRole: ./entities/user-role.entity#UserRoleEntity
+        Role: ./domain/authorization/types/role.type#Role
+        Permission: ./domain/authorization/types/permission.type#Permission
