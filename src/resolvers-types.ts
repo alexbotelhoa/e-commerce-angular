@@ -33,12 +33,20 @@ export { ActivityTypeId };
 
 export type GQLMutation = {
   readonly __typename?: 'Mutation';
+  readonly activateActivity: GQLActivityUnion;
   readonly activateCycle: GQLCycle;
   readonly activateTheme: Maybe<GQLTheme>;
+  readonly createActivity: GQLActivityUnion;
   readonly createCycle: GQLCycle;
   readonly createTheme: Maybe<GQLTheme>;
+  readonly deactivateActivity: GQLActivityUnion;
   readonly deactivateCycle: GQLCycle;
   readonly deactivateTheme: Maybe<GQLTheme>;
+};
+
+
+export type GQLMutationactivateActivityArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -52,6 +60,11 @@ export type GQLMutationactivateThemeArgs = {
 };
 
 
+export type GQLMutationcreateActivityArgs = {
+  data: Maybe<GQLActivityInfo>;
+};
+
+
 export type GQLMutationcreateCycleArgs = {
   data: GQLCycleData;
 };
@@ -59,6 +72,11 @@ export type GQLMutationcreateCycleArgs = {
 
 export type GQLMutationcreateThemeArgs = {
   data: GQLThemeData;
+};
+
+
+export type GQLMutationdeactivateActivityArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -71,11 +89,23 @@ export type GQLMutationdeactivateThemeArgs = {
   id: Scalars['ID'];
 };
 
+export type GQLActivityInfo = {
+  readonly name: Scalars['String'];
+  readonly description: Maybe<Scalars['String']>;
+  readonly active: Maybe<Scalars['Boolean']>;
+  readonly typeId: ActivityTypeId;
+  readonly data: GQLActivityContent;
+};
+
+export type GQLActivityContent = {
+  readonly url: Maybe<Scalars['String']>;
+  readonly html: Maybe<Scalars['String']>;
+};
+
 export type GQLCycleData = {
   readonly name: Scalars['String'];
-  readonly activityIds: ReadonlyArray<Scalars['ID']>;
   readonly levelThemeId: Scalars['ID'];
-  readonly active: Scalars['Boolean'];
+  readonly active: Maybe<Scalars['Boolean']>;
 };
 
 export type GQLThemeData = {
@@ -200,7 +230,7 @@ export type GQLActivity = {
   readonly description: Maybe<Scalars['String']>;
   readonly typeId: ActivityTypeId;
   readonly type: GQLActivityType;
-  readonly active: Scalars['Boolean'];
+  readonly active: Maybe<Scalars['Boolean']>;
 };
 
 export type GQLCycleActivity = {
@@ -349,9 +379,11 @@ export type GQLResolversTypes = {
   ActivityTypeId: ActivityTypeId;
   Mutation: ResolverTypeWrapper<{}>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
-  CycleData: GQLCycleData;
+  ActivityInfo: GQLActivityInfo;
   String: ResolverTypeWrapper<Scalars['String']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  ActivityContent: GQLActivityContent;
+  CycleData: GQLCycleData;
   ThemeData: GQLThemeData;
   Query: ResolverTypeWrapper<{}>;
   ActivityType: ResolverTypeWrapper<ActivityType>;
@@ -380,9 +412,11 @@ export type GQLResolversTypes = {
 export type GQLResolversParentTypes = {
   Mutation: {};
   ID: Scalars['ID'];
-  CycleData: GQLCycleData;
+  ActivityInfo: GQLActivityInfo;
   String: Scalars['String'];
   Boolean: Scalars['Boolean'];
+  ActivityContent: GQLActivityContent;
+  CycleData: GQLCycleData;
   ThemeData: GQLThemeData;
   Query: {};
   ActivityType: ActivityType;
@@ -408,10 +442,13 @@ export type GQLResolversParentTypes = {
 export type GQLActivityTypeIdResolvers = EnumResolverSignature<{ EMBEDDED: any, HTML: any }, GQLResolversTypes['ActivityTypeId']>;
 
 export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
+  activateActivity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType, RequireFields<GQLMutationactivateActivityArgs, 'id'>>;
   activateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationactivateCycleArgs, 'id'>>;
   activateTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationactivateThemeArgs, 'id'>>;
+  createActivity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType, RequireFields<GQLMutationcreateActivityArgs, never>>;
   createCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationcreateCycleArgs, 'data'>>;
   createTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationcreateThemeArgs, 'data'>>;
+  deactivateActivity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType, RequireFields<GQLMutationdeactivateActivityArgs, 'id'>>;
   deactivateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationdeactivateCycleArgs, 'id'>>;
   deactivateTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationdeactivateThemeArgs, 'id'>>;
 };
@@ -507,7 +544,7 @@ export type GQLActivityResolvers<ContextType = GraphQLContext, ParentType extend
   description: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   typeId: Resolver<GQLResolversTypes['ActivityTypeId'], ParentType, ContextType>;
   type: Resolver<GQLResolversTypes['ActivityType'], ParentType, ContextType>;
-  active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  active: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
 };
 
 export type GQLCycleActivityResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['CycleActivity'] = GQLResolversParentTypes['CycleActivity']> = {

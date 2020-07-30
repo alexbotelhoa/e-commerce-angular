@@ -4,5 +4,5 @@ interface Activity {
     description: String
     typeId: ActivityTypeId!
     type: ActivityType!
-    active: Boolean!
+    active: Boolean
 }
