@@ -1,0 +1,18 @@
+type Mutation {
+    createActivity(data:ActivityInfo) : ActivityUnion!
+    activateActivity(id:ID!) : ActivityUnion!
+    deactivateActivity(id:ID!) : ActivityUnion!
+}
+
+input ActivityInfo {
+    name: String!
+    description: String
+    active: Boolean
+    typeId: ActivityTypeId!
+    data: ActivityContent!
+}
+
+input ActivityContent {
+    url: String
+    html: String
+}

@@ -6,7 +6,6 @@ type Mutation {
 
 input CycleData {
   name: String!
-  activityIds: [ID!]!
   levelThemeId: ID!
-  active: Boolean!
+  active: Boolean
 }

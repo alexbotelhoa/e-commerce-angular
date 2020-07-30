@@ -6,6 +6,7 @@ export interface ActivityEntity<T extends ActivityTypeId = ActivityTypeId> {
     name: string;
     description: string | null;
     typeId: T;
+    active: boolean;
 }
 
 export const ACTIVITY_TABLE = 'activity';
@@ -15,5 +16,5 @@ export type ActivityEntityMetadata = EntityMetadata<ActivityEntity, typeof ACTIV
 export const ActivityEntityMetadata: ActivityEntityMetadata = {
     table: ACTIVITY_TABLE,
     primaryColumn: 'id',
-    columns: ['id', 'name', 'description', 'typeId'],
+    columns: ['id', 'name', 'description', 'typeId', 'active'],
 }

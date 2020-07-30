@@ -1,18 +1,18 @@
 import { GQLMutationResolvers } from "../../../../resolvers-types";
 import { getCycleById, insertCycle, updateCycle } from "../../../../shared/repositories/cycle.repository";
 
-export const createCycleMutationResolver: GQLMutationResolvers['createCycle'] = async (obj, { data }, context) => {
+export const createCycleMutationResolver: GQLMutationResolvers['createCycle'] = async (obj, { data: { name, levelThemeId, active } }, context) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return (await getCycleById(context.database)(await insertCycle(context.database)({
-        ...data,
-        levelThemeId: parseInt(data.levelThemeId, 10)
+        name,
+        levelThemeId: parseInt(levelThemeId, 10),
+        active: active || undefined
     })))!;
 }
 
-export const activateCycleMutationResolver: GQLMutationResolvers['activateCycle'] = async (obj, { id }, context) => {
-    return (await getCycleById(context.database)(await updateCycle(context.database)({ active: true })(builder => builder.andWhere('id', id))))!;
-}
-
-export const deactivateCycleMutationResolver: GQLMutationResolvers['deactivateCycle'] = async (obj, { id }, context) => {
-    return (await getCycleById(context.database)(await updateCycle(context.database)({ active: false })(builder => builder.andWhere('id', id))))!;
-}
+export const toggleCycleState: (data: Record<'active', boolean>) => GQLMutationResolvers['activateCycle'] | GQLMutationResolvers['deactivateCycle'] =
+    (data: Record<'active', boolean>) =>
+        async (obj, { id }, { database: db }) => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            return (await getCycleById(db)(await updateCycle(db)(data)(builder => builder.andWhere('id', id))))!;
+        }
