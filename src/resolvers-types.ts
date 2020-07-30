@@ -240,7 +240,7 @@ export type GQLCycleActivity = {
   readonly activityId: Scalars['ID'];
   readonly order: Scalars['Int'];
   readonly cycle: GQLCycle;
-  readonly activity: GQLActivity;
+  readonly activity: GQLActivityUnion;
 };
 
 export type GQLCycle = {
@@ -553,7 +553,7 @@ export type GQLCycleActivityResolvers<ContextType = GraphQLContext, ParentType e
   activityId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   order: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   cycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType>;
-  activity: Resolver<GQLResolversTypes['Activity'], ParentType, ContextType>;
+  activity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 

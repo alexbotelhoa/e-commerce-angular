@@ -4,6 +4,6 @@ type CycleActivity {
     activityId: ID!
     order: Int!
     cycle: Cycle!
-    activity: Activity!
+    activity: ActivityUnion!
 }
 

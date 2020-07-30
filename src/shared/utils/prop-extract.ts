@@ -1,0 +1,1 @@
+export const extract = (prop: string, type?: any) => ({ [prop]: value }: any) => type ? type(value) : value
