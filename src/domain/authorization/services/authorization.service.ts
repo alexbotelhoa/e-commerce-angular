@@ -1,6 +1,6 @@
 import { AuthenticatedUser } from "../../../shared/types/authenticated-user.type"
 import { PermissionId } from "../enums/permission-id.enum"
-import { FastifyRequest, FastifyInstance } from "fastify";
+import { FastifyRequest } from "fastify";
 import { Role } from "../types/role.type";
 import { PermissionMap } from "../types/permission-map.type";
 import { JWTPayload } from "../../authentication/types/jwt-payload.type";

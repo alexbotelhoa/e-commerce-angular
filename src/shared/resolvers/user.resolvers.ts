@@ -4,6 +4,7 @@ import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 import { UserRoleEntity } from "../../entities/user-role.entity";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
 import { selectUserRole } from "../repositories/user-role.repository";
+import { getRoleById } from "../../domain/authorization/constants/roles.constants";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
@@ -25,9 +26,28 @@ export const userUserRolesResolver: GQLUserResolvers['userRoles'] = async (obj, 
     return dataloader.load(obj.id);
 }
 
-export const userResolvers: GQLResolvers['User'] = <GQLResolvers['User']>{
+export const userRolesResolver: GQLUserResolvers['roles'] = async (obj, params, context) => {
+    const dataloader = context.getDatabaseLoader(userUserRoleDataloader);
+    const userRoles = await dataloader.load(obj.id);
+    return userRoles.map(userRole => getRoleById(userRole.roleId));
+}
+
+export const userInitialsResolver: GQLUserResolvers['initials'] = obj => {
+    const words = obj.name.split(" ");
+    const firstWord = words[0];
+    const lastWord = words.length > 1
+        ? words[words.length - 1]
+        : '';
+    const firstChar = firstWord.charAt(0);
+    const lastChar = lastWord.charAt(0);
+    return `${firstChar}${lastChar}`;
+}
+
+export const userResolvers: GQLResolvers['User'] = {
     ...userEntityResolvers,
+    initials: userInitialsResolver,
     userRoles: userUserRolesResolver,
+    roles: userRolesResolver,
 }
 
 

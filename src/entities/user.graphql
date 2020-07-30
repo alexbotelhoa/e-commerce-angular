@@ -1,6 +1,7 @@
 type User {
   id: ID!
   name: String!
+  initials: String!
   roles: [Role!]!
   userRoles: [UserRole!]!
 }

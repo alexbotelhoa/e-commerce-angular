@@ -4,6 +4,7 @@ import { objectKeys } from "../../../shared/utils/typed-object-keys.util";
 
 export const adminRole: Role = {
     id: RoleId.ADMIN,
+    name: 'Administrator',
     permissionMap: {
         MANAGE_ACTIVITY: true,
         MANAGE_CYCLE: true,
@@ -14,6 +15,7 @@ export const adminRole: Role = {
 
 export const studentRole: Role = {
     id: RoleId.STUDENT,
+    name: 'Student',
     permissionMap: {
         EXECUTE_ACTIVITY: true,
     }
@@ -21,6 +23,7 @@ export const studentRole: Role = {
 
 export const teacherRole: Role = {
     id: RoleId.TEACHER,
+    name: 'Teacher',
     permissionMap: {
         EXECUTE_ACTIVITY: true,
     }
@@ -28,6 +31,7 @@ export const teacherRole: Role = {
 
 export const guardianRole: Role = {
     id: RoleId.GUARDIAN,
+    name: 'Guardian',
     permissionMap: {
     }
 }
