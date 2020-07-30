@@ -11,13 +11,11 @@ import { getThemeById } from "../repositories/theme.repository";
 
 import { LevelThemeEntity } from "../../entities/level-theme.entity";
 
-import { extract } from "../utils/prop-extract"
-
 const levelThemeEntityResolvers: Pick<GQLLevelThemeResolvers, keyof LevelThemeEntity> = {
-    id: extract('id', String),
-    order: extract('order'),
-    levelId: extract('levelId', String),
-    themeId: extract('themeId', String),
+    id: obj => obj.id.toString(),
+    order: obj => obj.order,
+    levelId: obj => obj.levelId.toString(),
+    themeId: obj => obj.themeId.toString(),
 }
 
 const cyclesSorter = createDataloaderMultiSort<CycleEntity, number>('levelThemeId');

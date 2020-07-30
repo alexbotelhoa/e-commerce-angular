@@ -9,13 +9,11 @@ import { DatabaseLoaderFactory } from "../types/database-loader.type";
 
 import { LevelEntity } from "../../entities/level.entity";
 
-import { extract } from "../utils/prop-extract"
-
 const levelEntityResolvers: Pick<GQLLevelResolvers, keyof LevelEntity> = {
-    id: extract('id', String),
-    name: extract('name'),
-    order: extract('order'),
-    active: extract('active')
+    id: obj => obj.id.toString(),
+    name: obj => obj.name,
+    order: obj => obj.order,
+    active: obj => obj.active
 }
 
 const levelThemesSorter = createDataloaderMultiSort<LevelThemeEntity, number>('levelId');

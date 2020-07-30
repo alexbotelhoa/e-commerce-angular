@@ -13,10 +13,10 @@ import { CycleEntity } from "../../entities/cycle.entity";
 import { extract } from "../utils/prop-extract"
 
 const cycleEntityResolvers: Pick<GQLCycleResolvers, keyof CycleEntity> = {
-    id: extract('id', String),
-    name: extract('name'),
-    active: extract('active'),
-    levelThemeId: extract('levelThemeId', String),
+    id: obj => obj.id.toString(),
+    name: obj => obj.name,
+    active: obj => obj.active,
+    levelThemeId: obj => obj.levelThemeId.toString(),
 }
 
 const cycleActivitiesSorter = createDataloaderMultiSort<CycleActivityEntity, number>('cycleId');

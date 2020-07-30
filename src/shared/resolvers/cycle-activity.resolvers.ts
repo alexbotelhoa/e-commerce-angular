@@ -7,13 +7,11 @@ import { getActivityById } from "../repositories/activity.repository";
 
 import { CycleActivityEntity } from "../../entities/cycle-activity.entity";
 
-import { extract } from "../utils/prop-extract"
-
 const levelThemeEntityResolvers: Pick<GQLCycleActivityResolvers, keyof CycleActivityEntity> = {
-    id: extract('id', String),
-    order: extract('order'),
-    cycleId: extract('cycleId', String),
-    activityId: extract('activityId', String),
+    id: obj => obj.id.toString(),
+    order: obj => obj.order,
+    cycleId: obj => obj.cycleId.toString(),
+    activityId: obj => obj.activityId.toString(),
 }
 
 export const cycleResolver: GQLCycleActivityResolvers['cycle'] = async (obj, params, { database: db }) => {
