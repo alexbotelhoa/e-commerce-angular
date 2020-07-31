@@ -2,6 +2,7 @@ type Mutation {
   createCycle(data: CycleData!) : Cycle!
   deactivateCycle(id:ID!) : Cycle!
   activateCycle(id:ID!) : Cycle!
+  addActivitiesToCycle(id: ID!, activityIds: [ID!]!, orders: [Int!]) : [CycleActivity!]!
 }
 
 input CycleData {

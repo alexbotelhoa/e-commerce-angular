@@ -16,6 +16,8 @@ export async function up(knex: Knex): Promise<void> {
         table.index('order');
         table.index('themeId');
         table.index('levelId');
+
+        table.unique(['themeId', 'levelId']);
     })
 }
 
