@@ -5,7 +5,7 @@ import { LEVEL_THEME_TABLE } from "../../src/entities/level-theme.entity"
 export async function up(knex: Knex): Promise<void> {
     await knex.schema.createTable(LEVEL_THEME_TABLE, (table) => {
         table.increments('id');
-        table.integer('order', 3);
+        table.integer('order', 3).defaultTo(0);
 
         table.integer('themeId').unsigned().notNullable();
         table.integer('levelId').unsigned().notNullable();
@@ -16,6 +16,8 @@ export async function up(knex: Knex): Promise<void> {
         table.index('order');
         table.index('themeId');
         table.index('levelId');
+
+        table.unique(['themeId', 'levelId']);
     })
 }
 

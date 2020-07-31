@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
     await knex.schema.createTable(LEVEL_TABLE, (table) => {
         table.increments('id');
         table.string('name', 100).notNullable();
-        table.integer('order', 3);
+        table.integer('order', 3).defaultTo(0);
         table.boolean('active').notNullable().defaultTo(true);
         table.timestamp('createdAt').notNullable().defaultTo(knex.fn.now());
         table.index('order');

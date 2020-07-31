@@ -7,7 +7,8 @@ import {
 
 import {
     toggleCycleState,
-    createCycleMutationResolver
+    createCycleMutationResolver,
+    addActivitiesToCycleMutationResolver
 } from "../../domain/activity/mutations/cycle/cycle.mutation";
 
 import {
@@ -15,8 +16,13 @@ import {
     createActivityMutationResolver
 } from "../../domain/activity/mutations/activity/activity.mutation"
 
-const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle'> = {
+import {
+    addThemesToLevelMutationResolver
+} from "../../domain/activity/mutations/level/level.mutation"
+
+const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle'> = {
     createCycle: createCycleMutationResolver,
+    addActivitiesToCycle: addActivitiesToCycleMutationResolver,
     activateCycle: toggleCycleState({ active: true }),
     deactivateCycle: toggleCycleState({ active: false })
 }
@@ -33,8 +39,13 @@ const activityEntityResolvers: Pick<GQLMutationResolvers, 'createActivity' | 'ac
     createActivity: createActivityMutationResolver
 }
 
+const levelEntityResolvers: Pick<GQLMutationResolvers, 'addThemesToLevel'> = {
+    addThemesToLevel: addThemesToLevelMutationResolver
+}
+
 export const mutationResolvers: GQLResolvers['Mutation'] = {
     ...cycleEntityResolvers,
     ...themeEntityResolvers,
-    ...activityEntityResolvers
+    ...activityEntityResolvers,
+    ...levelEntityResolvers
 }

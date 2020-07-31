@@ -36,6 +36,8 @@ export type GQLMutation = {
   readonly activateActivity: GQLActivityUnion;
   readonly activateCycle: GQLCycle;
   readonly activateTheme: Maybe<GQLTheme>;
+  readonly addActivitiesToCycle: Maybe<GQLCycle>;
+  readonly addThemesToLevel: Maybe<GQLLevel>;
   readonly createActivity: GQLActivityUnion;
   readonly createCycle: GQLCycle;
   readonly createTheme: Maybe<GQLTheme>;
@@ -57,6 +59,16 @@ export type GQLMutationactivateCycleArgs = {
 
 export type GQLMutationactivateThemeArgs = {
   id: Scalars['ID'];
+};
+
+
+export type GQLMutationaddActivitiesToCycleArgs = {
+  data: GQLAddActivitiesToCycleInput;
+};
+
+
+export type GQLMutationaddThemesToLevelArgs = {
+  data: GQLAddThemesToLevelInput;
 };
 
 
@@ -106,6 +118,26 @@ export type GQLCycleData = {
   readonly name: Scalars['String'];
   readonly levelThemeId: Scalars['ID'];
   readonly active: Maybe<Scalars['Boolean']>;
+};
+
+export type GQLAddActivitiesToCycleItemsInput = {
+  readonly activityId: Scalars['ID'];
+  readonly order: Maybe<Scalars['Int']>;
+};
+
+export type GQLAddActivitiesToCycleInput = {
+  readonly cycleId: Scalars['ID'];
+  readonly items: ReadonlyArray<GQLAddActivitiesToCycleItemsInput>;
+};
+
+export type GQLAddThemesToLevelItemsInput = {
+  readonly themeId: Scalars['ID'];
+  readonly order: Maybe<Scalars['Int']>;
+};
+
+export type GQLAddThemesToLevelInput = {
+  readonly levelId: Scalars['ID'];
+  readonly items: ReadonlyArray<GQLAddThemesToLevelItemsInput>;
 };
 
 export type GQLThemeData = {
@@ -384,6 +416,11 @@ export type GQLResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   ActivityContent: GQLActivityContent;
   CycleData: GQLCycleData;
+  AddActivitiesToCycleItemsInput: GQLAddActivitiesToCycleItemsInput;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
+  AddActivitiesToCycleInput: GQLAddActivitiesToCycleInput;
+  AddThemesToLevelItemsInput: GQLAddThemesToLevelItemsInput;
+  AddThemesToLevelInput: GQLAddThemesToLevelInput;
   ThemeData: GQLThemeData;
   Query: ResolverTypeWrapper<{}>;
   ActivityType: ResolverTypeWrapper<ActivityType>;
@@ -399,7 +436,6 @@ export type GQLResolversTypes = {
   HtmlActivityData: ResolverTypeWrapper<HtmlActivityDataEntity>;
   Activity: GQLResolversTypes['EmbeddedActivity'] | GQLResolversTypes['HtmlActivity'];
   CycleActivity: ResolverTypeWrapper<CycleActivityEntity>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   Cycle: ResolverTypeWrapper<CycleEntity>;
   LevelTheme: ResolverTypeWrapper<LevelThemeEntity>;
   Level: ResolverTypeWrapper<LevelEntity>;
@@ -417,6 +453,11 @@ export type GQLResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   ActivityContent: GQLActivityContent;
   CycleData: GQLCycleData;
+  AddActivitiesToCycleItemsInput: GQLAddActivitiesToCycleItemsInput;
+  Int: Scalars['Int'];
+  AddActivitiesToCycleInput: GQLAddActivitiesToCycleInput;
+  AddThemesToLevelItemsInput: GQLAddThemesToLevelItemsInput;
+  AddThemesToLevelInput: GQLAddThemesToLevelInput;
   ThemeData: GQLThemeData;
   Query: {};
   ActivityType: ActivityType;
@@ -430,7 +471,6 @@ export type GQLResolversParentTypes = {
   HtmlActivityData: HtmlActivityDataEntity;
   Activity: GQLResolversParentTypes['EmbeddedActivity'] | GQLResolversParentTypes['HtmlActivity'];
   CycleActivity: CycleActivityEntity;
-  Int: Scalars['Int'];
   Cycle: CycleEntity;
   LevelTheme: LevelThemeEntity;
   Level: LevelEntity;
@@ -445,6 +485,8 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   activateActivity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType, RequireFields<GQLMutationactivateActivityArgs, 'id'>>;
   activateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationactivateCycleArgs, 'id'>>;
   activateTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationactivateThemeArgs, 'id'>>;
+  addActivitiesToCycle: Resolver<Maybe<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLMutationaddActivitiesToCycleArgs, 'data'>>;
+  addThemesToLevel: Resolver<Maybe<GQLResolversTypes['Level']>, ParentType, ContextType, RequireFields<GQLMutationaddThemesToLevelArgs, 'data'>>;
   createActivity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType, RequireFields<GQLMutationcreateActivityArgs, never>>;
   createCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationcreateCycleArgs, 'data'>>;
   createTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationcreateThemeArgs, 'data'>>;

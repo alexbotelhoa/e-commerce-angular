@@ -5,7 +5,7 @@ import { CYCLE_ACTIVITY_TABLE } from "../../src/entities/cycle-activity.entity"
 export async function up(knex: Knex): Promise<void> {
     await knex.schema.createTable(CYCLE_ACTIVITY_TABLE, (table) => {
         table.increments('id');
-        table.integer('order', 3);
+        table.integer('order', 3).defaultTo(0);
 
         table.integer('cycleId').unsigned().notNullable();
         table.integer('activityId').unsigned().notNullable();
@@ -16,6 +16,8 @@ export async function up(knex: Knex): Promise<void> {
         table.index('order');
         table.index('cycleId');
         table.index('activityId');
+
+        table.unique(['cycleId', 'activityId']);
     })
 }
 

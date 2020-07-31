@@ -1,0 +1,13 @@
+type Mutation {
+  addThemesToLevel(data: AddThemesToLevelInput!):Level
+}
+
+input AddThemesToLevelItemsInput {
+  themeId: ID!
+  order: Int
+}
+
+input AddThemesToLevelInput {
+  levelId: ID!
+  items: [AddThemesToLevelItemsInput!]!
+}

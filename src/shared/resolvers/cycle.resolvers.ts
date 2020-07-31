@@ -10,8 +10,6 @@ import { getLevelThemeById } from "../repositories/level-theme.repository";
 
 import { CycleEntity } from "../../entities/cycle.entity";
 
-import { extract } from "../utils/prop-extract"
-
 const cycleEntityResolvers: Pick<GQLCycleResolvers, keyof CycleEntity> = {
     id: obj => obj.id.toString(),
     name: obj => obj.name,

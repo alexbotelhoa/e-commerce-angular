@@ -1,11 +1,22 @@
 type Mutation {
-  createCycle(data: CycleData!) : Cycle!
-  deactivateCycle(id:ID!) : Cycle!
-  activateCycle(id:ID!) : Cycle!
+  createCycle(data: CycleData!):Cycle!
+  deactivateCycle(id:ID!):Cycle!
+  activateCycle(id:ID!):Cycle!
+  addActivitiesToCycle(data: AddActivitiesToCycleInput!):Cycle
 }
 
 input CycleData {
   name: String!
   levelThemeId: ID!
   active: Boolean
+}
+
+input AddActivitiesToCycleItemsInput {
+  activityId: ID!
+  order: Int
+}
+
+input AddActivitiesToCycleInput {
+  cycleId: ID!
+  items: [AddActivitiesToCycleItemsInput!]!
 }
