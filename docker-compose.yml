@@ -1,0 +1,28 @@
+version: "3.5"
+
+networks:
+  default-network2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 173.6.0.0/16
+
+services:
+  service:
+    container_name: ci-node-server
+    image: alanjhonnes/ci-node-server:latest
+    restart: always
+    environment:
+      DB_HOST: localhost
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: culturainglesa
+      DB_CLIENT: mysql2
+      DB_NAME: CulturaInglesa
+      JWT_SECRET: 883e105e-64bb-4614-b392-83a4c3d8a7a3
+      CI_PORTAL_URL: http://localhost:4200
+
+    ports:
+      - "3000:3000"
+    networks:
+      - default-network2

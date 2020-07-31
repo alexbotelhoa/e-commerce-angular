@@ -31,8 +31,11 @@ const app = fastify({
   });
 
   // this is only necessary if we're receiving the post data via formBody, otherwise we can remove it
-  app.register(fastifyFormbody);
-  app.register(fastifyCors);
+  // app.register(fastifyFormbody);
+  app.register(fastifyCors, {
+    origin: '*',
+
+  });
 
   // register jwt handler with secret
   app.register(fastifyJwt, {
@@ -56,11 +59,17 @@ const app = fastify({
   })
 
   // Run the server!
-  app.listen(3000, (err, address) => {
+  app.listen(3000, '0.0.0.0', (err, address) => {
     if (err) {
       throw err;
     }
     app.log.info(`server listening on ${address}`);
+  });
+
+  app.get('/', {}, (req, reply) => {
+    reply.send({
+      health: 'ok'
+    });
   })
 
   app.post('/authentication', {

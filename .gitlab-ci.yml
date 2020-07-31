@@ -1,0 +1,25 @@
+image: docker/compose:1.25.0-rc1
+
+# variables:
+#   DOCKER_HOST: tcp://localhost:2375/
+#   DOCKER_DRIVER: overlay
+
+# services:
+#   - docker:18.09-dind
+
+before_script:
+  - docker version
+  - docker-compose version
+
+# test:
+# script:
+#   - docker-compose up --exit-code-from svc_auc
+
+deploy:
+  stage: deploy
+  script:
+    - docker login -u ${CI_DOCKER_USER} -p ${CI_DOCKER_PASSWORD}
+    - docker build -t alanjhonnes/ci-node-server:dev .
+    - docker push alanjhonnes/ci-node-server:dev
+  # rules:
+  #   - if: $CI_COMMIT_BRANCH == 'dev'   # Execute jobs when a new commit is pushed to dev branch
