@@ -17,6 +17,8 @@ import {
 } from "../../domain/activity/mutations/activity/activity.mutation"
 
 import {
+    toggleLevelState,
+    createLevelMutationResolver,
     addThemesToLevelMutationResolver
 } from "../../domain/activity/mutations/level/level.mutation"
 
@@ -39,8 +41,11 @@ const activityEntityResolvers: Pick<GQLMutationResolvers, 'createActivity' | 'ac
     createActivity: createActivityMutationResolver
 }
 
-const levelEntityResolvers: Pick<GQLMutationResolvers, 'addThemesToLevel'> = {
-    addThemesToLevel: addThemesToLevelMutationResolver
+const levelEntityResolvers: Pick<GQLMutationResolvers, 'createLevel' | 'addThemesToLevel' | 'activateLevel' | 'deactivateLevel'> = {
+    createLevel: createLevelMutationResolver,
+    addThemesToLevel: addThemesToLevelMutationResolver,
+    activateLevel: toggleLevelState({ active: true }),
+    deactivateLevel: toggleLevelState({ active: false })
 }
 
 export const mutationResolvers: GQLResolvers['Mutation'] = {

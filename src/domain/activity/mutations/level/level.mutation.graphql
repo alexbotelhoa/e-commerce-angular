@@ -1,5 +1,14 @@
 type Mutation {
+  createLevel(data: ThemeDataInput!):Level!
+  deactivateLevel(id:ID!):Level!
+  activateLevel(id:ID!):Level!
   addThemesToLevel(data: AddThemesToLevelInput!):Level
+}
+
+input ThemeDataInput {
+  name: String!
+  order: Int
+  active: Boolean
 }
 
 input AddThemesToLevelItemsInput {
