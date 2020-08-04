@@ -37,6 +37,7 @@
     "fp-ts": "^2.7.0",
     "graphql": "^15.3.0",
     "graphql-playground": "^1.3.17",
+    "graphql-scalars": "^1.2.6",
     "graphql-tag": "^2.10.4",
     "graphql-tools": "^6.0.14",
     "knex": "^0.21.2",

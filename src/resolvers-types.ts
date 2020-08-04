@@ -1,7 +1,7 @@
 import { ActivityTypeId } from './domain/activity/enums/activity-type.enum';
 import { RoleId } from './domain/authorization/enums/role-id.enum';
 import { PermissionId } from './domain/authorization/enums/permission-id.enum';
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { UserEntity } from './entities/user.entity';
 import { ActivityType } from './domain/activity/types/activity-type.type';
 import { ActivityEntity } from './entities/activity.entity';
@@ -28,6 +28,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: any;
 };
 
 export { ActivityTypeId };
@@ -379,6 +380,7 @@ export type GQLUser = {
 
 
 
+
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
 
@@ -492,6 +494,7 @@ export type GQLResolversTypes = {
   Theme: ResolverTypeWrapper<ThemeEntity>;
   UserRole: ResolverTypeWrapper<UserRoleEntity>;
   User: ResolverTypeWrapper<UserEntity>;
+  DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -530,6 +533,7 @@ export type GQLResolversParentTypes = {
   Theme: ThemeEntity;
   UserRole: UserRoleEntity;
   User: UserEntity;
+  DateTime: Scalars['DateTime'];
 };
 
 export type GQLActivityTypeIdResolvers = EnumResolverSignature<{ EMBEDDED: any, HTML: any }, GQLResolversTypes['ActivityTypeId']>;
@@ -720,6 +724,10 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export interface GQLDateTimeScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['DateTime'], any> {
+  name: 'DateTime';
+}
+
 export type GQLResolvers<ContextType = GraphQLContext> = {
   ActivityTypeId: GQLActivityTypeIdResolvers;
   Mutation: GQLMutationResolvers<ContextType>;
@@ -744,6 +752,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Theme: GQLThemeResolvers<ContextType>;
   UserRole: GQLUserRoleResolvers<ContextType>;
   User: GQLUserResolvers<ContextType>;
+  DateTime: GraphQLScalarType;
 };
 
 
