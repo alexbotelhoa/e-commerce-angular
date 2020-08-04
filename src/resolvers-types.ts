@@ -329,7 +329,7 @@ export type GQLLevelCode = {
   readonly __typename?: 'LevelCode';
   readonly id: Scalars['ID'];
   readonly active: Scalars['Boolean'];
-  readonly createdAt: Scalars['String'];
+  readonly createdAt: Scalars['DateTime'];
 };
 
 export type GQLLevelTheme = {
@@ -674,7 +674,7 @@ export type GQLCycleResolvers<ContextType = GraphQLContext, ParentType extends G
 export type GQLLevelCodeResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['LevelCode'] = GQLResolversParentTypes['LevelCode']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
-  createdAt: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
