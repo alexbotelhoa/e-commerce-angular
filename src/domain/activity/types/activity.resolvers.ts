@@ -1,11 +1,11 @@
-import { GQLHtmlActivityResolvers } from "../../../resolvers-types";
+import { GQLActivityResolvers } from "../../../resolvers-types";
 import { ActivityEntity } from "../../../entities/activity.entity";
 import { getActivityTypeById } from "../repositories/activity-type.repository";
 
 /**
  * Implements the base resolvers for an entity that implements the Activity interface
  */
-export const activityResolvers: Pick<Required<GQLHtmlActivityResolvers>, keyof ActivityEntity | 'type'> =
+export const activityResolvers: Pick<Required<GQLActivityResolvers>, keyof ActivityEntity | 'type'> =
 {
     id: obj => obj.id.toString(),
     name: obj => obj.name,

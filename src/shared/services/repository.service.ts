@@ -64,3 +64,13 @@ export const createRepository = <T, IdType extends string | number = string | nu
         deleteAll: deleteAllEntities<T>(table),
     }
 }
+
+export const createCompositePKRepository = <T, PKs extends StringKeyof<T>>(table: string, primaryColumns: PKs[]) => {
+    return {
+        select: selectEntity<T>(table),
+        insert: insertEntity<T>(table),
+        update: updateEntity<T>(table),
+        delete: deleteEntity<T>(table),
+        deleteAll: deleteAllEntities<T>(table),
+    }
+}

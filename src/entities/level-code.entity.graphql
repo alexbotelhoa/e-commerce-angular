@@ -1,0 +1,5 @@
+type LevelCode {
+    id: ID!
+    active: Boolean!
+    createdAt: String!
+}

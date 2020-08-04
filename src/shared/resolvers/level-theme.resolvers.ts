@@ -1,4 +1,4 @@
-import { GQLResolvers, GQLLevelThemeResolvers } from "../../resolvers-types"
+import { GQLLevelThemeResolvers } from "../../resolvers-types"
 
 import { CycleEntity } from "../../entities/cycle.entity"
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
@@ -54,7 +54,7 @@ export const themeResolver: GQLLevelThemeResolvers['theme'] = async (obj, params
     throw new Error('Non-existent theme entity!')
 }
 
-export const levelThemeResolvers: GQLResolvers['LevelTheme'] = {
+export const levelThemeResolvers: GQLLevelThemeResolvers = {
     ...levelThemeEntityResolvers,
     level: levelResolver,
     theme: themeResolver,
