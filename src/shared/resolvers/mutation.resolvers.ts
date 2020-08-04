@@ -18,9 +18,10 @@ import {
 
 import {
     toggleLevelState,
-    createLevelMutationResolver,
     addThemesToLevelMutationResolver
 } from "../../domain/activity/mutations/level/level.mutation"
+import { createLevelCodeMutation } from "../../domain/activity/mutations/level/create-level-code.mutation";
+import { createLevelMutationResolver } from "../../domain/activity/mutations/level/create-level.mutation";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle'> = {
     createCycle: createCycleMutationResolver,
@@ -41,8 +42,7 @@ const activityEntityResolvers: Pick<GQLMutationResolvers, 'createActivity' | 'ac
     createActivity: createActivityMutationResolver
 }
 
-const levelEntityResolvers: Pick<GQLMutationResolvers, 'createLevel' | 'addThemesToLevel' | 'activateLevel' | 'deactivateLevel'> = {
-    createLevel: createLevelMutationResolver,
+const levelEntityResolvers: Pick<GQLMutationResolvers, 'addThemesToLevel' | 'activateLevel' | 'deactivateLevel'> = {
     addThemesToLevel: addThemesToLevelMutationResolver,
     activateLevel: toggleLevelState({ active: true }),
     deactivateLevel: toggleLevelState({ active: false })
@@ -52,5 +52,7 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     ...cycleEntityResolvers,
     ...themeEntityResolvers,
     ...activityEntityResolvers,
-    ...levelEntityResolvers
+    ...levelEntityResolvers,
+    createLevelCode: createLevelCodeMutation,
+    createLevel: createLevelMutationResolver,
 }

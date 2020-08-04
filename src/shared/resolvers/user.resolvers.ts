@@ -1,4 +1,4 @@
-import { GQLResolvers, GQLUserResolvers } from "../../resolvers-types"
+import { GQLUserResolvers } from "../../resolvers-types"
 import { UserEntity } from "../../entities/user.entity";
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 import { UserRoleEntity } from "../../entities/user-role.entity";
@@ -19,7 +19,7 @@ const userUserRoleDataloader: DatabaseLoaderFactory<number, UserRoleEntity[]> = 
         const sortedEntities = userUserRoleSorter(ids)(entities);
         return sortedEntities;
     }
-})
+});
 
 export const userUserRolesResolver: GQLUserResolvers['userRoles'] = async (obj, params, context) => {
     const dataloader = context.getDatabaseLoader(userUserRoleDataloader);
@@ -43,7 +43,7 @@ export const userInitialsResolver: GQLUserResolvers['initials'] = obj => {
     return `${firstChar}${lastChar}`;
 }
 
-export const userResolvers: GQLResolvers['User'] = {
+export const userResolvers: GQLUserResolvers = {
     ...userEntityResolvers,
     initials: userInitialsResolver,
     userRoles: userUserRolesResolver,

@@ -1,0 +1,11 @@
+type Mutation {
+    createLevel(data: CreateLevelInput!): Level!
+}
+
+input CreateLevelInput {
+    name: String!
+    description: String!
+    order: Int! = 0
+    active: Boolean!
+    codes: [ID!]!
+}
