@@ -22,6 +22,7 @@ export const addActivitiesToCycleMutationResolver: GQLMutationResolvers['addActi
 export const toggleCycleState: (data: Record<'active', boolean>) => GQLMutationResolvers['activateCycle'] | GQLMutationResolvers['deactivateCycle'] =
     (data: Record<'active', boolean>) =>
         async (obj, { id }, { database: db }) => {
+            await updateCycle(db)(data)(builder => builder.andWhere('id', parseInt(id)))
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            return (await getCycleById(db)(await updateCycle(db)(data)(builder => builder.andWhere('id', id))))!;
+            return (await getCycleById(db)(id))!;
         }

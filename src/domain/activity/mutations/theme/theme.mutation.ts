@@ -9,6 +9,7 @@ export const createThemeMutationResolver: GQLMutationResolvers['createTheme'] = 
 export const toggleThemeState: (data: Record<'active', boolean>) => GQLMutationResolvers['activateTheme'] | GQLMutationResolvers['deactivateTheme'] =
     (data: Record<'active', boolean>) =>
         async (obj, { id }, { database: db }) => {
+            await updateTheme(db)(data)(builder => builder.andWhere('id', parseInt(id)))
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            return (await getThemeById(db)(await updateTheme(db)(data)(builder => builder.andWhere('id', id))))!;
+            return (await getThemeById(db)(id))!;
         }

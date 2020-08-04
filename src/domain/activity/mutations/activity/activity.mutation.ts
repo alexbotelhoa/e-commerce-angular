@@ -31,6 +31,7 @@ export const createActivityMutationResolver: GQLMutationResolvers['createActivit
 export const toggleActivityState: (data: Record<'active', boolean>) => GQLMutationResolvers['activateActivity'] | GQLMutationResolvers['deactivateActivity'] =
     (data: Record<'active', boolean>) =>
         async (obj, { id }, { database: db }) => {
+            await updateActivity(db)(data)(builder => builder.andWhere('id', parseInt(id)))
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            return (await getActivityById(db)(await updateActivity(db)(data)(builder => builder.andWhere('id', id))))!;
+            return (await getActivityById(db)(id))!;
         }
