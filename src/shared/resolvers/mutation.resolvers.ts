@@ -22,6 +22,8 @@ import {
 } from "../../domain/activity/mutations/level/level.mutation"
 import { createLevelCodeMutation } from "../../domain/activity/mutations/level/create-level-code.mutation";
 import { createLevelMutationResolver } from "../../domain/activity/mutations/level/create-level.mutation";
+import { updateBasicLevelInfoMutationResolver } from "../../domain/activity/mutations/level/update-basic-level-info.mutation";
+import { updateEmbeddedActivityMutationResolver } from "../../domain/activity/mutations/activity/update-embedded-activity.mutation";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle'> = {
     createCycle: createCycleMutationResolver,
@@ -55,4 +57,6 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     ...levelEntityResolvers,
     createLevelCode: createLevelCodeMutation,
     createLevel: createLevelMutationResolver,
+    updateBasicLevelInfo: updateBasicLevelInfoMutationResolver,
+    updateEmbeddedActivity: updateEmbeddedActivityMutationResolver,
 }

@@ -1,0 +1,12 @@
+type Mutation {
+    updateBasicLevelInfo(data: UpdateBasicLevelInfoInput!): Level!
+}
+
+input UpdateBasicLevelInfoInput {
+    id: ID!
+    name: String!
+    description: String!
+    order: Int!
+    active: Boolean!
+    codes: [ID!]!
+}

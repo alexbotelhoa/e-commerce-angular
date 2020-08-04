@@ -1,0 +1,11 @@
+type Mutation {
+    updateEmbeddedActivity(data: UpdateEmbeddedActivityInput!): EmbeddedActivity!
+}
+
+input UpdateEmbeddedActivityInput {
+    id: ID!
+    name: String!
+    description: String!
+    active: Boolean!
+    url: String!
+}
