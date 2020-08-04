@@ -1,0 +1,8 @@
+type Mutation {
+    createLevelCode(data: CreateLevelCodeInput!): LevelCode!
+}
+
+input CreateLevelCodeInput {
+    id: ID!
+    active: Boolean!
+}

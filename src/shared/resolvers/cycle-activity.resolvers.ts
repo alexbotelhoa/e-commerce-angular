@@ -1,10 +1,6 @@
-import { GQLResolvers, GQLCycleActivityResolvers } from "../../resolvers-types"
-
-
+import { GQLCycleActivityResolvers } from "../../resolvers-types"
 import { getCycleById } from "../repositories/cycle.repository"
-
 import { getActivityById } from "../repositories/activity.repository";
-
 import { CycleActivityEntity } from "../../entities/cycle-activity.entity";
 
 const levelThemeEntityResolvers: Pick<GQLCycleActivityResolvers, keyof CycleActivityEntity> = {
@@ -34,7 +30,7 @@ export const activityResolver: GQLCycleActivityResolvers['activity'] = async (ob
     throw new Error('Non-existent activity entity!')
 }
 
-export const cycleActivityResolvers: GQLResolvers['CycleActivity'] = {
+export const cycleActivityResolvers: GQLCycleActivityResolvers = {
     ...levelThemeEntityResolvers,
     cycle: cycleResolver,
     activity: activityResolver
