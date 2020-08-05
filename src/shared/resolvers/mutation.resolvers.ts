@@ -2,7 +2,8 @@ import { GQLResolvers, GQLMutationResolvers } from "../../resolvers-types"
 
 import {
     toggleThemeState,
-    createThemeMutationResolver
+    createThemeMutationResolver,
+    updateThemeMutationResolver
 } from "../../domain/activity/mutations/theme/theme.mutation";
 
 import {
@@ -32,8 +33,9 @@ const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activate
     deactivateCycle: toggleCycleState({ active: false })
 }
 
-const themeEntityResolvers: Pick<GQLMutationResolvers, 'createTheme' | 'activateTheme' | 'deactivateTheme'> = {
+const themeEntityResolvers: Pick<GQLMutationResolvers, 'createTheme' | 'updateTheme' | 'activateTheme' | 'deactivateTheme'> = {
     createTheme: createThemeMutationResolver,
+    updateTheme: updateThemeMutationResolver,
     activateTheme: toggleThemeState({ active: true }),
     deactivateTheme: toggleThemeState({ active: false }),
 }

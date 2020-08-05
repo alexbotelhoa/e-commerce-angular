@@ -45,13 +45,14 @@ export type GQLMutation = {
   readonly createCycle: GQLCycle;
   readonly createLevel: GQLLevel;
   readonly createLevelCode: GQLLevelCode;
-  readonly createTheme: Maybe<GQLTheme>;
+  readonly createTheme: GQLTheme;
   readonly deactivateActivity: GQLActivityUnion;
   readonly deactivateCycle: GQLCycle;
   readonly deactivateLevel: GQLLevel;
   readonly deactivateTheme: Maybe<GQLTheme>;
   readonly updateBasicLevelInfo: GQLLevel;
   readonly updateEmbeddedActivity: GQLEmbeddedActivity;
+  readonly updateTheme: GQLTheme;
 };
 
 
@@ -106,7 +107,7 @@ export type GQLMutationcreateLevelCodeArgs = {
 
 
 export type GQLMutationcreateThemeArgs = {
-  data: GQLThemeData;
+  data: GQLCreateThemeInput;
 };
 
 
@@ -137,6 +138,11 @@ export type GQLMutationupdateBasicLevelInfoArgs = {
 
 export type GQLMutationupdateEmbeddedActivityArgs = {
   data: GQLUpdateEmbeddedActivityInput;
+};
+
+
+export type GQLMutationupdateThemeArgs = {
+  data: GQLUpdateThemeInput;
 };
 
 export type GQLActivityInfo = {
@@ -208,8 +214,14 @@ export type GQLUpdateBasicLevelInfoInput = {
   readonly codes: ReadonlyArray<Scalars['ID']>;
 };
 
-export type GQLThemeData = {
+export type GQLCreateThemeInput = {
   readonly name: Scalars['String'];
+};
+
+export type GQLUpdateThemeInput = {
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['String'];
+  readonly active: Scalars['Boolean'];
 };
 
 export type GQLQuery = {
@@ -503,7 +515,8 @@ export type GQLResolversTypes = {
   AddThemesToLevelItemsInput: GQLAddThemesToLevelItemsInput;
   AddThemesToLevelInput: GQLAddThemesToLevelInput;
   UpdateBasicLevelInfoInput: GQLUpdateBasicLevelInfoInput;
-  ThemeData: GQLThemeData;
+  CreateThemeInput: GQLCreateThemeInput;
+  UpdateThemeInput: GQLUpdateThemeInput;
   Query: ResolverTypeWrapper<{}>;
   ActivityType: ResolverTypeWrapper<ActivityType>;
   EmbeddedActivity: ResolverTypeWrapper<ActivityEntity>;
@@ -546,7 +559,8 @@ export type GQLResolversParentTypes = {
   AddThemesToLevelItemsInput: GQLAddThemesToLevelItemsInput;
   AddThemesToLevelInput: GQLAddThemesToLevelInput;
   UpdateBasicLevelInfoInput: GQLUpdateBasicLevelInfoInput;
-  ThemeData: GQLThemeData;
+  CreateThemeInput: GQLCreateThemeInput;
+  UpdateThemeInput: GQLUpdateThemeInput;
   Query: {};
   ActivityType: ActivityType;
   EmbeddedActivity: ActivityEntity;
@@ -582,13 +596,14 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   createCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationcreateCycleArgs, 'data'>>;
   createLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationcreateLevelArgs, 'data'>>;
   createLevelCode: Resolver<GQLResolversTypes['LevelCode'], ParentType, ContextType, RequireFields<GQLMutationcreateLevelCodeArgs, 'data'>>;
-  createTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationcreateThemeArgs, 'data'>>;
+  createTheme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType, RequireFields<GQLMutationcreateThemeArgs, 'data'>>;
   deactivateActivity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType, RequireFields<GQLMutationdeactivateActivityArgs, 'id'>>;
   deactivateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationdeactivateCycleArgs, 'id'>>;
   deactivateLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationdeactivateLevelArgs, 'id'>>;
   deactivateTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationdeactivateThemeArgs, 'id'>>;
   updateBasicLevelInfo: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationupdateBasicLevelInfoArgs, 'data'>>;
   updateEmbeddedActivity: Resolver<GQLResolversTypes['EmbeddedActivity'], ParentType, ContextType, RequireFields<GQLMutationupdateEmbeddedActivityArgs, 'data'>>;
+  updateTheme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType, RequireFields<GQLMutationupdateThemeArgs, 'data'>>;
 };
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {

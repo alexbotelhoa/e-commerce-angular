@@ -6,6 +6,19 @@ export const createThemeMutationResolver: GQLMutationResolvers['createTheme'] = 
     return (await getThemeById(context.database)(await insertTheme(context.database)(data)))!;
 }
 
+export const updateThemeMutationResolver: GQLMutationResolvers['updateTheme'] = async (obj, { data }, context) => {
+    const theme = await getThemeById(context.database);
+    if (!theme) {
+        throw new Error(`Theme with id ${data.id} was not found.`);
+    }
+    await updateTheme(context.database)({
+        name: data.name,
+        active: data.active,
+    })(builder => builder.andWhere('id', data.id));
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return (await getThemeById(context.database)(data.id))!;
+}
+
 export const toggleThemeState: (data: Record<'active', boolean>) => GQLMutationResolvers['activateTheme'] | GQLMutationResolvers['deactivateTheme'] =
     (data: Record<'active', boolean>) =>
         async (obj, { id }, { database: db }) => {

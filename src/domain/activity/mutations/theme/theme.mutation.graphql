@@ -1,9 +1,16 @@
 type Mutation {
-  createTheme(data: ThemeData!) : Theme
+  createTheme(data: CreateThemeInput!) : Theme!
+  updateTheme(data: UpdateThemeInput!) : Theme!
   deactivateTheme(id:ID!) : Theme
   activateTheme(id:ID!) : Theme
 }
 
-input ThemeData {
+input CreateThemeInput {
   name: String!
+}
+
+input UpdateThemeInput {
+  id: ID!
+  name: String!
+  active: Boolean!
 }
