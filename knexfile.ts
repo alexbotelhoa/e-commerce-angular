@@ -1,28 +1,34 @@
 import Knex from "knex";
 
-import dotenv from 'dotenv';
+import { environmentFactory } from "./src/shared/services/environment.service";
+import { databaseConfigurationFromEnvironment } from "./src/shared/constants/configuration.constant";
 
-dotenv.config();
+const environment = environmentFactory();
+
+const databaseConfig = databaseConfigurationFromEnvironment(environment);
 
 const connection: Knex.Config = {
-  client: process.env.DB_CLIENT,
-    connection: {
-      database: process.env.DB_NAME,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'migrations',
-      directory: './knex/migrations',
-    },
-    seeds: {
-      directory: './knex/seeds',
-    },
+  client: databaseConfig.client,
+  connection: {
+    host: databaseConfig.host,
+    database: databaseConfig.name,
+    user: databaseConfig.user,
+    password: databaseConfig.password
+  },
+  pool: {
+    min: 2,
+    max: 10
+  },
+  migrations: {
+    tableName: 'migrations',
+    directory: './knex/migrations',
+  },
+  seeds: {
+    directory: './knex/seeds',
+  },
 }
+
+console.log(`Migration config: ${JSON.stringify(connection)}`);
 
 module.exports = {
   development: connection,
