@@ -1,7 +1,8 @@
 type Mutation {
   deactivateLevel(id:ID!):Level!
   activateLevel(id:ID!):Level!
-  addThemesToLevel(data: AddThemesToLevelInput!):Level
+  addThemesToLevel(data: AddThemesToLevelInput!):Level!
+  deleteThemeFromLevel(levelThemeId: ID!): Level!
 }
 
 input AddThemesToLevelItemsInput {

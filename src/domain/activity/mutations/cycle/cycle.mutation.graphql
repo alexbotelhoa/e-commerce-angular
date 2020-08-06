@@ -2,7 +2,9 @@ type Mutation {
   createCycle(data: CycleData!):Cycle!
   deactivateCycle(id:ID!):Cycle!
   activateCycle(id:ID!):Cycle!
-  addActivitiesToCycle(data: AddActivitiesToCycleInput!):Cycle
+  addActivitiesToCycle(data: AddActivitiesToCycleInput!):Cycle!
+  deleteCycleFromLevelTheme(cycleId: ID!): LevelTheme!
+  deleteActivityFromCycle(cycleActivityId: ID!): Cycle!
 }
 
 input CycleData {

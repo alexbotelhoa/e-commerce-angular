@@ -9,7 +9,9 @@ import {
 import {
     toggleCycleState,
     createCycleMutationResolver,
-    addActivitiesToCycleMutationResolver
+    addActivitiesToCycleMutationResolver,
+    deleteActivityFromCycleMutation,
+    deleteCycleFromLevelThemeMutation
 } from "../../domain/activity/mutations/cycle/cycle.mutation";
 
 import {
@@ -19,18 +21,20 @@ import {
 
 import {
     toggleLevelState,
-    addThemesToLevelMutationResolver
+    addThemesToLevelMutationResolver,
+    deleteThemeFromLevelMutation
 } from "../../domain/activity/mutations/level/level.mutation"
 import { createLevelCodeMutation } from "../../domain/activity/mutations/level/create-level-code.mutation";
 import { createLevelMutationResolver } from "../../domain/activity/mutations/level/create-level.mutation";
 import { updateBasicLevelInfoMutationResolver } from "../../domain/activity/mutations/level/update-basic-level-info.mutation";
 import { updateEmbeddedActivityMutationResolver } from "../../domain/activity/mutations/activity/update-embedded-activity.mutation";
 
-const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle'> = {
+const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,
     addActivitiesToCycle: addActivitiesToCycleMutationResolver,
     activateCycle: toggleCycleState({ active: true }),
-    deactivateCycle: toggleCycleState({ active: false })
+    deactivateCycle: toggleCycleState({ active: false }),
+    deleteActivityFromCycle: deleteActivityFromCycleMutation,
 }
 
 const themeEntityResolvers: Pick<GQLMutationResolvers, 'createTheme' | 'updateTheme' | 'activateTheme' | 'deactivateTheme'> = {
@@ -46,10 +50,11 @@ const activityEntityResolvers: Pick<GQLMutationResolvers, 'createActivity' | 'ac
     createActivity: createActivityMutationResolver
 }
 
-const levelEntityResolvers: Pick<GQLMutationResolvers, 'addThemesToLevel' | 'activateLevel' | 'deactivateLevel'> = {
+const levelEntityResolvers: Pick<GQLMutationResolvers, 'addThemesToLevel' | 'activateLevel' | 'deactivateLevel' | 'deleteThemeFromLevel'> = {
     addThemesToLevel: addThemesToLevelMutationResolver,
     activateLevel: toggleLevelState({ active: true }),
-    deactivateLevel: toggleLevelState({ active: false })
+    deactivateLevel: toggleLevelState({ active: false }),
+    deleteThemeFromLevel: deleteThemeFromLevelMutation,
 }
 
 export const mutationResolvers: GQLResolvers['Mutation'] = {
@@ -61,4 +66,5 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     createLevel: createLevelMutationResolver,
     updateBasicLevelInfo: updateBasicLevelInfoMutationResolver,
     updateEmbeddedActivity: updateEmbeddedActivityMutationResolver,
+    deleteCycleFromLevelTheme: deleteCycleFromLevelThemeMutation,
 }
