@@ -3,7 +3,7 @@ import { LEVEL_LEVEL_CODE_TABLE } from "../../src/entities/level-level-code.enti
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable(LEVEL_LEVEL_CODE_TABLE, (table) => {
+    await knex.schema.createTableIfNotExists(LEVEL_LEVEL_CODE_TABLE, (table) => {
         table.integer('levelId').unsigned().references('level.id').onDelete("CASCADE");
         table.string('levelCodeId', 30).references('level_code.id').onDelete("CASCADE");
         table.primary(['levelId', 'levelCodeId']);

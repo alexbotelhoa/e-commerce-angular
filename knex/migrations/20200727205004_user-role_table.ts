@@ -3,7 +3,7 @@ import { USER_ROLE_TABLE } from "../../src/entities/user-role.entity";
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable(USER_ROLE_TABLE, (table) => {
+    await knex.schema.createTableIfNotExists(USER_ROLE_TABLE, (table) => {
         table.increments('id');
         table.integer('userId').unsigned().notNullable();
         table.integer('roleId', 2).unsigned().notNullable();

@@ -3,7 +3,7 @@ import { ACTIVITY_TABLE } from "../../src/entities/activity.entity";
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable(ACTIVITY_TABLE, (table) => {
+    await knex.schema.createTableIfNotExists(ACTIVITY_TABLE, (table) => {
         table.increments('id');
         table.string('name', 100).notNullable();
         table.string('description', 2000);

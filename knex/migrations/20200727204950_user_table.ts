@@ -3,7 +3,7 @@ import { USER_TABLE } from "../../src/entities/user.entity";
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable(USER_TABLE, (table) => {
+    await knex.schema.createTableIfNotExists(USER_TABLE, (table) => {
         table.integer('id').unsigned().primary();
         table.string('name', 200).notNullable();
     });

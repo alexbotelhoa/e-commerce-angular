@@ -4,7 +4,7 @@ import { baseActivityTableMigration } from "../utils/base-activity-table.migrati
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable(EMBEDDED_ACTIVITY_DATA_TABLE, (table) => {
+    await knex.schema.createTableIfNotExists(EMBEDDED_ACTIVITY_DATA_TABLE, (table) => {
         baseActivityTableMigration(table);
         table.string('url', 1000).notNullable();
     });

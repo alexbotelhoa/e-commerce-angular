@@ -3,7 +3,7 @@ import { THEME_TABLE } from "../../src/entities/theme.entity";
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable(THEME_TABLE, (table) => {
+    await knex.schema.createTableIfNotExists(THEME_TABLE, (table) => {
         table.increments('id');
         table.string('name', 100).notNullable();
         table.boolean('active').notNullable().defaultTo(true);

@@ -3,7 +3,7 @@ import { CYCLE_ACTIVITY_TABLE } from "../../src/entities/cycle-activity.entity"
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable(CYCLE_ACTIVITY_TABLE, (table) => {
+    await knex.schema.createTableIfNotExists(CYCLE_ACTIVITY_TABLE, (table) => {
         table.increments('id');
         table.integer('order', 3).defaultTo(0);
 

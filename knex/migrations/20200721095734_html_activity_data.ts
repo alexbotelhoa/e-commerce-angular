@@ -4,7 +4,7 @@ import { HTML_ACTIVITY_DATA_TABLE } from "../../src/entities/activities/html-act
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable(HTML_ACTIVITY_DATA_TABLE, (table) => {
+    await knex.schema.createTableIfNotExists(HTML_ACTIVITY_DATA_TABLE, (table) => {
         baseActivityTableMigration(table);
         table.text('html', 'text').notNullable();
     });
