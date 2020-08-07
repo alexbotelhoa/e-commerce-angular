@@ -25,7 +25,7 @@ const levelThemesSorter = createDataloaderMultiSort<LevelThemeEntity, number>('l
 
 const levelThemesDataloader: DatabaseLoaderFactory<number, LevelThemeEntity[]> = (db) => ({
     batchFn: async (ids) => {
-        const entities = await selectLevelTheme(db).whereIn('levelId', ids);
+        const entities = await selectLevelTheme(db).whereIn('levelId', ids).orderBy('order', 'asc');
         const sortedEntities = levelThemesSorter(ids)(entities);
         return sortedEntities;
     }

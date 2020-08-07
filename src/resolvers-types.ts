@@ -259,7 +259,7 @@ export type GQLAddThemesToLevelInput = {
 export type GQLUpdateBasicLevelInfoInput = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
-  readonly description: Scalars['String'];
+  readonly description: Maybe<Scalars['String']>;
   readonly order: Scalars['Int'];
   readonly active: Scalars['Boolean'];
   readonly codes: ReadonlyArray<Scalars['ID']>;
@@ -440,6 +440,7 @@ export type GQLLevel = {
   readonly __typename?: 'Level';
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
+  readonly description: Maybe<Scalars['String']>;
   readonly order: Scalars['Int'];
   readonly active: Scalars['Boolean'];
   readonly levelThemes: ReadonlyArray<GQLLevelTheme>;
@@ -807,6 +808,7 @@ export type GQLLevelThemeResolvers<ContextType = GraphQLContext, ParentType exte
 export type GQLLevelResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Level'] = GQLResolversParentTypes['Level']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  description: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   order: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   levelThemes: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType>;

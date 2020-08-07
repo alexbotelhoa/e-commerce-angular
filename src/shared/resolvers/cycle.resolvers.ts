@@ -22,7 +22,7 @@ const cycleActivitiesSorter = createDataloaderMultiSort<CycleActivityEntity, num
 
 const cycleActivitiesDataloader: DatabaseLoaderFactory<number, CycleActivityEntity[]> = (db) => ({
     batchFn: async (ids) => {
-        const entities = await selectCycleActivity(db).whereIn('cycleId', ids);
+        const entities = await selectCycleActivity(db).whereIn('cycleId', ids).orderBy('order', 'asc');
         const sortedEntities = cycleActivitiesSorter(ids)(entities);
         return sortedEntities;
     }
