@@ -1,0 +1,8 @@
+type Mutation {
+    updateCyclesOrder(data: [UpdateCyclesOrderInput!]!): [Cycle!]!
+}
+
+input UpdateCyclesOrderInput {
+    cycleId: ID!
+    order: Int!
+}

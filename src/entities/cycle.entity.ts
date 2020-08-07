@@ -3,6 +3,7 @@ export interface CycleEntity {
     name: string;
     active: boolean;
     levelThemeId: number;
+    order: number;
 }
 
 export const CYCLE_TABLE = 'cycle';

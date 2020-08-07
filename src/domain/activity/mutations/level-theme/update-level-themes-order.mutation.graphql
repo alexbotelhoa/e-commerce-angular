@@ -1,0 +1,8 @@
+type Mutation {
+    updateLevelThemesOrder(data: [UpdateLevelThemesOrderInput!]!): [LevelTheme!]!
+}
+
+input UpdateLevelThemesOrderInput {
+    levelThemeId: ID!
+    order: Int!
+}

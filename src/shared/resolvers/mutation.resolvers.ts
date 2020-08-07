@@ -28,6 +28,9 @@ import { createLevelCodeMutation } from "../../domain/activity/mutations/level/c
 import { createLevelMutationResolver } from "../../domain/activity/mutations/level/create-level.mutation";
 import { updateBasicLevelInfoMutationResolver } from "../../domain/activity/mutations/level/update-basic-level-info.mutation";
 import { updateEmbeddedActivityMutationResolver } from "../../domain/activity/mutations/activity/update-embedded-activity.mutation";
+import { updateLevelThemesOrderMutation } from "../../domain/activity/mutations/level-theme/update-level-themes-order.mutation";
+import { updateCyclesOrderMutation } from "../../domain/activity/mutations/cycle/update-cycles-order.mutation";
+import { updateCycleActivitiesOrderMutation } from "../../domain/activity/mutations/cycle-activity/update-cycle-activities-order.mutation";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,
@@ -67,4 +70,7 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     updateBasicLevelInfo: updateBasicLevelInfoMutationResolver,
     updateEmbeddedActivity: updateEmbeddedActivityMutationResolver,
     deleteCycleFromLevelTheme: deleteCycleFromLevelThemeMutation,
+    updateLevelThemesOrder: updateLevelThemesOrderMutation,
+    updateCyclesOrder: updateCyclesOrderMutation,
+    updateCycleActivitiesOrder: updateCycleActivitiesOrderMutation,
 }

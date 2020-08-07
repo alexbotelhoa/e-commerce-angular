@@ -14,6 +14,7 @@ const cycleEntityResolvers: Pick<GQLCycleResolvers, keyof CycleEntity> = {
     id: obj => obj.id.toString(),
     name: obj => obj.name,
     active: obj => obj.active,
+    order: obj => obj.order,
     levelThemeId: obj => obj.levelThemeId.toString(),
 }
 

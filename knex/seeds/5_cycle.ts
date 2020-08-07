@@ -8,8 +8,8 @@ export async function seed(knex: Knex<CycleEntity, CycleEntity[]>): Promise<void
 
     // Inserts seed entries
     await insertCycle(knex)([
-        { id: 1, name: "Cycle 1", levelThemeId: 1 },
-        { id: 2, name: "Cycle 2", levelThemeId: 1 },
-        { id: 3, name: "Cycle 3", levelThemeId: 1 }
+        { id: 1, name: "Cycle 1", levelThemeId: 1, order: 1 },
+        { id: 2, name: "Cycle 2", levelThemeId: 1, order: 2 },
+        { id: 3, name: "Cycle 3", levelThemeId: 1, order: 3 }
     ]);
 }

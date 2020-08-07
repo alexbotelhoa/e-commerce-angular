@@ -54,7 +54,10 @@ export type GQLMutation = {
   readonly deleteCycleFromLevelTheme: GQLLevelTheme;
   readonly deleteThemeFromLevel: GQLLevel;
   readonly updateBasicLevelInfo: GQLLevel;
+  readonly updateCycleActivitiesOrder: ReadonlyArray<GQLCycleActivity>;
+  readonly updateCyclesOrder: ReadonlyArray<GQLCycle>;
   readonly updateEmbeddedActivity: GQLEmbeddedActivity;
+  readonly updateLevelThemesOrder: ReadonlyArray<GQLLevelTheme>;
   readonly updateTheme: GQLTheme;
 };
 
@@ -154,8 +157,23 @@ export type GQLMutationupdateBasicLevelInfoArgs = {
 };
 
 
+export type GQLMutationupdateCycleActivitiesOrderArgs = {
+  data: ReadonlyArray<GQLUpdateCycleActivitiesOrderInput>;
+};
+
+
+export type GQLMutationupdateCyclesOrderArgs = {
+  data: ReadonlyArray<GQLUpdateCyclesOrderInput>;
+};
+
+
 export type GQLMutationupdateEmbeddedActivityArgs = {
   data: GQLUpdateEmbeddedActivityInput;
+};
+
+
+export type GQLMutationupdateLevelThemesOrderArgs = {
+  data: ReadonlyArray<GQLUpdateLevelThemesOrderInput>;
 };
 
 
@@ -184,6 +202,11 @@ export type GQLUpdateEmbeddedActivityInput = {
   readonly url: Scalars['String'];
 };
 
+export type GQLUpdateCycleActivitiesOrderInput = {
+  readonly cycleActivityId: Scalars['ID'];
+  readonly order: Scalars['Int'];
+};
+
 export type GQLCycleData = {
   readonly name: Scalars['String'];
   readonly levelThemeId: Scalars['ID'];
@@ -198,6 +221,16 @@ export type GQLAddActivitiesToCycleItemsInput = {
 export type GQLAddActivitiesToCycleInput = {
   readonly cycleId: Scalars['ID'];
   readonly items: ReadonlyArray<GQLAddActivitiesToCycleItemsInput>;
+};
+
+export type GQLUpdateCyclesOrderInput = {
+  readonly cycleId: Scalars['ID'];
+  readonly order: Scalars['Int'];
+};
+
+export type GQLUpdateLevelThemesOrderInput = {
+  readonly levelThemeId: Scalars['ID'];
+  readonly order: Scalars['Int'];
 };
 
 export type GQLCreateLevelCodeInput = {
@@ -379,6 +412,7 @@ export type GQLCycle = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
   readonly active: Scalars['Boolean'];
+  readonly order: Scalars['Int'];
   readonly levelThemeId: Scalars['ID'];
   readonly levelTheme: GQLLevelTheme;
   readonly activities: ReadonlyArray<GQLCycleActivity>;
@@ -524,10 +558,13 @@ export type GQLResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   ActivityContent: GQLActivityContent;
   UpdateEmbeddedActivityInput: GQLUpdateEmbeddedActivityInput;
+  UpdateCycleActivitiesOrderInput: GQLUpdateCycleActivitiesOrderInput;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   CycleData: GQLCycleData;
   AddActivitiesToCycleItemsInput: GQLAddActivitiesToCycleItemsInput;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   AddActivitiesToCycleInput: GQLAddActivitiesToCycleInput;
+  UpdateCyclesOrderInput: GQLUpdateCyclesOrderInput;
+  UpdateLevelThemesOrderInput: GQLUpdateLevelThemesOrderInput;
   CreateLevelCodeInput: GQLCreateLevelCodeInput;
   CreateLevelInput: GQLCreateLevelInput;
   AddThemesToLevelItemsInput: GQLAddThemesToLevelItemsInput;
@@ -568,10 +605,13 @@ export type GQLResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   ActivityContent: GQLActivityContent;
   UpdateEmbeddedActivityInput: GQLUpdateEmbeddedActivityInput;
+  UpdateCycleActivitiesOrderInput: GQLUpdateCycleActivitiesOrderInput;
+  Int: Scalars['Int'];
   CycleData: GQLCycleData;
   AddActivitiesToCycleItemsInput: GQLAddActivitiesToCycleItemsInput;
-  Int: Scalars['Int'];
   AddActivitiesToCycleInput: GQLAddActivitiesToCycleInput;
+  UpdateCyclesOrderInput: GQLUpdateCyclesOrderInput;
+  UpdateLevelThemesOrderInput: GQLUpdateLevelThemesOrderInput;
   CreateLevelCodeInput: GQLCreateLevelCodeInput;
   CreateLevelInput: GQLCreateLevelInput;
   AddThemesToLevelItemsInput: GQLAddThemesToLevelItemsInput;
@@ -623,7 +663,10 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   deleteCycleFromLevelTheme: Resolver<GQLResolversTypes['LevelTheme'], ParentType, ContextType, RequireFields<GQLMutationdeleteCycleFromLevelThemeArgs, 'cycleId'>>;
   deleteThemeFromLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationdeleteThemeFromLevelArgs, 'levelThemeId'>>;
   updateBasicLevelInfo: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationupdateBasicLevelInfoArgs, 'data'>>;
+  updateCycleActivitiesOrder: Resolver<ReadonlyArray<GQLResolversTypes['CycleActivity']>, ParentType, ContextType, RequireFields<GQLMutationupdateCycleActivitiesOrderArgs, 'data'>>;
+  updateCyclesOrder: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLMutationupdateCyclesOrderArgs, 'data'>>;
   updateEmbeddedActivity: Resolver<GQLResolversTypes['EmbeddedActivity'], ParentType, ContextType, RequireFields<GQLMutationupdateEmbeddedActivityArgs, 'data'>>;
+  updateLevelThemesOrder: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLMutationupdateLevelThemesOrderArgs, 'data'>>;
   updateTheme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType, RequireFields<GQLMutationupdateThemeArgs, 'data'>>;
 };
 
@@ -736,6 +779,7 @@ export type GQLCycleResolvers<ContextType = GraphQLContext, ParentType extends G
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  order: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   levelThemeId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   levelTheme: Resolver<GQLResolversTypes['LevelTheme'], ParentType, ContextType>;
   activities: Resolver<ReadonlyArray<GQLResolversTypes['CycleActivity']>, ParentType, ContextType>;
