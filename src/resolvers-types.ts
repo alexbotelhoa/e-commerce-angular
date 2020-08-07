@@ -240,7 +240,7 @@ export type GQLCreateLevelCodeInput = {
 
 export type GQLCreateLevelInput = {
   readonly name: Scalars['String'];
-  readonly description: Scalars['String'];
+  readonly description: Maybe<Scalars['String']>;
   readonly order: Scalars['Int'];
   readonly active: Scalars['Boolean'];
   readonly codes: ReadonlyArray<Scalars['ID']>;
