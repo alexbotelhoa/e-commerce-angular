@@ -17,6 +17,7 @@ export const updateBasicLevelInfoMutationResolver: GQLMutationResolvers['updateB
         await updateLevel(trx)({
             name: data.name,
             active: data.active,
+            description: data.description,
             order: data.order,
         })(builder => builder.andWhere('id', data.id));
         await deleteLevelLevelCode(trx)(builder => builder.andWhere('levelId', data.id));

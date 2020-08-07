@@ -5,7 +5,7 @@ type Mutation {
 input UpdateBasicLevelInfoInput {
     id: ID!
     name: String!
-    description: String!
+    description: String
     order: Int!
     active: Boolean!
     codes: [ID!]!

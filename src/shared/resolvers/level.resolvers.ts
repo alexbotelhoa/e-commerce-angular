@@ -16,6 +16,7 @@ import { selectLevelCode } from "../repositories/level-code.repository";
 const levelEntityResolvers: Pick<GQLLevelResolvers, keyof LevelEntity> = {
     id: obj => obj.id.toString(),
     name: obj => obj.name,
+    description: obj => obj.description,
     order: obj => obj.order,
     active: obj => obj.active
 }

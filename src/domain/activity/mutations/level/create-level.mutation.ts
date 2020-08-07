@@ -8,6 +8,7 @@ export const createLevelMutationResolver: GQLMutationResolvers['createLevel'] = 
     const levelId = await insertLevel(context.database)({
         name: data.name,
         active: data.active,
+        description: data.description,
         order: data.order,
     });
     const levelLevelCodes = data.codes.map<LevelLevelCodeEntity>(codeId => ({

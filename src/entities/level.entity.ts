@@ -1,6 +1,7 @@
 export interface LevelEntity {
     id: number;
     name: string;
+    description: string | null;
     order: number;
     active: boolean;
 }
