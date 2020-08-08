@@ -48,5 +48,5 @@ export const deleteActivityFromCycleMutation: GQLMutationResolvers['deleteActivi
     }
     await deleteCycleActivity(context.database)(builder => builder.andWhere('id', data.cycleActivityId));
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return (await getCycleById(context.database)(cycleActivity.id))!
+    return (await getCycleById(context.database)(cycleActivity.cycleId))!
 }
