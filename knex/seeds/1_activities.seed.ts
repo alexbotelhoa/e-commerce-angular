@@ -29,6 +29,7 @@ async function generateEmbeddedActivity(db: DatabaseService, index: number): Pro
     await insertEmbeddedActivityData(db)({
         activityId: activityId,
         url: faker.internet.url(),
+        height: 400,
     });
 
     return activityId;
