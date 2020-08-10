@@ -13,9 +13,9 @@ export async function seed(knex: DatabaseService): Promise<void> {
         await generateEmbeddedActivity(knex, index)
     }
 
-    for (let index = 3; index <= 4; index++) {
-        await generateHtmlActivity(knex, index)
-    }
+    // for (let index = 3; index <= 4; index++) {
+    //     await generateHtmlActivity(knex, index)
+    // }
 }
 
 async function generateEmbeddedActivity(db: DatabaseService, index: number): Promise<number> {
@@ -29,6 +29,7 @@ async function generateEmbeddedActivity(db: DatabaseService, index: number): Pro
     await insertEmbeddedActivityData(db)({
         activityId: activityId,
         url: faker.internet.url(),
+        height: 400,
     });
 
     return activityId;

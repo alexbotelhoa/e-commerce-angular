@@ -1,18 +1,29 @@
 type Mutation {
-    createActivity(data:ActivityInfo) : ActivityUnion!
+    createEmbeddedActivity(data:CreateEmbeddedActivityInput!): EmbeddedActivity!
+    createHtmlActivity(data:CreateHtmlActivityInput!): HtmlActivity!
     activateActivity(id:ID!) : ActivityUnion!
     deactivateActivity(id:ID!) : ActivityUnion!
 }
 
-input ActivityInfo {
+input CreateEmbeddedActivityInput {
     name: String!
     description: String
-    active: Boolean
-    typeId: ActivityTypeId!
-    data: ActivityContent!
+    active: Boolean!
+    data: EmbeddedActivityDataInput!
 }
 
-input ActivityContent {
-    url: String
-    html: String
+input CreateHtmlActivityInput {
+    name: String!
+    description: String
+    active: Boolean!
+    data: HtmlActivityDataInput!
+}
+
+input EmbeddedActivityDataInput {
+    url: String!
+    height: Int!
+}
+
+input HtmlActivityDataInput {
+    html: String!
 }

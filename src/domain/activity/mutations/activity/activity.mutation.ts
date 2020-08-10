@@ -3,29 +3,53 @@ import { getActivityById, insertActivity, updateActivity } from "../../../../sha
 
 import { ActivityTypeId } from "../../enums/activity-type.enum"
 
-import { EMBEDDED_ACTIVITY_DATA_TABLE } from "../../../../entities/activities/embedded-activity-data.entity"
-import { HTML_ACTIVITY_DATA_TABLE } from "../../../../entities/activities/html-activity-data.entity"
+import { ActivityEntity } from "../../../../entities/activity.entity";
+import { insertEmbeddedActivityData } from "../../../../shared/repositories/embedded-activity-data.repository";
+import { insertHtmlActivityData } from "../../../../shared/repositories/html-activity-data.repository";
 
+export const createEmbeddedActivityMutationResolver: GQLMutationResolvers['createEmbeddedActivity'] = async (obj, { data }, { database: db }) => {
 
-export const createActivityMutationResolver: GQLMutationResolvers['createActivity'] = async (obj, { data: activityData }, { database: db }) => {
+    const embeddedActivity: Omit<ActivityEntity, 'id'> = {
+        active: data.active,
+        description: data.description,
+        name: data.name,
+        typeId: ActivityTypeId.EMBEDDED,
+    };
 
-    if (!activityData) {
-        throw new Error('Invalid argument!')
-    }
-
-    const { HTML } = ActivityTypeId,
-        { data, ...activityInfo } = activityData,
-        { name, description, active, typeId } = activityInfo,
-        activityId = await insertActivity(db)({ name, description, active: active || undefined, typeId });
-
-    const [content, table] = typeId === HTML
-        ? [{ html: data.html, activityId }, HTML_ACTIVITY_DATA_TABLE]
-        : [{ url: data.url, activityId }, EMBEDDED_ACTIVITY_DATA_TABLE];
-
-    await db.insert(content).into(table)
+    const insertedId = await db.transaction(async trx => {
+        const id = await insertActivity(trx)(embeddedActivity);
+        await insertEmbeddedActivityData(trx)({
+            activityId: id,
+            url: data.data.url,
+            height: data.data.height,
+        });
+        return id;
+    });
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return (await getActivityById(db)(activityId))!;
+    return (await getActivityById(db)(insertedId))!;
+}
+
+export const createHtmlActivityMutationResolver: GQLMutationResolvers['createHtmlActivity'] = async (obj, { data }, { database: db }) => {
+
+    const embeddedActivity: Omit<ActivityEntity, 'id'> = {
+        active: data.active,
+        description: data.description,
+        name: data.name,
+        typeId: ActivityTypeId.HTML,
+    };
+
+    const insertedId = await db.transaction(async trx => {
+        const id = await insertActivity(trx)(embeddedActivity);
+        await insertHtmlActivityData(trx)({
+            activityId: id,
+            html: data.data.html,
+        });
+        return id;
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return (await getActivityById(db)(insertedId))!;
 }
 
 export const toggleActivityState: (data: Record<'active', boolean>) => GQLMutationResolvers['activateActivity'] | GQLMutationResolvers['deactivateActivity'] =

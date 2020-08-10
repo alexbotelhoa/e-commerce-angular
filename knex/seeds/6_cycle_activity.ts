@@ -10,7 +10,7 @@ export async function seed(knex: Knex<CycleActivityEntity, CycleActivityEntity[]
     await insertCycleActivity(knex)([
         { id: 1, cycleId: 1, activityId: 1, order: 1 },
         { id: 2, cycleId: 1, activityId: 2, order: 2 },
-        { id: 3, cycleId: 1, activityId: 3, order: 3 }
+        // { id: 3, cycleId: 1, activityId: 3, order: 3 }
     ]);
 }
 
