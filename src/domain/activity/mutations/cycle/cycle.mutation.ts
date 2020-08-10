@@ -36,7 +36,7 @@ export const deleteCycleFromLevelThemeMutation: GQLMutationResolvers['deleteCycl
     if (!cycle) {
         throw new Error(`Cycle with id ${data.cycleId} not found.`);
     }
-    await deleteCycle(context.database)(builder => builder.andWhere('id', data.cycleId).andWhere('levelThemeId', data.cycleId));
+    await deleteCycle(context.database)(builder => builder.andWhere('id', data.cycleId).andWhere('id', data.cycleId));
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return (await getLevelThemeById(context.database)(cycle.levelThemeId))!;
 }
