@@ -215,7 +215,7 @@ export type GQLUpdateEmbeddedActivityInput = {
   readonly name: Scalars['String'];
   readonly description: Scalars['String'];
   readonly active: Scalars['Boolean'];
-  readonly url: Scalars['String'];
+  readonly data: GQLEmbeddedActivityDataInput;
 };
 
 export type GQLUpdateCycleActivitiesOrderInput = {

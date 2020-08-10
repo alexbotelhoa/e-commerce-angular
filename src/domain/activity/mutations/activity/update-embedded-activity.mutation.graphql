@@ -7,5 +7,5 @@ input UpdateEmbeddedActivityInput {
     name: String!
     description: String!
     active: Boolean!
-    url: String!
+    data: EmbeddedActivityDataInput!
 }
