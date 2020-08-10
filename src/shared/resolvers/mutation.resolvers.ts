@@ -15,8 +15,7 @@ import {
 } from "../../domain/activity/mutations/cycle/cycle.mutation";
 
 import {
-    toggleActivityState,
-    createActivityMutationResolver
+    toggleActivityState, createEmbeddedActivityMutationResolver, createHtmlActivityMutationResolver,
 } from "../../domain/activity/mutations/activity/activity.mutation"
 
 import {
@@ -47,10 +46,11 @@ const themeEntityResolvers: Pick<GQLMutationResolvers, 'createTheme' | 'updateTh
     deactivateTheme: toggleThemeState({ active: false }),
 }
 
-const activityEntityResolvers: Pick<GQLMutationResolvers, 'createActivity' | 'activateActivity' | 'deactivateActivity'> = {
+const activityEntityResolvers: Pick<GQLMutationResolvers, 'activateActivity' | 'deactivateActivity' | 'createEmbeddedActivity' | 'createHtmlActivity'> = {
     activateActivity: toggleActivityState({ active: true }),
     deactivateActivity: toggleActivityState({ active: false }),
-    createActivity: createActivityMutationResolver
+    createEmbeddedActivity: createEmbeddedActivityMutationResolver,
+    createHtmlActivity: createHtmlActivityMutationResolver,
 }
 
 const levelEntityResolvers: Pick<GQLMutationResolvers, 'addThemesToLevel' | 'activateLevel' | 'deactivateLevel' | 'deleteThemeFromLevel'> = {

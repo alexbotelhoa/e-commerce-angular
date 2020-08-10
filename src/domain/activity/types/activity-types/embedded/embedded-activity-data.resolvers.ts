@@ -4,6 +4,7 @@ import { EmbeddedActivityDataEntity } from "../../../../../entities/activities/e
 export const embeddedActivityDataEntityResolvers: Pick<GQLEmbeddedActivityDataResolvers, keyof EmbeddedActivityDataEntity> = {
     activityId: obj => obj.activityId.toString(),
     url: obj => obj.url,
+    height: obj => obj.height,
 }
 
 export const embeddedActivityDataResolvers: GQLEmbeddedActivityDataResolvers = {
