@@ -2,6 +2,7 @@ import { GQLResolvers } from "../../resolvers-types"
 
 import { levelsQueryResolver } from "../../domain/activity/queries/levels/levels.query";
 import { levelQueryResolver } from "../../domain/activity/queries/level/level.query";
+import { availableThemesResolver } from "../../domain/activity/queries/level/level.query"
 
 import { themesQueryResolver } from "../../domain/activity/queries/themes/themes.query";
 import { themeQueryResolver } from "../../domain/activity/queries/theme/theme.query";
@@ -35,4 +36,5 @@ export const queryResolvers: GQLResolvers['Query'] = {
     cycleActivities: cycleActivitiesQueryResolver,
     currentUser: currentUserQueryResolver,
     levelCodes: levelCodesQueryResolver,
+    availableThemes: availableThemesResolver
 }

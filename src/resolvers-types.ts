@@ -279,6 +279,7 @@ export type GQLQuery = {
   readonly __typename?: 'Query';
   readonly activities: ReadonlyArray<GQLActivityUnion>;
   readonly activity: Maybe<GQLActivityUnion>;
+  readonly availableThemes: ReadonlyArray<GQLTheme>;
   readonly currentUser: Maybe<GQLUser>;
   readonly cycle: Maybe<GQLCycle>;
   readonly cycleActivities: ReadonlyArray<GQLCycleActivity>;
@@ -296,6 +297,11 @@ export type GQLQuery = {
 
 export type GQLQueryactivityArgs = {
   id: Scalars['ID'];
+};
+
+
+export type GQLQueryavailableThemesArgs = {
+  availableThemesInputData: GQLAvailableThemesInputData;
 };
 
 
@@ -321,6 +327,10 @@ export type GQLQuerylevelThemeArgs = {
 
 export type GQLQuerythemeArgs = {
   id: Scalars['ID'];
+};
+
+export type GQLAvailableThemesInputData = {
+  readonly levelId: Scalars['ID'];
 };
 
 export type GQLActivityType = {
@@ -574,6 +584,7 @@ export type GQLResolversTypes = {
   CreateThemeInput: GQLCreateThemeInput;
   UpdateThemeInput: GQLUpdateThemeInput;
   Query: ResolverTypeWrapper<{}>;
+  AvailableThemesInputData: GQLAvailableThemesInputData;
   ActivityType: ResolverTypeWrapper<ActivityType>;
   EmbeddedActivity: ResolverTypeWrapper<ActivityEntity>;
   HtmlActivity: ResolverTypeWrapper<ActivityEntity>;
@@ -621,6 +632,7 @@ export type GQLResolversParentTypes = {
   CreateThemeInput: GQLCreateThemeInput;
   UpdateThemeInput: GQLUpdateThemeInput;
   Query: {};
+  AvailableThemesInputData: GQLAvailableThemesInputData;
   ActivityType: ActivityType;
   EmbeddedActivity: ActivityEntity;
   HtmlActivity: ActivityEntity;
@@ -674,6 +686,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   activities: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType>;
   activity: Resolver<Maybe<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryactivityArgs, 'id'>>;
+  availableThemes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQueryavailableThemesArgs, 'availableThemesInputData'>>;
   currentUser: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>;
   cycle: Resolver<Maybe<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLQuerycycleArgs, 'id'>>;
   cycleActivities: Resolver<ReadonlyArray<GQLResolversTypes['CycleActivity']>, ParentType, ContextType>;
