@@ -13,9 +13,9 @@ export async function seed(knex: DatabaseService): Promise<void> {
         await generateEmbeddedActivity(knex, index)
     }
 
-    for (let index = 3; index <= 4; index++) {
-        await generateHtmlActivity(knex, index)
-    }
+    // for (let index = 3; index <= 4; index++) {
+    //     await generateHtmlActivity(knex, index)
+    // }
 }
 
 async function generateEmbeddedActivity(db: DatabaseService, index: number): Promise<number> {
