@@ -1,6 +1,6 @@
 import { GQLCycleResolvers } from "../../resolvers-types"
 
-import { CycleActivityEntity } from "../../entities/cycle-activity.entity"
+import { CycleActivityEntity, CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-activity.entity"
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 
 import { selectCycleActivity } from "../repositories/cycle-activity.repository"
@@ -44,10 +44,16 @@ export const cycleLevelThemeResolver: GQLCycleResolvers['levelTheme'] = async (o
     throw new Error('Non-existent levelTheme entity!')
 }
 
+export const totalActivitiesResolver: GQLCycleResolvers['totalActivities'] = async (obj, params, { database: db }) => {
+    const { 'count(*)': activityCount } = await db.count('*').from(CYCLE_ACTIVITY_TABLE).where('cycleId', obj.id).first()
+    return activityCount;
+}
+
 export const cycleResolvers: GQLCycleResolvers = {
     ...cycleEntityResolvers,
     levelTheme: cycleLevelThemeResolver,
-    activities: cycleActivitiesResolver
+    activities: cycleActivitiesResolver,
+    totalActivities: totalActivitiesResolver
 }
 
 

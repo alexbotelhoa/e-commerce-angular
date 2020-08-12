@@ -10,6 +10,7 @@ import { getLevelById } from "../repositories/level.repository";
 import { getThemeById } from "../repositories/theme.repository";
 
 import { LevelThemeEntity } from "../../entities/level-theme.entity";
+import { CYCLE_TABLE } from "../../entities/cycle.entity"
 
 const levelThemeEntityResolvers: Pick<GQLLevelThemeResolvers, keyof LevelThemeEntity> = {
     id: obj => obj.id.toString(),
@@ -54,9 +55,16 @@ export const themeResolver: GQLLevelThemeResolvers['theme'] = async (obj, params
     throw new Error('Non-existent theme entity!')
 }
 
+
+export const totalCyclesResolver: GQLLevelThemeResolvers['totalCycles'] = async (obj, params, { database: db }) => {
+    const { 'count(*)': cycleCount } = await db.count('*').from(CYCLE_TABLE).where('levelThemeId', obj.id).first()
+    return cycleCount;
+}
+
 export const levelThemeResolvers: GQLLevelThemeResolvers = {
     ...levelThemeEntityResolvers,
     level: levelResolver,
     theme: themeResolver,
-    cycles: levelThemeCyclesResolver
+    cycles: levelThemeCyclesResolver,
+    totalCycles: totalCyclesResolver
 }
