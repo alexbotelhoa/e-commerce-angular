@@ -4,9 +4,9 @@ import { THEME_ICON_TABLE } from "../../src/entities/themes/theme-icon.entity";
 
 export async function up(knex: Knex): Promise<void> {
     await knex.schema.createTableIfNotExists(THEME_ICON_TABLE, (table) => {
-        table.integer('themeId').primary().unsigned().unique();
+        table.integer('themeId').primary().unsigned();
         table.foreign('themeId').references('theme.id').onDelete('CASCADE');
-        table.text('content', 'longtext').notNullable();
+        table.text('content', 'mediumtext').notNullable();
     });
 }
 
