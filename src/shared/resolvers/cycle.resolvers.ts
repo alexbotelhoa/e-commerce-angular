@@ -10,6 +10,8 @@ import { getLevelThemeById } from "../repositories/level-theme.repository";
 
 import { CycleEntity } from "../../entities/cycle.entity";
 
+import { CountObj } from "../types/count-obj.type"
+
 const cycleEntityResolvers: Pick<GQLCycleResolvers, keyof CycleEntity> = {
     id: obj => obj.id.toString(),
     name: obj => obj.name,
@@ -44,9 +46,22 @@ export const cycleLevelThemeResolver: GQLCycleResolvers['levelTheme'] = async (o
     throw new Error('Non-existent levelTheme entity!')
 }
 
-export const totalActivitiesResolver: GQLCycleResolvers['totalActivities'] = async (obj, params, { database: db }) => {
-    const { 'count(*)': activityCount } = await db.count('*').from(CYCLE_ACTIVITY_TABLE).where('cycleId', obj.id).first()
-    return activityCount;
+const totalActivitiesSorter = createDataloaderMultiSort<CountObj, number>('cycleId');
+
+const totalActivitiesDataloader: DatabaseLoaderFactory<number, CountObj[]> = (db) => ({
+    batchFn: async (ids) => {
+        const entities = await db.select('cycleId').count('*').from(CYCLE_ACTIVITY_TABLE).whereIn('cycleId', ids).groupBy('cycleId');
+        const sortedEntities = totalActivitiesSorter(ids)(entities);
+        return sortedEntities;
+    }
+})
+
+export const totalActivitiesResolver: GQLCycleResolvers['totalActivities'] = async (obj, params, context) => {
+    const dataloader = context.getDatabaseLoader(totalActivitiesDataloader);
+    const cycleActivities = await dataloader.load(obj.id),
+        totalCycles = cycleActivities.filter(cycleActivity => cycleActivity.cycleId == obj.id)[0];
+
+    return totalCycles ? totalCycles['count(*)'] : 0;
 }
 
 export const cycleResolvers: GQLCycleResolvers = {
