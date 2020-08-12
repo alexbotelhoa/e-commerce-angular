@@ -1,9 +1,18 @@
 import { GQLMutationResolvers } from "../../../../resolvers-types";
 import { getThemeById, insertTheme, updateTheme } from "../../../../shared/repositories/theme.repository";
+import { insertThemeIcon } from "../../../../shared/repositories/theme-icon.repository"
 
-export const createThemeMutationResolver: GQLMutationResolvers['createTheme'] = async (obj, { data }, context) => {
+export const createThemeMutationResolver: GQLMutationResolvers['createTheme'] = async (obj, { data: { endColor, startColor, name, icon } }, { database: db }) => {
+    const insertedId = await db.transaction(async trx => {
+        const id = await insertTheme(trx)({ name, endColor, startColor });
+        await insertThemeIcon(trx)({
+            themeId: id,
+            ...icon
+        });
+        return id;
+    });
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return (await getThemeById(context.database)(await insertTheme(context.database)(data)))!;
+    return (await getThemeById(db)(insertedId))!;
 }
 
 export const updateThemeMutationResolver: GQLMutationResolvers['updateTheme'] = async (obj, { data }, context) => {
