@@ -11,7 +11,8 @@ import {
     createCycleMutationResolver,
     addActivitiesToCycleMutationResolver,
     deleteActivityFromCycleMutation,
-    deleteCycleFromLevelThemeMutation
+    deleteCycleFromLevelThemeMutation,
+    updateCycleMutationResolver
 } from "../../domain/activity/mutations/cycle/cycle.mutation";
 
 import {
@@ -73,4 +74,5 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     updateLevelThemesOrder: updateLevelThemesOrderMutation,
     updateCyclesOrder: updateCyclesOrderMutation,
     updateCycleActivitiesOrder: updateCycleActivitiesOrderMutation,
+    updateCycle: updateCycleMutationResolver,
 }

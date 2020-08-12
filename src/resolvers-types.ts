@@ -55,6 +55,7 @@ export type GQLMutation = {
   readonly deleteCycleFromLevelTheme: GQLLevelTheme;
   readonly deleteThemeFromLevel: GQLLevel;
   readonly updateBasicLevelInfo: GQLLevel;
+  readonly updateCycle: GQLCycle;
   readonly updateCycleActivitiesOrder: ReadonlyArray<GQLCycleActivity>;
   readonly updateCyclesOrder: ReadonlyArray<GQLCycle>;
   readonly updateEmbeddedActivity: GQLEmbeddedActivity;
@@ -94,7 +95,7 @@ export type GQLMutationaddThemesToLevelArgs = {
 
 
 export type GQLMutationcreateCycleArgs = {
-  data: GQLCycleData;
+  data: GQLCreateCycleInput;
 };
 
 
@@ -163,6 +164,11 @@ export type GQLMutationupdateBasicLevelInfoArgs = {
 };
 
 
+export type GQLMutationupdateCycleArgs = {
+  data: GQLUpdateCycleInput;
+};
+
+
 export type GQLMutationupdateCycleActivitiesOrderArgs = {
   data: ReadonlyArray<GQLUpdateCycleActivitiesOrderInput>;
 };
@@ -223,10 +229,18 @@ export type GQLUpdateCycleActivitiesOrderInput = {
   readonly order: Scalars['Int'];
 };
 
-export type GQLCycleData = {
+export type GQLCreateCycleInput = {
   readonly name: Scalars['String'];
   readonly levelThemeId: Scalars['ID'];
-  readonly active: Maybe<Scalars['Boolean']>;
+  readonly active: Scalars['Boolean'];
+  readonly order: Scalars['Int'];
+};
+
+export type GQLUpdateCycleInput = {
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['String'];
+  readonly active: Scalars['Boolean'];
+  readonly order: Scalars['Int'];
 };
 
 export type GQLAddActivitiesToCycleItemsInput = {
@@ -295,6 +309,7 @@ export type GQLQuery = {
   readonly __typename?: 'Query';
   readonly activities: ReadonlyArray<GQLActivityUnion>;
   readonly activity: Maybe<GQLActivityUnion>;
+  readonly availableActivitiesForCycle: ReadonlyArray<GQLActivityUnion>;
   readonly availableThemes: ReadonlyArray<GQLTheme>;
   readonly currentUser: Maybe<GQLUser>;
   readonly cycle: Maybe<GQLCycle>;
@@ -313,6 +328,11 @@ export type GQLQuery = {
 
 export type GQLQueryactivityArgs = {
   id: Scalars['ID'];
+};
+
+
+export type GQLQueryavailableActivitiesForCycleArgs = {
+  cycleId: Scalars['ID'];
 };
 
 
@@ -590,7 +610,8 @@ export type GQLResolversTypes = {
   HtmlActivityDataInput: GQLHtmlActivityDataInput;
   UpdateEmbeddedActivityInput: GQLUpdateEmbeddedActivityInput;
   UpdateCycleActivitiesOrderInput: GQLUpdateCycleActivitiesOrderInput;
-  CycleData: GQLCycleData;
+  CreateCycleInput: GQLCreateCycleInput;
+  UpdateCycleInput: GQLUpdateCycleInput;
   AddActivitiesToCycleItemsInput: GQLAddActivitiesToCycleItemsInput;
   AddActivitiesToCycleInput: GQLAddActivitiesToCycleInput;
   UpdateCyclesOrderInput: GQLUpdateCyclesOrderInput;
@@ -640,7 +661,8 @@ export type GQLResolversParentTypes = {
   HtmlActivityDataInput: GQLHtmlActivityDataInput;
   UpdateEmbeddedActivityInput: GQLUpdateEmbeddedActivityInput;
   UpdateCycleActivitiesOrderInput: GQLUpdateCycleActivitiesOrderInput;
-  CycleData: GQLCycleData;
+  CreateCycleInput: GQLCreateCycleInput;
+  UpdateCycleInput: GQLUpdateCycleInput;
   AddActivitiesToCycleItemsInput: GQLAddActivitiesToCycleItemsInput;
   AddActivitiesToCycleInput: GQLAddActivitiesToCycleInput;
   UpdateCyclesOrderInput: GQLUpdateCyclesOrderInput;
@@ -698,6 +720,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   deleteCycleFromLevelTheme: Resolver<GQLResolversTypes['LevelTheme'], ParentType, ContextType, RequireFields<GQLMutationdeleteCycleFromLevelThemeArgs, 'cycleId'>>;
   deleteThemeFromLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationdeleteThemeFromLevelArgs, 'levelThemeId'>>;
   updateBasicLevelInfo: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationupdateBasicLevelInfoArgs, 'data'>>;
+  updateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationupdateCycleArgs, 'data'>>;
   updateCycleActivitiesOrder: Resolver<ReadonlyArray<GQLResolversTypes['CycleActivity']>, ParentType, ContextType, RequireFields<GQLMutationupdateCycleActivitiesOrderArgs, 'data'>>;
   updateCyclesOrder: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLMutationupdateCyclesOrderArgs, 'data'>>;
   updateEmbeddedActivity: Resolver<GQLResolversTypes['EmbeddedActivity'], ParentType, ContextType, RequireFields<GQLMutationupdateEmbeddedActivityArgs, 'data'>>;
@@ -708,6 +731,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   activities: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType>;
   activity: Resolver<Maybe<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryactivityArgs, 'id'>>;
+  availableActivitiesForCycle: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryavailableActivitiesForCycleArgs, 'cycleId'>>;
   availableThemes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQueryavailableThemesArgs, 'availableThemesInputData'>>;
   currentUser: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>;
   cycle: Resolver<Maybe<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLQuerycycleArgs, 'id'>>;

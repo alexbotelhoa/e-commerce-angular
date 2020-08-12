@@ -6,13 +6,25 @@ import { getLevelThemeById } from "../../../../shared/repositories/level-theme.r
 import { getCycleActivityById, deleteCycleActivity } from "../../../../shared/repositories/cycle-activity.repository";
 
 
-export const createCycleMutationResolver: GQLMutationResolvers['createCycle'] = async (obj, { data: { name, levelThemeId, active } }, context) => {
+export const createCycleMutationResolver: GQLMutationResolvers['createCycle'] = async (obj, { data }, context) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return (await getCycleById(context.database)(await insertCycle(context.database)({
-        name,
-        levelThemeId: parseInt(levelThemeId, 10),
-        active: active || undefined
+        name: data.name,
+        levelThemeId: parseInt(data.levelThemeId, 10),
+        active: data.active,
+        order: data.order,
     })))!;
+}
+
+export const updateCycleMutationResolver: GQLMutationResolvers['updateCycle'] = async (obj, { data }, context) => {
+    await updateCycle(context.database)({
+        name: data.name,
+        active: data.active,
+        order: data.order,
+    })(builder => builder.andWhere('id', data.id));
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return (await getCycleById(context.database)(data.id))!;
 }
 
 
