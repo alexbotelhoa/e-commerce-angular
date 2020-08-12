@@ -7,10 +7,19 @@ type Mutation {
 
 input CreateThemeInput {
   name: String!
+  startColor: String!
+  endColor: String!
+  icon: IconDataInput!
+}
+
+input IconDataInput {
+  content: String!
 }
 
 input UpdateThemeInput {
   id: ID!
   name: String!
+  startColor: String!
+  endColor: String!
   active: Boolean!
 }

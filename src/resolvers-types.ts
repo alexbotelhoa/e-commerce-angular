@@ -13,6 +13,7 @@ import { LevelThemeEntity } from './entities/level-theme.entity';
 import { LevelCodeEntity } from './entities/level-code.entity';
 import { LevelEntity } from './entities/level.entity';
 import { ThemeEntity } from './entities/theme.entity';
+import { ThemeIconEntity } from './entities/themes/theme-icon.entity';
 import { UserRoleEntity } from './entities/user-role.entity';
 import { Role } from './domain/authorization/types/role.type';
 import { Permission } from './domain/authorization/types/permission.type';
@@ -297,11 +298,20 @@ export type GQLUpdateBasicLevelInfoInput = {
 
 export type GQLCreateThemeInput = {
   readonly name: Scalars['String'];
+  readonly startColor: Scalars['String'];
+  readonly endColor: Scalars['String'];
+  readonly icon: GQLIconDataInput;
+};
+
+export type GQLIconDataInput = {
+  readonly content: Scalars['String'];
 };
 
 export type GQLUpdateThemeInput = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
+  readonly startColor: Scalars['String'];
+  readonly endColor: Scalars['String'];
   readonly active: Scalars['Boolean'];
 };
 
@@ -316,6 +326,7 @@ export type GQLQuery = {
   readonly cycleActivities: ReadonlyArray<GQLCycleActivity>;
   readonly cycleActivity: Maybe<GQLCycleActivity>;
   readonly cycles: ReadonlyArray<GQLCycle>;
+  readonly icons: ReadonlyArray<GQLThemeIcon>;
   readonly level: Maybe<GQLLevel>;
   readonly levelCodes: ReadonlyArray<GQLLevelCode>;
   readonly levelTheme: Maybe<GQLLevelTheme>;
@@ -499,6 +510,15 @@ export type GQLTheme = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
   readonly active: Scalars['Boolean'];
+  readonly startColor: Scalars['String'];
+  readonly endColor: Scalars['String'];
+  readonly icon: GQLThemeIcon;
+};
+
+export type GQLThemeIcon = {
+  readonly __typename?: 'ThemeIcon';
+  readonly themeId: Scalars['ID'];
+  readonly content: Scalars['String'];
 };
 
 export type GQLUserRole = {
@@ -622,6 +642,7 @@ export type GQLResolversTypes = {
   AddThemesToLevelInput: GQLAddThemesToLevelInput;
   UpdateBasicLevelInfoInput: GQLUpdateBasicLevelInfoInput;
   CreateThemeInput: GQLCreateThemeInput;
+  IconDataInput: GQLIconDataInput;
   UpdateThemeInput: GQLUpdateThemeInput;
   Query: ResolverTypeWrapper<{}>;
   AvailableThemesInputData: GQLAvailableThemesInputData;
@@ -643,6 +664,7 @@ export type GQLResolversTypes = {
   LevelTheme: ResolverTypeWrapper<LevelThemeEntity>;
   Level: ResolverTypeWrapper<LevelEntity>;
   Theme: ResolverTypeWrapper<ThemeEntity>;
+  ThemeIcon: ResolverTypeWrapper<ThemeIconEntity>;
   UserRole: ResolverTypeWrapper<UserRoleEntity>;
   User: ResolverTypeWrapper<UserEntity>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
@@ -673,6 +695,7 @@ export type GQLResolversParentTypes = {
   AddThemesToLevelInput: GQLAddThemesToLevelInput;
   UpdateBasicLevelInfoInput: GQLUpdateBasicLevelInfoInput;
   CreateThemeInput: GQLCreateThemeInput;
+  IconDataInput: GQLIconDataInput;
   UpdateThemeInput: GQLUpdateThemeInput;
   Query: {};
   AvailableThemesInputData: GQLAvailableThemesInputData;
@@ -692,6 +715,7 @@ export type GQLResolversParentTypes = {
   LevelTheme: LevelThemeEntity;
   Level: LevelEntity;
   Theme: ThemeEntity;
+  ThemeIcon: ThemeIconEntity;
   UserRole: UserRoleEntity;
   User: UserEntity;
   DateTime: Scalars['DateTime'];
@@ -738,6 +762,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   cycleActivities: Resolver<ReadonlyArray<GQLResolversTypes['CycleActivity']>, ParentType, ContextType>;
   cycleActivity: Resolver<Maybe<GQLResolversTypes['CycleActivity']>, ParentType, ContextType, RequireFields<GQLQuerycycleActivityArgs, 'id'>>;
   cycles: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType>;
+  icons: Resolver<ReadonlyArray<GQLResolversTypes['ThemeIcon']>, ParentType, ContextType>;
   level: Resolver<Maybe<GQLResolversTypes['Level']>, ParentType, ContextType, RequireFields<GQLQuerylevelArgs, 'id'>>;
   levelCodes: Resolver<ReadonlyArray<GQLResolversTypes['LevelCode']>, ParentType, ContextType>;
   levelTheme: Resolver<Maybe<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQuerylevelThemeArgs, 'id'>>;
@@ -880,6 +905,15 @@ export type GQLThemeResolvers<ContextType = GraphQLContext, ParentType extends G
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  startColor: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  endColor: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  icon: Resolver<GQLResolversTypes['ThemeIcon'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type GQLThemeIconResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ThemeIcon'] = GQLResolversParentTypes['ThemeIcon']> = {
+  themeId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  content: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -927,6 +961,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   LevelTheme: GQLLevelThemeResolvers<ContextType>;
   Level: GQLLevelResolvers<ContextType>;
   Theme: GQLThemeResolvers<ContextType>;
+  ThemeIcon: GQLThemeIconResolvers<ContextType>;
   UserRole: GQLUserRoleResolvers<ContextType>;
   User: GQLUserResolvers<ContextType>;
   DateTime: GraphQLScalarType;

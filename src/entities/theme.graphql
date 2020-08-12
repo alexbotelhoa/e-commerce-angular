@@ -2,4 +2,7 @@ type Theme {
     id: ID!
     name: String!
     active: Boolean!
+    startColor: String!
+    endColor: String!
+    icon: ThemeIcon!
 }
