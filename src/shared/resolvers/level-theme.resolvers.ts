@@ -70,7 +70,7 @@ const totalCyclesDataloader: DatabaseLoaderFactory<number, CountObj[]> = (db) =>
 export const totalCyclesResolver: GQLLevelThemeResolvers['totalCycles'] = async (obj, params, context) => {
     const dataloader = context.getDatabaseLoader(totalCyclesDataloader);
     const cycleActivities = await dataloader.load(obj.id),
-        totalCycles = cycleActivities.filter(cycleActivity => cycleActivity.levelThemeId == obj.id)[0];
+        totalCycles = cycleActivities.find(cycleActivity => cycleActivity.levelThemeId == obj.id);
 
     return totalCycles ? totalCycles['count(*)'] : 0;
 }

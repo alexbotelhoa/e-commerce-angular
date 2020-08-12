@@ -59,7 +59,7 @@ const totalActivitiesDataloader: DatabaseLoaderFactory<number, CountObj[]> = (db
 export const totalActivitiesResolver: GQLCycleResolvers['totalActivities'] = async (obj, params, context) => {
     const dataloader = context.getDatabaseLoader(totalActivitiesDataloader);
     const cycleActivities = await dataloader.load(obj.id),
-        totalCycles = cycleActivities.filter(cycleActivity => cycleActivity.cycleId == obj.id)[0];
+        totalCycles = cycleActivities.find(cycleActivity => cycleActivity.cycleId == obj.id);
 
     return totalCycles ? totalCycles['count(*)'] : 0;
 }
