@@ -24,6 +24,8 @@ import { embeddedActivityDataResolvers } from "./domain/activity/types/activity-
 import { htmlActivityDataResolvers } from "./domain/activity/types/activity-types/html/html-activity-data.resolvers";
 import { dateTimeScalarResolver } from "./shared/scalars/datetime.scalar";
 import { themeIconResolvers } from "./shared/resolvers/theme-icon.resolvers";
+import { classResolvers } from "./shared/resolvers/class.resolvers";
+import { enrollmentResolvers } from "./shared/resolvers/enrollment.resolver";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData';
 
@@ -52,6 +54,8 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     EmbeddedActivityData: embeddedActivityDataResolvers,
     HtmlActivityData: htmlActivityDataResolvers,
     DateTime: dateTimeScalarResolver,
+    Class: classResolvers,
+    Enrollment: enrollmentResolvers,
 };
 
 

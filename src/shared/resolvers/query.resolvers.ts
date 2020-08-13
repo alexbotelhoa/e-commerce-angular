@@ -22,6 +22,7 @@ import { cycleActivityQueryResolver } from "../../domain/activity/queries/cycle-
 import { currentUserQueryResolver } from "../../domain/authentication/queries/current-user.query";
 import { levelCodesQueryResolver } from "../../domain/activity/queries/level-codes/level-codes.query";
 import { themeIconsQueryResolver } from "../../domain/activity/queries/icons/icons.query";
+import { classesQueryResolver } from "../../domain/activity/queries/class/classes.query";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -40,5 +41,6 @@ export const queryResolvers: GQLResolvers['Query'] = {
     levelCodes: levelCodesQueryResolver,
     availableThemes: availableThemesResolver,
     availableActivitiesForCycle: availableActivitiesForCycleResolver,
-    icons: themeIconsQueryResolver
+    icons: themeIconsQueryResolver,
+    classes: classesQueryResolver,
 }

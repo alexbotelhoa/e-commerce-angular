@@ -27,8 +27,10 @@ generates:
         EmbeddedActivityData: ./entities/activities/embedded-activity-data.entity#EmbeddedActivityDataEntity
         HtmlActivity: ./entities/activity.entity#ActivityEntity
         HtmlActivityData: ./entities/activities/html-activity-data.entity#HtmlActivityDataEntity
+        Class: ./entities/class.entity#ClassEntity
         Cycle: ./entities/cycle.entity#CycleEntity
         CycleActivity: ./entities/cycle-activity.entity#CycleActivityEntity
+        Enrollment: ./entities/enrollment.entity#EnrollmentEntity
         LevelTheme: ./entities/level-theme.entity#LevelThemeEntity
         LevelCode: ./entities/level-code.entity#LevelCodeEntity
         Level: ./entities/level.entity#LevelEntity

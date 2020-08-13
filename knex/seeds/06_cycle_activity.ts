@@ -1,10 +1,10 @@
 import * as Knex from "knex";
-import { insertCycleActivity, deleteAllCycleActivitys } from "../../src/shared/repositories/cycle-activity.repository";
+import { insertCycleActivity, deleteAllCycleActivities } from "../../src/shared/repositories/cycle-activity.repository";
 import { CycleActivityEntity } from "../../src/entities/cycle-activity.entity";
 
 export async function seed(knex: Knex<CycleActivityEntity, CycleActivityEntity[]>): Promise<void> {
     // Deletes ALL existing entries
-    await deleteAllCycleActivitys(knex);
+    await deleteAllCycleActivities(knex);
 
     // Inserts seed entries
     await insertCycleActivity(knex)([

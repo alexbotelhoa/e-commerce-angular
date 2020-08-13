@@ -1,0 +1,6 @@
+type Class {
+    id: ID!
+    name: String!
+    levelCodeId: ID!
+    levelCode: LevelCode!
+}

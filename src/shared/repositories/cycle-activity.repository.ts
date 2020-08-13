@@ -3,11 +3,11 @@ import { CycleActivityEntity, CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-
 
 export const {
     getById: getCycleActivityById,
-    getManyByIds: getCycleActivitysByIds,
+    getManyByIds: getCycleActivitiesByIds,
     select: selectCycleActivity,
     insert: insertCycleActivity,
     update: updateCycleActivity,
     delete: deleteCycleActivity,
-    deleteAll: deleteAllCycleActivitys,
+    deleteAll: deleteAllCycleActivities,
     count: countCycleActivities,
 } = createRepository<CycleActivityEntity>(CYCLE_ACTIVITY_TABLE, 'id');
