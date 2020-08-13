@@ -9,4 +9,5 @@ export const {
     update: updateUserRole,
     delete: deleteUserRole,
     deleteAll: deleteAllUserRoles,
+    count: countUserRoles,
 } = createRepository<UserRoleEntity>(USER_ROLE_TABLE, 'id');

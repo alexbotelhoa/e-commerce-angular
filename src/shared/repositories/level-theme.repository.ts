@@ -9,4 +9,5 @@ export const {
     update: updateLevelTheme,
     delete: deleteLevelTheme,
     deleteAll: deleteAllLevelThemes,
+    count: countLevelThemes,
 } = createRepository<LevelThemeEntity>(LEVEL_THEME_TABLE, 'id');

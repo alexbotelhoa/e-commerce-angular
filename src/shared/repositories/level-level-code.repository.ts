@@ -7,4 +7,5 @@ export const {
     update: updateLevelLevelCode,
     delete: deleteLevelLevelCode,
     deleteAll: deleteAllLevelLevelCodes,
+    count: countLevelLevelCodes,
 } = createCompositePKRepository<LevelLevelCodeEntity, 'levelId' | 'levelCodeId'>(LEVEL_LEVEL_CODE_TABLE, ['levelId', 'levelCodeId']);

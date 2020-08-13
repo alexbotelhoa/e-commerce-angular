@@ -9,4 +9,5 @@ export const {
     update: updateUser,
     delete: deleteUser,
     deleteAll: deleteAllUsers,
+    count: countUsers,
 } = createRepository<UserEntity>(USER_TABLE, 'id');
