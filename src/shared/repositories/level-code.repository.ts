@@ -9,4 +9,5 @@ export const {
     update: updateLevelCode,
     delete: deleteLevelCode,
     deleteAll: deleteAllLevelCodes,
+    count: countLevelCodes,
 } = createRepository<LevelCodeEntity>(LEVEL_CODE_TABLE, 'id');

@@ -9,4 +9,5 @@ export const {
     update: updateTheme,
     delete: deleteTheme,
     deleteAll: deleteAllThemes,
+    count: countThemes,
 } = createRepository<ThemeEntity>(THEME_TABLE, 'id');

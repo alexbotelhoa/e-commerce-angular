@@ -9,4 +9,5 @@ export const {
     update: updateCycleActivity,
     delete: deleteCycleActivity,
     deleteAll: deleteAllCycleActivitys,
+    count: countCycleActivities,
 } = createRepository<CycleActivityEntity>(CYCLE_ACTIVITY_TABLE, 'id');

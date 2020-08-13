@@ -2,6 +2,7 @@ import Knex from "knex";
 import { DatabaseService } from "./database.service";
 import { StringKeyof } from "../types/string-keyof.type";
 import { getOneOrNull, getOneOrFail } from "../utils/get-one-or-null.util";
+import { CountObj } from "../types/count-obj.type";
 
 export const getEntityById =
     <T, IdType extends string | number = string | number>(table: string) =>
@@ -53,6 +54,11 @@ export const selectEntity =
         (db: DatabaseService<T, T[]>): Knex.QueryBuilder<T, T[]> =>
             db.select('*').from<T, T[]>(table);
 
+export const countEntities =
+    <T>(table: string) =>
+        (db: DatabaseService<T, T[]>): Knex.QueryBuilder<CountObj & T, Array<CountObj & Partial<T>>> =>
+            db.count('*').from(table);
+
 export const createRepository = <T, IdType extends string | number = string | number>(table: string, primaryColumn: StringKeyof<T>) => {
     return {
         getById: getEntityById<T, IdType>(table)(primaryColumn),
@@ -62,6 +68,7 @@ export const createRepository = <T, IdType extends string | number = string | nu
         update: updateEntity<T>(table),
         delete: deleteEntity<T>(table),
         deleteAll: deleteAllEntities<T>(table),
+        count: countEntities<T>(table),
     }
 }
 
@@ -72,5 +79,6 @@ export const createCompositePKRepository = <T, PKs extends StringKeyof<T>>(table
         update: updateEntity<T>(table),
         delete: deleteEntity<T>(table),
         deleteAll: deleteAllEntities<T>(table),
+        count: countEntities<T>(table),
     }
 }

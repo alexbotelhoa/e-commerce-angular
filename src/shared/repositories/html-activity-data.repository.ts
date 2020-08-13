@@ -9,4 +9,5 @@ export const {
     update: updateHtmlActivityData,
     delete: deleteHtmlActivityData,
     deleteAll: deleteAllHtmlActivitiesData,
+    count: countHtmlActivityData,
 } = createRepository<HtmlActivityDataEntity>(HTML_ACTIVITY_DATA_TABLE, 'activityId');

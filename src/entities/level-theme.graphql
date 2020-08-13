@@ -6,4 +6,5 @@ type LevelTheme {
     level: Level!
     theme: Theme!
     cycles: [Cycle!]!
+    totalCycles: Int!
 }

@@ -9,4 +9,5 @@ export const {
     update: updateEmbeddedActivityData,
     delete: deleteEmbeddedActivityData,
     deleteAll: deleteAllEmbeddedActivitiesData,
+    count: countEmbeddedActivityData,
 } = createRepository<EmbeddedActivityDataEntity>(EMBEDDED_ACTIVITY_DATA_TABLE, 'activityId');

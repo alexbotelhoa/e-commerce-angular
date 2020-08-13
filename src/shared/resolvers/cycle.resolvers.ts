@@ -1,14 +1,17 @@
 import { GQLCycleResolvers } from "../../resolvers-types"
 
-import { CycleActivityEntity } from "../../entities/cycle-activity.entity"
+import { CycleActivityEntity, CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-activity.entity"
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 
-import { selectCycleActivity } from "../repositories/cycle-activity.repository"
+import { selectCycleActivity, countCycleActivities } from "../repositories/cycle-activity.repository"
 
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
 import { getLevelThemeById } from "../repositories/level-theme.repository";
 
 import { CycleEntity } from "../../entities/cycle.entity";
+
+import { CountObj } from "../types/count-obj.type"
+import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
 
 const cycleEntityResolvers: Pick<GQLCycleResolvers, keyof CycleEntity> = {
     id: obj => obj.id.toString(),
@@ -43,11 +46,32 @@ export const cycleLevelThemeResolver: GQLCycleResolvers['levelTheme'] = async (o
 
     throw new Error('Non-existent levelTheme entity!')
 }
+type TotalActivitiesQueryResult = CountObj & Pick<CycleActivityEntity, 'cycleId'>;
+
+const totalActivitiesSorter = createDataloaderCountSort<TotalActivitiesQueryResult, number>('cycleId');
+
+const totalActivitiesDataloader: DatabaseLoaderFactory<number, number> = (db) => ({
+    batchFn: async (ids) => {
+        const entities = await countCycleActivities(db)
+            .select('cycleId')
+            .whereIn('cycleId', ids)
+            .groupBy<TotalActivitiesQueryResult[]>('cycleId');
+        const sortedEntities = totalActivitiesSorter(ids)(entities);
+        return sortedEntities;
+    }
+})
+
+export const totalActivitiesResolver: GQLCycleResolvers['totalActivities'] = async (obj, params, context) => {
+    const dataloader = context.getDatabaseLoader(totalActivitiesDataloader);
+    const totalActivities = await dataloader.load(obj.id);
+    return totalActivities;
+}
 
 export const cycleResolvers: GQLCycleResolvers = {
     ...cycleEntityResolvers,
     levelTheme: cycleLevelThemeResolver,
-    activities: cycleActivitiesResolver
+    activities: cycleActivitiesResolver,
+    totalActivities: totalActivitiesResolver
 }
 
 
