@@ -3,7 +3,7 @@ import { GQLCycleResolvers } from "../../resolvers-types"
 import { CycleActivityEntity, CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-activity.entity"
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 
-import { selectCycleActivity } from "../repositories/cycle-activity.repository"
+import { selectCycleActivity, countCycleActivities } from "../repositories/cycle-activity.repository"
 
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
 import { getLevelThemeById } from "../repositories/level-theme.repository";
@@ -11,6 +11,7 @@ import { getLevelThemeById } from "../repositories/level-theme.repository";
 import { CycleEntity } from "../../entities/cycle.entity";
 
 import { CountObj } from "../types/count-obj.type"
+import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
 
 const cycleEntityResolvers: Pick<GQLCycleResolvers, keyof CycleEntity> = {
     id: obj => obj.id.toString(),
@@ -45,12 +46,16 @@ export const cycleLevelThemeResolver: GQLCycleResolvers['levelTheme'] = async (o
 
     throw new Error('Non-existent levelTheme entity!')
 }
+type TotalActivitiesQueryResult = CountObj & Pick<CycleActivityEntity, 'cycleId'>;
 
-const totalActivitiesSorter = createDataloaderMultiSort<CountObj, number>('cycleId');
+const totalActivitiesSorter = createDataloaderCountSort<TotalActivitiesQueryResult, number>('cycleId');
 
-const totalActivitiesDataloader: DatabaseLoaderFactory<number, CountObj[]> = (db) => ({
+const totalActivitiesDataloader: DatabaseLoaderFactory<number, number> = (db) => ({
     batchFn: async (ids) => {
-        const entities = await db.select('cycleId').count('*').from(CYCLE_ACTIVITY_TABLE).whereIn('cycleId', ids).groupBy('cycleId');
+        const entities = await countCycleActivities(db)
+            .select('cycleId')
+            .whereIn('cycleId', ids)
+            .groupBy<TotalActivitiesQueryResult[]>('cycleId');
         const sortedEntities = totalActivitiesSorter(ids)(entities);
         return sortedEntities;
     }
@@ -58,10 +63,8 @@ const totalActivitiesDataloader: DatabaseLoaderFactory<number, CountObj[]> = (db
 
 export const totalActivitiesResolver: GQLCycleResolvers['totalActivities'] = async (obj, params, context) => {
     const dataloader = context.getDatabaseLoader(totalActivitiesDataloader);
-    const cycleActivities = await dataloader.load(obj.id),
-        totalCycles = cycleActivities.find(cycleActivity => cycleActivity.cycleId == obj.id);
-
-    return totalCycles ? totalCycles['count(*)'] : 0;
+    const totalActivities = await dataloader.load(obj.id);
+    return totalActivities;
 }
 
 export const cycleResolvers: GQLCycleResolvers = {

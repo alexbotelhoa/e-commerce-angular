@@ -56,7 +56,7 @@ export const selectEntity =
 
 export const countEntities =
     <T>(table: string) =>
-        (db: DatabaseService<T, T[]>): Knex.QueryBuilder<T, Array<CountObj & Partial<T>>> =>
+        (db: DatabaseService<T, T[]>): Knex.QueryBuilder<CountObj & T, Array<CountObj & Partial<T>>> =>
             db.count('*').from(table);
 
 export const createRepository = <T, IdType extends string | number = string | number>(table: string, primaryColumn: StringKeyof<T>) => {
