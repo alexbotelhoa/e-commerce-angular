@@ -18,7 +18,8 @@ const levelEntityResolvers: Pick<GQLLevelResolvers, keyof LevelEntity> = {
     name: obj => obj.name,
     description: obj => obj.description,
     order: obj => obj.order,
-    active: obj => obj.active
+    active: obj => obj.active,
+    typeId: obj => obj.typeId,
 }
 
 const levelThemesSorter = createDataloaderMultiSort<LevelThemeEntity, number>('levelId');

@@ -4,5 +4,7 @@ type Mutation {
 
 input CreateLevelCodeInput {
     id: ID!
+    code: ID!
+    description: String!
     active: Boolean!
 }

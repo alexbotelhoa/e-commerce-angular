@@ -12,7 +12,7 @@ export const createLevelMutationResolver: GQLMutationResolvers['createLevel'] = 
         order: data.order,
     });
     const levelLevelCodes = data.codes.map<LevelLevelCodeEntity>(codeId => ({
-        levelCodeId: codeId,
+        levelCodeId: parseInt(codeId, 10),
         levelId: levelId,
     }));
     await insertLevelLevelCode(context.database)(levelLevelCodes);

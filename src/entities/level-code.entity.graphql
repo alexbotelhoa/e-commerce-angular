@@ -1,5 +1,7 @@
 type LevelCode {
     id: ID!
+    code: ID!
+    description: String
     active: Boolean!
     createdAt: DateTime!
 }

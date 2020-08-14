@@ -6,4 +6,5 @@ type EmbeddedActivity implements Activity {
     type: ActivityType!
     data: EmbeddedActivityData!
     active: Boolean!
+    estimatedTime: String!
 }

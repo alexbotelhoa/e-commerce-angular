@@ -7,14 +7,14 @@ import { getLevelCodesByIds } from "../repositories/level-code.repository";
 
 export const classEntityResolvers: Pick<GQLClassResolvers, keyof ClassEntity> = {
     id: obj => obj.id.toString(10),
-    levelCodeId: obj => obj.levelCodeId,
+    levelCodeId: obj => obj.levelCodeId.toString(10),
     name: obj => obj.name,
 }
 
-const classLevelCodeSorter = createDataloaderSingleSort<LevelCodeEntity, string, LevelCodeEntity>('id');
+const classLevelCodeSorter = createDataloaderSingleSort<LevelCodeEntity, number, LevelCodeEntity>('id');
 
 
-const classLevelCodeDataloader: DatabaseLoaderFactory<string, LevelCodeEntity> = (db) => ({
+const classLevelCodeDataloader: DatabaseLoaderFactory<number, LevelCodeEntity> = (db) => ({
     batchFn: async (ids) => {
         const entities = await getLevelCodesByIds(db)(ids);
         const sortedEntities = classLevelCodeSorter(ids)(entities);

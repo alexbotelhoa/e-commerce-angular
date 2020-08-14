@@ -6,5 +6,5 @@ export const ActivityTypeId = {
 } as const;
 
 export type ActivityTypeId = EnumLiteral<typeof ActivityTypeId>;
-export type ActivityTypeIdCodes = keyof typeof ActivityTypeId;
+export type ActivityTypeIdCode = keyof typeof ActivityTypeId;
 

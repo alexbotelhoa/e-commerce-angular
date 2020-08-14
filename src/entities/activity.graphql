@@ -5,4 +5,5 @@ interface Activity {
     typeId: ActivityTypeId!
     type: ActivityType!
     active: Boolean!
+    estimatedTime: String!
 }

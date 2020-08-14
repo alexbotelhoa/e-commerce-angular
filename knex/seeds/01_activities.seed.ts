@@ -9,7 +9,7 @@ export async function seed(knex: DatabaseService): Promise<void> {
     // Deletes ALL existing entries
     await deleteAllActivities(knex);
 
-    for (let index = 1; index <= 2; index++) {
+    for (let index = 1; index <= 4; index++) {
         await generateEmbeddedActivity(knex, index)
     }
 

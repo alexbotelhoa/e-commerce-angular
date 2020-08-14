@@ -9,4 +9,5 @@ export const {
     update: updateClass,
     delete: deleteClass,
     deleteAll: deleteAllClasses,
+    count: countClasses,
 } = createRepository<ClassEntity>(CLASS_TABLE, 'id');

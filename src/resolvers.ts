@@ -1,4 +1,4 @@
-import { GQLResolvers, ActivityTypeId } from "./resolvers-types";
+import { GQLResolvers, ActivityTypeId, LevelTypeId } from "./resolvers-types";
 
 import { mutationResolvers } from "./shared/resolvers/mutation.resolvers"
 import { queryResolvers } from "./shared/resolvers/query.resolvers"
@@ -41,6 +41,7 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     CycleActivity: cycleActivityResolvers,
     ActivityUnion: activityUnionResolvers,
     ActivityTypeId: ActivityTypeId,
+    LevelTypeId: LevelTypeId,
     RoleId: RoleId,
     PermissionId: PermissionId,
     EmbeddedActivity: embeddedActivityResolvers,

@@ -12,5 +12,6 @@ export const activityResolvers: Pick<Required<GQLActivityResolvers>, keyof Activ
     description: obj => obj.description,
     typeId: obj => obj.typeId,
     type: obj => getActivityTypeById(obj.typeId),
-    active: obj => obj.active
+    active: obj => obj.active,
+    estimatedTime: obj => obj.estimatedTime,
 }

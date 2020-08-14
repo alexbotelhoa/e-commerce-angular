@@ -9,4 +9,5 @@ export const {
     update: updateEnrollment,
     delete: deleteEnrollment,
     deleteAll: deleteAllEnrollments,
+    count: countEnrollments,
 } = createRepository<EnrollmentEntity>(ENROLLMENT_TABLE, 'id');

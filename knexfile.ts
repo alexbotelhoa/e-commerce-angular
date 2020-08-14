@@ -26,6 +26,7 @@ const connection: Knex.Config = {
   seeds: {
     directory: './knex/seeds',
   },
+  debug: true,
 }
 
 console.log(`Migration config: ${JSON.stringify(connection)}`);

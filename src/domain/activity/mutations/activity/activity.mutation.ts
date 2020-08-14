@@ -14,6 +14,7 @@ export const createEmbeddedActivityMutationResolver: GQLMutationResolvers['creat
         description: data.description,
         name: data.name,
         typeId: ActivityTypeId.EMBEDDED,
+        estimatedTime: '30 minutes',
     };
 
     const insertedId = await db.transaction(async trx => {
@@ -37,6 +38,7 @@ export const createHtmlActivityMutationResolver: GQLMutationResolvers['createHtm
         description: data.description,
         name: data.name,
         typeId: ActivityTypeId.HTML,
+        estimatedTime: '30 minutes',
     };
 
     const insertedId = await db.transaction(async trx => {
