@@ -1,0 +1,5 @@
+type ActivityComment {
+    activityId: ID!
+    commentId: ID!
+    classId: ID!
+}

@@ -29,6 +29,8 @@ generates:
         HtmlActivity: ./entities/activity.entity#ActivityEntity
         HtmlActivityData: ./entities/activities/html-activity-data.entity#HtmlActivityDataEntity
         Class: ./entities/class.entity#ClassEntity
+        Comment: ./entities/comments/comment.entity#CommentEntity
+        ActivityComment: ./entities/comments/activity-comment.entity#ActivityCommentEntity
         Cycle: ./entities/cycle.entity#CycleEntity
         CycleActivity: ./entities/cycle-activity.entity#CycleActivityEntity
         Enrollment: ./entities/enrollment.entity#EnrollmentEntity

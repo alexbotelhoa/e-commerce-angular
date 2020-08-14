@@ -9,6 +9,8 @@ import { ActivityEntity } from './entities/activity.entity';
 import { EmbeddedActivityDataEntity } from './entities/activities/embedded-activity-data.entity';
 import { HtmlActivityDataEntity } from './entities/activities/html-activity-data.entity';
 import { ClassEntity } from './entities/class.entity';
+import { CommentEntity } from './entities/comments/comment.entity';
+import { ActivityCommentEntity } from './entities/comments/activity-comment.entity';
 import { CycleEntity } from './entities/cycle.entity';
 import { CycleActivityEntity } from './entities/cycle-activity.entity';
 import { EnrollmentEntity } from './entities/enrollment.entity';
@@ -474,6 +476,21 @@ export type GQLClass = {
   readonly levelCode: GQLLevelCode;
 };
 
+export type GQLActivityComment = {
+  readonly __typename?: 'ActivityComment';
+  readonly activityId: Scalars['ID'];
+  readonly commentId: Scalars['ID'];
+  readonly classId: Scalars['ID'];
+};
+
+export type GQLComment = {
+  readonly __typename?: 'Comment';
+  readonly id: Scalars['ID'];
+  readonly text: Scalars['String'];
+  readonly userId: Scalars['ID'];
+  readonly parentId: Maybe<Scalars['ID']>;
+};
+
 export type GQLCycleActivity = {
   readonly __typename?: 'CycleActivity';
   readonly id: Scalars['ID'];
@@ -691,6 +708,8 @@ export type GQLResolversTypes = {
   HtmlActivityData: ResolverTypeWrapper<HtmlActivityDataEntity>;
   Activity: GQLResolversTypes['EmbeddedActivity'] | GQLResolversTypes['HtmlActivity'];
   Class: ResolverTypeWrapper<ClassEntity>;
+  ActivityComment: ResolverTypeWrapper<ActivityCommentEntity>;
+  Comment: ResolverTypeWrapper<CommentEntity>;
   CycleActivity: ResolverTypeWrapper<CycleActivityEntity>;
   Cycle: ResolverTypeWrapper<CycleEntity>;
   Enrollment: ResolverTypeWrapper<EnrollmentEntity>;
@@ -744,6 +763,8 @@ export type GQLResolversParentTypes = {
   HtmlActivityData: HtmlActivityDataEntity;
   Activity: GQLResolversParentTypes['EmbeddedActivity'] | GQLResolversParentTypes['HtmlActivity'];
   Class: ClassEntity;
+  ActivityComment: ActivityCommentEntity;
+  Comment: CommentEntity;
   CycleActivity: CycleActivityEntity;
   Cycle: CycleEntity;
   Enrollment: EnrollmentEntity;
@@ -901,6 +922,21 @@ export type GQLClassResolvers<ContextType = GraphQLContext, ParentType extends G
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type GQLActivityCommentResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ActivityComment'] = GQLResolversParentTypes['ActivityComment']> = {
+  activityId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  commentId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type GQLCommentResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Comment'] = GQLResolversParentTypes['Comment']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  text: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  userId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  parentId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type GQLCycleActivityResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['CycleActivity'] = GQLResolversParentTypes['CycleActivity']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   cycleId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
@@ -1019,6 +1055,8 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   HtmlActivityData: GQLHtmlActivityDataResolvers<ContextType>;
   Activity: GQLActivityResolvers;
   Class: GQLClassResolvers<ContextType>;
+  ActivityComment: GQLActivityCommentResolvers<ContextType>;
+  Comment: GQLCommentResolvers<ContextType>;
   CycleActivity: GQLCycleActivityResolvers<ContextType>;
   Cycle: GQLCycleResolvers<ContextType>;
   Enrollment: GQLEnrollmentResolvers<ContextType>;
