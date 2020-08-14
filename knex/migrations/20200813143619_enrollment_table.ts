@@ -12,6 +12,8 @@ export async function up(knex: Knex): Promise<void> {
         table.integer('userId').unsigned().notNullable().references(`${USER_TABLE}.id`).onDelete('CASCADE');
         table.integer('classId').unsigned().notNullable().references(`${CLASS_TABLE}.id`).onDelete('CASCADE');
         table.index(['userId', 'classId']);
+        // add inverted index too to optimize all search cases
+        table.index(['classId', 'userId']);
     });
 }
 

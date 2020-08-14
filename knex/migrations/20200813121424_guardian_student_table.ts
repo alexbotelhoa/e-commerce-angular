@@ -10,6 +10,8 @@ export async function up(knex: Knex): Promise<void> {
         table.integer('guardianId').unsigned().notNullable().references(`${USER_TABLE}.id`);
         table.integer('studentId').unsigned().references(`${USER_TABLE}.id`);
         table.primary(['guardianId', 'studentId']);
+        // add inverted index too to optimize all search cases
+        table.index(['studentId', 'guardianId']);
     });
 }
 

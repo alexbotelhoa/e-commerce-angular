@@ -25,6 +25,7 @@ export async function up(knex: Knex): Promise<void> {
         table.integer('levelId').unsigned().notNullable().references(`${LEVEL_TABLE}.id`).onDelete("CASCADE");
         table.integer('levelCodeId').unsigned().notNullable().references(`${LEVEL_CODE_TABLE}.id`).onDelete("CASCADE");
         table.primary(['levelId', 'levelCodeId']);
+        table.index(['levelCodeId', 'levelId'])
     });
 }
 
