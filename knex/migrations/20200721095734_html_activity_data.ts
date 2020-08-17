@@ -15,4 +15,6 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
     await knex.schema.dropTableIfExists(HTML_ACTIVITY_DATA_TABLE);
+    // old naming
+    await knex.schema.dropTableIfExists('htmlActivityData');
 }
