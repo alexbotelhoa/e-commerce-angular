@@ -4,4 +4,4 @@ export interface HtmlActivityDataEntity extends ActivityData {
     html: string;
 }
 
-export const HTML_ACTIVITY_DATA_TABLE = 'htmlActivityData';
+export const HTML_ACTIVITY_DATA_TABLE = 'html_activity_data';

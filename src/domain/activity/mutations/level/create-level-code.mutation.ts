@@ -4,7 +4,7 @@ import { insertLevelCode, getLevelCodeById } from "../../../../shared/repositori
 
 export const createLevelCodeMutation: GQLMutationResolvers['createLevelCode'] = async (obj, { data }, context) => {
     await insertLevelCode(context.database)({
-        id: data.id,
+        id: parseInt(data.id, 10),
         active: data.active,
     });
     return (await getLevelCodeById(context.database)(data.id))!

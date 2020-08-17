@@ -6,4 +6,5 @@ type HtmlActivity implements Activity {
     type: ActivityType!
     data: HtmlActivityData!
     active: Boolean!
+    estimatedTime: String!
 }

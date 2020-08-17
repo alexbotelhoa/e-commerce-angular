@@ -1,9 +1,9 @@
 import { GQLMutationResolvers } from "../../../../resolvers-types";
-import { getCycleActivitysByIds, updateCycleActivity } from "../../../../shared/repositories/cycle-activity.repository";
+import { getCycleActivitiesByIds, updateCycleActivity } from "../../../../shared/repositories/cycle-activity.repository";
 
 export const updateCycleActivitiesOrderMutation: GQLMutationResolvers['updateCycleActivitiesOrder'] = async (obj, { data }, context) => {
     const cycleActivityIds = data.map(entity => entity.cycleActivityId);
-    const cycleActivities = await getCycleActivitysByIds(context.database)(cycleActivityIds);
+    const cycleActivities = await getCycleActivitiesByIds(context.database)(cycleActivityIds);
     if (cycleActivities.length !== data.length) {
         throw new Error(`Unable to find all cycle activities with ids ${cycleActivityIds}`)
     }
@@ -15,5 +15,5 @@ export const updateCycleActivitiesOrderMutation: GQLMutationResolvers['updateCyc
             order: cycleActivity.order,
         })(builder => builder.andWhere('id', cycleActivity.cycleActivityId));
     }
-    return await getCycleActivitysByIds(context.database)(cycleActivityIds).orderBy('order', 'asc');
+    return await getCycleActivitiesByIds(context.database)(cycleActivityIds).orderBy('order', 'asc');
 }

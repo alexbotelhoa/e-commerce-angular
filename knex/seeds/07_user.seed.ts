@@ -6,31 +6,42 @@ import { deleteAllUserRoles, insertUserRole } from "../../src/shared/repositorie
 import { RoleId } from "../../src/domain/authorization/enums/role-id.enum";
 import { UserRoleEntity } from "../../src/entities/user-role.entity";
 
+export const adminUserSeed: UserEntityWithRoles = {
+    id: 1,
+    name: 'ADMIN',
+    roles: [RoleId.ADMIN],
+}
+
+export const teacherUserSeed: UserEntityWithRoles = {
+    id: 2,
+    name: 'TEACHER',
+    roles: [RoleId.TEACHER],
+}
+
+export const studentUserSeed: UserEntityWithRoles = {
+    id: 3,
+    name: 'STUDENT',
+    roles: [RoleId.STUDENT],
+}
+
+export const guardianUserSeed: UserEntityWithRoles = {
+    id: 4,
+    name: 'GUARDIAN',
+    roles: [RoleId.GUARDIAN],
+}
+
+
+
+
 interface UserEntityWithRoles extends UserEntity {
     roles: RoleId[];
 }
 
 const users: UserEntityWithRoles[] = [
-    {
-        id: 1,
-        name: 'ADMIN',
-        roles: [RoleId.ADMIN],
-    },
-    {
-        id: 2,
-        name: 'TEACHER',
-        roles: [RoleId.TEACHER],
-    },
-    {
-        id: 3,
-        name: 'STUDENT',
-        roles: [RoleId.STUDENT],
-    },
-    {
-        id: 4,
-        name: 'GUARDIAN',
-        roles: [RoleId.GUARDIAN],
-    },
+    adminUserSeed,
+    teacherUserSeed,
+    studentUserSeed,
+    guardianUserSeed,
 ];
 
 for (let index = 5; index <= 30; index++) {

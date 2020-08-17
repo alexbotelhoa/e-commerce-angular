@@ -4,6 +4,7 @@ type Level {
     description: String
     order: Int!
     active: Boolean!
+    typeId: LevelTypeId!
     levelThemes: [LevelTheme!]!
     codes: [LevelCode!]!
 }

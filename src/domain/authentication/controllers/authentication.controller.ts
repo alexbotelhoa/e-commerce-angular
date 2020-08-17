@@ -2,8 +2,10 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { AuthenticationBody } from "../types/authentication.types";
 import { RoleId } from "../../authorization/enums/role-id.enum";
 import { JWTPayload } from "../types/jwt-payload.type";
+import { DatabaseService } from "../../../shared/services/database.service";
+import { getUserById, insertUser } from "../../../shared/repositories/user.repository";
 
-export const authenticationController = (redirectUrl: string) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+export const authenticationController = (redirectUrl: string, db: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
     const body: AuthenticationBody = request.body as any;
 
     // use userId = 1 as default for now
@@ -34,6 +36,17 @@ export const authenticationController = (redirectUrl: string) => async (request:
         userId: userId,
         roles: roles,
     }
+
+    const userEntity = await getUserById(db)(userId);
+
+    if (!userEntity) {
+        await insertUser(db)({
+            id: userId,
+            name: body.Nome,
+        });
+    }
+
+
 
     const jwt = await reply.jwtSign(jwtPayload);
     reply.redirect(`${redirectUrl}?jwt=${jwt}`);

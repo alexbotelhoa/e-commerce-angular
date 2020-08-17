@@ -1,5 +1,7 @@
 export interface LevelCodeEntity {
-    id: string;
+    id: number;
+    code: string;
+    description: string;
     active: boolean;
     createdAt: string;
 }

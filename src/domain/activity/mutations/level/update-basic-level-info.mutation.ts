@@ -10,7 +10,7 @@ export const updateBasicLevelInfoMutationResolver: GQLMutationResolvers['updateB
         throw new Error(`Level with id ${data.id} not found.`);
     }
     const levelLevelCodes: LevelLevelCodeEntity[] = data.codes.map<LevelLevelCodeEntity>(codeId => ({
-        levelCodeId: codeId,
+        levelCodeId: parseInt(codeId, 10),
         levelId: parseInt(data.id, 10),
     }));
     await context.database.transaction(async (trx) => {

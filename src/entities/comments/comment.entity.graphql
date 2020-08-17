@@ -1,0 +1,6 @@
+type Comment {
+    id: ID!
+    text: String!
+    userId: ID!
+    parentId: ID
+}

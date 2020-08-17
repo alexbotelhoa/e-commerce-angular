@@ -1,4 +1,4 @@
-import { GQLResolvers, ActivityTypeId } from "./resolvers-types";
+import { GQLResolvers, ActivityTypeId, LevelTypeId } from "./resolvers-types";
 
 import { mutationResolvers } from "./shared/resolvers/mutation.resolvers"
 import { queryResolvers } from "./shared/resolvers/query.resolvers"
@@ -24,6 +24,10 @@ import { embeddedActivityDataResolvers } from "./domain/activity/types/activity-
 import { htmlActivityDataResolvers } from "./domain/activity/types/activity-types/html/html-activity-data.resolvers";
 import { dateTimeScalarResolver } from "./shared/scalars/datetime.scalar";
 import { themeIconResolvers } from "./shared/resolvers/theme-icon.resolvers";
+import { classResolvers } from "./shared/resolvers/class.resolvers";
+import { enrollmentResolvers } from "./shared/resolvers/enrollment.resolver";
+import { commentResolvers } from "./shared/resolvers/comment.resolvers";
+import { activityCommentResolvers } from "./shared/resolvers/activity-comment.resolvers";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData';
 
@@ -39,6 +43,7 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     CycleActivity: cycleActivityResolvers,
     ActivityUnion: activityUnionResolvers,
     ActivityTypeId: ActivityTypeId,
+    LevelTypeId: LevelTypeId,
     RoleId: RoleId,
     PermissionId: PermissionId,
     EmbeddedActivity: embeddedActivityResolvers,
@@ -52,6 +57,10 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     EmbeddedActivityData: embeddedActivityDataResolvers,
     HtmlActivityData: htmlActivityDataResolvers,
     DateTime: dateTimeScalarResolver,
+    Class: classResolvers,
+    Enrollment: enrollmentResolvers,
+    ActivityComment: activityCommentResolvers,
+    Comment: commentResolvers,
 };
 
 
