@@ -1,9 +1,11 @@
 import * as Knex from "knex";
 import { ACTIVITY_TABLE } from "../../src/entities/activity.entity";
+import { setUTF8Table } from "../utils/set-utf8-table.migration";
 
 
 export async function up(knex: Knex): Promise<void> {
     await knex.schema.createTableIfNotExists(ACTIVITY_TABLE, (table) => {
+        setUTF8Table(table);
         table.increments('id');
         table.string('name', 100).notNullable();
         table.string('description', 2000);

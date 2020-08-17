@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
     await knex.schema.alterTable(CYCLE_TABLE, (table) => {
-        table.dropColumn('order');
         table.dropIndex('order');
+        table.dropColumn('order');
     })
 }

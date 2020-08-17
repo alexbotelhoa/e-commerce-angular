@@ -1,9 +1,11 @@
 import * as Knex from "knex";
 import { LEVEL_THEME_TABLE } from "../../src/entities/level-theme.entity"
+import { setUTF8Table } from "../utils/set-utf8-table.migration";
 
 
 export async function up(knex: Knex): Promise<void> {
     await knex.schema.createTableIfNotExists(LEVEL_THEME_TABLE, (table) => {
+        setUTF8Table(table);
         table.increments('id');
         table.integer('order', 3).defaultTo(0);
 

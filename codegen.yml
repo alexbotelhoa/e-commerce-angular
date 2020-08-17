@@ -18,6 +18,7 @@ generates:
       contextType: ./shared/types/context.type#GraphQLContext
       enumValues:
         ActivityTypeId: ./domain/activity/enums/activity-type.enum#ActivityTypeId
+        LevelTypeId: ./domain/activity/enums/level-type.enum#LevelTypeId
         RoleId: ./domain/authorization/enums/role-id.enum#RoleId
         PermissionId: ./domain/authorization/enums/permission-id.enum#PermissionId
       mappers:
@@ -27,8 +28,12 @@ generates:
         EmbeddedActivityData: ./entities/activities/embedded-activity-data.entity#EmbeddedActivityDataEntity
         HtmlActivity: ./entities/activity.entity#ActivityEntity
         HtmlActivityData: ./entities/activities/html-activity-data.entity#HtmlActivityDataEntity
+        Class: ./entities/class.entity#ClassEntity
+        Comment: ./entities/comments/comment.entity#CommentEntity
+        ActivityComment: ./entities/comments/activity-comment.entity#ActivityCommentEntity
         Cycle: ./entities/cycle.entity#CycleEntity
         CycleActivity: ./entities/cycle-activity.entity#CycleActivityEntity
+        Enrollment: ./entities/enrollment.entity#EnrollmentEntity
         LevelTheme: ./entities/level-theme.entity#LevelThemeEntity
         LevelCode: ./entities/level-code.entity#LevelCodeEntity
         Level: ./entities/level.entity#LevelEntity

@@ -5,6 +5,8 @@ const levelCodeEntityResolvers: Pick<GQLLevelCodeResolvers, keyof LevelCodeEntit
     id: obj => obj.id.toString(),
     active: obj => obj.active,
     createdAt: obj => obj.createdAt,
+    code: obj => obj.code,
+    description: obj => obj.description,
 }
 
 export const levelCodeResolvers: GQLLevelCodeResolvers = {

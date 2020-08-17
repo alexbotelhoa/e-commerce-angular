@@ -75,7 +75,7 @@ const app = fastify({
 
   app.post('/authentication', {
     schema: {}
-  }, authenticationController(environment.CI_PORTAL_URL));
+  }, authenticationController(environment.CI_PORTAL_URL, databaseService));
 })();
 
 
