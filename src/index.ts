@@ -17,7 +17,8 @@ export const databaseService: DatabaseService = databaseServiceFactory(databaseC
 
 // Require the framework and instantiate it
 const app = fastify({
-  logger: true
+  logger: true,
+  bodyLimit: 4 * 1024 * 1024 // 4MiB
 });
 
 (async function () {
