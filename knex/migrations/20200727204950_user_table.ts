@@ -4,11 +4,14 @@ import { setUTF8Table } from "../utils/set-utf8-table.migration";
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTableIfNotExists(USER_TABLE, (table) => {
-        setUTF8Table(table);
-        table.integer('id').unsigned().primary();
-        table.string('name', 200).notNullable();
-    });
+    const hasTable = await knex.schema.hasTable(USER_TABLE);
+    if (!hasTable) {
+        await knex.schema.createTable(USER_TABLE, (table) => {
+            setUTF8Table(table);
+            table.integer('id').unsigned().primary();
+            table.string('name', 200).notNullable();
+        });
+    }
 }
 
 

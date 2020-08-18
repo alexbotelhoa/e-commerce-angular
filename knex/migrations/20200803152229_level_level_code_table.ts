@@ -4,12 +4,15 @@ import { setUTF8Table } from "../utils/set-utf8-table.migration";
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTableIfNotExists(LEVEL_LEVEL_CODE_TABLE, (table) => {
-        setUTF8Table(table);
-        table.integer('levelId').unsigned().references('level.id').onDelete("CASCADE");
-        table.string('levelCodeId', 30).references('level_code.id').onDelete("CASCADE");
-        table.primary(['levelId', 'levelCodeId']);
-    });
+    const hasTable = await knex.schema.hasTable(LEVEL_LEVEL_CODE_TABLE);
+    if (!hasTable) {
+        await knex.schema.createTable(LEVEL_LEVEL_CODE_TABLE, (table) => {
+            setUTF8Table(table);
+            table.integer('levelId').unsigned().references('level.id').onDelete("CASCADE");
+            table.string('levelCodeId', 30).references('level_code.id').onDelete("CASCADE");
+            table.primary(['levelId', 'levelCodeId']);
+        });
+    }
 }
 
 

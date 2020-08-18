@@ -6,13 +6,16 @@ import { CLASS_TABLE } from "../../src/entities/class.entity";
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable(ACTIVITY_COMMENT_TABLE, (table) => {
-        setUTF8Table(table);
-        // using a weak key to the comment table
-        table.integer('commentId').unsigned().primary().references(`${COMMENT_TABLE}.id`).onDelete("CASCADE");
-        table.integer('classId').unsigned().notNullable().references(`${CLASS_TABLE}.id`).onDelete("CASCADE");
-        table.index('classId');
-    });
+    const hasTable = await knex.schema.hasTable(ACTIVITY_COMMENT_TABLE);
+    if (!hasTable) {
+        await knex.schema.createTable(ACTIVITY_COMMENT_TABLE, (table) => {
+            setUTF8Table(table);
+            // using a weak key to the comment table
+            table.integer('commentId').unsigned().primary().references(`${COMMENT_TABLE}.id`).onDelete("CASCADE");
+            table.integer('classId').unsigned().notNullable().references(`${CLASS_TABLE}.id`).onDelete("CASCADE");
+            table.index('classId');
+        });
+    }
 }
 
 

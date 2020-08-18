@@ -6,15 +6,18 @@ import { TEACHER_CLASS_TABLE } from "../../src/entities/teacher-class.entity";
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTableIfNotExists(TEACHER_CLASS_TABLE, (table) => {
-        setUTF8Table(table);
-        table.increments('id');
-        table.integer('teacherId').unsigned().notNullable().references(`${USER_TABLE}.id`).onDelete('CASCADE');
-        table.integer('classId').unsigned().notNullable().references(`${CLASS_TABLE}.id`).onDelete('CASCADE');
-        table.index(['teacherId', 'classId']);
-        // add inverted index too to optimize all search cases
-        table.index(['classId', 'teacherId']);
-    });
+    const hasTable = await knex.schema.hasTable(TEACHER_CLASS_TABLE);
+    if (!hasTable) {
+        await knex.schema.createTable(TEACHER_CLASS_TABLE, (table) => {
+            setUTF8Table(table);
+            table.increments('id');
+            table.integer('teacherId').unsigned().notNullable().references(`${USER_TABLE}.id`).onDelete('CASCADE');
+            table.integer('classId').unsigned().notNullable().references(`${CLASS_TABLE}.id`).onDelete('CASCADE');
+            table.index(['teacherId', 'classId']);
+            // add inverted index too to optimize all search cases
+            table.index(['classId', 'teacherId']);
+        });
+    }
 }
 
 
