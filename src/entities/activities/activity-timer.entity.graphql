@@ -1,0 +1,8 @@
+type ActivityTimer {
+    id: ID!
+    userId: ID!
+    cycleActivityId: ID!
+    startTime: DateTime!
+    completionTime: DateTime
+    completed: Boolean!
+}
