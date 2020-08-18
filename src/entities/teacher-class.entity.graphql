@@ -1,0 +1,5 @@
+type TeacherClass {
+    id: ID!
+    teacherId: ID!
+    classId: ID!
+}

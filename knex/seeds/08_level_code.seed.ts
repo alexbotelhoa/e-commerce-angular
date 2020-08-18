@@ -1,6 +1,7 @@
 import * as Knex from "knex";
 import { deleteAllLevelCodes, insertLevelCode } from "../../src/shared/repositories/level-code.repository";
 import { LevelCodeEntity } from "../../src/entities/level-code.entity";
+import { deleteAllClasses } from "../../src/shared/repositories/class.repository";
 
 export const basic1LevelCodeSeed: Omit<LevelCodeEntity, 'createdAt'> = {
     id: 1,
@@ -44,9 +45,12 @@ export const advanced2LevelCodeSeed: Omit<LevelCodeEntity, 'createdAt'> = {
     active: true,
 }
 
-export async function seed(knex: Knex<LevelCodeEntity, LevelCodeEntity[]>): Promise<void> {
+export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
+    // we need to delete classes here because it is not set to cascade for safety reasons
+    await deleteAllClasses(knex);
     await deleteAllLevelCodes(knex);
+
 
     // Inserts seed entries
     await insertLevelCode(knex)([

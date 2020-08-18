@@ -3,7 +3,7 @@ export interface ActivityTimerEntity {
     userId: number;
     cycleActivityId: number;
     startTime: string;
-    completionTime: string | null;
+    completionTime: string | Date | null;
     completed: boolean;
 }
 
