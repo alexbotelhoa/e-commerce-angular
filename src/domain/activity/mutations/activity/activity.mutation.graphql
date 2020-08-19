@@ -9,6 +9,7 @@ input CreateEmbeddedActivityInput {
     name: String!
     description: String
     active: Boolean!
+    estimatedTime: String!
     data: EmbeddedActivityDataInput!
 }
 
@@ -16,6 +17,7 @@ input CreateHtmlActivityInput {
     name: String!
     description: String
     active: Boolean!
+    estimatedTime: String!
     data: HtmlActivityDataInput!
 }
 

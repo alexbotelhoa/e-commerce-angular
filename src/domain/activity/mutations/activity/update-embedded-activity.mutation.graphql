@@ -7,5 +7,6 @@ input UpdateEmbeddedActivityInput {
     name: String!
     description: String!
     active: Boolean!
+    estimatedTime: String!
     data: EmbeddedActivityDataInput!
 }

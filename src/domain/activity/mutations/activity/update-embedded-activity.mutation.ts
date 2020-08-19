@@ -20,6 +20,7 @@ export const updateEmbeddedActivityMutationResolver: GQLMutationResolvers['updat
             active: data.active,
             description: data.description,
             name: data.name,
+            estimatedTime: data.estimatedTime
         })(builder => builder.andWhere('id', data.id));
 
         await updateEmbeddedActivityData(trx)({

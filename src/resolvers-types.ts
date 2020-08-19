@@ -205,6 +205,7 @@ export type GQLCreateEmbeddedActivityInput = {
   readonly name: Scalars['String'];
   readonly description: Maybe<Scalars['String']>;
   readonly active: Scalars['Boolean'];
+  readonly estimatedTime: Scalars['String'];
   readonly data: GQLEmbeddedActivityDataInput;
 };
 
@@ -212,6 +213,7 @@ export type GQLCreateHtmlActivityInput = {
   readonly name: Scalars['String'];
   readonly description: Maybe<Scalars['String']>;
   readonly active: Scalars['Boolean'];
+  readonly estimatedTime: Scalars['String'];
   readonly data: GQLHtmlActivityDataInput;
 };
 
@@ -229,6 +231,7 @@ export type GQLUpdateEmbeddedActivityInput = {
   readonly name: Scalars['String'];
   readonly description: Scalars['String'];
   readonly active: Scalars['Boolean'];
+  readonly estimatedTime: Scalars['String'];
   readonly data: GQLEmbeddedActivityDataInput;
 };
 
