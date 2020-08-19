@@ -7,6 +7,7 @@ import { UserEntity } from './entities/user.entity';
 import { ActivityType } from './domain/activity/types/activity-type.type';
 import { ActivityEntity } from './entities/activity.entity';
 import { EmbeddedActivityDataEntity } from './entities/activities/embedded-activity-data.entity';
+import { ActivityTimerEntity } from './entities/activities/activity-timer.entity';
 import { HtmlActivityDataEntity } from './entities/activities/html-activity-data.entity';
 import { ClassEntity } from './entities/class.entity';
 import { CommentEntity } from './entities/comments/comment.entity';
@@ -24,7 +25,7 @@ import { Role } from './domain/authorization/types/role.type';
 import { Permission } from './domain/authorization/types/permission.type';
 import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -448,6 +449,16 @@ export type GQLActivityData = {
   readonly activityId: Scalars['ID'];
 };
 
+export type GQLActivityTimer = {
+  readonly __typename?: 'ActivityTimer';
+  readonly id: Scalars['ID'];
+  readonly userId: Scalars['ID'];
+  readonly cycleActivityId: Scalars['ID'];
+  readonly startTime: Scalars['DateTime'];
+  readonly completionTime: Maybe<Scalars['DateTime']>;
+  readonly completed: Scalars['Boolean'];
+};
+
 export type GQLEmbeddedActivityData = GQLActivityData & {
   readonly __typename?: 'EmbeddedActivityData';
   readonly activityId: Scalars['ID'];
@@ -707,6 +718,7 @@ export type GQLResolversTypes = {
   Permission: ResolverTypeWrapper<Permission>;
   Role: ResolverTypeWrapper<Role>;
   ActivityData: GQLResolversTypes['EmbeddedActivityData'] | GQLResolversTypes['HtmlActivityData'];
+  ActivityTimer: ResolverTypeWrapper<ActivityTimerEntity>;
   EmbeddedActivityData: ResolverTypeWrapper<EmbeddedActivityDataEntity>;
   HtmlActivityData: ResolverTypeWrapper<HtmlActivityDataEntity>;
   Activity: GQLResolversTypes['EmbeddedActivity'] | GQLResolversTypes['HtmlActivity'];
@@ -762,6 +774,7 @@ export type GQLResolversParentTypes = {
   Permission: Permission;
   Role: Role;
   ActivityData: GQLResolversParentTypes['EmbeddedActivityData'] | GQLResolversParentTypes['HtmlActivityData'];
+  ActivityTimer: ActivityTimerEntity;
   EmbeddedActivityData: EmbeddedActivityDataEntity;
   HtmlActivityData: HtmlActivityDataEntity;
   Activity: GQLResolversParentTypes['EmbeddedActivity'] | GQLResolversParentTypes['HtmlActivity'];
@@ -891,6 +904,16 @@ export type GQLRoleResolvers<ContextType = GraphQLContext, ParentType extends GQ
 export type GQLActivityDataResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ActivityData'] = GQLResolversParentTypes['ActivityData']> = {
   __resolveType: TypeResolveFn<'EmbeddedActivityData' | 'HtmlActivityData', ParentType, ContextType>;
   activityId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+};
+
+export type GQLActivityTimerResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ActivityTimer'] = GQLResolversParentTypes['ActivityTimer']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  userId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  cycleActivityId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  startTime: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
+  completionTime: Resolver<Maybe<GQLResolversTypes['DateTime']>, ParentType, ContextType>;
+  completed: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type GQLEmbeddedActivityDataResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['EmbeddedActivityData'] = GQLResolversParentTypes['EmbeddedActivityData']> = {
@@ -1048,15 +1071,16 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   ActivityType: GQLActivityTypeResolvers<ContextType>;
   EmbeddedActivity: GQLEmbeddedActivityResolvers<ContextType>;
   HtmlActivity: GQLHtmlActivityResolvers<ContextType>;
-  ActivityUnion: GQLActivityUnionResolvers;
+  ActivityUnion: GQLActivityUnionResolvers<ContextType>;
   PermissionId: GQLPermissionIdResolvers;
   RoleId: GQLRoleIdResolvers;
   Permission: GQLPermissionResolvers<ContextType>;
   Role: GQLRoleResolvers<ContextType>;
-  ActivityData: GQLActivityDataResolvers;
+  ActivityData: GQLActivityDataResolvers<ContextType>;
+  ActivityTimer: GQLActivityTimerResolvers<ContextType>;
   EmbeddedActivityData: GQLEmbeddedActivityDataResolvers<ContextType>;
   HtmlActivityData: GQLHtmlActivityDataResolvers<ContextType>;
-  Activity: GQLActivityResolvers;
+  Activity: GQLActivityResolvers<ContextType>;
   Class: GQLClassResolvers<ContextType>;
   ActivityComment: GQLActivityCommentResolvers<ContextType>;
   Comment: GQLCommentResolvers<ContextType>;

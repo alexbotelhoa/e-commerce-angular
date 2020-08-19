@@ -27,6 +27,7 @@ generates:
         EmbeddedActivity: ./entities/activity.entity#ActivityEntity
         EmbeddedActivityData: ./entities/activities/embedded-activity-data.entity#EmbeddedActivityDataEntity
         HtmlActivity: ./entities/activity.entity#ActivityEntity
+        ActivityTimer: ./entities/activities/activity-timer.entity#ActivityTimerEntity
         HtmlActivityData: ./entities/activities/html-activity-data.entity#HtmlActivityDataEntity
         Class: ./entities/class.entity#ClassEntity
         Comment: ./entities/comments/comment.entity#CommentEntity
