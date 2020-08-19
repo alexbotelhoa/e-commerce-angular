@@ -384,6 +384,7 @@ export type GQLQuery = {
   readonly levelThemes: ReadonlyArray<GQLLevelTheme>;
   readonly levels: ReadonlyArray<GQLLevel>;
   readonly myEnrollments: ReadonlyArray<GQLEnrollment>;
+  readonly myLevels: ReadonlyArray<GQLLevel>;
   readonly theme: Maybe<GQLTheme>;
   readonly themes: ReadonlyArray<GQLTheme>;
 };
@@ -946,6 +947,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   levelThemes: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType>;
   levels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
   myEnrollments: Resolver<ReadonlyArray<GQLResolversTypes['Enrollment']>, ParentType, ContextType>;
+  myLevels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
   theme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQuerythemeArgs, 'id'>>;
   themes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType>;
 };

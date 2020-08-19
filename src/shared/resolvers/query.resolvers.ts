@@ -24,6 +24,7 @@ import { levelCodesQueryResolver } from "../../domain/activity/queries/level-cod
 import { themeIconsQueryResolver } from "../../domain/activity/queries/icons/icons.query";
 import { classesQueryResolver } from "../../domain/activity/queries/class/classes.query";
 import { myEnrollmentsQueryResolver } from "../../domain/activity/queries/my-enrollments/my-enrollments.query";
+import { myLevelQueryResolver } from "../../domain/activity/queries/my-levels/my-levels.query";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -45,4 +46,5 @@ export const queryResolvers: GQLResolvers['Query'] = {
     icons: themeIconsQueryResolver,
     classes: classesQueryResolver,
     myEnrollments: myEnrollmentsQueryResolver,
+    myLevels: myLevelQueryResolver,
 }
