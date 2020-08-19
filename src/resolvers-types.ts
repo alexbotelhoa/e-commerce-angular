@@ -14,6 +14,7 @@ import { ActivityCommentEntity } from './entities/comments/activity-comment.enti
 import { CycleEntity } from './entities/cycle.entity';
 import { CycleActivityEntity } from './entities/cycle-activity.entity';
 import { EnrollmentEntity } from './entities/enrollment.entity';
+import { EnrollmentClassEntity } from './entities/enrollment-class.entity';
 import { TeacherClassEntity } from './entities/teacher-class.entity';
 import { LevelThemeEntity } from './entities/level-theme.entity';
 import { LevelCodeEntity } from './entities/level-code.entity';
@@ -25,6 +26,7 @@ import { Role } from './domain/authorization/types/role.type';
 import { Permission } from './domain/authorization/types/permission.type';
 import { SimpleError } from './shared/types/errors/simple-error.type';
 import { GenericError } from './shared/types/errors/generic-error.interface';
+import { DeleteActivityCommentSuccessResult } from './domain/activity/mutations/delete-activity-comment/delete-activity-comment-success-result.type';
 import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -297,7 +299,13 @@ export type GQLDeleteActivityCommentInput = {
   readonly commentId: Scalars['ID'];
 };
 
-export type GQLDeleteActivityCommentResult = GQLActivity | GQLSimpleError;
+export type GQLDeleteActivityCommentSuccessResult = {
+  readonly __typename?: 'DeleteActivityCommentSuccessResult';
+  readonly success: Scalars['Boolean'];
+  readonly activity: GQLActivityUnion;
+};
+
+export type GQLDeleteActivityCommentResult = GQLDeleteActivityCommentSuccessResult | GQLSimpleError;
 
 export type GQLUpdateLevelThemesOrderInput = {
   readonly levelThemeId: Scalars['ID'];
@@ -559,12 +567,20 @@ export type GQLCycle = {
   readonly totalActivities: Scalars['Int'];
 };
 
+export type GQLEnrollmentClass = {
+  readonly __typename?: 'EnrollmentClass';
+  readonly id: Scalars['ID'];
+  readonly enrollmentId: Scalars['ID'];
+  readonly classId: Scalars['ID'];
+  readonly class: GQLClass;
+};
+
 export type GQLEnrollment = {
   readonly __typename?: 'Enrollment';
   readonly id: Scalars['ID'];
   readonly userId: Scalars['ID'];
-  readonly classId: Scalars['ID'];
-  readonly class: GQLClass;
+  readonly levelCodeId: Scalars['ID'];
+  readonly levelCode: GQLLevelCode;
 };
 
 export type GQLLevelCode = {
@@ -752,7 +768,8 @@ export type GQLResolversTypes = {
   AddActivitiesToCycleInput: GQLAddActivitiesToCycleInput;
   UpdateCyclesOrderInput: GQLUpdateCyclesOrderInput;
   DeleteActivityCommentInput: GQLDeleteActivityCommentInput;
-  DeleteActivityCommentResult: GQLResolversTypes['Activity'] | GQLResolversTypes['SimpleError'];
+  DeleteActivityCommentSuccessResult: ResolverTypeWrapper<DeleteActivityCommentSuccessResult>;
+  DeleteActivityCommentResult: GQLResolversTypes['DeleteActivityCommentSuccessResult'] | GQLResolversTypes['SimpleError'];
   UpdateLevelThemesOrderInput: GQLUpdateLevelThemesOrderInput;
   CreateLevelCodeInput: GQLCreateLevelCodeInput;
   CreateLevelInput: GQLCreateLevelInput;
@@ -767,7 +784,7 @@ export type GQLResolversTypes = {
   ActivityType: ResolverTypeWrapper<ActivityType>;
   EmbeddedActivity: ResolverTypeWrapper<ActivityEntity>;
   HtmlActivity: ResolverTypeWrapper<ActivityEntity>;
-  ActivityUnion: GQLResolversTypes['EmbeddedActivity'] | GQLResolversTypes['HtmlActivity'];
+  ActivityUnion: ResolverTypeWrapper<ActivityEntity>;
   PermissionId: PermissionId;
   RoleId: RoleId;
   Permission: ResolverTypeWrapper<Permission>;
@@ -782,6 +799,7 @@ export type GQLResolversTypes = {
   Comment: GQLResolversTypes['ActivityComment'];
   CycleActivity: ResolverTypeWrapper<CycleActivityEntity>;
   Cycle: ResolverTypeWrapper<CycleEntity>;
+  EnrollmentClass: ResolverTypeWrapper<EnrollmentClassEntity>;
   Enrollment: ResolverTypeWrapper<EnrollmentEntity>;
   LevelCode: ResolverTypeWrapper<LevelCodeEntity>;
   LevelTheme: ResolverTypeWrapper<LevelThemeEntity>;
@@ -817,7 +835,8 @@ export type GQLResolversParentTypes = {
   AddActivitiesToCycleInput: GQLAddActivitiesToCycleInput;
   UpdateCyclesOrderInput: GQLUpdateCyclesOrderInput;
   DeleteActivityCommentInput: GQLDeleteActivityCommentInput;
-  DeleteActivityCommentResult: GQLResolversParentTypes['Activity'] | GQLResolversParentTypes['SimpleError'];
+  DeleteActivityCommentSuccessResult: DeleteActivityCommentSuccessResult;
+  DeleteActivityCommentResult: GQLResolversParentTypes['DeleteActivityCommentSuccessResult'] | GQLResolversParentTypes['SimpleError'];
   UpdateLevelThemesOrderInput: GQLUpdateLevelThemesOrderInput;
   CreateLevelCodeInput: GQLCreateLevelCodeInput;
   CreateLevelInput: GQLCreateLevelInput;
@@ -832,7 +851,7 @@ export type GQLResolversParentTypes = {
   ActivityType: ActivityType;
   EmbeddedActivity: ActivityEntity;
   HtmlActivity: ActivityEntity;
-  ActivityUnion: GQLResolversParentTypes['EmbeddedActivity'] | GQLResolversParentTypes['HtmlActivity'];
+  ActivityUnion: ActivityEntity;
   Permission: Permission;
   Role: Role;
   ActivityData: GQLResolversParentTypes['EmbeddedActivityData'] | GQLResolversParentTypes['HtmlActivityData'];
@@ -845,6 +864,7 @@ export type GQLResolversParentTypes = {
   Comment: GQLResolversParentTypes['ActivityComment'];
   CycleActivity: CycleActivityEntity;
   Cycle: CycleEntity;
+  EnrollmentClass: EnrollmentClassEntity;
   Enrollment: EnrollmentEntity;
   LevelCode: LevelCodeEntity;
   LevelTheme: LevelThemeEntity;
@@ -898,8 +918,14 @@ export type GQLCreateCommentOnActivityResultResolvers<ContextType = GraphQLConte
   __resolveType: TypeResolveFn<'ActivityComment' | 'SimpleError', ParentType, ContextType>;
 };
 
+export type GQLDeleteActivityCommentSuccessResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['DeleteActivityCommentSuccessResult'] = GQLResolversParentTypes['DeleteActivityCommentSuccessResult']> = {
+  success: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  activity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type GQLDeleteActivityCommentResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['DeleteActivityCommentResult'] = GQLResolversParentTypes['DeleteActivityCommentResult']> = {
-  __resolveType: TypeResolveFn<'Activity' | 'SimpleError', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'DeleteActivityCommentSuccessResult' | 'SimpleError', ParentType, ContextType>;
 };
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
@@ -1064,11 +1090,19 @@ export type GQLCycleResolvers<ContextType = GraphQLContext, ParentType extends G
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type GQLEnrollmentClassResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['EnrollmentClass'] = GQLResolversParentTypes['EnrollmentClass']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  enrollmentId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  class: Resolver<GQLResolversTypes['Class'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type GQLEnrollmentResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Enrollment'] = GQLResolversParentTypes['Enrollment']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   userId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
-  classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
-  class: Resolver<GQLResolversTypes['Class'], ParentType, ContextType>;
+  levelCodeId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  levelCode: Resolver<GQLResolversTypes['LevelCode'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1167,6 +1201,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   LevelTypeId: GQLLevelTypeIdResolvers;
   Mutation: GQLMutationResolvers<ContextType>;
   CreateCommentOnActivityResult: GQLCreateCommentOnActivityResultResolvers<ContextType>;
+  DeleteActivityCommentSuccessResult: GQLDeleteActivityCommentSuccessResultResolvers<ContextType>;
   DeleteActivityCommentResult: GQLDeleteActivityCommentResultResolvers<ContextType>;
   Query: GQLQueryResolvers<ContextType>;
   ActivityType: GQLActivityTypeResolvers<ContextType>;
@@ -1187,6 +1222,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Comment: GQLCommentResolvers<ContextType>;
   CycleActivity: GQLCycleActivityResolvers<ContextType>;
   Cycle: GQLCycleResolvers<ContextType>;
+  EnrollmentClass: GQLEnrollmentClassResolvers<ContextType>;
   Enrollment: GQLEnrollmentResolvers<ContextType>;
   LevelCode: GQLLevelCodeResolvers<ContextType>;
   LevelTheme: GQLLevelThemeResolvers<ContextType>;

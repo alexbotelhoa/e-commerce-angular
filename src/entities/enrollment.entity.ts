@@ -1,7 +1,7 @@
 export interface EnrollmentEntity {
     id: number;
     userId: number;
-    classId: number;
+    levelCodeId: number;
 }
 
 export const ENROLLMENT_TABLE = 'enrollment';

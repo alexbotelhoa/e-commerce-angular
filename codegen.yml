@@ -24,6 +24,7 @@ generates:
       mappers:
         User: ./entities/user.entity#UserEntity
         ActivityType: ./domain/activity/types/activity-type.type#ActivityType
+        ActivityUnion: ./entities/activity.entity#ActivityEntity
         EmbeddedActivity: ./entities/activity.entity#ActivityEntity
         EmbeddedActivityData: ./entities/activities/embedded-activity-data.entity#EmbeddedActivityDataEntity
         HtmlActivity: ./entities/activity.entity#ActivityEntity
@@ -34,6 +35,7 @@ generates:
         Cycle: ./entities/cycle.entity#CycleEntity
         CycleActivity: ./entities/cycle-activity.entity#CycleActivityEntity
         Enrollment: ./entities/enrollment.entity#EnrollmentEntity
+        EnrollmentClass: ./entities/enrollment-class.entity#EnrollmentClassEntity
         TeacherClass: ./entities/teacher-class.entity#TeacherClassEntity
         LevelTheme: ./entities/level-theme.entity#LevelThemeEntity
         LevelCode: ./entities/level-code.entity#LevelCodeEntity
@@ -45,3 +47,4 @@ generates:
         Permission: ./domain/authorization/types/permission.type#Permission
         SimpleError: ./shared/types/errors/simple-error.type#SimpleError
         GenericError: ./shared/types/errors/generic-error.interface#GenericError
+        DeleteActivityCommentSuccessResult: ./domain/activity/mutations/delete-activity-comment/delete-activity-comment-success-result.type#DeleteActivityCommentSuccessResult

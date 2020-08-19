@@ -17,6 +17,11 @@ import { insertTeacherClass, selectTeacherClass, deleteTeacherClass } from "../.
 import { GuardianStudentEntity } from "../../../entities/guardian-student.entity";
 import { insertGuardianStudent, selectGuardianStudent, deleteGuardianStudent } from "../../../shared/repositories/guardian-student.repository";
 import { UserEntity } from "../../../entities/user.entity";
+import { EnrollmentClassEntity } from "../../../entities/enrollment-class.entity";
+import { LevelCodeEntity } from "../../../entities/level-code.entity";
+import { selectLevelCode, insertLevelCode } from "../../../shared/repositories/level-code.repository";
+import { pickObject } from "../../../shared/utils/pick-object.util";
+import { insertEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 
 const AlunosResponsavel = t.type({
     Id: t.Int,
@@ -38,6 +43,12 @@ const AuthenticationInput = t.type({
 });
 
 const exactAuthenticationInput = t.exact(AuthenticationInput);
+
+type EnrollmentWithClasses = Omit<EnrollmentEntity, 'id'> & {
+    classes: Omit<EnrollmentClassEntity, 'id' | 'enrollmentId'>[];
+}
+
+const pickEnrollmentForInsert = pickObject<EnrollmentWithClasses, 'userId' | 'levelCodeId'>(['userId', 'levelCodeId']);
 
 export const authenticationController = (redirectUrl: string, db: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
 
@@ -124,14 +135,44 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
         })
         .reduce<ClassEntity[]>(concatArrayReducer, []);
 
-    const enrollmentEntities: Omit<EnrollmentEntity, 'id'>[] = matriculasAluno
-        .map(matricula => {
-            return matricula.Turmas
-                .map<Omit<EnrollmentEntity, 'id'>>(turma => ({
-                    classId: turma.Id,
-                    userId: userId,
-                }))
-        }).reduce(concatArrayReducer, []);
+    const levelCodeEntities = matriculasAluno.map<Pick<LevelCodeEntity, 'id' | 'code' | 'active' | 'description'>>(matricula => ({
+        id: matricula.Id,
+        code: matricula.Nome,
+        active: true,
+        description: matricula.Nome,
+    }));
+
+    const levelCodeIds = levelCodeEntities.map(code => code.id);
+
+    const savedLevelCodes = levelCodeIds.length > 0
+        ? await selectLevelCode(db).whereIn('id', levelCodeIds)
+        : [];
+
+    // filter out levelCodes that are already saved
+    const levelCodesToInsert = levelCodeEntities.filter(levelCode => !savedLevelCodes.find(savedLevelCode => savedLevelCode.id === levelCode.id));
+
+    if (levelCodesToInsert.length > 0) {
+        await insertLevelCode(db)(levelCodesToInsert);
+    }
+
+    const enrollmentEntities = matriculasAluno
+        .map<EnrollmentWithClasses>(matricula => ({
+            classes: matricula.Turmas.map<Omit<EnrollmentClassEntity, 'id' | 'enrollmentId'>>(turma => ({
+                classId: turma.Id,
+                userId: userId,
+            })),
+            levelCodeId: matricula.Id,
+            userId: userId,
+        }));
+
+    // const enrollmentClassEntities: Omit<EnrollmentClassEntity, 'id'>[] = matriculasAluno
+    //     .map(matricula => {
+    //         return matricula.Turmas
+    //             .map<Omit<EnrollmentClassEntity, 'id'>>(turma => ({
+    //                 classId: turma.Id,
+    //                 userId: userId,
+    //             }))
+    //     }).reduce(concatArrayReducer, []);
 
     const teacherClassEntities = turmasProfessor.map<Omit<TeacherClassEntity, 'id'>>(turma => ({
         classId: turma.Id,
@@ -177,7 +218,10 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
             await insertUserRole(db)(userRoleEntities);
         }
         if (enrollmentEntities.length > 0) {
-            await insertEnrollment(db)(enrollmentEntities);
+            for (let index = 0; index < enrollmentEntities.length; index++) {
+                const element = enrollmentEntities[index];
+                await insertEnrollmentWithClasses(db, element);
+            }
         }
         if (possibleTeacherClassesToInsert.length > 0) {
             await insertTeacherClass(db)(possibleTeacherClassesToInsert);
@@ -203,6 +247,17 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     reply.redirect(`${redirectUrl}?jwt=${jwt}`);
 }
 
+async function insertEnrollmentWithClasses(db: DatabaseService<any, any>, element: EnrollmentWithClasses) {
+    const enrollmentId = await insertEnrollment(db)(pickEnrollmentForInsert(element));
+    const enrollmentClassesToInsert = element.classes.map<Omit<EnrollmentClassEntity, 'id'>>(enrollClass => ({
+        classId: enrollClass.classId,
+        enrollmentId: enrollmentId,
+    }));
+    if (enrollmentClassesToInsert.length > 0) {
+        await insertEnrollmentClass(db)(enrollmentClassesToInsert);
+    }
+}
+
 async function consolidateUserRoles(
     db: DatabaseService,
     userId: t.Branded<number, t.IntBrand>,
@@ -226,20 +281,25 @@ async function consolidateUserRoles(
 async function consolidateUserEnrollments(
     db: DatabaseService,
     userId: t.Branded<number, t.IntBrand>,
-    enrollmentEntities: Pick<EnrollmentEntity, "classId" | "userId">[],
+    enrollmentEntities: EnrollmentWithClasses[],
 ) {
     const existingEnrollments = await selectEnrollment(db).andWhere('userId', userId);
-    const enrollmentFinder: ConsolidateFinder<Pick<EnrollmentEntity, "userId" | "classId">> =
-        (enrollments, enrollmentToFind) => Boolean(enrollments.find(enrollment => enrollment.classId === enrollmentToFind.classId));
-    const consolidation = consolidateEntities(enrollmentFinder)(existingEnrollments, enrollmentEntities);
-    const idsToDelete = consolidation.toDelete.map(enrollment => enrollment.classId);
+    const enrollmentFinder: ConsolidateFinder<Pick<EnrollmentEntity, "userId" | "levelCodeId">> =
+        (enrollments, enrollmentToFind) => Boolean(enrollments.find(enrollment => enrollment.levelCodeId === enrollmentToFind.levelCodeId));
+    const consolidation = consolidateEntities<Pick<EnrollmentEntity, "userId" | "levelCodeId">, EnrollmentWithClasses>(
+        enrollmentFinder
+    )(existingEnrollments, enrollmentEntities);
+    const idsToDelete = consolidation.toDelete.map(enrollment => enrollment.levelCodeId);
     const entitiesToInsert = consolidation.toInsert;
 
     if (idsToDelete.length > 0) {
-        await deleteEnrollment(db)(builder => builder.andWhere('userId', userId).whereIn('classId', idsToDelete));
+        await deleteEnrollment(db)(builder => builder.andWhere('userId', userId).whereIn('levelCodeId', idsToDelete));
     }
     if (entitiesToInsert.length > 0) {
-        await insertEnrollment(db)(entitiesToInsert);
+        for (let index = 0; index < entitiesToInsert.length; index++) {
+            const element = entitiesToInsert[index];
+            await insertEnrollmentWithClasses(db, element);
+        }
     }
 }
 

@@ -25,13 +25,15 @@ import { htmlActivityDataResolvers } from "./domain/activity/types/activity-type
 import { dateTimeScalarResolver } from "./shared/scalars/datetime.scalar";
 import { themeIconResolvers } from "./shared/resolvers/theme-icon.resolvers";
 import { classResolvers } from "./shared/resolvers/class.resolvers";
-import { enrollmentResolvers } from "./shared/resolvers/enrollment.resolver";
+import { enrollmentResolvers, enrollmentClassFieldResolver } from "./shared/resolvers/enrollment.resolver";
 import { activityCommentResolvers } from "./shared/resolvers/activity-comment.resolvers";
 import { activityTimerResolvers } from "./shared/resolvers/activity-timer.resolvers";
 import { teacherClassResolvers } from "./shared/resolvers/teacher-class.resolver";
 import { simpleErrorResolvers } from "./shared/resolvers/simple-error.resolver";
 import { createCommentOnActivityResultResolver } from "./domain/activity/mutations/create-comment-on-activity/create-comment-on-activity.mutation";
-import { deleteActivityCommentResultResolver } from "./domain/activity/mutations/delete-activity-comment/delete-activity-comment.mutation.graphql";
+import { deleteActivityCommentResultResolver } from "./domain/activity/mutations/delete-activity-comment/delete-activity-comment.mutation";
+import { enrollmentClassResolvers } from "./shared/resolvers/enrollment-class.resolver";
+import { DeleteActivityCommentSuccessResultResolvers } from "./domain/activity/mutations/delete-activity-comment/delete-activity-comment-success-result.type";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -69,6 +71,8 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     SimpleError: simpleErrorResolvers,
     CreateCommentOnActivityResult: createCommentOnActivityResultResolver,
     DeleteActivityCommentResult: deleteActivityCommentResultResolver,
+    EnrollmentClass: enrollmentClassResolvers,
+    DeleteActivityCommentSuccessResult: DeleteActivityCommentSuccessResultResolvers,
 };
 
 

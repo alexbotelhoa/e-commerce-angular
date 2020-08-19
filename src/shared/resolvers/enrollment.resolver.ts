@@ -1,33 +1,33 @@
 import { GQLEnrollmentResolvers } from "../../resolvers-types";
 import { EnrollmentEntity } from "../../entities/enrollment.entity";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
-import { ClassEntity } from "../../entities/class.entity";
-import { getClassesByIds } from "../repositories/class.repository";
 import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
+import { getLevelCodesByIds } from "../repositories/level-code.repository";
+import { LevelCodeEntity } from "../../entities/level-code.entity";
 
 export const enrollmentEntityResolvers: Pick<GQLEnrollmentResolvers, keyof EnrollmentEntity> = {
     id: obj => obj.id.toString(10),
-    classId: obj => obj.classId.toString(10),
+    levelCodeId: obj => obj.levelCodeId.toString(10),
     userId: obj => obj.userId.toString(10),
 }
 
-const enrollmentClassByIdSorter = createDataloaderSingleSort<ClassEntity, number, ClassEntity>('id');
+const enrollmentLevelCodeByIdSorter = createDataloaderSingleSort<LevelCodeEntity, number, LevelCodeEntity>('id');
 
-const enrollmentClassByIdDataLoader: DatabaseLoaderFactory<number, ClassEntity> = (db) => {
+const enrollmentLevelCodeByIdDataLoader: DatabaseLoaderFactory<number, LevelCodeEntity> = (db) => {
     return {
         batchFn: async (ids) => {
-            const classes = await getClassesByIds(db)(ids);
-            const sortedClasses = enrollmentClassByIdSorter(ids)(classes);
+            const levelCodes = await getLevelCodesByIds(db)(ids);
+            const sortedClasses = enrollmentLevelCodeByIdSorter(ids)(levelCodes);
             return sortedClasses;
         }
     }
 }
 
-export const enrollmentClassResolver: GQLEnrollmentResolvers['class'] = (obj, params, context) => {
-    return context.getDatabaseLoader(enrollmentClassByIdDataLoader).load(obj.classId);
+export const enrollmentClassFieldResolver: GQLEnrollmentResolvers['levelCode'] = (obj, params, context) => {
+    return context.getDatabaseLoader(enrollmentLevelCodeByIdDataLoader).load(obj.levelCodeId);
 }
 
 export const enrollmentResolvers: GQLEnrollmentResolvers = {
     ...enrollmentEntityResolvers,
-    class: enrollmentClassResolver,
+    levelCode: enrollmentClassFieldResolver,
 }

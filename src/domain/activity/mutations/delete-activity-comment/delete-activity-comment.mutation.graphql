@@ -6,4 +6,9 @@ input DeleteActivityCommentInput {
     commentId: ID!
 }
 
-union DeleteActivityCommentResult = Activity | SimpleError
+type DeleteActivityCommentSuccessResult {
+    success: Boolean!
+    activity: ActivityUnion!
+}
+
+union DeleteActivityCommentResult = DeleteActivityCommentSuccessResult | SimpleError

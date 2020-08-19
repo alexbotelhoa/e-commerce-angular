@@ -1,0 +1,6 @@
+type EnrollmentClass {
+    id: ID!
+    enrollmentId: ID!
+    classId: ID!
+    class: Class!
+}
