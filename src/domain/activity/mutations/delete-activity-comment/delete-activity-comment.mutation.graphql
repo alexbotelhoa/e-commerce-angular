@@ -1,0 +1,9 @@
+type Mutation {
+    deleteActivityComment(data: DeleteActivityCommentInput!): DeleteActivityCommentResult!
+}
+
+input DeleteActivityCommentInput {
+    commentId: ID!
+}
+
+union DeleteActivityCommentResult = Activity | SimpleError

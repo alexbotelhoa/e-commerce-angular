@@ -1,0 +1,12 @@
+type Mutation {
+    createCommentOnActivity(data: CreateCommentOnActivityInput!): CreateCommentOnActivityResult!
+}
+
+input CreateCommentOnActivityInput {
+    activityId: ID!
+    comment: String!
+    classId: ID!
+    parentCommentId: ID
+}
+
+union CreateCommentOnActivityResult = ActivityComment | SimpleError

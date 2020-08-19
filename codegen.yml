@@ -30,7 +30,6 @@ generates:
         ActivityTimer: ./entities/activities/activity-timer.entity#ActivityTimerEntity
         HtmlActivityData: ./entities/activities/html-activity-data.entity#HtmlActivityDataEntity
         Class: ./entities/class.entity#ClassEntity
-        Comment: ./entities/comments/comment.entity#CommentEntity
         ActivityComment: ./entities/comments/activity-comment.entity#ActivityCommentEntity
         Cycle: ./entities/cycle.entity#CycleEntity
         CycleActivity: ./entities/cycle-activity.entity#CycleActivityEntity
@@ -44,3 +43,5 @@ generates:
         UserRole: ./entities/user-role.entity#UserRoleEntity
         Role: ./domain/authorization/types/role.type#Role
         Permission: ./domain/authorization/types/permission.type#Permission
+        SimpleError: ./shared/types/errors/simple-error.type#SimpleError
+        GenericError: ./shared/types/errors/generic-error.interface#GenericError

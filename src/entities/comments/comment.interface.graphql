@@ -1,4 +1,4 @@
-type Comment {
+interface Comment {
     id: ID!
     text: String!
     userId: ID!

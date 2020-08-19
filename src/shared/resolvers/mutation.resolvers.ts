@@ -31,6 +31,8 @@ import { updateEmbeddedActivityMutationResolver } from "../../domain/activity/mu
 import { updateLevelThemesOrderMutation } from "../../domain/activity/mutations/level-theme/update-level-themes-order.mutation";
 import { updateCyclesOrderMutation } from "../../domain/activity/mutations/cycle/update-cycles-order.mutation";
 import { updateCycleActivitiesOrderMutation } from "../../domain/activity/mutations/cycle-activity/update-cycle-activities-order.mutation";
+import { createCommentOnActivityMutationResolver } from "../../domain/activity/mutations/create-comment-on-activity/create-comment-on-activity.mutation";
+import { deleteActivityCommentMutationResolver } from "../../domain/activity/mutations/delete-activity-comment/delete-activity-comment.mutation.graphql";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,
@@ -75,4 +77,6 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     updateCyclesOrder: updateCyclesOrderMutation,
     updateCycleActivitiesOrder: updateCycleActivitiesOrderMutation,
     updateCycle: updateCycleMutationResolver,
+    createCommentOnActivity: createCommentOnActivityMutationResolver,
+    deleteActivityComment: deleteActivityCommentMutationResolver,
 }

@@ -1,6 +1,8 @@
-export interface ActivityCommentEntity {
+import { CommentEntity } from "./comment.interface";
+
+export interface ActivityCommentEntity extends CommentEntity {
+    id: number;
     activityId: number;
-    commentId: number;
     classId: number;
 }
 

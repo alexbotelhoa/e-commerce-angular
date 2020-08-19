@@ -1,5 +1,8 @@
-type ActivityComment {
+type ActivityComment implements Comment {
+    id: ID!
+    text: String!
+    userId: ID!
+    parentId: ID
     activityId: ID!
-    commentId: ID!
     classId: ID!
 }

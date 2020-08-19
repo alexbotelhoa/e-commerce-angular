@@ -26,12 +26,14 @@ import { dateTimeScalarResolver } from "./shared/scalars/datetime.scalar";
 import { themeIconResolvers } from "./shared/resolvers/theme-icon.resolvers";
 import { classResolvers } from "./shared/resolvers/class.resolvers";
 import { enrollmentResolvers } from "./shared/resolvers/enrollment.resolver";
-import { commentResolvers } from "./shared/resolvers/comment.resolvers";
 import { activityCommentResolvers } from "./shared/resolvers/activity-comment.resolvers";
 import { activityTimerResolvers } from "./shared/resolvers/activity-timer.resolvers";
 import { teacherClassResolvers } from "./shared/resolvers/teacher-class.resolver";
+import { simpleErrorResolvers } from "./shared/resolvers/simple-error.resolver";
+import { createCommentOnActivityResultResolver } from "./domain/activity/mutations/create-comment-on-activity/create-comment-on-activity.mutation";
+import { deleteActivityCommentResultResolver } from "./domain/activity/mutations/delete-activity-comment/delete-activity-comment.mutation.graphql";
 
-export type InterfaceResolverKeys = 'Activity' | 'ActivityData';
+export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
 // We purposedly omit resolvers for interfaces, which are supported by makeExecutableSchema but not required
 export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
@@ -62,9 +64,11 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Class: classResolvers,
     Enrollment: enrollmentResolvers,
     ActivityComment: activityCommentResolvers,
-    Comment: commentResolvers,
     ActivityTimer: activityTimerResolvers,
     TeacherClass: teacherClassResolvers,
+    SimpleError: simpleErrorResolvers,
+    CreateCommentOnActivityResult: createCommentOnActivityResultResolver,
+    DeleteActivityCommentResult: deleteActivityCommentResultResolver,
 };
 
 

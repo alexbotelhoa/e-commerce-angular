@@ -4,5 +4,3 @@ export interface CommentEntity {
     userId: number;
     parentId: number | null;
 }
-
-export const COMMENT_TABLE = 'comment';
