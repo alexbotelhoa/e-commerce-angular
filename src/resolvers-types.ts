@@ -545,6 +545,7 @@ export type GQLLevelCode = {
   readonly active: Scalars['Boolean'];
   readonly createdAt: Scalars['DateTime'];
   readonly levelId: Maybe<Scalars['ID']>;
+  readonly level: Maybe<GQLLevel>;
 };
 
 export type GQLLevelTheme = {
@@ -1014,6 +1015,7 @@ export type GQLLevelCodeResolvers<ContextType = GraphQLContext, ParentType exten
   active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   levelId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
+  level: Resolver<Maybe<GQLResolversTypes['Level']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 

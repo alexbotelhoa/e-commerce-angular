@@ -5,4 +5,5 @@ type LevelCode {
     active: Boolean!
     createdAt: DateTime!
     levelId: ID
+    level: Level
 }
