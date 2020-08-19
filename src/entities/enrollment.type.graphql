@@ -2,4 +2,5 @@ type Enrollment {
     id: ID!
     userId: ID!
     classId: ID!
+    class: Class!
 }

@@ -23,6 +23,7 @@ import { currentUserQueryResolver } from "../../domain/authentication/queries/cu
 import { levelCodesQueryResolver } from "../../domain/activity/queries/level-codes/level-codes.query";
 import { themeIconsQueryResolver } from "../../domain/activity/queries/icons/icons.query";
 import { classesQueryResolver } from "../../domain/activity/queries/class/classes.query";
+import { myEnrollmentsQueryResolver } from "../../domain/activity/queries/my-enrollments/my-enrollments.query";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -43,4 +44,5 @@ export const queryResolvers: GQLResolvers['Query'] = {
     availableActivitiesForCycle: availableActivitiesForCycleResolver,
     icons: themeIconsQueryResolver,
     classes: classesQueryResolver,
+    myEnrollments: myEnrollmentsQueryResolver,
 }

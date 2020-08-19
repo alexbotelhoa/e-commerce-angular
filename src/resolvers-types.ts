@@ -347,6 +347,7 @@ export type GQLQuery = {
   readonly levelTheme: Maybe<GQLLevelTheme>;
   readonly levelThemes: ReadonlyArray<GQLLevelTheme>;
   readonly levels: ReadonlyArray<GQLLevel>;
+  readonly myEnrollments: ReadonlyArray<GQLEnrollment>;
   readonly theme: Maybe<GQLTheme>;
   readonly themes: ReadonlyArray<GQLTheme>;
 };
@@ -533,6 +534,7 @@ export type GQLEnrollment = {
   readonly id: Scalars['ID'];
   readonly userId: Scalars['ID'];
   readonly classId: Scalars['ID'];
+  readonly class: GQLClass;
 };
 
 export type GQLLevelCode = {
@@ -854,6 +856,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   levelTheme: Resolver<Maybe<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQuerylevelThemeArgs, 'id'>>;
   levelThemes: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType>;
   levels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
+  myEnrollments: Resolver<ReadonlyArray<GQLResolversTypes['Enrollment']>, ParentType, ContextType>;
   theme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQuerythemeArgs, 'id'>>;
   themes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType>;
 };
@@ -999,6 +1002,7 @@ export type GQLEnrollmentResolvers<ContextType = GraphQLContext, ParentType exte
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   userId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  class: Resolver<GQLResolversTypes['Class'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
