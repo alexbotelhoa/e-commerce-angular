@@ -29,6 +29,7 @@ import { enrollmentResolvers } from "./shared/resolvers/enrollment.resolver";
 import { commentResolvers } from "./shared/resolvers/comment.resolvers";
 import { activityCommentResolvers } from "./shared/resolvers/activity-comment.resolvers";
 import { activityTimerResolvers } from "./shared/resolvers/activity-timer.resolvers";
+import { teacherClassResolvers } from "./shared/resolvers/teacher-class.resolver";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData';
 
@@ -63,6 +64,7 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     ActivityComment: activityCommentResolvers,
     Comment: commentResolvers,
     ActivityTimer: activityTimerResolvers,
+    TeacherClass: teacherClassResolvers,
 };
 
 

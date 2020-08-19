@@ -1,0 +1,7 @@
+interface ActivitySubmission {
+    id: ID!
+    userId: ID!
+    cycleActivityId: ID!
+    typeId: ActivityTypeId!
+    createdAt: DateTime!
+}

@@ -15,6 +15,7 @@ import { ActivityCommentEntity } from './entities/comments/activity-comment.enti
 import { CycleEntity } from './entities/cycle.entity';
 import { CycleActivityEntity } from './entities/cycle-activity.entity';
 import { EnrollmentEntity } from './entities/enrollment.entity';
+import { TeacherClassEntity } from './entities/teacher-class.entity';
 import { LevelThemeEntity } from './entities/level-theme.entity';
 import { LevelCodeEntity } from './entities/level-code.entity';
 import { LevelEntity } from './entities/level.entity';
@@ -567,6 +568,13 @@ export type GQLLevel = {
   readonly codes: ReadonlyArray<GQLLevelCode>;
 };
 
+export type GQLTeacherClass = {
+  readonly __typename?: 'TeacherClass';
+  readonly id: Scalars['ID'];
+  readonly teacherId: Scalars['ID'];
+  readonly classId: Scalars['ID'];
+};
+
 export type GQLTheme = {
   readonly __typename?: 'Theme';
   readonly id: Scalars['ID'];
@@ -731,6 +739,7 @@ export type GQLResolversTypes = {
   LevelCode: ResolverTypeWrapper<LevelCodeEntity>;
   LevelTheme: ResolverTypeWrapper<LevelThemeEntity>;
   Level: ResolverTypeWrapper<LevelEntity>;
+  TeacherClass: ResolverTypeWrapper<TeacherClassEntity>;
   Theme: ResolverTypeWrapper<ThemeEntity>;
   ThemeIcon: ResolverTypeWrapper<ThemeIconEntity>;
   UserRole: ResolverTypeWrapper<UserRoleEntity>;
@@ -787,6 +796,7 @@ export type GQLResolversParentTypes = {
   LevelCode: LevelCodeEntity;
   LevelTheme: LevelThemeEntity;
   Level: LevelEntity;
+  TeacherClass: TeacherClassEntity;
   Theme: ThemeEntity;
   ThemeIcon: ThemeIconEntity;
   UserRole: UserRoleEntity;
@@ -1025,6 +1035,13 @@ export type GQLLevelResolvers<ContextType = GraphQLContext, ParentType extends G
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type GQLTeacherClassResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['TeacherClass'] = GQLResolversParentTypes['TeacherClass']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  teacherId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type GQLThemeResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Theme'] = GQLResolversParentTypes['Theme']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
@@ -1090,6 +1107,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   LevelCode: GQLLevelCodeResolvers<ContextType>;
   LevelTheme: GQLLevelThemeResolvers<ContextType>;
   Level: GQLLevelResolvers<ContextType>;
+  TeacherClass: GQLTeacherClassResolvers<ContextType>;
   Theme: GQLThemeResolvers<ContextType>;
   ThemeIcon: GQLThemeIconResolvers<ContextType>;
   UserRole: GQLUserRoleResolvers<ContextType>;

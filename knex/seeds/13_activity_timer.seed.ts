@@ -16,7 +16,7 @@ const activityTimer1Seed: Partial<ActivityTimerEntity> = {
 const activityTimer2Seed: Partial<ActivityTimerEntity> = {
     id: 2,
     completed: true,
-    completionTime: formatISO(new Date()),
+    completionTime: new Date(),
     cycleActivityId: cycleActivity1Seed.id,
     userId: studentUserSeed.id,
 };

@@ -5,11 +5,14 @@ import { setUTF8Table } from "../utils/set-utf8-table.migration";
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTableIfNotExists(EMBEDDED_ACTIVITY_DATA_TABLE, (table) => {
-        setUTF8Table(table);
-        baseActivityTableMigration(table);
-        table.string('url', 1000).notNullable();
-    });
+    const hasTable = await knex.schema.hasTable(EMBEDDED_ACTIVITY_DATA_TABLE);
+    if (!hasTable) {
+        await knex.schema.createTable(EMBEDDED_ACTIVITY_DATA_TABLE, (table) => {
+            setUTF8Table(table);
+            baseActivityTableMigration(table);
+            table.string('url', 1000).notNullable();
+        });
+    }
 }
 
 

@@ -4,12 +4,15 @@ import { setUTF8Table } from "../utils/set-utf8-table.migration";
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTableIfNotExists(THEME_ICON_TABLE, (table) => {
-        setUTF8Table(table);
-        table.integer('themeId').primary().unsigned();
-        table.foreign('themeId').references('theme.id').onDelete('CASCADE');
-        table.text('content', 'mediumtext').notNullable();
-    });
+    const hasTable = await knex.schema.hasTable(THEME_ICON_TABLE);
+    if (!hasTable) {
+        await knex.schema.createTable(THEME_ICON_TABLE, (table) => {
+            setUTF8Table(table);
+            table.integer('themeId').primary().unsigned();
+            table.foreign('themeId').references('theme.id').onDelete('CASCADE');
+            table.text('content', 'mediumtext').notNullable();
+        });
+    }
 }
 
 
