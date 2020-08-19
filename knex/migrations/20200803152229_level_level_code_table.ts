@@ -1,22 +1,24 @@
 import * as Knex from "knex";
-import { LEVEL_LEVEL_CODE_TABLE } from "../../src/entities/level-level-code.entity";
 import { setUTF8Table } from "../utils/set-utf8-table.migration";
 
 
 export async function up(knex: Knex): Promise<void> {
-    const hasTable = await knex.schema.hasTable(LEVEL_LEVEL_CODE_TABLE);
+    const hasTable = await knex.schema.hasTable('level_level_code');
     if (!hasTable) {
-        await knex.schema.createTable(LEVEL_LEVEL_CODE_TABLE, (table) => {
+        await knex.schema.createTable('level_level_code', (table) => {
             setUTF8Table(table);
-            table.integer('levelId').unsigned().references('level.id').onDelete("CASCADE");
-            table.string('levelCodeId', 30).references('level_code.id').onDelete("CASCADE");
+            table.integer('levelId').unsigned().notNullable()
+            table.string('levelCodeId', 30).notNullable()
             table.primary(['levelId', 'levelCodeId']);
+
+            table.foreign('levelId').references('level.id').onDelete("CASCADE");
+            table.foreign('levelCodeId').references('level_code.id').onDelete("CASCADE");
         });
     }
 }
 
 
 export async function down(knex: Knex): Promise<void> {
-    await knex.schema.dropTableIfExists(LEVEL_LEVEL_CODE_TABLE);
+    await knex.schema.dropTableIfExists('level_level_code');
 }
 

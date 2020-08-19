@@ -1,20 +1,23 @@
 import { GQLMutationResolvers } from "../../../../resolvers-types";
 
 import { getLevelById, insertLevel } from "../../../../shared/repositories/level.repository"
-import { insertLevelLevelCode } from "../../../../shared/repositories/level-level-code.repository";
-import { LevelLevelCodeEntity } from "../../../../entities/level-level-code.entity";
+import { updateLevelCode } from "../../../../shared/repositories/level-code.repository";
 
 export const createLevelMutationResolver: GQLMutationResolvers['createLevel'] = async (obj, { data }, context) => {
-    const levelId = await insertLevel(context.database)({
-        name: data.name,
-        active: data.active,
-        description: data.description,
-        order: data.order,
+    const insertedLevelId = await context.database.transaction(async (trx) => {
+        const levelId = await insertLevel(trx)({
+            name: data.name,
+            active: data.active,
+            description: data.description,
+            order: data.order,
+        });
+        if (data.codes.length > 0) {
+            await updateLevelCode(trx)({
+                levelId: levelId,
+            })(builder => builder.whereIn('id', data.codes));
+        }
+        return levelId;
     });
-    const levelLevelCodes = data.codes.map<LevelLevelCodeEntity>(codeId => ({
-        levelCodeId: parseInt(codeId, 10),
-        levelId: levelId,
-    }));
-    await insertLevelLevelCode(context.database)(levelLevelCodes);
-    return (await getLevelById(context.database)(levelId))!
+
+    return (await getLevelById(context.database)(insertedLevelId))!
 }

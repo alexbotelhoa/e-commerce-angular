@@ -9,8 +9,6 @@ import { DatabaseLoaderFactory } from "../types/database-loader.type";
 
 import { LevelEntity } from "../../entities/level.entity";
 import { LevelCodeEntity } from "../../entities/level-code.entity";
-import { selectLevelLevelCode } from "../repositories/level-level-code.repository";
-import { LevelLevelCodeEntity } from "../../entities/level-level-code.entity";
 import { selectLevelCode } from "../repositories/level-code.repository";
 
 const levelEntityResolvers: Pick<GQLLevelResolvers, keyof LevelEntity> = {
@@ -39,28 +37,13 @@ export const levelThemesResolver: GQLLevelResolvers['levelThemes'] = async (obj,
     return levelThemes;
 }
 
-const levelCodesSorter = createDataloaderMultiSort<LevelLevelCodeEntity, number>('levelId');
+const levelCodesSorter = createDataloaderMultiSort<LevelCodeEntity, number>('levelId');
 
 const levelCodesDataloader: DatabaseLoaderFactory<number, LevelCodeEntity[]> = (db) => ({
     batchFn: async (ids) => {
-        const entities = await selectLevelLevelCode(db).whereIn('levelId', ids);
-        const codeIds = entities.map(entity => entity.levelCodeId);
-        // we'll probably have a lot of duplicate ids, so we need to remove those to avoid passing too many redundant parameters to the next query
-        const setCodeIds = new Set(codeIds);
-        const uniqueCodeIds = Array.from(setCodeIds);
-        const codes = await selectLevelCode(db).whereIn('id', uniqueCodeIds);
-        // generate a map to optimize lookup time of LevelCode entities
-        const codesById = codes.reduce<Record<string, LevelCodeEntity>>((acc, code) => {
-            acc[code.id] = code;
-            return acc;
-        }, {});
-        // sort by the levelId
+        const entities = await selectLevelCode(db).whereIn('levelId', ids);
         const sortedEntities = levelCodesSorter(ids)(entities);
-        // iterate through each array and replace the LevelLevelCode by the respective LevelCode entity
-        const sortedEntitiesWithCodes = sortedEntities.map(levelLevelCodes => {
-            return levelLevelCodes.map(levelLevelCode => codesById[levelLevelCode.levelCodeId]);
-        });
-        return sortedEntitiesWithCodes;
+        return sortedEntities;
     }
 })
 

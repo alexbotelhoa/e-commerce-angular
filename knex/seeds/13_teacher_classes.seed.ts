@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 import { teacherUserSeed } from "./07_user.seed";
-import { class1Seed, class2Seed } from "./10_class.seed";
+import { class1Seed, class2Seed } from "./09_class.seed";
 import { deleteAllTeacherClasses, insertTeacherClass } from "../../src/shared/repositories/teacher-class.repository";
 
 export async function seed(knex: Knex): Promise<void> {
