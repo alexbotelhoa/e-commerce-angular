@@ -2,6 +2,8 @@ import * as Knex from "knex";
 import { insertLevel, deleteAllLevels } from "../../src/shared/repositories/level.repository";
 import { LevelEntity } from "../../src/entities/level.entity";
 import { LevelTypeId } from "../../src/resolvers-types";
+import { deleteAllLevelCodes } from "../../src/shared/repositories/level-code.repository";
+import { deleteAllClasses } from "../../src/shared/repositories/class.repository";
 
 export const level1Seed: LevelEntity = {
     id: 1,
@@ -28,8 +30,10 @@ export const level3Seed: LevelEntity = {
     typeId: LevelTypeId.YOUNG,
 };
 
-export async function seed(knex: Knex<LevelEntity, LevelEntity[]>): Promise<void> {
+export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
+    await deleteAllClasses(knex);
+    await deleteAllLevelCodes(knex);
     await deleteAllLevels(knex);
 
     // Inserts seed entries

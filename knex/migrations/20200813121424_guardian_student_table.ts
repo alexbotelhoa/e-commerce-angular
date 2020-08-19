@@ -9,8 +9,8 @@ export async function up(knex: Knex): Promise<void> {
     if (!hasTable) {
         await knex.schema.createTable(GUARDIAN_STUDENT_TABLE, (table) => {
             setUTF8Table(table);
-            table.integer('guardianId').unsigned().notNullable().references(`${USER_TABLE}.id`);
-            table.integer('studentId').unsigned().notNullable().references(`${USER_TABLE}.id`);
+            table.integer('guardianId').unsigned().notNullable().references(`${USER_TABLE}.id`).onDelete('CASCADE');
+            table.integer('studentId').unsigned().notNullable().references(`${USER_TABLE}.id`).onDelete('CASCADE');
             table.primary(['guardianId', 'studentId']);
             // add inverted index too to optimize all search cases
             table.index(['studentId', 'guardianId']);

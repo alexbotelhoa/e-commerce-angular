@@ -34,8 +34,8 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
     // drop the newly created enrollment table
-    await knex.schema.dropTableIfExists(ENROLLMENT_TABLE);
     await knex.schema.dropTableIfExists(ENROLLMENT_CLASS_TABLE);
+    await knex.schema.dropTableIfExists(ENROLLMENT_TABLE);
 
     // restore older tables
     await knex.schema.createTable(ENROLLMENT_TABLE, (table) => {

@@ -24,7 +24,7 @@ export async function down(knex: Knex): Promise<void> {
     });
 
     await knex.schema.alterTable(LEVEL_CODE_TABLE, (table => {
-        table.dropColumn('levelId');
+        table.dropForeign(['levelId']);
     }))
 }
 
