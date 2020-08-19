@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import { deleteAllEnrollments, insertEnrollment } from "../../src/shared/repositories/enrollment.repository";
 import { studentUserSeed } from "./07_user.seed";
-import { class1Seed, class2Seed } from "./10_class.seed";
+import { class1Seed, class2Seed } from "./09_class.seed";
 
 export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
