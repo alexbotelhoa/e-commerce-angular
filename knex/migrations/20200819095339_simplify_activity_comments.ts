@@ -3,6 +3,7 @@ import { ACTIVITY_COMMENT_TABLE } from "../../src/entities/comments/activity-com
 import { setUTF8Table } from "../utils/set-utf8-table.migration";
 import { CLASS_TABLE } from "../../src/entities/class.entity";
 import { USER_TABLE } from "../../src/entities/user.entity";
+import { ACTIVITY_TABLE } from "../../src/entities/activity.entity";
 
 
 export async function up(knex: Knex): Promise<void> {
@@ -14,6 +15,7 @@ export async function up(knex: Knex): Promise<void> {
         table.increments('id').unsigned();
         table.string('text', 2000).notNullable();
         table.integer('userId').unsigned().notNullable().references(`${USER_TABLE}.id`).onDelete('CASCADE');
+        table.integer('activityId').unsigned().notNullable().references(`${ACTIVITY_TABLE}.id`).onDelete('CASCADE');
         table.integer('parentCommentId').unsigned().references(`${ACTIVITY_COMMENT_TABLE}.id`).onDelete('CASCADE');
         table.integer('classId').unsigned().notNullable().references(`${CLASS_TABLE}.id`).onDelete("CASCADE");
         table.timestamp('createdAt').notNullable().defaultTo(knex.fn.now());
