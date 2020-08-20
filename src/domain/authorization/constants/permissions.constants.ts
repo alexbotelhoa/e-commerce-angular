@@ -28,6 +28,11 @@ export const permissionsById: Record<PermissionId, Permission> = {
         name: 'Execute activity',
         description: 'User can execute an activity.'
     },
+    MANAGE_COMMENTS: {
+        id: 'MANAGE_COMMENTS',
+        name: 'Manage comments',
+        description: `Manage other user's comments.`
+    },
 }
 
 export const permissionsList: ReadonlyArray<Permission> = objectKeys(permissionsById)

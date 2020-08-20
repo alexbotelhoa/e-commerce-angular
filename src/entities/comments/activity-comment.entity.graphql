@@ -7,4 +7,6 @@ type ActivityComment implements Comment {
     classId: ID!
     replies: [ActivityComment!]!
     user: User!
+    viewerCanDelete: Boolean!
+    viewerCanEdit: Boolean!
 }

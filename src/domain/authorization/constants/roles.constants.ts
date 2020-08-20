@@ -10,6 +10,7 @@ export const adminRole: Role = {
         MANAGE_CYCLE: true,
         MANAGE_LEVEL: true,
         MANAGE_THEME: true,
+        MANAGE_COMMENTS: true,
     }
 }
 
@@ -26,6 +27,7 @@ export const teacherRole: Role = {
     name: 'Teacher',
     permissionMap: {
         EXECUTE_ACTIVITY: true,
+        MANAGE_COMMENTS: true,
     }
 }
 

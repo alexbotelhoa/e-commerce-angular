@@ -44,10 +44,38 @@ const activityCommentUserFieldResolver: GQLActivityCommentResolvers['user'] = as
     return context.getDatabaseLoader(activityCommentUserByIdLoader).load(obj.userId);
 }
 
+const activityCommentViewerCanDeleteResolver: GQLActivityCommentResolvers['viewerCanDelete'] = async (obj, params, context) => {
+    const user = context.currentUser;
+    if (!user) {
+        return false;
+    }
+    if (user.id === obj.userId) {
+        return true;
+    }
+    if (user.permissionMap.MANAGE_COMMENTS) {
+        return true;
+    }
+    return false;
+}
+
+const activityCommentViewerCanEditResolver: GQLActivityCommentResolvers['viewerCanEdit'] = async (obj, params, context) => {
+    const user = context.currentUser;
+    if (!user) {
+        return false;
+    }
+    if (user.id === obj.userId) {
+        return true;
+    }
+    return false;
+}
+
+
 
 
 export const activityCommentResolvers: GQLActivityCommentResolvers = {
     ...activityCommentEntityResolvers,
     replies: activityCommentRepliesFieldResolver,
     user: activityCommentUserFieldResolver,
+    viewerCanDelete: activityCommentViewerCanDeleteResolver,
+    viewerCanEdit: activityCommentViewerCanEditResolver,
 }
