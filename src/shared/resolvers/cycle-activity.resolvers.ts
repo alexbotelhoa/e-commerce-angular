@@ -1,11 +1,13 @@
 import { GQLCycleActivityResolvers } from "../../resolvers-types"
 import { getCycleById } from "../repositories/cycle.repository"
-import { getActivityById, selectActivity } from "../repositories/activity.repository";
+import { selectActivity } from "../repositories/activity.repository";
 import { CycleActivityEntity } from "../../entities/cycle-activity.entity";
 import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 import { ActivityEntity } from "../../entities/activity.entity";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
 import { selectCycleActivity } from "../repositories/cycle-activity.repository";
+import { selectActivityTimer } from "../repositories/activity-timer.repository";
+import { ActivityTimerEntity } from "../../entities/activities/activity-timer.entity";
 
 const cycleActivityEntityResolvers: Pick<GQLCycleActivityResolvers, keyof CycleActivityEntity> = {
     id: obj => obj.id.toString(),
@@ -34,12 +36,9 @@ const cycleActivityActivityByIdLoader: DatabaseLoaderFactory<number, ActivityEnt
     }
 });
 
-
 export const cycleActivityActivityFieldResolver: GQLCycleActivityResolvers['activity'] = async (obj, params, context) => {
     return context.getDatabaseLoader(cycleActivityActivityByIdLoader).load(obj.activityId);
-
 }
-
 
 export const cycleActivityNextActivityFieldResolver: GQLCycleActivityResolvers['nextActivity'] = async (obj, params, context) => {
     const next = await selectCycleActivity(context.database)
@@ -61,10 +60,35 @@ export const cycleActivityPreviousActivityFieldResolver: GQLCycleActivityResolve
     return previous || null;
 };
 
+const cycleActivityViewerHasCompletedSorter = createDataloaderSingleSort<ActivityTimerEntity, number, ActivityTimerEntity | undefined>('cycleActivityId');
+
+
+export const cycleActivityViewerHasCompletedLoader: (userId: number) => DatabaseLoaderFactory<number, boolean, boolean> = (userId) => (db) => ({
+    batchFn: async (cycleActivityIds) => {
+        const entities = await selectActivityTimer(db)
+            .whereIn('cycleActivityId', cycleActivityIds)
+            .andWhere('userId', userId)
+            .andWhere('completed', true);
+        const sorted = cycleActivityViewerHasCompletedSorter(cycleActivityIds)(entities);
+        return sorted.map(Boolean);
+    }
+})
+
+const cycleActivityViewerHasCompletedFieldResolver: GQLCycleActivityResolvers['viewerHasCompleted'] = async (obj, params, context) => {
+    const user = context.currentUser;
+    if (!user) {
+        return false;
+    }
+    return context.getDatabaseLoader(cycleActivityViewerHasCompletedLoader(user.id)).load(obj.id);
+}
+
+
+
 export const cycleActivityResolvers: GQLCycleActivityResolvers = {
     ...cycleActivityEntityResolvers,
     cycle: cycleResolver,
     activity: cycleActivityActivityFieldResolver,
     nextActivity: cycleActivityNextActivityFieldResolver,
     previousActivity: cycleActivityPreviousActivityFieldResolver,
+    viewerHasCompleted: cycleActivityViewerHasCompletedFieldResolver,
 }

@@ -598,6 +598,7 @@ export type GQLCycleActivity = {
   readonly activity: GQLActivityUnion;
   readonly nextActivity: Maybe<GQLCycleActivity>;
   readonly previousActivity: Maybe<GQLCycleActivity>;
+  readonly viewerHasCompleted: Scalars['Boolean'];
 };
 
 export type GQLCycle = {
@@ -1149,6 +1150,7 @@ export type GQLCycleActivityResolvers<ContextType = GraphQLContext, ParentType e
   activity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType>;
   nextActivity: Resolver<Maybe<GQLResolversTypes['CycleActivity']>, ParentType, ContextType>;
   previousActivity: Resolver<Maybe<GQLResolversTypes['CycleActivity']>, ParentType, ContextType>;
+  viewerHasCompleted: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 

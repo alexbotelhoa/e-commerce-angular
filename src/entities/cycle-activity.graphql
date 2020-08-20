@@ -7,5 +7,6 @@ type CycleActivity {
     activity: ActivityUnion!
     nextActivity: CycleActivity
     previousActivity: CycleActivity
+    viewerHasCompleted: Boolean!
 }
 
