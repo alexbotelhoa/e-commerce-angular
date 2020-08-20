@@ -4,4 +4,5 @@ enum PermissionId {
     MANAGE_CYCLE
     MANAGE_ACTIVITY
     EXECUTE_ACTIVITY
+    MANAGE_COMMENTS
 }
