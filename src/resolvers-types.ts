@@ -596,6 +596,8 @@ export type GQLCycleActivity = {
   readonly order: Scalars['Int'];
   readonly cycle: GQLCycle;
   readonly activity: GQLActivityUnion;
+  readonly nextActivity: Maybe<GQLCycleActivity>;
+  readonly previousActivity: Maybe<GQLCycleActivity>;
 };
 
 export type GQLCycle = {
@@ -1050,7 +1052,7 @@ export type GQLActivityUnionResolvers<ContextType = GraphQLContext, ParentType e
   __resolveType: TypeResolveFn<'EmbeddedActivity' | 'HtmlActivity', ParentType, ContextType>;
 };
 
-export type GQLPermissionIdResolvers = EnumResolverSignature<{ MANAGE_LEVEL: any, MANAGE_THEME: any, MANAGE_CYCLE: any, MANAGE_ACTIVITY: any, EXECUTE_ACTIVITY: any }, GQLResolversTypes['PermissionId']>;
+export type GQLPermissionIdResolvers = EnumResolverSignature<{ MANAGE_LEVEL: any, MANAGE_THEME: any, MANAGE_CYCLE: any, MANAGE_ACTIVITY: any, EXECUTE_ACTIVITY: any, MANAGE_COMMENTS: any }, GQLResolversTypes['PermissionId']>;
 
 export type GQLRoleIdResolvers = EnumResolverSignature<{ ADMIN: any, STUDENT: any, TEACHER: any, GUARDIAN: any }, GQLResolversTypes['RoleId']>;
 
@@ -1145,6 +1147,8 @@ export type GQLCycleActivityResolvers<ContextType = GraphQLContext, ParentType e
   order: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   cycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType>;
   activity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType>;
+  nextActivity: Resolver<Maybe<GQLResolversTypes['CycleActivity']>, ParentType, ContextType>;
+  previousActivity: Resolver<Maybe<GQLResolversTypes['CycleActivity']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 

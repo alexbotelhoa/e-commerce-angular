@@ -5,5 +5,7 @@ type CycleActivity {
     order: Int!
     cycle: Cycle!
     activity: ActivityUnion!
+    nextActivity: CycleActivity
+    previousActivity: CycleActivity
 }
 
