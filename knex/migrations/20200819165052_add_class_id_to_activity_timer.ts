@@ -5,7 +5,8 @@ import { CLASS_TABLE } from "../../src/entities/class.entity";
 
 export async function up(knex: Knex): Promise<void> {
     await knex.schema.alterTable(ACTIVITY_TIMER_TABLE, table => {
-        table.integer('classId').unsigned().notNullable().references(`${CLASS_TABLE}.id`);
+        table.integer('classId').unsigned().notNullable();
+        table.foreign('classId').references(`${CLASS_TABLE}.id`);
     })
 }
 
