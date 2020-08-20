@@ -15,12 +15,14 @@ export const class2Seed: ClassEntity = {
     levelCodeId: levelCodesData[1].id,
 }
 
+export const allClassSeeds = [
+    class1Seed,
+    class2Seed,
+]
+
 export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
     await deleteAllClasses(knex);
 
-    await insertClass(knex)([
-        class1Seed,
-        class2Seed,
-    ]);
+    await insertClass(knex)(allClassSeeds);
 }

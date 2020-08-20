@@ -28,6 +28,7 @@ export const completeActivityMutationResolver: GQLMutationResolvers['completeAct
                 completed: true,
                 completionTime: new Date(),
             })(builder => builder.andWhere('id', savedActivityTimer.id));
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return (await getActivityTimerById(context.database)(savedActivityTimer.id))!;
         }
         const insertedId = await insertActivityTimer(context.database)({

@@ -395,6 +395,7 @@ export type GQLQuery = {
   readonly __typename?: 'Query';
   readonly activities: ReadonlyArray<GQLActivityUnion>;
   readonly activity: Maybe<GQLActivityUnion>;
+  readonly activityComments: ReadonlyArray<GQLActivityComment>;
   readonly availableActivitiesForCycle: ReadonlyArray<GQLActivityUnion>;
   readonly availableThemes: ReadonlyArray<GQLTheme>;
   readonly classes: ReadonlyArray<GQLClass>;
@@ -418,6 +419,11 @@ export type GQLQuery = {
 
 export type GQLQueryactivityArgs = {
   id: Scalars['ID'];
+};
+
+
+export type GQLQueryactivityCommentsArgs = {
+  data: GQLActivityCommentsQueryInput;
 };
 
 
@@ -453,6 +459,11 @@ export type GQLQuerylevelThemeArgs = {
 
 export type GQLQuerythemeArgs = {
   id: Scalars['ID'];
+};
+
+export type GQLActivityCommentsQueryInput = {
+  readonly activityId: Scalars['ID'];
+  readonly classIds: Maybe<ReadonlyArray<Scalars['ID']>>;
 };
 
 export type GQLAvailableThemesInputData = {
@@ -564,6 +575,8 @@ export type GQLActivityComment = GQLComment & {
   readonly parentId: Maybe<Scalars['ID']>;
   readonly activityId: Scalars['ID'];
   readonly classId: Scalars['ID'];
+  readonly replies: ReadonlyArray<GQLActivityComment>;
+  readonly user: GQLUser;
 };
 
 export type GQLComment = {
@@ -812,6 +825,7 @@ export type GQLResolversTypes = {
   IconDataInput: GQLIconDataInput;
   UpdateThemeInput: GQLUpdateThemeInput;
   Query: ResolverTypeWrapper<{}>;
+  ActivityCommentsQueryInput: GQLActivityCommentsQueryInput;
   AvailableThemesInputData: GQLAvailableThemesInputData;
   ActivityType: ResolverTypeWrapper<ActivityType>;
   EmbeddedActivity: ResolverTypeWrapper<ActivityEntity>;
@@ -883,6 +897,7 @@ export type GQLResolversParentTypes = {
   IconDataInput: GQLIconDataInput;
   UpdateThemeInput: GQLUpdateThemeInput;
   Query: {};
+  ActivityCommentsQueryInput: GQLActivityCommentsQueryInput;
   AvailableThemesInputData: GQLAvailableThemesInputData;
   ActivityType: ActivityType;
   EmbeddedActivity: ActivityEntity;
@@ -977,6 +992,7 @@ export type GQLStartActivityResultResolvers<ContextType = GraphQLContext, Parent
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   activities: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType>;
   activity: Resolver<Maybe<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryactivityArgs, 'id'>>;
+  activityComments: Resolver<ReadonlyArray<GQLResolversTypes['ActivityComment']>, ParentType, ContextType, RequireFields<GQLQueryactivityCommentsArgs, 'data'>>;
   availableActivitiesForCycle: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryavailableActivitiesForCycleArgs, 'cycleId'>>;
   availableThemes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQueryavailableThemesArgs, 'availableThemesInputData'>>;
   classes: Resolver<ReadonlyArray<GQLResolversTypes['Class']>, ParentType, ContextType>;
@@ -1105,6 +1121,8 @@ export type GQLActivityCommentResolvers<ContextType = GraphQLContext, ParentType
   parentId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
   activityId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  replies: Resolver<ReadonlyArray<GQLResolversTypes['ActivityComment']>, ParentType, ContextType>;
+  user: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 

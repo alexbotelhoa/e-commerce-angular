@@ -16,12 +16,12 @@ export async function up(knex: Knex): Promise<void> {
         table.string('text', 2000).notNullable();
         table.integer('userId').unsigned().notNullable().references(`${USER_TABLE}.id`).onDelete('CASCADE');
         table.integer('activityId').unsigned().notNullable().references(`${ACTIVITY_TABLE}.id`).onDelete('CASCADE');
-        table.integer('parentCommentId').unsigned().references(`${ACTIVITY_COMMENT_TABLE}.id`).onDelete('CASCADE');
+        table.integer('parentId').unsigned().references(`${ACTIVITY_COMMENT_TABLE}.id`).onDelete('CASCADE');
         table.integer('classId').unsigned().notNullable().references(`${CLASS_TABLE}.id`).onDelete("CASCADE");
         table.timestamp('createdAt').notNullable().defaultTo(knex.fn.now());
         table.index('createdAt');
         table.index('userId');
-        table.index('parentCommentId');
+        table.index('parentId');
         table.index('classId');
     });
 }

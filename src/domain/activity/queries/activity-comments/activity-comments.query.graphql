@@ -1,0 +1,8 @@
+type Query {
+    activityComments(data: ActivityCommentsQueryInput!): [ActivityComment!]! 
+}
+
+input ActivityCommentsQueryInput {
+    activityId: ID!
+    classIds: [ID!]
+}

@@ -30,14 +30,11 @@ export const guardianUserSeed: UserEntityWithRoles = {
     roles: [RoleId.GUARDIAN],
 }
 
-
-
-
 interface UserEntityWithRoles extends UserEntity {
     roles: RoleId[];
 }
 
-const users: UserEntityWithRoles[] = [
+export const userSeeds: UserEntityWithRoles[] = [
     adminUserSeed,
     teacherUserSeed,
     studentUserSeed,
@@ -45,10 +42,9 @@ const users: UserEntityWithRoles[] = [
 ];
 
 for (let index = 5; index <= 30; index++) {
-    users.push(generateUser(index))
+    userSeeds.push(generateUser(index))
 }
 
-export { users };
 
 export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
@@ -56,11 +52,11 @@ export async function seed(knex: Knex): Promise<void> {
     await deleteAllUsers(knex);
 
     // Inserts seed entries
-    await insertUser(knex)(users.map<UserEntity>(user => ({
+    await insertUser(knex)(userSeeds.map<UserEntity>(user => ({
         id: user.id,
         name: user.name,
     })));
-    await insertUserRole(knex)(users.map<Omit<UserRoleEntity, 'id'>>(user => ({
+    await insertUserRole(knex)(userSeeds.map<Omit<UserRoleEntity, 'id'>>(user => ({
         roleId: user.roles[0],
         userId: user.id,
     })));
