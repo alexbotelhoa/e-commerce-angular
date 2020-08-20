@@ -5,4 +5,5 @@ type ActivityTimer {
     startTime: DateTime!
     completionTime: DateTime
     completed: Boolean!
+    classId: ID!
 }

@@ -54,6 +54,7 @@ export type GQLMutation = {
   readonly activateTheme: Maybe<GQLTheme>;
   readonly addActivitiesToCycle: GQLCycle;
   readonly addThemesToLevel: GQLLevel;
+  readonly completeActivity: GQLCompleteActivityResult;
   readonly createCommentOnActivity: GQLCreateCommentOnActivityResult;
   readonly createCycle: GQLCycle;
   readonly createEmbeddedActivity: GQLEmbeddedActivity;
@@ -69,6 +70,7 @@ export type GQLMutation = {
   readonly deleteActivityFromCycle: GQLCycle;
   readonly deleteCycleFromLevelTheme: GQLLevelTheme;
   readonly deleteThemeFromLevel: GQLLevel;
+  readonly startActivity: GQLStartActivityResult;
   readonly updateBasicLevelInfo: GQLLevel;
   readonly updateCycle: GQLCycle;
   readonly updateCycleActivitiesOrder: ReadonlyArray<GQLCycleActivity>;
@@ -106,6 +108,11 @@ export type GQLMutationaddActivitiesToCycleArgs = {
 
 export type GQLMutationaddThemesToLevelArgs = {
   data: GQLAddThemesToLevelInput;
+};
+
+
+export type GQLMutationcompleteActivityArgs = {
+  data: GQLCompleteActivityInput;
 };
 
 
@@ -184,6 +191,11 @@ export type GQLMutationdeleteThemeFromLevelArgs = {
 };
 
 
+export type GQLMutationstartActivityArgs = {
+  data: GQLStartActivityInput;
+};
+
+
 export type GQLMutationupdateBasicLevelInfoArgs = {
   data: GQLUpdateBasicLevelInfoInput;
 };
@@ -251,6 +263,13 @@ export type GQLUpdateEmbeddedActivityInput = {
   readonly estimatedTime: Scalars['String'];
   readonly data: GQLEmbeddedActivityDataInput;
 };
+
+export type GQLCompleteActivityInput = {
+  readonly cycleActivityId: Scalars['ID'];
+  readonly classId: Scalars['ID'];
+};
+
+export type GQLCompleteActivityResult = GQLActivityTimer | GQLSimpleError;
 
 export type GQLCreateCommentOnActivityInput = {
   readonly activityId: Scalars['ID'];
@@ -345,6 +364,13 @@ export type GQLUpdateBasicLevelInfoInput = {
   readonly active: Scalars['Boolean'];
   readonly codes: ReadonlyArray<Scalars['ID']>;
 };
+
+export type GQLStartActivityInput = {
+  readonly cycleActivityId: Scalars['ID'];
+  readonly classId: Scalars['ID'];
+};
+
+export type GQLStartActivityResult = GQLActivityTimer | GQLSimpleError;
 
 export type GQLCreateThemeInput = {
   readonly name: Scalars['String'];
@@ -496,6 +522,7 @@ export type GQLActivityTimer = {
   readonly startTime: Scalars['DateTime'];
   readonly completionTime: Maybe<Scalars['DateTime']>;
   readonly completed: Scalars['Boolean'];
+  readonly classId: Scalars['ID'];
 };
 
 export type GQLEmbeddedActivityData = GQLActivityData & {
@@ -760,6 +787,8 @@ export type GQLResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   HtmlActivityDataInput: GQLHtmlActivityDataInput;
   UpdateEmbeddedActivityInput: GQLUpdateEmbeddedActivityInput;
+  CompleteActivityInput: GQLCompleteActivityInput;
+  CompleteActivityResult: GQLResolversTypes['ActivityTimer'] | GQLResolversTypes['SimpleError'];
   CreateCommentOnActivityInput: GQLCreateCommentOnActivityInput;
   CreateCommentOnActivityResult: GQLResolversTypes['ActivityComment'] | GQLResolversTypes['SimpleError'];
   UpdateCycleActivitiesOrderInput: GQLUpdateCycleActivitiesOrderInput;
@@ -777,6 +806,8 @@ export type GQLResolversTypes = {
   AddThemesToLevelItemsInput: GQLAddThemesToLevelItemsInput;
   AddThemesToLevelInput: GQLAddThemesToLevelInput;
   UpdateBasicLevelInfoInput: GQLUpdateBasicLevelInfoInput;
+  StartActivityInput: GQLStartActivityInput;
+  StartActivityResult: GQLResolversTypes['ActivityTimer'] | GQLResolversTypes['SimpleError'];
   CreateThemeInput: GQLCreateThemeInput;
   IconDataInput: GQLIconDataInput;
   UpdateThemeInput: GQLUpdateThemeInput;
@@ -827,6 +858,8 @@ export type GQLResolversParentTypes = {
   Int: Scalars['Int'];
   HtmlActivityDataInput: GQLHtmlActivityDataInput;
   UpdateEmbeddedActivityInput: GQLUpdateEmbeddedActivityInput;
+  CompleteActivityInput: GQLCompleteActivityInput;
+  CompleteActivityResult: GQLResolversParentTypes['ActivityTimer'] | GQLResolversParentTypes['SimpleError'];
   CreateCommentOnActivityInput: GQLCreateCommentOnActivityInput;
   CreateCommentOnActivityResult: GQLResolversParentTypes['ActivityComment'] | GQLResolversParentTypes['SimpleError'];
   UpdateCycleActivitiesOrderInput: GQLUpdateCycleActivitiesOrderInput;
@@ -844,6 +877,8 @@ export type GQLResolversParentTypes = {
   AddThemesToLevelItemsInput: GQLAddThemesToLevelItemsInput;
   AddThemesToLevelInput: GQLAddThemesToLevelInput;
   UpdateBasicLevelInfoInput: GQLUpdateBasicLevelInfoInput;
+  StartActivityInput: GQLStartActivityInput;
+  StartActivityResult: GQLResolversParentTypes['ActivityTimer'] | GQLResolversParentTypes['SimpleError'];
   CreateThemeInput: GQLCreateThemeInput;
   IconDataInput: GQLIconDataInput;
   UpdateThemeInput: GQLUpdateThemeInput;
@@ -891,6 +926,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   activateTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationactivateThemeArgs, 'id'>>;
   addActivitiesToCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationaddActivitiesToCycleArgs, 'data'>>;
   addThemesToLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationaddThemesToLevelArgs, 'data'>>;
+  completeActivity: Resolver<GQLResolversTypes['CompleteActivityResult'], ParentType, ContextType, RequireFields<GQLMutationcompleteActivityArgs, 'data'>>;
   createCommentOnActivity: Resolver<GQLResolversTypes['CreateCommentOnActivityResult'], ParentType, ContextType, RequireFields<GQLMutationcreateCommentOnActivityArgs, 'data'>>;
   createCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationcreateCycleArgs, 'data'>>;
   createEmbeddedActivity: Resolver<GQLResolversTypes['EmbeddedActivity'], ParentType, ContextType, RequireFields<GQLMutationcreateEmbeddedActivityArgs, 'data'>>;
@@ -906,6 +942,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   deleteActivityFromCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationdeleteActivityFromCycleArgs, 'cycleActivityId'>>;
   deleteCycleFromLevelTheme: Resolver<GQLResolversTypes['LevelTheme'], ParentType, ContextType, RequireFields<GQLMutationdeleteCycleFromLevelThemeArgs, 'cycleId'>>;
   deleteThemeFromLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationdeleteThemeFromLevelArgs, 'levelThemeId'>>;
+  startActivity: Resolver<GQLResolversTypes['StartActivityResult'], ParentType, ContextType, RequireFields<GQLMutationstartActivityArgs, 'data'>>;
   updateBasicLevelInfo: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationupdateBasicLevelInfoArgs, 'data'>>;
   updateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationupdateCycleArgs, 'data'>>;
   updateCycleActivitiesOrder: Resolver<ReadonlyArray<GQLResolversTypes['CycleActivity']>, ParentType, ContextType, RequireFields<GQLMutationupdateCycleActivitiesOrderArgs, 'data'>>;
@@ -913,6 +950,10 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   updateEmbeddedActivity: Resolver<GQLResolversTypes['EmbeddedActivity'], ParentType, ContextType, RequireFields<GQLMutationupdateEmbeddedActivityArgs, 'data'>>;
   updateLevelThemesOrder: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLMutationupdateLevelThemesOrderArgs, 'data'>>;
   updateTheme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType, RequireFields<GQLMutationupdateThemeArgs, 'data'>>;
+};
+
+export type GQLCompleteActivityResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['CompleteActivityResult'] = GQLResolversParentTypes['CompleteActivityResult']> = {
+  __resolveType: TypeResolveFn<'ActivityTimer' | 'SimpleError', ParentType, ContextType>;
 };
 
 export type GQLCreateCommentOnActivityResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['CreateCommentOnActivityResult'] = GQLResolversParentTypes['CreateCommentOnActivityResult']> = {
@@ -927,6 +968,10 @@ export type GQLDeleteActivityCommentSuccessResultResolvers<ContextType = GraphQL
 
 export type GQLDeleteActivityCommentResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['DeleteActivityCommentResult'] = GQLResolversParentTypes['DeleteActivityCommentResult']> = {
   __resolveType: TypeResolveFn<'DeleteActivityCommentSuccessResult' | 'SimpleError', ParentType, ContextType>;
+};
+
+export type GQLStartActivityResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['StartActivityResult'] = GQLResolversParentTypes['StartActivityResult']> = {
+  __resolveType: TypeResolveFn<'ActivityTimer' | 'SimpleError', ParentType, ContextType>;
 };
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
@@ -1017,6 +1062,7 @@ export type GQLActivityTimerResolvers<ContextType = GraphQLContext, ParentType e
   startTime: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   completionTime: Resolver<Maybe<GQLResolversTypes['DateTime']>, ParentType, ContextType>;
   completed: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1202,9 +1248,11 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   ActivityTypeId: GQLActivityTypeIdResolvers;
   LevelTypeId: GQLLevelTypeIdResolvers;
   Mutation: GQLMutationResolvers<ContextType>;
+  CompleteActivityResult: GQLCompleteActivityResultResolvers<ContextType>;
   CreateCommentOnActivityResult: GQLCreateCommentOnActivityResultResolvers<ContextType>;
   DeleteActivityCommentSuccessResult: GQLDeleteActivityCommentSuccessResultResolvers<ContextType>;
   DeleteActivityCommentResult: GQLDeleteActivityCommentResultResolvers<ContextType>;
+  StartActivityResult: GQLStartActivityResultResolvers<ContextType>;
   Query: GQLQueryResolvers<ContextType>;
   ActivityType: GQLActivityTypeResolvers<ContextType>;
   EmbeddedActivity: GQLEmbeddedActivityResolvers<ContextType>;

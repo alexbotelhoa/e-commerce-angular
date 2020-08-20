@@ -1,0 +1,10 @@
+type Mutation {
+    startActivity(data: StartActivityInput!): StartActivityResult! 
+}
+
+input StartActivityInput {
+    cycleActivityId: ID!
+    classId: ID!
+}
+
+union StartActivityResult = ActivityTimer | SimpleError

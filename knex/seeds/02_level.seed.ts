@@ -10,7 +10,7 @@ export const level1Seed: LevelEntity = {
     name: "Level 1",
     description: 'Level 1 description',
     order: 1,
-    active: false,
+    active: true,
     typeId: LevelTypeId.ADULT,
 };
 export const level2Seed: LevelEntity = {
@@ -18,7 +18,7 @@ export const level2Seed: LevelEntity = {
     name: "Level 2",
     description: 'Level 2 description',
     order: 2,
-    active: true,
+    active: false,
     typeId: LevelTypeId.ADULT,
 };
 export const level3Seed: LevelEntity = {

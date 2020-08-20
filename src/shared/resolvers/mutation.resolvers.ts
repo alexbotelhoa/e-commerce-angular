@@ -33,6 +33,8 @@ import { updateCyclesOrderMutation } from "../../domain/activity/mutations/cycle
 import { updateCycleActivitiesOrderMutation } from "../../domain/activity/mutations/cycle-activity/update-cycle-activities-order.mutation";
 import { createCommentOnActivityMutationResolver } from "../../domain/activity/mutations/create-comment-on-activity/create-comment-on-activity.mutation";
 import { deleteActivityCommentMutationResolver } from "../../domain/activity/mutations/delete-activity-comment/delete-activity-comment.mutation";
+import { startActivityMutationResolver } from "../../domain/activity/mutations/start-activity/start-activity.mutation";
+import { completeActivityMutationResolver } from "../../domain/activity/mutations/complete-activity/complete-activity.mutation";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,
@@ -79,4 +81,6 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     updateCycle: updateCycleMutationResolver,
     createCommentOnActivity: createCommentOnActivityMutationResolver,
     deleteActivityComment: deleteActivityCommentMutationResolver,
+    startActivity: startActivityMutationResolver,
+    completeActivity: completeActivityMutationResolver,
 }

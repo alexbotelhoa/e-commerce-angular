@@ -1,6 +1,5 @@
 import * as Knex from "knex";
 import { ClassEntity } from "../../src/entities/class.entity";
-import { basic1LevelCodeSeed, intermediary2LevelCodeSeed } from "./08_level_code.seed";
 import { deleteAllClasses, insertClass } from "../../src/shared/repositories/class.repository";
 import { levelCodesData } from "./data/level-codes.data";
 

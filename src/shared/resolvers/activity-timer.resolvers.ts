@@ -8,6 +8,7 @@ export const activityTimerEntityResolvers: Pick<GQLActivityTimerResolvers, keyof
     completionTime: obj => obj.completionTime,
     startTime: obj => obj.startTime,
     completed: obj => obj.completed,
+    classId: obj => obj.classId.toString(10),
 }
 
 export const activityTimerResolvers: GQLActivityTimerResolvers = {
