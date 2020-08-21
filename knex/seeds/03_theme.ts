@@ -26,14 +26,16 @@ export const theme3Seed: ThemeEntity = {
     endColor: '#FFFFFF',
 }
 
+export const allThemesSeeds = [
+    theme1Seed,
+    theme2Seed,
+    theme3Seed,
+]
+
 export async function seed(knex: Knex<ThemeEntity, ThemeEntity[]>): Promise<void> {
     // Deletes ALL existing entries
     await deleteAllThemes(knex);
 
     // Inserts seed entries
-    await insertTheme(knex)([
-        theme1Seed,
-        theme2Seed,
-        theme3Seed,
-    ]);
+    await insertTheme(knex)(allThemesSeeds);
 }
