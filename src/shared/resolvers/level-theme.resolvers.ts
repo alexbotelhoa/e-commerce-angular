@@ -79,10 +79,20 @@ export const totalCyclesResolver: GQLLevelThemeResolvers['totalCycles'] = async 
     return totalCycles;
 }
 
+export const totalResourcesFieldResolver: GQLLevelThemeResolvers['totalResources'] = async (obj, params, context) => {
+    return 4;
+}
+
+export const viewerTotalCompletedResourcesFieldResolver: GQLLevelThemeResolvers['viewerTotalCompletedResources'] = async (obj, params, context) => {
+    return 2;
+}
+
 export const levelThemeResolvers: GQLLevelThemeResolvers = {
     ...levelThemeEntityResolvers,
     level: levelResolver,
     theme: themeResolver,
     cycles: levelThemeCyclesResolver,
-    totalCycles: totalCyclesResolver
+    totalCycles: totalCyclesResolver,
+    totalResources: totalResourcesFieldResolver,
+    viewerTotalCompletedResources: viewerTotalCompletedResourcesFieldResolver,
 }

@@ -4,4 +4,7 @@ type User {
   initials: String!
   roles: [Role!]!
   userRoles: [UserRole!]!
+  isTeacher: Boolean!
+  totalCompletedActivities: Int!
+  totalAvailableActivities: Int!
 }

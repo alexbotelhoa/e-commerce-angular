@@ -650,6 +650,8 @@ export type GQLLevelTheme = {
   readonly theme: GQLTheme;
   readonly cycles: ReadonlyArray<GQLCycle>;
   readonly totalCycles: Scalars['Int'];
+  readonly totalResources: Scalars['Int'];
+  readonly viewerTotalCompletedResources: Scalars['Int'];
 };
 
 export type GQLLevel = {
@@ -662,6 +664,10 @@ export type GQLLevel = {
   readonly typeId: LevelTypeId;
   readonly levelThemes: ReadonlyArray<GQLLevelTheme>;
   readonly codes: ReadonlyArray<GQLLevelCode>;
+  readonly viewerClasses: ReadonlyArray<GQLEnrollmentClass>;
+  readonly totalActivities: Scalars['Int'];
+  readonly viewerTotalCompletedActivities: Scalars['Int'];
+  readonly viewerNextUnfinishedActivity: Maybe<GQLCycleActivity>;
 };
 
 export type GQLTeacherClass = {
@@ -703,6 +709,9 @@ export type GQLUser = {
   readonly initials: Scalars['String'];
   readonly roles: ReadonlyArray<GQLRole>;
   readonly userRoles: ReadonlyArray<GQLUserRole>;
+  readonly isTeacher: Scalars['Boolean'];
+  readonly totalCompletedActivities: Scalars['Int'];
+  readonly totalAvailableActivities: Scalars['Int'];
 };
 
 
@@ -1202,6 +1211,8 @@ export type GQLLevelThemeResolvers<ContextType = GraphQLContext, ParentType exte
   theme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType>;
   cycles: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType>;
   totalCycles: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  totalResources: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  viewerTotalCompletedResources: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1214,6 +1225,10 @@ export type GQLLevelResolvers<ContextType = GraphQLContext, ParentType extends G
   typeId: Resolver<GQLResolversTypes['LevelTypeId'], ParentType, ContextType>;
   levelThemes: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType>;
   codes: Resolver<ReadonlyArray<GQLResolversTypes['LevelCode']>, ParentType, ContextType>;
+  viewerClasses: Resolver<ReadonlyArray<GQLResolversTypes['EnrollmentClass']>, ParentType, ContextType>;
+  totalActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  viewerTotalCompletedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  viewerNextUnfinishedActivity: Resolver<Maybe<GQLResolversTypes['CycleActivity']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1255,6 +1270,9 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   initials: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   roles: Resolver<ReadonlyArray<GQLResolversTypes['Role']>, ParentType, ContextType>;
   userRoles: Resolver<ReadonlyArray<GQLResolversTypes['UserRole']>, ParentType, ContextType>;
+  isTeacher: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  totalCompletedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  totalAvailableActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 

@@ -51,10 +51,41 @@ const levelCodesResolver: GQLLevelResolvers['codes'] = async (obj, params, conte
     return context.getDatabaseLoader(levelCodesDataloader).load(obj.id)
 }
 
+const levelViewerClassesFieldResolver: GQLLevelResolvers['viewerClasses'] = async (obj, params, context) => {
+    return [
+        {
+            classId: 1,
+            enrollmentId: 1,
+            id: 1,
+        }
+    ];
+}
+
+const levelTotalActivitiesFieldResolver: GQLLevelResolvers['totalActivities'] = async (obj, params, context) => {
+    return 20;
+}
+
+const levelViewerTotalCompletedActivitiesFieldResolver: GQLLevelResolvers['viewerTotalCompletedActivities'] = async (obj, params, context) => {
+    return 10;
+}
+
+const levelViewerNextUnfinishedActivityFieldResolver: GQLLevelResolvers['viewerNextUnfinishedActivity'] = async (obj, params, context) => {
+    return {
+        activityId: 1,
+        cycleId: 1,
+        id: 1,
+        order: 1,
+    };
+}
+
 export const levelResolvers: GQLLevelResolvers = {
     ...levelEntityResolvers,
     levelThemes: levelThemesResolver,
     codes: levelCodesResolver,
+    viewerClasses: levelViewerClassesFieldResolver,
+    totalActivities: levelTotalActivitiesFieldResolver,
+    viewerTotalCompletedActivities: levelViewerTotalCompletedActivitiesFieldResolver,
+    viewerNextUnfinishedActivity: levelViewerNextUnfinishedActivityFieldResolver,
 }
 
 

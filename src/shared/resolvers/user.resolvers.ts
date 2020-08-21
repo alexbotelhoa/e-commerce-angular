@@ -43,11 +43,26 @@ export const userInitialsResolver: GQLUserResolvers['initials'] = obj => {
     return `${firstChar}${lastChar}`;
 }
 
+export const userIsTeacherFieldResolver: GQLUserResolvers['isTeacher'] = (obj, params, context) => {
+    return false;
+}
+
+export const totalAvailableActivitiesFieldResolver: GQLUserResolvers['totalAvailableActivities'] = (obj, params, context) => {
+    return 100;
+}
+
+export const totalCompletedActivitiesFieldResolver: GQLUserResolvers['totalCompletedActivities'] = (obj, params, context) => {
+    return 100;
+}
+
 export const userResolvers: GQLUserResolvers = {
     ...userEntityResolvers,
     initials: userInitialsResolver,
     userRoles: userUserRolesResolver,
     roles: userRolesResolver,
+    isTeacher: userIsTeacherFieldResolver,
+    totalCompletedActivities: totalCompletedActivitiesFieldResolver,
+    totalAvailableActivities: totalAvailableActivitiesFieldResolver,
 }
 
 

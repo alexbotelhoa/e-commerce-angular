@@ -1,6 +1,6 @@
 import { GQLCycleResolvers } from "../../resolvers-types"
 
-import { CycleActivityEntity, CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-activity.entity"
+import { CycleActivityEntity } from "../../entities/cycle-activity.entity"
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 
 import { selectCycleActivity, countCycleActivities } from "../repositories/cycle-activity.repository"
