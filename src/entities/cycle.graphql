@@ -7,4 +7,5 @@ type Cycle {
     levelTheme: LevelTheme!
     activities: [CycleActivity!]!
     totalActivities: Int!
+    viewerHasCompleted: Boolean!
 }

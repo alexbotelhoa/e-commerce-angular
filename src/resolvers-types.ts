@@ -611,6 +611,7 @@ export type GQLCycle = {
   readonly levelTheme: GQLLevelTheme;
   readonly activities: ReadonlyArray<GQLCycleActivity>;
   readonly totalActivities: Scalars['Int'];
+  readonly viewerHasCompleted: Scalars['Boolean'];
 };
 
 export type GQLEnrollmentClass = {
@@ -1172,6 +1173,7 @@ export type GQLCycleResolvers<ContextType = GraphQLContext, ParentType extends G
   levelTheme: Resolver<GQLResolversTypes['LevelTheme'], ParentType, ContextType>;
   activities: Resolver<ReadonlyArray<GQLResolversTypes['CycleActivity']>, ParentType, ContextType>;
   totalActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  viewerHasCompleted: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 

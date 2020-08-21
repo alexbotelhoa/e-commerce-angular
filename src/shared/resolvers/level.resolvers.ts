@@ -62,11 +62,11 @@ const levelViewerClassesFieldResolver: GQLLevelResolvers['viewerClasses'] = asyn
 }
 
 const levelTotalActivitiesFieldResolver: GQLLevelResolvers['totalActivities'] = async (obj, params, context) => {
-    return 20;
+    return Math.ceil(Math.random() * 10) + 10;
 }
 
 const levelViewerTotalCompletedActivitiesFieldResolver: GQLLevelResolvers['viewerTotalCompletedActivities'] = async (obj, params, context) => {
-    return 10;
+    return Math.round(Math.random() * 10);
 }
 
 const levelViewerNextUnfinishedActivityFieldResolver: GQLLevelResolvers['viewerNextUnfinishedActivity'] = async (obj, params, context) => {

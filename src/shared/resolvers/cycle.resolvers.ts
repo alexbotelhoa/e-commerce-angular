@@ -67,11 +67,16 @@ export const totalActivitiesResolver: GQLCycleResolvers['totalActivities'] = asy
     return totalActivities;
 }
 
+export const cycleViewerHasCompletedResolver: GQLCycleResolvers['viewerHasCompleted'] = async (obj, params, context) => {
+    return Math.random() >= 0.5;
+}
+
 export const cycleResolvers: GQLCycleResolvers = {
     ...cycleEntityResolvers,
     levelTheme: cycleLevelThemeResolver,
     activities: cycleActivitiesResolver,
-    totalActivities: totalActivitiesResolver
+    totalActivities: totalActivitiesResolver,
+    viewerHasCompleted: cycleViewerHasCompletedResolver,
 }
 
 
