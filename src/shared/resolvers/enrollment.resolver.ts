@@ -13,18 +13,17 @@ export const enrollmentEntityResolvers: Pick<GQLEnrollmentResolvers, keyof Enrol
 
 const enrollmentLevelCodeByIdSorter = createDataloaderSingleSort<LevelCodeEntity, number, LevelCodeEntity>('id');
 
-const enrollmentLevelCodeByIdDataLoader: DatabaseLoaderFactory<number, LevelCodeEntity> = (db) => {
-    return {
-        batchFn: async (ids) => {
-            const levelCodes = await getLevelCodesByIds(db)(ids);
-            const sortedClasses = enrollmentLevelCodeByIdSorter(ids)(levelCodes);
-            return sortedClasses;
-        }
+const enrollmentLevelCodeByIdDataLoader: DatabaseLoaderFactory<number, LevelCodeEntity> = {
+    id: 'enrollmentLevelCodeByIdDataLoader',
+    batchFn: db => async (ids) => {
+        const levelCodes = await getLevelCodesByIds(db)(ids);
+        const sortedClasses = enrollmentLevelCodeByIdSorter(ids)(levelCodes);
+        return sortedClasses;
     }
 }
 
 export const enrollmentClassFieldResolver: GQLEnrollmentResolvers['levelCode'] = (obj, params, context) => {
-    return context.getDatabaseLoader(enrollmentLevelCodeByIdDataLoader).load(obj.levelCodeId);
+    return context.getDatabaseLoader(enrollmentLevelCodeByIdDataLoader, undefined).load(obj.levelCodeId);
 }
 
 export const enrollmentResolvers: GQLEnrollmentResolvers = {

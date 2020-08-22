@@ -18,30 +18,32 @@ export const activityCommentEntityResolvers: Pick<GQLActivityCommentResolvers, k
 
 const activityCommentRepliesSorter = createDataloaderMultiSort<ActivityCommentEntity, number>('parentId');
 
-const activityCommentRepliesByIdLoader: DatabaseLoaderFactory<number, ActivityCommentEntity[], ActivityCommentEntity[]> = (db) => ({
-    batchFn: async (ids) => {
+const activityCommentRepliesByIdLoader: DatabaseLoaderFactory<number, ActivityCommentEntity[], ActivityCommentEntity[]> = {
+    id: 'activityCommentRepliesByIdLoader',
+    batchFn: db => async (ids) => {
         const entities = await selectActivityComment(db).whereIn('parentId', ids);
         const result = activityCommentRepliesSorter(ids)(entities);
         return result;
     }
-});
+};
 
 const activityCommentRepliesFieldResolver: GQLActivityCommentResolvers['replies'] = async (obj, params, context) => {
-    return context.getDatabaseLoader(activityCommentRepliesByIdLoader).load(obj.id);
+    return context.getDatabaseLoader(activityCommentRepliesByIdLoader, undefined).load(obj.id);
 }
 
 const activityCommentUserSorter = createDataloaderSingleSort<UserEntity, number, UserEntity>('id');
 
-const activityCommentUserByIdLoader: DatabaseLoaderFactory<number, UserEntity, UserEntity> = (db) => ({
-    batchFn: async (ids) => {
+const activityCommentUserByIdLoader: DatabaseLoaderFactory<number, UserEntity, UserEntity> = {
+    id: 'activityCommentUserByIdLoader',
+    batchFn: db => async (ids) => {
         const entities = await selectUser(db).whereIn('id', ids);
         const result = activityCommentUserSorter(ids)(entities);
         return result;
     }
-});
+};
 
 const activityCommentUserFieldResolver: GQLActivityCommentResolvers['user'] = async (obj, params, context) => {
-    return context.getDatabaseLoader(activityCommentUserByIdLoader).load(obj.userId);
+    return context.getDatabaseLoader(activityCommentUserByIdLoader, undefined).load(obj.userId);
 }
 
 const activityCommentViewerCanDeleteResolver: GQLActivityCommentResolvers['viewerCanDelete'] = async (obj, params, context) => {

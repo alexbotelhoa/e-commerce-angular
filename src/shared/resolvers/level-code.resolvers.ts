@@ -19,13 +19,12 @@ const levelCodeEntityResolvers: Pick<GQLLevelCodeResolvers, keyof LevelCodeEntit
 const levelCodeLevelByIdSorter = createDataloaderSingleSort<LevelEntity, number, LevelEntity>('id');
 
 
-const levelCodeLevelByIdDataLoader: DatabaseLoaderFactory<number, LevelEntity, LevelEntity | undefined> = (db) => {
-    return {
-        batchFn: async (ids) => {
-            const entities = await getLevelsByIds(db)(ids);
-            const sortedEntities = levelCodeLevelByIdSorter(ids)(entities);
-            return sortedEntities;
-        }
+const levelCodeLevelByIdDataLoader: DatabaseLoaderFactory<number, LevelEntity, LevelEntity | undefined> = {
+    id: 'levelCodeLevelByIdDataLoader',
+    batchFn: db => async (ids) => {
+        const entities = await getLevelsByIds(db)(ids);
+        const sortedEntities = levelCodeLevelByIdSorter(ids)(entities);
+        return sortedEntities;
     }
 }
 
@@ -34,7 +33,7 @@ export const levelCodeLevelFieldResolver: GQLLevelCodeResolvers['level'] = async
     if (obj.levelId === null) {
         return null;
     }
-    return context.getDatabaseLoader(levelCodeLevelByIdDataLoader).load(obj.levelId);
+    return context.getDatabaseLoader(levelCodeLevelByIdDataLoader, undefined).load(obj.levelId);
 }
 
 export const levelCodeResolvers: GQLLevelCodeResolvers = {

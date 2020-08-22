@@ -13,21 +13,22 @@ const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
 
 const userUserRoleSorter = createDataloaderMultiSort<UserRoleEntity, number>('userId');
 
-const userUserRoleDataloader: DatabaseLoaderFactory<number, UserRoleEntity[]> = (db) => ({
-    batchFn: async (ids) => {
+const userUserRoleDataloader: DatabaseLoaderFactory<number, UserRoleEntity[]> = {
+    id: 'userUserRoleByUserId',
+    batchFn: db => async (ids) => {
         const entities = await selectUserRole(db).whereIn('userId', ids);
         const sortedEntities = userUserRoleSorter(ids)(entities);
         return sortedEntities;
     }
-});
+};
 
 export const userUserRolesResolver: GQLUserResolvers['userRoles'] = async (obj, params, context) => {
-    const dataloader = context.getDatabaseLoader(userUserRoleDataloader);
+    const dataloader = context.getDatabaseLoader(userUserRoleDataloader, undefined);
     return dataloader.load(obj.id);
 }
 
 export const userRolesResolver: GQLUserResolvers['roles'] = async (obj, params, context) => {
-    const dataloader = context.getDatabaseLoader(userUserRoleDataloader);
+    const dataloader = context.getDatabaseLoader(userUserRoleDataloader, undefined);
     const userRoles = await dataloader.load(obj.id);
     return userRoles.map(userRole => getRoleById(userRole.roleId));
 }

@@ -6,5 +6,5 @@ import { AuthenticatedUser } from "./authenticated-user.type";
 export interface GraphQLContext {
     currentUser: AuthenticatedUser | null;
     database: DatabaseService;
-    getDatabaseLoader: <K, V, C = K>(dataLoaderFactory: DatabaseLoaderFactory<K, V, C>) => DataLoader<K, V, C>
+    getDatabaseLoader: <K, V, C = K, P = undefined>(dataLoaderFactory: DatabaseLoaderFactory<K, V, C, P>, params: P) => DataLoader<K, V, C>
 }

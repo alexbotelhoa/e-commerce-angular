@@ -24,16 +24,17 @@ const levelThemeEntityResolvers: Pick<GQLLevelThemeResolvers, keyof LevelThemeEn
 
 const cyclesSorter = createDataloaderMultiSort<CycleEntity, number>('levelThemeId');
 
-const cyclesDataloader: DatabaseLoaderFactory<number, CycleEntity[]> = (db) => ({
-    batchFn: async (ids) => {
+const cyclesDataloader: DatabaseLoaderFactory<number, CycleEntity[]> = {
+    id: 'cyclesByLevelThemeId',
+    batchFn: db => async (ids) => {
         const entities = await selectCycle(db).whereIn('levelThemeId', ids).orderBy('order', 'asc');
         const sortedEntities = cyclesSorter(ids)(entities);
         return sortedEntities;
-    }
-})
+    },
+}
 
 export const levelThemeCyclesResolver: GQLLevelThemeResolvers['cycles'] = async (obj, params, context) => {
-    const dataloader = context.getDatabaseLoader(cyclesDataloader);
+    const dataloader = context.getDatabaseLoader(cyclesDataloader, undefined);
     const cycleActivities = await dataloader.load(obj.id);
     return cycleActivities;
 }
@@ -62,8 +63,9 @@ type TotalCyclesQueryResult = CountObj & Pick<CycleEntity, 'levelThemeId'>;
 
 const totalCyclesSorter = createDataloaderCountSort<TotalCyclesQueryResult, number>('levelThemeId');
 
-const totalCyclesDataloader: DatabaseLoaderFactory<number, number> = (db) => ({
-    batchFn: async (ids) => {
+const totalCyclesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number> = {
+    id: 'totalCyclesByLevelThemeId',
+    batchFn: db => async (ids) => {
         const entities = await countCycles(db)
             .select('levelThemeId')
             .whereIn('levelThemeId', ids)
@@ -71,10 +73,10 @@ const totalCyclesDataloader: DatabaseLoaderFactory<number, number> = (db) => ({
         const sortedEntities = totalCyclesSorter(ids)(entities);
         return sortedEntities;
     }
-})
+}
 
 export const totalCyclesResolver: GQLLevelThemeResolvers['totalCycles'] = async (obj, params, context) => {
-    const dataloader = context.getDatabaseLoader(totalCyclesDataloader);
+    const dataloader = context.getDatabaseLoader(totalCyclesByLevelThemeIdLoader, undefined);
     const totalCycles = await dataloader.load(obj.id);
     return totalCycles;
 }

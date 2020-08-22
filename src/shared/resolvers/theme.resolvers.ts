@@ -10,7 +10,6 @@ export const themeEntityResolvers: Pick<GQLThemeResolvers, keyof ThemeEntity> = 
 }
 
 import { ThemeIconEntity } from "../../entities/themes/theme-icon.entity";
-import { DatabaseService } from "../../shared/services/database.service";
 import { selectThemeIcon } from "../../shared/repositories/theme-icon.repository";
 import { DatabaseLoaderFactory } from "../../shared/types/database-loader.type";
 import { createDataloaderSingleSort } from "../../shared/utils/dataloader-single-sort";
@@ -18,17 +17,17 @@ import { createDataloaderSingleSort } from "../../shared/utils/dataloader-single
 const themeIconDataLoaderSorter = createDataloaderSingleSort<ThemeIconEntity, number, ThemeIconEntity>('themeId');
 
 const themeIconDataLoaderFactory: DatabaseLoaderFactory<ThemeIconEntity['themeId'], ThemeIconEntity> =
-    (db: DatabaseService) => ({
-        batchFn: async ids => {
-            const result = await selectThemeIcon(db).whereIn("themeId", ids);
-            const sorter = themeIconDataLoaderSorter(ids);
-            return sorter(result);
-        },
-    });
+{
+    id: 'themeIconDataLoaderFactory',
+    batchFn: db => async ids => {
+        const result = await selectThemeIcon(db).whereIn("themeId", ids);
+        const sorter = themeIconDataLoaderSorter(ids);
+        return sorter(result);
+    },
+};
 
-export const themeIconDataResolver: GQLThemeResolvers['icon'] = (obj, params, context) => {
-    const dataLoader = context.getDatabaseLoader(themeIconDataLoaderFactory)
-    return dataLoader.load(obj.id);
+export const themeIconDataResolver: GQLThemeResolvers['icon'] = async (obj, params, context) => {
+    return await context.getDatabaseLoader(themeIconDataLoaderFactory, undefined).load(obj.id)
 }
 
 

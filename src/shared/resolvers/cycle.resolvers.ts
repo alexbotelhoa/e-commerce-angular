@@ -23,16 +23,17 @@ const cycleEntityResolvers: Pick<GQLCycleResolvers, keyof CycleEntity> = {
 
 const cycleActivitiesSorter = createDataloaderMultiSort<CycleActivityEntity, number>('cycleId');
 
-const cycleActivitiesDataloader: DatabaseLoaderFactory<number, CycleActivityEntity[]> = (db) => ({
-    batchFn: async (ids) => {
+const cycleActivitiesDataloader: DatabaseLoaderFactory<number, CycleActivityEntity[]> = {
+    id: 'cycleActivitiesDataloader',
+    batchFn: db => async (ids) => {
         const entities = await selectCycleActivity(db).whereIn('cycleId', ids).orderBy('order', 'asc');
         const sortedEntities = cycleActivitiesSorter(ids)(entities);
         return sortedEntities;
     }
-})
+}
 
 export const cycleActivitiesResolver: GQLCycleResolvers['activities'] = async (obj, params, context) => {
-    const dataloader = context.getDatabaseLoader(cycleActivitiesDataloader);
+    const dataloader = context.getDatabaseLoader(cycleActivitiesDataloader, undefined);
     const cycleActivities = await dataloader.load(obj.id);
     return cycleActivities;
 }
@@ -50,8 +51,9 @@ type TotalActivitiesQueryResult = CountObj & Pick<CycleActivityEntity, 'cycleId'
 
 const totalActivitiesSorter = createDataloaderCountSort<TotalActivitiesQueryResult, number>('cycleId');
 
-const totalActivitiesDataloader: DatabaseLoaderFactory<number, number> = (db) => ({
-    batchFn: async (ids) => {
+const totalActivitiesDataloader: DatabaseLoaderFactory<number, number> = {
+    id: 'totalActivitiesDataloader',
+    batchFn: db => async (ids) => {
         const entities = await countCycleActivities(db)
             .select('cycleId')
             .whereIn('cycleId', ids)
@@ -59,10 +61,10 @@ const totalActivitiesDataloader: DatabaseLoaderFactory<number, number> = (db) =>
         const sortedEntities = totalActivitiesSorter(ids)(entities);
         return sortedEntities;
     }
-})
+}
 
 export const totalActivitiesResolver: GQLCycleResolvers['totalActivities'] = async (obj, params, context) => {
-    const dataloader = context.getDatabaseLoader(totalActivitiesDataloader);
+    const dataloader = context.getDatabaseLoader(totalActivitiesDataloader, undefined);
     const totalActivities = await dataloader.load(obj.id);
     return totalActivities;
 }

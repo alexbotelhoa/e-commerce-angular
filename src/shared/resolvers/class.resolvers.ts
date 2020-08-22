@@ -14,16 +14,17 @@ export const classEntityResolvers: Pick<GQLClassResolvers, keyof ClassEntity> = 
 const classLevelCodeSorter = createDataloaderSingleSort<LevelCodeEntity, number, LevelCodeEntity>('id');
 
 
-const classLevelCodeDataloader: DatabaseLoaderFactory<number, LevelCodeEntity> = (db) => ({
-    batchFn: async (ids) => {
+const classLevelCodeDataloader: DatabaseLoaderFactory<number, LevelCodeEntity> = {
+    id: 'classLevelCodeDataloader',
+    batchFn: db => async (ids) => {
         const entities = await getLevelCodesByIds(db)(ids);
         const sortedEntities = classLevelCodeSorter(ids)(entities);
         return sortedEntities;
     }
-})
+}
 
 export const classLevelCodeResolver: GQLClassResolvers['levelCode'] = async (obj, params, context) => {
-    const dataloader = context.getDatabaseLoader(classLevelCodeDataloader);
+    const dataloader = context.getDatabaseLoader(classLevelCodeDataloader, undefined);
     const levelCodes = await dataloader.load(obj.levelCodeId);
     return levelCodes;
 }
