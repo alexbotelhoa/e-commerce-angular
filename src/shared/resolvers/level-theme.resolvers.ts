@@ -1,6 +1,6 @@
 import { GQLLevelThemeResolvers } from "../../resolvers-types"
 
-import { CycleEntity } from "../../entities/cycle.entity"
+import { CycleEntity, CYCLE_TABLE } from "../../entities/cycle.entity"
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 
 import { selectCycle, countCycles } from "../repositories/cycle.repository"
@@ -12,8 +12,9 @@ import { getThemeById } from "../repositories/theme.repository";
 import { LevelThemeEntity } from "../../entities/level-theme.entity";
 
 import { CountObj } from "../types/count-obj.type"
-import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
+import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
+import { CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-activity.entity";
 
 const levelThemeEntityResolvers: Pick<GQLLevelThemeResolvers, keyof LevelThemeEntity> = {
     id: obj => obj.id.toString(),
@@ -81,12 +82,41 @@ export const totalCyclesResolver: GQLLevelThemeResolvers['totalCycles'] = async 
     return totalCycles;
 }
 
+type LevelThemeTotalActivitiesQueryResult = CountObj & Pick<CycleEntity, 'levelThemeId'>;
+
+
 export const totalResourcesFieldResolver: GQLLevelThemeResolvers['totalResources'] = async (obj, params, context) => {
     return 4;
 }
 
-export const viewerTotalCompletedResourcesFieldResolver: GQLLevelThemeResolvers['viewerTotalCompletedResources'] = async (obj, params, context) => {
-    return 2;
+
+const levelViewerTotalCompletedActivitiesSorter = createDataloaderCountSort<LevelThemeTotalActivitiesQueryResult, number>('levelThemeId');
+
+const levelThemeViewerTotalCompletedResourcesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number, number> = {
+    id: 'levelThemeViewerTotalCompletedResourcesByLevelThemeId',
+    batchFn: (db, userId) => async (ids) => {
+        const entities: LevelThemeTotalActivitiesQueryResult[] = await db
+            .count('*')
+            .select([`${CYCLE_TABLE}.levelThemeId`])
+            .from(ACTIVITY_TIMER_TABLE)
+            .innerJoin(CYCLE_ACTIVITY_TABLE, `${CYCLE_ACTIVITY_TABLE}.id`, `${ACTIVITY_TIMER_TABLE}.cycleActivityId`)
+            .innerJoin(CYCLE_TABLE, `${CYCLE_TABLE}.id`, `${CYCLE_ACTIVITY_TABLE}.cycleId`)
+            .whereIn(`${CYCLE_TABLE}.levelThemeId`, ids)
+            .andWhere(`${ACTIVITY_TIMER_TABLE}.completed`, true)
+            .andWhere(`${ACTIVITY_TIMER_TABLE}.userId`, userId)
+            .groupBy(`${CYCLE_TABLE}.levelThemeId`);
+
+        const sorted = levelViewerTotalCompletedActivitiesSorter(ids)(entities);
+        return sorted;
+    }
+}
+
+export const levelThemeViewerTotalCompletedResourcesFieldResolver: GQLLevelThemeResolvers['viewerTotalCompletedResources'] = async (obj, params, context) => {
+    const user = context.currentUser;
+    if (!user) {
+        return 0;
+    }
+    return context.getDatabaseLoader(levelThemeViewerTotalCompletedResourcesByLevelThemeIdLoader, user.id).load(obj.id);
 }
 
 export const levelThemeResolvers: GQLLevelThemeResolvers = {
@@ -96,5 +126,5 @@ export const levelThemeResolvers: GQLLevelThemeResolvers = {
     cycles: levelThemeCyclesResolver,
     totalCycles: totalCyclesResolver,
     totalResources: totalResourcesFieldResolver,
-    viewerTotalCompletedResources: viewerTotalCompletedResourcesFieldResolver,
+    viewerTotalCompletedResources: levelThemeViewerTotalCompletedResourcesFieldResolver,
 }
