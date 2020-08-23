@@ -104,14 +104,14 @@ const levelThemeTotalResourcesByLevelThemeIdLoader: DatabaseLoaderFactory<number
 }
 
 
-export const totalResourcesFieldResolver: GQLLevelThemeResolvers['totalResources'] = async (obj, params, context) => {
+export const totalActivitiesFieldResolver: GQLLevelThemeResolvers['totalActivities'] = async (obj, params, context) => {
     return context.getDatabaseLoader(levelThemeTotalResourcesByLevelThemeIdLoader, undefined).load(obj.id);
 }
 
 
 const levelViewerTotalCompletedActivitiesSorter = createDataloaderCountSort<LevelThemeTotalActivitiesQueryResult, number>('levelThemeId');
 
-const levelThemeViewerTotalCompletedResourcesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number, number> = {
+const levelThemeViewerTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number, number> = {
     id: 'levelThemeViewerTotalCompletedResourcesByLevelThemeId',
     batchFn: (db, userId) => async (ids) => {
         const entities: LevelThemeTotalActivitiesQueryResult[] = await db
@@ -130,12 +130,12 @@ const levelThemeViewerTotalCompletedResourcesByLevelThemeIdLoader: DatabaseLoade
     }
 }
 
-export const levelThemeViewerTotalCompletedResourcesFieldResolver: GQLLevelThemeResolvers['viewerTotalCompletedResources'] = async (obj, params, context) => {
+export const levelThemeViewerTotalCompletedActivitiesFieldResolver: GQLLevelThemeResolvers['viewerTotalCompletedActivities'] = async (obj, params, context) => {
     const user = context.currentUser;
     if (!user) {
         return 0;
     }
-    return context.getDatabaseLoader(levelThemeViewerTotalCompletedResourcesByLevelThemeIdLoader, user.id).load(obj.id);
+    return context.getDatabaseLoader(levelThemeViewerTotalCompletedActivitiesByLevelThemeIdLoader, user.id).load(obj.id);
 }
 
 export const levelThemeResolvers: GQLLevelThemeResolvers = {
@@ -144,6 +144,6 @@ export const levelThemeResolvers: GQLLevelThemeResolvers = {
     theme: themeResolver,
     cycles: levelThemeCyclesResolver,
     totalCycles: totalCyclesResolver,
-    totalResources: totalResourcesFieldResolver,
-    viewerTotalCompletedResources: levelThemeViewerTotalCompletedResourcesFieldResolver,
+    totalActivities: totalActivitiesFieldResolver,
+    viewerTotalCompletedActivities: levelThemeViewerTotalCompletedActivitiesFieldResolver,
 }

@@ -651,8 +651,8 @@ export type GQLLevelTheme = {
   readonly theme: GQLTheme;
   readonly cycles: ReadonlyArray<GQLCycle>;
   readonly totalCycles: Scalars['Int'];
-  readonly totalResources: Scalars['Int'];
-  readonly viewerTotalCompletedResources: Scalars['Int'];
+  readonly totalActivities: Scalars['Int'];
+  readonly viewerTotalCompletedActivities: Scalars['Int'];
 };
 
 export type GQLLevel = {
@@ -1213,8 +1213,8 @@ export type GQLLevelThemeResolvers<ContextType = GraphQLContext, ParentType exte
   theme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType>;
   cycles: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType>;
   totalCycles: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
-  totalResources: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
-  viewerTotalCompletedResources: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  totalActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  viewerTotalCompletedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 

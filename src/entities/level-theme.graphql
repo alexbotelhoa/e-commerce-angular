@@ -7,6 +7,6 @@ type LevelTheme {
     theme: Theme!
     cycles: [Cycle!]!
     totalCycles: Int!
-    totalResources: Int!
-    viewerTotalCompletedResources: Int!
+    totalActivities: Int!
+    viewerTotalCompletedActivities: Int!
 }
