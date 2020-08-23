@@ -1,6 +1,6 @@
 import { GQLCycleResolvers } from "../../resolvers-types"
 
-import { CycleActivityEntity } from "../../entities/cycle-activity.entity"
+import { CycleActivityEntity, CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-activity.entity"
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 
 import { selectCycleActivity, countCycleActivities } from "../repositories/cycle-activity.repository"
@@ -12,6 +12,8 @@ import { CycleEntity } from "../../entities/cycle.entity";
 
 import { CountObj } from "../types/count-obj.type"
 import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
+import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
+import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 
 const cycleEntityResolvers: Pick<GQLCycleResolvers, keyof CycleEntity> = {
     id: obj => obj.id.toString(),
@@ -69,8 +71,51 @@ export const totalActivitiesResolver: GQLCycleResolvers['totalActivities'] = asy
     return totalActivities;
 }
 
+export type CycleActivitiesSummaryByCycleId = {
+    cycleId: number;
+    totalActivities: number;
+    completedActivities: number;
+}
+
+export const cycleActivitiesSummaryByCycleIdSorter = createDataloaderSingleSort<CycleActivitiesSummaryByCycleId, number>('cycleId');
+
+export const cycleViewerHasCompletedLoader
+    : DatabaseLoaderFactory<number, boolean, boolean, number> = {
+    id: 'cycleViewerHasCompleted',
+    batchFn: (db, userId) => async (ids) => {
+        const entities: CycleActivitiesSummaryByCycleId[] = await db.count('*', { as: 'completedActivities' })
+            .select(['cycle_activity.cycleId', 'cycleActivityCount.totalActivities'])
+            .from(ACTIVITY_TIMER_TABLE)
+            .innerJoin(CYCLE_ACTIVITY_TABLE, `${CYCLE_ACTIVITY_TABLE}.id`, `${ACTIVITY_TIMER_TABLE}.cycleActivityId`)
+            .innerJoin(function () {
+                this.count('*', { as: 'totalActivities' })
+                    .select('cycleId')
+                    .from(CYCLE_ACTIVITY_TABLE)
+                    .whereIn('cycleId', ids)
+                    .groupBy(['cycleId'])
+                    .as('cycleActivityCount');
+            }, 'cycleActivityCount.cycleId', `${CYCLE_ACTIVITY_TABLE}.cycleId`)
+            .whereIn(`${CYCLE_ACTIVITY_TABLE}.cycleId`, ids)
+            .andWhere(`${ACTIVITY_TIMER_TABLE}.completed`, true)
+            .andWhere(`${ACTIVITY_TIMER_TABLE}.userId`, userId)
+            .groupBy([`${CYCLE_ACTIVITY_TABLE}.cycleId`]);
+        const sorted = cycleActivitiesSummaryByCycleIdSorter(ids)(entities);
+        const result = sorted.map(entity => {
+            if (!entity) {
+                return false;
+            }
+            return entity.completedActivities === entity.totalActivities;
+        });
+        return result;
+    }
+}
+
 export const cycleViewerHasCompletedResolver: GQLCycleResolvers['viewerHasCompleted'] = async (obj, params, context) => {
-    return Math.random() >= 0.5;
+    const user = context.currentUser;
+    if (!user) {
+        return false;
+    }
+    return context.getDatabaseLoader(cycleViewerHasCompletedLoader, user.id).load(obj.id);
 }
 
 export const cycleResolvers: GQLCycleResolvers = {
