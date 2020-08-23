@@ -85,8 +85,27 @@ export const totalCyclesResolver: GQLLevelThemeResolvers['totalCycles'] = async 
 type LevelThemeTotalActivitiesQueryResult = CountObj & Pick<CycleEntity, 'levelThemeId'>;
 
 
+const levelTotalActivitiesSorter = createDataloaderCountSort<LevelThemeTotalActivitiesQueryResult, number>('levelThemeId');
+
+const levelThemeTotalResourcesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number> = {
+    id: 'levelThemeTotalResourcesByLevelThemeId',
+    batchFn: (db) => async (ids) => {
+        const entities: LevelThemeTotalActivitiesQueryResult[] = await db
+            .count('*')
+            .select([`${CYCLE_TABLE}.levelThemeId`])
+            .from(CYCLE_ACTIVITY_TABLE)
+            .innerJoin(CYCLE_TABLE, `${CYCLE_TABLE}.id`, `${CYCLE_ACTIVITY_TABLE}.cycleId`)
+            .whereIn(`${CYCLE_TABLE}.levelThemeId`, ids)
+            .groupBy(`${CYCLE_TABLE}.levelThemeId`);
+
+        const sorted = levelTotalActivitiesSorter(ids)(entities);
+        return sorted;
+    }
+}
+
+
 export const totalResourcesFieldResolver: GQLLevelThemeResolvers['totalResources'] = async (obj, params, context) => {
-    return 4;
+    return context.getDatabaseLoader(levelThemeTotalResourcesByLevelThemeIdLoader, undefined).load(obj.id);
 }
 
 
