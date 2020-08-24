@@ -244,7 +244,9 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     }
 
     const jwt = await reply.jwtSign(jwtPayload);
-    reply.redirect(`${redirectUrl}?jwt=${jwt}`);
+    reply.status(200).send({
+        url: `${redirectUrl}?jwt=${jwt}`,
+    });
 }
 
 async function insertEnrollmentWithClasses(db: DatabaseService<any, any>, element: EnrollmentWithClasses) {
