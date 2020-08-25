@@ -22,4 +22,5 @@ input UpdateThemeInput {
   startColor: String!
   endColor: String!
   active: Boolean!
+  icon: IconDataInput!
 }

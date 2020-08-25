@@ -1,6 +1,6 @@
 import { GQLMutationResolvers } from "../../../../resolvers-types";
 import { getThemeById, insertTheme, updateTheme } from "../../../../shared/repositories/theme.repository";
-import { insertThemeIcon } from "../../../../shared/repositories/theme-icon.repository"
+import { insertThemeIcon, updateThemeIcon } from "../../../../shared/repositories/theme-icon.repository"
 
 export const createThemeMutationResolver: GQLMutationResolvers['createTheme'] = async (obj, { data: { endColor, startColor, name, icon } }, { database: db }) => {
     const insertedId = await db.transaction(async trx => {
@@ -20,10 +20,20 @@ export const updateThemeMutationResolver: GQLMutationResolvers['updateTheme'] = 
     if (!theme) {
         throw new Error(`Theme with id ${data.id} was not found.`);
     }
-    await updateTheme(context.database)({
-        name: data.name,
-        active: data.active,
-    })(builder => builder.andWhere('id', data.id));
+
+    await context.database.transaction(async trx => {
+        await updateTheme(trx)({
+            name: data.name,
+            active: data.active,
+            endColor: data.endColor,
+            startColor: data.startColor,
+        })(builder => builder.andWhere('id', data.id));
+
+        await updateThemeIcon(trx)({
+            content: data.icon.content,
+        })(builder => builder.andWhere('themeId', data.id));
+    })
+
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return (await getThemeById(context.database)(data.id))!;
 }

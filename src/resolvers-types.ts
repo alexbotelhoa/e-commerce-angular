@@ -389,6 +389,7 @@ export type GQLUpdateThemeInput = {
   readonly startColor: Scalars['String'];
   readonly endColor: Scalars['String'];
   readonly active: Scalars['Boolean'];
+  readonly icon: GQLIconDataInput;
 };
 
 export type GQLQuery = {
