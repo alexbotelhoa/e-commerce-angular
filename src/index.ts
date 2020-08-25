@@ -2,6 +2,7 @@ import fastify from 'fastify';
 import fastifyGQL from 'fastify-gql';
 import fastifyJwt from 'fastify-jwt';
 import fastifyCors from 'fastify-cors';
+
 import { makeExecutableSchema, addMocksToSchema, loadTypedefs, GraphQLFileLoader, mergeTypeDefs } from 'graphql-tools';
 import { resolvers } from './resolvers';
 import { environmentFactory } from './shared/services/environment.service';
@@ -9,6 +10,10 @@ import { DatabaseService, databaseServiceFactory } from './shared/services/datab
 import { databaseConfigurationFromEnvironment } from './shared/constants/configuration.constant';
 import { authenticationController } from './domain/authentication/controllers/authentication.controller';
 import { graphQLContextFactory } from './shared/services/graphql-context.service';
+import { validateURL } from './shared/utils/validate-url'
+import { filterHTML } from './shared/utils/filter-html'
+import { makeRequest } from './shared/utils/make-http-request'
+
 
 const environment = environmentFactory();
 
@@ -67,6 +72,21 @@ const app = fastify({
     reply.send({
       health: 'ok'
     });
+  })
+
+  app.get('/proxy/*', async (request: Record<string, any>, reply) => {
+    const { '*': url } = request.params;
+
+    if (!validateURL(url)) {
+      reply
+        .code(400)
+        .send({ error: 'Invalid url parameter!' })
+      return
+    }
+
+    reply
+      .type('text/html')
+      .send(filterHTML(await makeRequest(url)))
   })
 
   app.post('/authentication', {
