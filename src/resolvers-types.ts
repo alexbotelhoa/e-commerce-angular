@@ -29,7 +29,7 @@ import { GenericError } from './shared/types/errors/generic-error.interface';
 import { DeleteActivityCommentSuccessResult } from './domain/activity/mutations/delete-activity-comment/delete-activity-comment-success-result.type';
 import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -678,6 +678,8 @@ export type GQLTeacherClass = {
   readonly id: Scalars['ID'];
   readonly teacherId: Scalars['ID'];
   readonly classId: Scalars['ID'];
+  readonly class: GQLClass;
+  readonly teacher: GQLUser;
 };
 
 export type GQLTheme = {
@@ -713,6 +715,7 @@ export type GQLUser = {
   readonly roles: ReadonlyArray<GQLRole>;
   readonly userRoles: ReadonlyArray<GQLUserRole>;
   readonly isTeacher: Scalars['Boolean'];
+  readonly teacherClasses: ReadonlyArray<GQLTeacherClass>;
   readonly totalCompletedActivities: Scalars['Int'];
   readonly totalAvailableActivities: Scalars['Int'];
 };
@@ -1241,6 +1244,8 @@ export type GQLTeacherClassResolvers<ContextType = GraphQLContext, ParentType ex
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   teacherId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  class: Resolver<GQLResolversTypes['Class'], ParentType, ContextType>;
+  teacher: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1276,6 +1281,7 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   roles: Resolver<ReadonlyArray<GQLResolversTypes['Role']>, ParentType, ContextType>;
   userRoles: Resolver<ReadonlyArray<GQLResolversTypes['UserRole']>, ParentType, ContextType>;
   isTeacher: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  teacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType>;
   totalCompletedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   totalAvailableActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
@@ -1299,28 +1305,28 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   ActivityTypeId: GQLActivityTypeIdResolvers;
   LevelTypeId: GQLLevelTypeIdResolvers;
   Mutation: GQLMutationResolvers<ContextType>;
-  CompleteActivityResult: GQLCompleteActivityResultResolvers<ContextType>;
-  CreateCommentOnActivityResult: GQLCreateCommentOnActivityResultResolvers<ContextType>;
+  CompleteActivityResult: GQLCompleteActivityResultResolvers;
+  CreateCommentOnActivityResult: GQLCreateCommentOnActivityResultResolvers;
   DeleteActivityCommentSuccessResult: GQLDeleteActivityCommentSuccessResultResolvers<ContextType>;
-  DeleteActivityCommentResult: GQLDeleteActivityCommentResultResolvers<ContextType>;
-  StartActivityResult: GQLStartActivityResultResolvers<ContextType>;
+  DeleteActivityCommentResult: GQLDeleteActivityCommentResultResolvers;
+  StartActivityResult: GQLStartActivityResultResolvers;
   Query: GQLQueryResolvers<ContextType>;
   ActivityType: GQLActivityTypeResolvers<ContextType>;
   EmbeddedActivity: GQLEmbeddedActivityResolvers<ContextType>;
   HtmlActivity: GQLHtmlActivityResolvers<ContextType>;
-  ActivityUnion: GQLActivityUnionResolvers<ContextType>;
+  ActivityUnion: GQLActivityUnionResolvers;
   PermissionId: GQLPermissionIdResolvers;
   RoleId: GQLRoleIdResolvers;
   Permission: GQLPermissionResolvers<ContextType>;
   Role: GQLRoleResolvers<ContextType>;
-  ActivityData: GQLActivityDataResolvers<ContextType>;
+  ActivityData: GQLActivityDataResolvers;
   ActivityTimer: GQLActivityTimerResolvers<ContextType>;
   EmbeddedActivityData: GQLEmbeddedActivityDataResolvers<ContextType>;
   HtmlActivityData: GQLHtmlActivityDataResolvers<ContextType>;
-  Activity: GQLActivityResolvers<ContextType>;
+  Activity: GQLActivityResolvers;
   Class: GQLClassResolvers<ContextType>;
   ActivityComment: GQLActivityCommentResolvers<ContextType>;
-  Comment: GQLCommentResolvers<ContextType>;
+  Comment: GQLCommentResolvers;
   CycleActivity: GQLCycleActivityResolvers<ContextType>;
   Cycle: GQLCycleResolvers<ContextType>;
   EnrollmentClass: GQLEnrollmentClassResolvers<ContextType>;
@@ -1334,7 +1340,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   UserRole: GQLUserRoleResolvers<ContextType>;
   User: GQLUserResolvers<ContextType>;
   DateTime: GraphQLScalarType;
-  GenericError: GQLGenericErrorResolvers<ContextType>;
+  GenericError: GQLGenericErrorResolvers;
   SimpleError: GQLSimpleErrorResolvers<ContextType>;
 };
 

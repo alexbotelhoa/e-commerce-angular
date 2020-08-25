@@ -5,6 +5,7 @@ type User {
   roles: [Role!]!
   userRoles: [UserRole!]!
   isTeacher: Boolean!
+  teacherClasses: [TeacherClass!]!
   totalCompletedActivities: Int!
   totalAvailableActivities: Int!
 }

@@ -1,5 +1,5 @@
 import { GQLUserResolvers } from "../../resolvers-types"
-import { UserEntity } from "../../entities/user.entity";
+import { UserEntity, USER_TABLE } from "../../entities/user.entity";
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 import { UserRoleEntity } from "../../entities/user-role.entity";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
@@ -17,6 +17,8 @@ import { LEVEL_TABLE } from "../../entities/level.entity";
 import { LEVEL_CODE_TABLE } from "../../entities/level-code.entity";
 import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
 import { ENROLLMENT_CLASS_TABLE } from "../../entities/enrollment-class.entity";
+import { TeacherClassEntity, TEACHER_CLASS_TABLE } from "../../entities/teacher-class.entity"
+import { ClassEntity, CLASS_TABLE } from "../../entities/class.entity"
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
@@ -105,6 +107,24 @@ export const userCompletedActivitiesByIdLoader: DatabaseLoaderFactory<number, nu
     },
 }
 
+const teacherClassesteacherClassesSorter = createDataloaderMultiSort<TeacherClassEntity, number>('teacherId');
+
+const teacherClassesDataloader: DatabaseLoaderFactory<number, TeacherClassEntity[]> = {
+    id: 'teacherClassesByUserId',
+    batchFn: db => async (ids) => {
+        const entities = await db(TEACHER_CLASS_TABLE)
+            .whereIn(`${TEACHER_CLASS_TABLE}.teacherId`, ids);
+
+        const sortedEntities = teacherClassesteacherClassesSorter(ids)(entities);
+        return sortedEntities;
+    }
+};
+
+export const teacherClassesFieldResolver: GQLUserResolvers['teacherClasses'] = async (obj, params, context) => {
+    const dataloader = context.getDatabaseLoader(teacherClassesDataloader, undefined);
+    return dataloader.load(obj.id);
+}
+
 export const totalCompletedActivitiesFieldResolver: GQLUserResolvers['totalCompletedActivities'] = (obj, params, context) => {
     return context.getDatabaseLoader(userCompletedActivitiesByIdLoader, undefined).load(obj.id);
 }
@@ -115,6 +135,7 @@ export const userResolvers: GQLUserResolvers = {
     userRoles: userUserRolesResolver,
     roles: userRolesResolver,
     isTeacher: userIsTeacherFieldResolver,
+    teacherClasses: teacherClassesFieldResolver,
     totalCompletedActivities: totalCompletedActivitiesFieldResolver,
     totalAvailableActivities: totalAvailableActivitiesFieldResolver,
 }
