@@ -577,6 +577,7 @@ export type GQLActivityComment = GQLComment & {
   readonly classId: Scalars['ID'];
   readonly replies: ReadonlyArray<GQLActivityComment>;
   readonly user: GQLUser;
+  readonly createdAt: Scalars['DateTime'];
   readonly viewerCanDelete: Scalars['Boolean'];
   readonly viewerCanEdit: Scalars['Boolean'];
 };
@@ -1138,6 +1139,7 @@ export type GQLActivityCommentResolvers<ContextType = GraphQLContext, ParentType
   classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   replies: Resolver<ReadonlyArray<GQLResolversTypes['ActivityComment']>, ParentType, ContextType>;
   user: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
+  createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   viewerCanDelete: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanEdit: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;

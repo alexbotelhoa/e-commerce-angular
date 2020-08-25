@@ -3,4 +3,5 @@ export interface CommentEntity {
     text: string;
     userId: number;
     parentId: number | null;
+    createdAt: string | Date;
 }

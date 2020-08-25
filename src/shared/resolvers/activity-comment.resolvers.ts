@@ -14,6 +14,7 @@ export const activityCommentEntityResolvers: Pick<GQLActivityCommentResolvers, k
     text: obj => obj.text,
     parentId: obj => obj.parentId ? obj.parentId.toString(10) : null,
     userId: obj => obj.userId.toString(10),
+    createdAt: obj => obj.createdAt,
 }
 
 const activityCommentRepliesSorter = createDataloaderMultiSort<ActivityCommentEntity, number>('parentId');
