@@ -21,5 +21,5 @@ export const filterHTML = async (html: string, url: string): Promise<string> => 
   mainScript.attr('type', 'text/javascript');
   // since the script is not being loaded because of the href attribute instead of the src, we can insert the modified script inline
   mainScript.text(newScript);
-  return $.html()
+  return $.html();
 }

@@ -6,6 +6,6 @@ export const currentUserQueryResolver: GQLQueryResolvers['currentUser'] = async 
     if (!user) {
         return null;
     }
-    const userEntity = await getUserById(context.database)(2)//user.id);
+    const userEntity = await getUserById(context.database)(user.id);
     return userEntity;
 }
