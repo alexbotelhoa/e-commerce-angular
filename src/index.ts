@@ -86,7 +86,7 @@ const app = fastify({
 
     reply
       .type('text/html')
-      .send(filterHTML(await makeRequest(url)))
+      .send(await filterHTML(await makeRequest(url), url))
   })
 
   app.post('/authentication', {
