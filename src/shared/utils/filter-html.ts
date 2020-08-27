@@ -3,6 +3,10 @@ import { makeRequest } from './make-http-request';
 
 export const filterHTML = async (html: string, url: string): Promise<string> => {
   const $ = cheerio.load(html);
+  // remove the header
+  $('#atIdViewHeader').attr('style', 'display: none;');
+  // remove report button
+  $('[aria-label="Site actions"]').attr('style', 'display: none;');
   // gets the main script we need to edit
   const mainScript = $('#base-js');
   const mainScriptSrc = mainScript.attr().src;
