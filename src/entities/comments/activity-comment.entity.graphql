@@ -10,4 +10,5 @@ type ActivityComment implements Comment {
     createdAt: DateTime!
     viewerCanDelete: Boolean!
     viewerCanEdit: Boolean!
+    parent: ActivityComment
 }

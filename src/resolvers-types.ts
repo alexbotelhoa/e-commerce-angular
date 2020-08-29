@@ -29,7 +29,7 @@ import { GenericError } from './shared/types/errors/generic-error.interface';
 import { DeleteActivityCommentSuccessResult } from './domain/activity/mutations/delete-activity-comment/delete-activity-comment-success-result.type';
 import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -581,6 +581,7 @@ export type GQLActivityComment = GQLComment & {
   readonly createdAt: Scalars['DateTime'];
   readonly viewerCanDelete: Scalars['Boolean'];
   readonly viewerCanEdit: Scalars['Boolean'];
+  readonly parent: Maybe<GQLActivityComment>;
 };
 
 export type GQLComment = {
@@ -1146,6 +1147,7 @@ export type GQLActivityCommentResolvers<ContextType = GraphQLContext, ParentType
   createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   viewerCanDelete: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanEdit: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  parent: Resolver<Maybe<GQLResolversTypes['ActivityComment']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1305,28 +1307,28 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   ActivityTypeId: GQLActivityTypeIdResolvers;
   LevelTypeId: GQLLevelTypeIdResolvers;
   Mutation: GQLMutationResolvers<ContextType>;
-  CompleteActivityResult: GQLCompleteActivityResultResolvers;
-  CreateCommentOnActivityResult: GQLCreateCommentOnActivityResultResolvers;
+  CompleteActivityResult: GQLCompleteActivityResultResolvers<ContextType>;
+  CreateCommentOnActivityResult: GQLCreateCommentOnActivityResultResolvers<ContextType>;
   DeleteActivityCommentSuccessResult: GQLDeleteActivityCommentSuccessResultResolvers<ContextType>;
-  DeleteActivityCommentResult: GQLDeleteActivityCommentResultResolvers;
-  StartActivityResult: GQLStartActivityResultResolvers;
+  DeleteActivityCommentResult: GQLDeleteActivityCommentResultResolvers<ContextType>;
+  StartActivityResult: GQLStartActivityResultResolvers<ContextType>;
   Query: GQLQueryResolvers<ContextType>;
   ActivityType: GQLActivityTypeResolvers<ContextType>;
   EmbeddedActivity: GQLEmbeddedActivityResolvers<ContextType>;
   HtmlActivity: GQLHtmlActivityResolvers<ContextType>;
-  ActivityUnion: GQLActivityUnionResolvers;
+  ActivityUnion: GQLActivityUnionResolvers<ContextType>;
   PermissionId: GQLPermissionIdResolvers;
   RoleId: GQLRoleIdResolvers;
   Permission: GQLPermissionResolvers<ContextType>;
   Role: GQLRoleResolvers<ContextType>;
-  ActivityData: GQLActivityDataResolvers;
+  ActivityData: GQLActivityDataResolvers<ContextType>;
   ActivityTimer: GQLActivityTimerResolvers<ContextType>;
   EmbeddedActivityData: GQLEmbeddedActivityDataResolvers<ContextType>;
   HtmlActivityData: GQLHtmlActivityDataResolvers<ContextType>;
-  Activity: GQLActivityResolvers;
+  Activity: GQLActivityResolvers<ContextType>;
   Class: GQLClassResolvers<ContextType>;
   ActivityComment: GQLActivityCommentResolvers<ContextType>;
-  Comment: GQLCommentResolvers;
+  Comment: GQLCommentResolvers<ContextType>;
   CycleActivity: GQLCycleActivityResolvers<ContextType>;
   Cycle: GQLCycleResolvers<ContextType>;
   EnrollmentClass: GQLEnrollmentClassResolvers<ContextType>;
@@ -1340,7 +1342,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   UserRole: GQLUserRoleResolvers<ContextType>;
   User: GQLUserResolvers<ContextType>;
   DateTime: GraphQLScalarType;
-  GenericError: GQLGenericErrorResolvers;
+  GenericError: GQLGenericErrorResolvers<ContextType>;
   SimpleError: GQLSimpleErrorResolvers<ContextType>;
 };
 

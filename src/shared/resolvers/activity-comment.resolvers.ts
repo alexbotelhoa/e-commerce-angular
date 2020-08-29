@@ -1,7 +1,7 @@
 import { GQLActivityCommentResolvers } from "../../resolvers-types";
 import { ActivityCommentEntity } from "../../entities/comments/activity-comment.entity";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
-import { selectActivityComment } from "../repositories/comment/activity-comment.repository";
+import { selectActivityComment, getActivityCommentById } from "../repositories/comment/activity-comment.repository";
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 import { selectUser } from "../repositories/user.repository";
 import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
@@ -72,7 +72,12 @@ const activityCommentViewerCanEditResolver: GQLActivityCommentResolvers['viewerC
     return false;
 }
 
-
+const activityCommentParentFieldResolver: GQLActivityCommentResolvers['parent'] = async (obj, params, context) => {
+    if (obj.parentId === null) {
+        return null;
+    }
+    return getActivityCommentById(context.database)(obj.parentId);
+}
 
 
 export const activityCommentResolvers: GQLActivityCommentResolvers = {
@@ -81,4 +86,5 @@ export const activityCommentResolvers: GQLActivityCommentResolvers = {
     user: activityCommentUserFieldResolver,
     viewerCanDelete: activityCommentViewerCanDeleteResolver,
     viewerCanEdit: activityCommentViewerCanEditResolver,
+    parent: activityCommentParentFieldResolver,
 }
