@@ -63,8 +63,6 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
 
     // we're using an array of roles here for shorter JWT payload
     const roles: RoleId[] = [
-        // adding admin role by default for now, we have no way to infer it from body
-        RoleId.ADMIN,
     ];
 
     const alunosResponsavel = body["Alunos-Responsavel"];
@@ -72,9 +70,10 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     const turmasProfessor = body["Turmas-Professor"];
 
     // infer guardian role
-    if (alunosResponsavel.length > 0) {
-        roles.push(RoleId.GUARDIAN);
-    }
+    // if (alunosResponsavel.length > 0) {
+    //     roles.push(RoleId.GUARDIAN);
+    // }
+    // GUARDIAN ROLE IS CURRENTLY DISABLED
 
     // infer student role
     if (matriculasAluno.length > 0) {
