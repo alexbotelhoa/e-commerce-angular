@@ -44,8 +44,9 @@ export const cycleActivityActivityFieldResolver: GQLCycleActivityResolvers['acti
 export const cycleActivityNextActivityFieldResolver: GQLCycleActivityResolvers['nextActivity'] = async (obj, params, context) => {
     const next = await selectCycleActivity(context.database)
         .andWhere('cycleId', obj.cycleId)
-        .andWhere('order', '>', obj.order)
-        .orderBy('order', 'asc')
+        .andWhere('order', '>=', obj.order)
+        .andWhere('id', '<>', obj.id)
+        .orderBy([{ column: 'order', order: 'asc' }, { column: 'id', order: 'asc' }])
         .limit(1)
         .first();
     return next || null;
@@ -54,8 +55,9 @@ export const cycleActivityNextActivityFieldResolver: GQLCycleActivityResolvers['
 export const cycleActivityPreviousActivityFieldResolver: GQLCycleActivityResolvers['previousActivity'] = async (obj, params, context) => {
     const previous = await selectCycleActivity(context.database)
         .andWhere('cycleId', obj.cycleId)
-        .andWhere('order', '<', obj.order)
-        .orderBy('order', 'desc')
+        .andWhere('order', '<=', obj.order)
+        .andWhere('id', '<>', obj.id)
+        .orderBy([{ column: 'order', order: 'desc' }, { column: 'id', order: 'desc' }])
         .limit(1)
         .first();
     return previous || null;
