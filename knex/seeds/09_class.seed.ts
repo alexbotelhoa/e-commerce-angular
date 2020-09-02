@@ -15,9 +15,16 @@ export const class2Seed: ClassEntity = {
     levelCodeId: levelCodesData[1].id,
 }
 
+export const class3Seed: ClassEntity = {
+    id: 3,
+    name: 'Class Advanced - 3',
+    levelCodeId: levelCodesData[2].id,
+}
+
 export const allClassSeeds = [
     class1Seed,
     class2Seed,
+    class3Seed,
 ]
 
 export async function seed(knex: Knex): Promise<void> {
