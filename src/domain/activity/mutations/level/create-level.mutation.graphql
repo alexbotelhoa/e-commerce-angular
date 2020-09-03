@@ -5,6 +5,7 @@ type Mutation {
 input CreateLevelInput {
     name: String!
     description: String
+    typeId: LevelTypeId!
     order: Int! = 0
     active: Boolean!
     codes: [ID!]!

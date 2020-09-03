@@ -6,6 +6,7 @@ input UpdateBasicLevelInfoInput {
     id: ID!
     name: String!
     description: String
+    typeId: LevelTypeId!
     order: Int!
     active: Boolean!
     codes: [ID!]!

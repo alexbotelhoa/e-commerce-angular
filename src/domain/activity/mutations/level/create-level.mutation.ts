@@ -9,6 +9,7 @@ export const createLevelMutationResolver: GQLMutationResolvers['createLevel'] = 
             name: data.name,
             active: data.active,
             description: data.description,
+            typeId: data.typeId,
             order: data.order,
         });
         if (data.codes.length > 0) {
