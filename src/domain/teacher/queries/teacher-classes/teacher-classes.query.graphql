@@ -1,0 +1,7 @@
+type Query {
+    teacherClasses(data: TeacherClassesQueryInput!): [TeacherClass!]!
+}
+
+input TeacherClassesQueryInput {
+    teacherIds: [ID!]
+}

@@ -1,5 +1,5 @@
 import { GQLQueryResolvers } from "../../../../resolvers-types";
-import { getLevelById, selectLevel } from "../../../../shared/repositories/level.repository";
+import { getLevelById } from "../../../../shared/repositories/level.repository";
 import { selectLevelTheme } from '../../../../shared/repositories/level-theme.repository'
 import { selectTheme } from '../../../../shared/repositories/theme.repository'
 

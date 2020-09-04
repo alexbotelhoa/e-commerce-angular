@@ -26,6 +26,8 @@ import { classesQueryResolver } from "../../domain/activity/queries/class/classe
 import { myEnrollmentsQueryResolver } from "../../domain/activity/queries/my-enrollments/my-enrollments.query";
 import { myLevelQueryResolver } from "../../domain/activity/queries/my-levels/my-levels.query";
 import { activityCommentsQueryResolver } from "../../domain/activity/queries/activity-comments/activity-comments.query";
+import { teacherClassesQueryResolver } from "../../domain/teacher/queries/teacher-classes/teacher-classes.query";
+import { viewerTeacherClassesQueryResolver } from "../../domain/teacher/queries/viewer-teacher-classes/viewer-teacher-classes.query";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -49,4 +51,6 @@ export const queryResolvers: GQLResolvers['Query'] = {
     myEnrollments: myEnrollmentsQueryResolver,
     myLevels: myLevelQueryResolver,
     activityComments: activityCommentsQueryResolver,
+    teacherClasses: teacherClassesQueryResolver,
+    viewerTeacherClasses: viewerTeacherClassesQueryResolver,
 }

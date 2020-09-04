@@ -3,4 +3,5 @@ interface Comment {
     text: String!
     userId: ID!
     parentId: ID
+    createdAt: DateTime!
 }

@@ -6,4 +6,5 @@ export const commentEntityResolvers: Pick<GQLCommentResolvers, keyof CommentEnti
     text: obj => obj.text,
     parentId: obj => obj.parentId ? obj.parentId.toString(10) : null,
     userId: obj => obj.userId.toString(10),
+    createdAt: obj => obj.createdAt,
 }
