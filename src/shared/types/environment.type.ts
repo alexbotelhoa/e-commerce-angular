@@ -7,4 +7,5 @@ export interface Environment {
     DB_NAME: string;
     JWT_SECRET: string;
     CI_PORTAL_URL: string;
+    PRODUCTION: boolean;
 }
