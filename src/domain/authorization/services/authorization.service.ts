@@ -5,7 +5,6 @@ import { Role } from "../types/role.type";
 import { PermissionMap } from "../types/permission-map.type";
 import { JWTPayload } from "../../authentication/types/jwt-payload.type";
 import { getRoleById } from "../constants/roles.constants";
-import { RoleId } from "../enums/role-id.enum";
 
 /**
  * Checks if user has a permission

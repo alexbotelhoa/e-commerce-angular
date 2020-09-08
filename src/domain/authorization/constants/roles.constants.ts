@@ -26,8 +26,8 @@ export const teacherRole: Role = {
     id: RoleId.TEACHER,
     name: 'Teacher',
     permissionMap: {
-        EXECUTE_ACTIVITY: true,
         MANAGE_COMMENTS: true,
+        MANAGE_CLASS: true,
     }
 }
 

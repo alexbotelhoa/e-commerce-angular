@@ -10,6 +10,7 @@ export const PermissionId = {
     MANAGE_ACTIVITY: 'MANAGE_ACTIVITY',
     EXECUTE_ACTIVITY: 'EXECUTE_ACTIVITY',
     MANAGE_COMMENTS: 'MANAGE_COMMENTS',
+    MANAGE_CLASS: 'MANAGE_CLASS',
 } as const;
 
 export type PermissionId = EnumLiteral<typeof PermissionId>;

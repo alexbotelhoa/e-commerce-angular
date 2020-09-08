@@ -5,4 +5,5 @@ enum PermissionId {
     MANAGE_ACTIVITY
     EXECUTE_ACTIVITY
     MANAGE_COMMENTS
+    MANAGE_CLASS
 }

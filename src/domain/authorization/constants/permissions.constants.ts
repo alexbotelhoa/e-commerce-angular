@@ -33,6 +33,11 @@ export const permissionsById: Record<PermissionId, Permission> = {
         name: 'Manage comments',
         description: `Manage other user's comments.`
     },
+    MANAGE_CLASS: {
+        id: 'MANAGE_CLASS',
+        name: 'Manage class',
+        description: `Manage classes`
+    },
 }
 
 export const permissionsList: ReadonlyArray<Permission> = objectKeys(permissionsById)
