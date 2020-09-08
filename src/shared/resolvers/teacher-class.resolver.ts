@@ -1,7 +1,10 @@
 import { GQLTeacherClassResolvers } from "../../resolvers-types";
 import { TeacherClassEntity } from "../../entities/teacher-class.entity";
-import { getClassById } from "../repositories/class.repository";
+import { getClassesByIds } from "../repositories/class.repository";
 import { getUserById } from "../repositories/user.repository"
+import { DatabaseLoaderFactory } from "../types/database-loader.type";
+import { ClassEntity } from "../../entities/class.entity";
+import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 
 export const teacherClassEntityResolvers: Pick<GQLTeacherClassResolvers, keyof TeacherClassEntity> = {
     id: obj => obj.id.toString(10),
@@ -9,29 +12,28 @@ export const teacherClassEntityResolvers: Pick<GQLTeacherClassResolvers, keyof T
     teacherId: obj => obj.teacherId.toString(10),
 }
 
-const classesFieldResolver: GQLTeacherClassResolvers['class'] = async (obj, params, { database: db }) => {
-    const teacherClass = await getClassById(db)(obj.classId);
+const teacherClassClassByClassIdSorter = createDataloaderSingleSort<ClassEntity, number, ClassEntity>('id');
 
-    if (teacherClass) {
-        return teacherClass;
+export const teacherClassClassByClassIdLoader: DatabaseLoaderFactory<number, ClassEntity, ClassEntity> = {
+    id: 'teacherClassClassByClassIdLoader',
+    batchFn: (db) => async (ids) => {
+        const entities = await getClassesByIds(db)(ids);
+        const sorted = teacherClassClassByClassIdSorter(ids)(entities);
+        return sorted;
     }
+}
 
-    throw new Error('Non-existent class entity!')
+export const teacherClassClassesFieldResolver: GQLTeacherClassResolvers['class'] = async (obj, params, context) => {
+    return context.getDatabaseLoader(teacherClassClassByClassIdLoader, undefined).load(obj.classId);
 };
 
-/* Teacher field is redundant (when querying from User field teacherClasses) */
-const teacherFieldResolver: GQLTeacherClassResolvers['teacher'] = async (obj, params, { database: db }) => {
-    const teacher = await getUserById(db)(obj.teacherId);
-
-    if (teacher) {
-        return teacher;
-    }
-
-    throw new Error('Non-existent user entity!')
+const teacherClassTeacherFieldResolver: GQLTeacherClassResolvers['teacher'] = async (obj, params, { database: db }) => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return (await getUserById(db)(obj.teacherId))!;
 };
 
 export const teacherClassResolvers: GQLTeacherClassResolvers = {
     ...teacherClassEntityResolvers,
-    teacher: teacherFieldResolver,
-    class: classesFieldResolver
+    teacher: teacherClassTeacherFieldResolver,
+    class: teacherClassClassesFieldResolver
 }

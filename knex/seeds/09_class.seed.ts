@@ -1,30 +1,30 @@
 import * as Knex from "knex";
 import { ClassEntity } from "../../src/entities/class.entity";
 import { deleteAllClasses, insertClass } from "../../src/shared/repositories/class.repository";
-import { levelCodesData } from "./data/level-codes.data";
+import { basic1LevelCodeSeed, intermediary1LevelCodeSeed, advanced1LevelCodeSeed } from "./08_level_code.seed";
 
-export const class1Seed: ClassEntity = {
+export const basicClass1Seed: ClassEntity = {
     id: 1,
     name: 'Class Basic - 1',
-    levelCodeId: levelCodesData[0].id,
+    levelCodeId: basic1LevelCodeSeed.id,
 }
 
-export const class2Seed: ClassEntity = {
+export const intermediaryClass2Seed: ClassEntity = {
     id: 2,
     name: 'Class Intermediary - 2',
-    levelCodeId: levelCodesData[1].id,
+    levelCodeId: intermediary1LevelCodeSeed.id,
 }
 
-export const class3Seed: ClassEntity = {
+export const advancedClass3Seed: ClassEntity = {
     id: 3,
     name: 'Class Advanced - 3',
-    levelCodeId: levelCodesData[2].id,
+    levelCodeId: advanced1LevelCodeSeed.id,
 }
 
 export const allClassSeeds = [
-    class1Seed,
-    class2Seed,
-    class3Seed,
+    basicClass1Seed,
+    intermediaryClass2Seed,
+    advancedClass3Seed,
 ]
 
 export async function seed(knex: Knex): Promise<void> {

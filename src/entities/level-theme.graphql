@@ -9,4 +9,5 @@ type LevelTheme {
     totalCycles: Int!
     totalActivities: Int!
     viewerTotalCompletedActivities: Int!
+    studentTotalCompletedActivities(studentId: ID!): Int!
 }

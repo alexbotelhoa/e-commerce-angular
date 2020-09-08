@@ -8,5 +8,6 @@ type CycleActivity {
     nextActivity: CycleActivity
     previousActivity: CycleActivity
     viewerHasCompleted: Boolean!
+    studentHasCompleted(studentId: ID!): Boolean!
 }
 

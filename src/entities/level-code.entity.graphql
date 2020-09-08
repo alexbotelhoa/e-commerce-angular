@@ -6,4 +6,5 @@ type LevelCode {
     createdAt: DateTime!
     levelId: ID
     level: Level
+    viewerTeacherClasses: [TeacherClass!]!
 }

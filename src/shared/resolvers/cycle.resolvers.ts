@@ -92,9 +92,9 @@ export type CycleActivitiesSummaryByCycleId = {
 
 export const cycleActivitiesSummaryByCycleIdSorter = createDataloaderSingleSort<CycleActivitiesSummaryByCycleId, number>('cycleId');
 
-export const cycleViewerHasCompletedLoader
+export const cycleUserHasCompletedLoader
     : DatabaseLoaderFactory<number, boolean, boolean, number> = {
-    id: 'cycleViewerHasCompleted',
+    id: 'cycleUserHasCompleted',
     batchFn: (db, userId) => async (ids) => {
         const entities: CycleActivitiesSummaryByCycleId[] = await db.count('*', { as: 'completedActivities' })
             .select(['cycle_activity.cycleId', 'cycleActivityCount.totalActivities'])
@@ -128,7 +128,11 @@ export const cycleViewerHasCompletedResolver: GQLCycleResolvers['viewerHasComple
     if (!user) {
         return false;
     }
-    return context.getDatabaseLoader(cycleViewerHasCompletedLoader, user.id).load(obj.id);
+    return context.getDatabaseLoader(cycleUserHasCompletedLoader, user.id).load(obj.id);
+}
+
+export const cycleStudentHasCompletedResolver: GQLCycleResolvers['studentHasCompleted'] = async (obj, params, context) => {
+    return context.getDatabaseLoader(cycleUserHasCompletedLoader, parseInt(params.studentId, 10)).load(obj.id);
 }
 
 export const cycleResolvers: GQLCycleResolvers = {
@@ -137,6 +141,7 @@ export const cycleResolvers: GQLCycleResolvers = {
     activities: cycleActivitiesResolver,
     totalActivities: totalActivitiesResolver,
     viewerHasCompleted: cycleViewerHasCompletedResolver,
+    studentHasCompleted: cycleViewerHasCompletedResolver,
 }
 
 

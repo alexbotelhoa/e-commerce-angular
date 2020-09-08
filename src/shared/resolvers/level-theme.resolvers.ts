@@ -111,8 +111,8 @@ export const totalActivitiesFieldResolver: GQLLevelThemeResolvers['totalActiviti
 
 const levelViewerTotalCompletedActivitiesSorter = createDataloaderCountSort<LevelThemeTotalActivitiesQueryResult, number>('levelThemeId');
 
-const levelThemeViewerTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number, number> = {
-    id: 'levelThemeViewerTotalCompletedResourcesByLevelThemeId',
+const levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number, number> = {
+    id: 'levelThemeUserTotalCompletedResourcesByLevelThemeId',
     batchFn: (db, userId) => async (ids) => {
         const entities: LevelThemeTotalActivitiesQueryResult[] = await db
             .count('*')
@@ -135,7 +135,11 @@ export const levelThemeViewerTotalCompletedActivitiesFieldResolver: GQLLevelThem
     if (!user) {
         return 0;
     }
-    return context.getDatabaseLoader(levelThemeViewerTotalCompletedActivitiesByLevelThemeIdLoader, user.id).load(obj.id);
+    return context.getDatabaseLoader(levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, user.id).load(obj.id);
+}
+
+export const levelThemeStudentTotalCompletedActivitiesFieldResolver: GQLLevelThemeResolvers['studentTotalCompletedActivities'] = async (obj, params, context) => {
+    return context.getDatabaseLoader(levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, parseInt(params.studentId, 10)).load(obj.id);
 }
 
 export const levelThemeResolvers: GQLLevelThemeResolvers = {
@@ -146,4 +150,5 @@ export const levelThemeResolvers: GQLLevelThemeResolvers = {
     totalCycles: totalCyclesResolver,
     totalActivities: totalActivitiesFieldResolver,
     viewerTotalCompletedActivities: levelThemeViewerTotalCompletedActivitiesFieldResolver,
+    studentTotalCompletedActivities: levelThemeStudentTotalCompletedActivitiesFieldResolver,
 }

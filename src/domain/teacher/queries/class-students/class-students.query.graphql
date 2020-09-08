@@ -1,0 +1,7 @@
+type Query {
+    classStudents(data: ClassStudentsQueryInput!): [User!]!
+}
+
+input ClassStudentsQueryInput {
+    classId: ID!
+}

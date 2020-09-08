@@ -8,4 +8,5 @@ type Cycle {
     activities: [CycleActivity!]!
     totalActivities: Int!
     viewerHasCompleted: Boolean!
+    studentHasCompleted(studentId: ID!): Boolean!
 }

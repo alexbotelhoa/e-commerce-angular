@@ -1,3 +1,7 @@
 type Query {
-    levelThemes: [LevelTheme!]!
+    levelThemes(data: LevelThemesQueryInput!): [LevelTheme!]!
+}
+
+input LevelThemesQueryInput {
+    levelId: ID!
 }

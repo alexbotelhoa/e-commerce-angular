@@ -63,7 +63,7 @@ export const cycleActivityPreviousActivityFieldResolver: GQLCycleActivityResolve
     return previous || null;
 };
 
-const cycleActivityViewerHasCompletedSorter = createDataloaderSingleSort<ActivityTimerEntity, number, ActivityTimerEntity | undefined>('cycleActivityId');
+const cycleActivityUserHasCompletedSorter = createDataloaderSingleSort<ActivityTimerEntity, number, ActivityTimerEntity | undefined>('cycleActivityId');
 
 
 export const cycleActivityUserHasCompletedLoader: DatabaseLoaderFactory<number, boolean, boolean, number> = {
@@ -73,7 +73,7 @@ export const cycleActivityUserHasCompletedLoader: DatabaseLoaderFactory<number, 
             .whereIn('cycleActivityId', cycleActivityIds)
             .andWhere('userId', userId)
             .andWhere('completed', true);
-        const sorted = cycleActivityViewerHasCompletedSorter(cycleActivityIds)(entities);
+        const sorted = cycleActivityUserHasCompletedSorter(cycleActivityIds)(entities);
         return sorted.map(Boolean);
     }
 }
@@ -86,6 +86,10 @@ const cycleActivityViewerHasCompletedFieldResolver: GQLCycleActivityResolvers['v
     return context.getDatabaseLoader(cycleActivityUserHasCompletedLoader, user.id).load(obj.id);
 }
 
+const cycleActivityStudentHasCompletedFieldResolver: GQLCycleActivityResolvers['studentHasCompleted'] = async (obj, params, context) => {
+    return context.getDatabaseLoader(cycleActivityUserHasCompletedLoader, parseInt(params.studentId, 10)).load(obj.id);
+}
+
 
 
 export const cycleActivityResolvers: GQLCycleActivityResolvers = {
@@ -95,4 +99,5 @@ export const cycleActivityResolvers: GQLCycleActivityResolvers = {
     nextActivity: cycleActivityNextActivityFieldResolver,
     previousActivity: cycleActivityPreviousActivityFieldResolver,
     viewerHasCompleted: cycleActivityViewerHasCompletedFieldResolver,
+    studentHasCompleted: cycleActivityStudentHasCompletedFieldResolver,
 }

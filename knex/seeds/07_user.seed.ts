@@ -5,6 +5,7 @@ import { UserEntity } from "../../src/entities/user.entity";
 import { deleteAllUserRoles, insertUserRole } from "../../src/shared/repositories/user-role.repository";
 import { RoleId } from "../../src/domain/authorization/enums/role-id.enum";
 import { UserRoleEntity } from "../../src/entities/user-role.entity";
+import { concatArrayReducer } from "../../src/shared/utils/concat-array-reducer";
 
 export const adminUserSeed: UserEntityWithRoles = {
     id: 1,
@@ -30,6 +31,17 @@ export const guardianUserSeed: UserEntityWithRoles = {
     roles: [RoleId.GUARDIAN],
 }
 
+export const fullUserSeed: UserEntityWithRoles = {
+    id: 5,
+    name: 'FULL',
+    roles: [
+        RoleId.ADMIN,
+        RoleId.TEACHER,
+        RoleId.STUDENT,
+        RoleId.GUARDIAN,
+    ],
+}
+
 interface UserEntityWithRoles extends UserEntity {
     roles: RoleId[];
 }
@@ -39,9 +51,10 @@ export const userSeeds: UserEntityWithRoles[] = [
     teacherUserSeed,
     studentUserSeed,
     guardianUserSeed,
+    fullUserSeed,
 ];
 
-for (let index = 5; index <= 30; index++) {
+for (let index = 6; index <= 30; index++) {
     userSeeds.push(generateUser(index))
 }
 
@@ -56,10 +69,12 @@ export async function seed(knex: Knex): Promise<void> {
         id: user.id,
         name: user.name,
     })));
-    await insertUserRole(knex)(userSeeds.map<Omit<UserRoleEntity, 'id'>>(user => ({
-        roleId: user.roles[0],
+    const rolesToInsert = userSeeds.map(user => user.roles.map(role => ({
+        roleId: role,
         userId: user.id,
-    })));
+    })))
+        .reduce(concatArrayReducer, []);
+    await insertUserRole(knex)(rolesToInsert);
 }
 
 
