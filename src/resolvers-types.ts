@@ -772,6 +772,7 @@ export type GQLUser = {
   readonly teacherClasses: ReadonlyArray<GQLTeacherClass>;
   readonly totalCompletedActivities: Scalars['Int'];
   readonly totalAvailableActivities: Scalars['Int'];
+  readonly onboarded: Scalars['Boolean'];
 };
 
 
@@ -1354,6 +1355,7 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   teacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType>;
   totalCompletedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   totalAvailableActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  onboarded: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 

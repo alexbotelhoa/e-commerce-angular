@@ -23,6 +23,7 @@ import { ClassEntity, CLASS_TABLE } from "../../entities/class.entity"
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
     name: obj => obj.name,
+    onboarded: obj => obj.onboarded,
 }
 
 const userUserRoleSorter = createDataloaderMultiSort<UserRoleEntity, number>('userId');

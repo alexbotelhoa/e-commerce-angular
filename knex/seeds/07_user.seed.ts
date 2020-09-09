@@ -4,36 +4,40 @@ import { deleteAllUsers, insertUser } from "../../src/shared/repositories/user.r
 import { UserEntity } from "../../src/entities/user.entity";
 import { deleteAllUserRoles, insertUserRole } from "../../src/shared/repositories/user-role.repository";
 import { RoleId } from "../../src/domain/authorization/enums/role-id.enum";
-import { UserRoleEntity } from "../../src/entities/user-role.entity";
 import { concatArrayReducer } from "../../src/shared/utils/concat-array-reducer";
 
 export const adminUserSeed: UserEntityWithRoles = {
     id: 1,
     name: 'ADMIN',
+    onboarded: false,
     roles: [RoleId.ADMIN],
 }
 
 export const teacherUserSeed: UserEntityWithRoles = {
     id: 2,
     name: 'TEACHER',
+    onboarded: false,
     roles: [RoleId.TEACHER],
 }
 
 export const studentUserSeed: UserEntityWithRoles = {
     id: 3,
     name: 'STUDENT',
+    onboarded: false,
     roles: [RoleId.STUDENT],
 }
 
 export const guardianUserSeed: UserEntityWithRoles = {
     id: 4,
     name: 'GUARDIAN',
+    onboarded: false,
     roles: [RoleId.GUARDIAN],
 }
 
 export const fullUserSeed: UserEntityWithRoles = {
     id: 5,
     name: 'FULL',
+    onboarded: false,
     roles: [
         RoleId.ADMIN,
         RoleId.TEACHER,
@@ -68,6 +72,7 @@ export async function seed(knex: Knex): Promise<void> {
     await insertUser(knex)(userSeeds.map<UserEntity>(user => ({
         id: user.id,
         name: user.name,
+        onboarded: false,
     })));
     const rolesToInsert = userSeeds.map(user => user.roles.map(role => ({
         roleId: role,
@@ -86,6 +91,7 @@ function generateUser(id: number): UserEntityWithRoles {
     return {
         id: id,
         name: `${faker.name.firstName()} ${faker.name.lastName()} ${faker.name.lastName()}`,
+        onboarded: false,
         roles: [
             roleId,
         ]

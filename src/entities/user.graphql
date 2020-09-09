@@ -8,4 +8,5 @@ type User {
   teacherClasses: [TeacherClass!]!
   totalCompletedActivities: Int!
   totalAvailableActivities: Int!
+  onboarded: Boolean!
 }
