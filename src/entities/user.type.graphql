@@ -9,4 +9,7 @@ type User {
   totalCompletedActivities: Int!
   totalAvailableActivities: Int!
   onboarded: Boolean!
+  defaultLevelTypeId: LevelTypeId!
+  avatarId: ID
+  avatar: Avatar
 }

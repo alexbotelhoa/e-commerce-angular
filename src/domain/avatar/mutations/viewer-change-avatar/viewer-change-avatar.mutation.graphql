@@ -1,0 +1,13 @@
+type Mutation {
+    viewerChangeAvatar(data: ViewerChangeAvatarInput!): ViewerChangeAvatarMutationResult!
+}
+
+input ViewerChangeAvatarInput {
+    avatarId: ID!
+}
+
+type ViewerChangeAvatarMutationError implements GenericError {
+    message: String!
+}
+
+union ViewerChangeAvatarMutationResult = User | ViewerChangeAvatarMutationError

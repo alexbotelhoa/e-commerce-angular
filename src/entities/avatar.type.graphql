@@ -1,0 +1,7 @@
+type Avatar {
+    id: ID!
+    name: ID!
+    extension: String!
+    thumbnailUrl: String!
+    listUrl: String!
+}

@@ -22,6 +22,7 @@ generates:
         RoleId: ./domain/authorization/enums/role-id.enum#RoleId
         PermissionId: ./domain/authorization/enums/permission-id.enum#PermissionId
       mappers:
+        Avatar: ./entities/avatar.entity#AvatarEntity
         User: ./entities/user.entity#UserEntity
         ActivityType: ./domain/activity/types/activity-type.type#ActivityType
         ActivityUnion: ./entities/activity.entity#ActivityEntity

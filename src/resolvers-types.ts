@@ -3,6 +3,7 @@ import { LevelTypeId } from './domain/activity/enums/level-type.enum';
 import { RoleId } from './domain/authorization/enums/role-id.enum';
 import { PermissionId } from './domain/authorization/enums/permission-id.enum';
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { AvatarEntity } from './entities/avatar.entity';
 import { UserEntity } from './entities/user.entity';
 import { ActivityType } from './domain/activity/types/activity-type.type';
 import { ActivityEntity } from './entities/activity.entity';
@@ -70,6 +71,7 @@ export type GQLMutation = {
   readonly deleteActivityFromCycle: GQLCycle;
   readonly deleteCycleFromLevelTheme: GQLLevelTheme;
   readonly deleteThemeFromLevel: GQLLevel;
+  readonly finishOnboard: GQLUser;
   readonly startActivity: GQLStartActivityResult;
   readonly updateBasicLevelInfo: GQLLevel;
   readonly updateCycle: GQLCycle;
@@ -78,6 +80,7 @@ export type GQLMutation = {
   readonly updateEmbeddedActivity: GQLEmbeddedActivity;
   readonly updateLevelThemesOrder: ReadonlyArray<GQLLevelTheme>;
   readonly updateTheme: GQLTheme;
+  readonly viewerChangeAvatar: GQLViewerChangeAvatarMutationResult;
 };
 
 
@@ -228,6 +231,11 @@ export type GQLMutationupdateLevelThemesOrderArgs = {
 
 export type GQLMutationupdateThemeArgs = {
   data: GQLUpdateThemeInput;
+};
+
+
+export type GQLMutationviewerChangeAvatarArgs = {
+  data: GQLViewerChangeAvatarInput;
 };
 
 export type GQLCreateEmbeddedActivityInput = {
@@ -401,6 +409,7 @@ export type GQLQuery = {
   readonly activityComments: ReadonlyArray<GQLActivityComment>;
   readonly availableActivitiesForCycle: ReadonlyArray<GQLActivityUnion>;
   readonly availableThemes: ReadonlyArray<GQLTheme>;
+  readonly avatars: ReadonlyArray<GQLAvatar>;
   readonly classStudents: ReadonlyArray<GQLUser>;
   readonly classes: ReadonlyArray<GQLClass>;
   readonly currentUser: Maybe<GQLUser>;
@@ -547,6 +556,17 @@ export type GQLRole = {
   readonly permissions: ReadonlyArray<GQLPermission>;
 };
 
+export type GQLViewerChangeAvatarInput = {
+  readonly avatarId: Scalars['ID'];
+};
+
+export type GQLViewerChangeAvatarMutationError = GQLGenericError & {
+  readonly __typename?: 'ViewerChangeAvatarMutationError';
+  readonly message: Scalars['String'];
+};
+
+export type GQLViewerChangeAvatarMutationResult = GQLUser | GQLViewerChangeAvatarMutationError;
+
 export type GQLClassStudentsQueryInput = {
   readonly classId: Scalars['ID'];
 };
@@ -591,6 +611,15 @@ export type GQLActivity = {
   readonly type: GQLActivityType;
   readonly active: Scalars['Boolean'];
   readonly estimatedTime: Scalars['String'];
+};
+
+export type GQLAvatar = {
+  readonly __typename?: 'Avatar';
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['ID'];
+  readonly extension: Scalars['String'];
+  readonly thumbnailUrl: Scalars['String'];
+  readonly listUrl: Scalars['String'];
 };
 
 export type GQLClass = {
@@ -773,6 +802,9 @@ export type GQLUser = {
   readonly totalCompletedActivities: Scalars['Int'];
   readonly totalAvailableActivities: Scalars['Int'];
   readonly onboarded: Scalars['Boolean'];
+  readonly defaultLevelTypeId: LevelTypeId;
+  readonly avatarId: Maybe<Scalars['ID']>;
+  readonly avatar: Maybe<GQLAvatar>;
 };
 
 
@@ -911,6 +943,9 @@ export type GQLResolversTypes = {
   RoleId: RoleId;
   Permission: ResolverTypeWrapper<Permission>;
   Role: ResolverTypeWrapper<Role>;
+  ViewerChangeAvatarInput: GQLViewerChangeAvatarInput;
+  ViewerChangeAvatarMutationError: ResolverTypeWrapper<GQLViewerChangeAvatarMutationError>;
+  ViewerChangeAvatarMutationResult: GQLResolversTypes['User'] | GQLResolversTypes['ViewerChangeAvatarMutationError'];
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
   TeacherClassesQueryInput: GQLTeacherClassesQueryInput;
   ActivityData: GQLResolversTypes['EmbeddedActivityData'] | GQLResolversTypes['HtmlActivityData'];
@@ -918,6 +953,7 @@ export type GQLResolversTypes = {
   EmbeddedActivityData: ResolverTypeWrapper<EmbeddedActivityDataEntity>;
   HtmlActivityData: ResolverTypeWrapper<HtmlActivityDataEntity>;
   Activity: GQLResolversTypes['EmbeddedActivity'] | GQLResolversTypes['HtmlActivity'];
+  Avatar: ResolverTypeWrapper<AvatarEntity>;
   Class: ResolverTypeWrapper<ClassEntity>;
   ActivityComment: ResolverTypeWrapper<ActivityCommentEntity>;
   Comment: GQLResolversTypes['ActivityComment'];
@@ -934,7 +970,7 @@ export type GQLResolversTypes = {
   UserRole: ResolverTypeWrapper<UserRoleEntity>;
   User: ResolverTypeWrapper<UserEntity>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
-  GenericError: GQLResolversTypes['SimpleError'];
+  GenericError: GQLResolversTypes['ViewerChangeAvatarMutationError'] | GQLResolversTypes['SimpleError'];
   SimpleError: ResolverTypeWrapper<SimpleError>;
 };
 
@@ -984,6 +1020,9 @@ export type GQLResolversParentTypes = {
   ActivityUnion: ActivityEntity;
   Permission: Permission;
   Role: Role;
+  ViewerChangeAvatarInput: GQLViewerChangeAvatarInput;
+  ViewerChangeAvatarMutationError: GQLViewerChangeAvatarMutationError;
+  ViewerChangeAvatarMutationResult: GQLResolversParentTypes['User'] | GQLResolversParentTypes['ViewerChangeAvatarMutationError'];
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
   TeacherClassesQueryInput: GQLTeacherClassesQueryInput;
   ActivityData: GQLResolversParentTypes['EmbeddedActivityData'] | GQLResolversParentTypes['HtmlActivityData'];
@@ -991,6 +1030,7 @@ export type GQLResolversParentTypes = {
   EmbeddedActivityData: EmbeddedActivityDataEntity;
   HtmlActivityData: HtmlActivityDataEntity;
   Activity: GQLResolversParentTypes['EmbeddedActivity'] | GQLResolversParentTypes['HtmlActivity'];
+  Avatar: AvatarEntity;
   Class: ClassEntity;
   ActivityComment: ActivityCommentEntity;
   Comment: GQLResolversParentTypes['ActivityComment'];
@@ -1007,7 +1047,7 @@ export type GQLResolversParentTypes = {
   UserRole: UserRoleEntity;
   User: UserEntity;
   DateTime: Scalars['DateTime'];
-  GenericError: GQLResolversParentTypes['SimpleError'];
+  GenericError: GQLResolversParentTypes['ViewerChangeAvatarMutationError'] | GQLResolversParentTypes['SimpleError'];
   SimpleError: SimpleError;
 };
 
@@ -1038,6 +1078,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   deleteActivityFromCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationdeleteActivityFromCycleArgs, 'cycleActivityId'>>;
   deleteCycleFromLevelTheme: Resolver<GQLResolversTypes['LevelTheme'], ParentType, ContextType, RequireFields<GQLMutationdeleteCycleFromLevelThemeArgs, 'cycleId'>>;
   deleteThemeFromLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationdeleteThemeFromLevelArgs, 'levelThemeId'>>;
+  finishOnboard: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
   startActivity: Resolver<GQLResolversTypes['StartActivityResult'], ParentType, ContextType, RequireFields<GQLMutationstartActivityArgs, 'data'>>;
   updateBasicLevelInfo: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationupdateBasicLevelInfoArgs, 'data'>>;
   updateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationupdateCycleArgs, 'data'>>;
@@ -1046,6 +1087,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   updateEmbeddedActivity: Resolver<GQLResolversTypes['EmbeddedActivity'], ParentType, ContextType, RequireFields<GQLMutationupdateEmbeddedActivityArgs, 'data'>>;
   updateLevelThemesOrder: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLMutationupdateLevelThemesOrderArgs, 'data'>>;
   updateTheme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType, RequireFields<GQLMutationupdateThemeArgs, 'data'>>;
+  viewerChangeAvatar: Resolver<GQLResolversTypes['ViewerChangeAvatarMutationResult'], ParentType, ContextType, RequireFields<GQLMutationviewerChangeAvatarArgs, 'data'>>;
 };
 
 export type GQLCompleteActivityResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['CompleteActivityResult'] = GQLResolversParentTypes['CompleteActivityResult']> = {
@@ -1076,6 +1118,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   activityComments: Resolver<ReadonlyArray<GQLResolversTypes['ActivityComment']>, ParentType, ContextType, RequireFields<GQLQueryactivityCommentsArgs, 'data'>>;
   availableActivitiesForCycle: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryavailableActivitiesForCycleArgs, 'cycleId'>>;
   availableThemes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQueryavailableThemesArgs, 'availableThemesInputData'>>;
+  avatars: Resolver<ReadonlyArray<GQLResolversTypes['Avatar']>, ParentType, ContextType>;
   classStudents: Resolver<ReadonlyArray<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryclassStudentsArgs, 'data'>>;
   classes: Resolver<ReadonlyArray<GQLResolversTypes['Class']>, ParentType, ContextType>;
   currentUser: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>;
@@ -1151,6 +1194,15 @@ export type GQLRoleResolvers<ContextType = GraphQLContext, ParentType extends GQ
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type GQLViewerChangeAvatarMutationErrorResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ViewerChangeAvatarMutationError'] = GQLResolversParentTypes['ViewerChangeAvatarMutationError']> = {
+  message: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type GQLViewerChangeAvatarMutationResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ViewerChangeAvatarMutationResult'] = GQLResolversParentTypes['ViewerChangeAvatarMutationResult']> = {
+  __resolveType: TypeResolveFn<'User' | 'ViewerChangeAvatarMutationError', ParentType, ContextType>;
+};
+
 export type GQLActivityDataResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ActivityData'] = GQLResolversParentTypes['ActivityData']> = {
   __resolveType: TypeResolveFn<'EmbeddedActivityData' | 'HtmlActivityData', ParentType, ContextType>;
   activityId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
@@ -1189,6 +1241,15 @@ export type GQLActivityResolvers<ContextType = GraphQLContext, ParentType extend
   type: Resolver<GQLResolversTypes['ActivityType'], ParentType, ContextType>;
   active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   estimatedTime: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+};
+
+export type GQLAvatarResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Avatar'] = GQLResolversParentTypes['Avatar']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  name: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  extension: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  thumbnailUrl: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  listUrl: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type GQLClassResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Class'] = GQLResolversParentTypes['Class']> = {
@@ -1356,6 +1417,9 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   totalCompletedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   totalAvailableActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   onboarded: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  defaultLevelTypeId: Resolver<GQLResolversTypes['LevelTypeId'], ParentType, ContextType>;
+  avatarId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
+  avatar: Resolver<Maybe<GQLResolversTypes['Avatar']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1364,7 +1428,7 @@ export interface GQLDateTimeScalarConfig extends GraphQLScalarTypeConfig<GQLReso
 }
 
 export type GQLGenericErrorResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['GenericError'] = GQLResolversParentTypes['GenericError']> = {
-  __resolveType: TypeResolveFn<'SimpleError', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'ViewerChangeAvatarMutationError' | 'SimpleError', ParentType, ContextType>;
   message: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
 };
 
@@ -1391,11 +1455,14 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   RoleId: GQLRoleIdResolvers;
   Permission: GQLPermissionResolvers<ContextType>;
   Role: GQLRoleResolvers<ContextType>;
+  ViewerChangeAvatarMutationError: GQLViewerChangeAvatarMutationErrorResolvers<ContextType>;
+  ViewerChangeAvatarMutationResult: GQLViewerChangeAvatarMutationResultResolvers<ContextType>;
   ActivityData: GQLActivityDataResolvers<ContextType>;
   ActivityTimer: GQLActivityTimerResolvers<ContextType>;
   EmbeddedActivityData: GQLEmbeddedActivityDataResolvers<ContextType>;
   HtmlActivityData: GQLHtmlActivityDataResolvers<ContextType>;
   Activity: GQLActivityResolvers<ContextType>;
+  Avatar: GQLAvatarResolvers<ContextType>;
   Class: GQLClassResolvers<ContextType>;
   ActivityComment: GQLActivityCommentResolvers<ContextType>;
   Comment: GQLCommentResolvers<ContextType>;

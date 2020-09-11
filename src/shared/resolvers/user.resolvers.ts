@@ -1,5 +1,5 @@
 import { GQLUserResolvers } from "../../resolvers-types"
-import { UserEntity, USER_TABLE } from "../../entities/user.entity";
+import { UserEntity } from "../../entities/user.entity";
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 import { UserRoleEntity } from "../../entities/user-role.entity";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
@@ -13,17 +13,20 @@ import { countCycleActivities } from "../repositories/cycle-activity.repository"
 import { CYCLE_TABLE } from "../../entities/cycle.entity";
 import { CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-activity.entity";
 import { LEVEL_THEME_TABLE } from "../../entities/level-theme.entity";
-import { LEVEL_TABLE } from "../../entities/level.entity";
+import { LEVEL_TABLE, LevelEntity } from "../../entities/level.entity";
 import { LEVEL_CODE_TABLE } from "../../entities/level-code.entity";
 import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
-import { ENROLLMENT_CLASS_TABLE } from "../../entities/enrollment-class.entity";
 import { TeacherClassEntity, TEACHER_CLASS_TABLE } from "../../entities/teacher-class.entity"
-import { ClassEntity, CLASS_TABLE } from "../../entities/class.entity"
+import { LevelTypeId } from "../../domain/activity/enums/level-type.enum";
+import { AvatarEntity } from "../../entities/avatar.entity";
+import { getAvatarsByIds } from "../repositories/avatar.repository";
+import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
     name: obj => obj.name,
     onboarded: obj => obj.onboarded,
+    avatarId: obj => obj.avatarId?.toString(10) || null,
 }
 
 const userUserRoleSorter = createDataloaderMultiSort<UserRoleEntity, number>('userId');
@@ -130,6 +133,39 @@ export const totalCompletedActivitiesFieldResolver: GQLUserResolvers['totalCompl
     return context.getDatabaseLoader(userCompletedActivitiesByIdLoader, undefined).load(obj.id);
 }
 
+export const userDefaultLevelTypeIdFieldResolver: GQLUserResolvers['defaultLevelTypeId'] = async (obj, params, context) => {
+    const userId = obj.id;
+    const userLevels: LevelEntity[] = await context.database
+        .select(`${LEVEL_TABLE}.*`)
+        .from(LEVEL_TABLE)
+        .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.levelId`, `${LEVEL_TABLE}.id`)
+        .innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.levelCodeId`, `${LEVEL_CODE_TABLE}.id`)
+        .andWhere(`${ENROLLMENT_TABLE}.userId`, userId);
+    const hasYoungLevel = Boolean(userLevels.find(level => level.typeId === LevelTypeId.YOUNG));
+    if (hasYoungLevel) {
+        return LevelTypeId.YOUNG;
+    }
+    return LevelTypeId.ADULT;
+}
+
+export const userAvatarByIdSorter = createDataloaderSingleSort<AvatarEntity, number, AvatarEntity>('id');
+
+export const userAvatarByAvatarIdLoader: DatabaseLoaderFactory<number, AvatarEntity, AvatarEntity> = {
+    id: 'userAvatarByAvatarIdLoader',
+    batchFn: (db) => async (ids) => {
+        const entities = await getAvatarsByIds(db)(ids);
+        const sorted = userAvatarByIdSorter(ids)(entities);
+        return sorted;
+    }
+}
+
+export const userAvatarFieldResolver: GQLUserResolvers['avatar'] = async (obj, params, context) => {
+    if (obj.avatarId === null) {
+        return null;
+    }
+    return context.getDatabaseLoader(userAvatarByAvatarIdLoader, undefined).load(obj.avatarId);
+}
+
 export const userResolvers: GQLUserResolvers = {
     ...userEntityResolvers,
     initials: userInitialsResolver,
@@ -139,6 +175,8 @@ export const userResolvers: GQLUserResolvers = {
     teacherClasses: teacherClassesFieldResolver,
     totalCompletedActivities: totalCompletedActivitiesFieldResolver,
     totalAvailableActivities: totalAvailableActivitiesFieldResolver,
+    defaultLevelTypeId: userDefaultLevelTypeIdFieldResolver,
+    avatar: userAvatarFieldResolver,
 }
 
 

@@ -30,12 +30,14 @@ import { activityCommentResolvers } from "./shared/resolvers/activity-comment.re
 import { activityTimerResolvers } from "./shared/resolvers/activity-timer.resolvers";
 import { teacherClassResolvers } from "./shared/resolvers/teacher-class.resolver";
 import { simpleErrorResolvers } from "./shared/resolvers/simple-error.resolver";
+import { avatarResolvers } from "./shared/resolvers/avatar.resolvers";
 import { createCommentOnActivityResultResolver } from "./domain/activity/mutations/create-comment-on-activity/create-comment-on-activity.mutation";
 import { deleteActivityCommentResultResolver } from "./domain/activity/mutations/delete-activity-comment/delete-activity-comment.mutation";
 import { enrollmentClassResolvers } from "./shared/resolvers/enrollment-class.resolver";
 import { DeleteActivityCommentSuccessResultResolvers } from "./domain/activity/mutations/delete-activity-comment/delete-activity-comment-success-result.type";
 import { completeActivityResultResolver } from "./domain/activity/mutations/complete-activity/complete-activity.mutation";
 import { startActivityResultResolver } from "./domain/activity/mutations/start-activity/start-activity.mutation";
+import { viewerChangeAvatarMutationErrorResolvers, viewerChangeAvatarMutationResultResolvers } from "./domain/avatar/mutations/viewer-change-avatar/viewer-change-avatar.types";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -77,6 +79,9 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     DeleteActivityCommentSuccessResult: DeleteActivityCommentSuccessResultResolvers,
     CompleteActivityResult: completeActivityResultResolver,
     StartActivityResult: startActivityResultResolver,
+    Avatar: avatarResolvers,
+    ViewerChangeAvatarMutationError: viewerChangeAvatarMutationErrorResolvers,
+    ViewerChangeAvatarMutationResult: viewerChangeAvatarMutationResultResolvers,
 };
 
 

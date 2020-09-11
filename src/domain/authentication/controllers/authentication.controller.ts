@@ -100,6 +100,7 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
         id: aluno.Id,
         name: aluno.Nome,
         onboarded: false,
+        avatarId: null,
     }));
 
     const guardianStudentEntities = alunosResponsavel.map<GuardianStudentEntity>(student => ({

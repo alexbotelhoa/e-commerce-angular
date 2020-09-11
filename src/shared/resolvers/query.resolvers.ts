@@ -30,6 +30,7 @@ import { teacherClassesQueryResolver } from "../../domain/teacher/queries/teache
 import { viewerTeacherClassesQueryResolver } from "../../domain/teacher/queries/viewer-teacher-classes/viewer-teacher-classes.query";
 import { classStudentsQueryResolver } from "../../domain/teacher/queries/class-students/class-students.query";
 import { viewerTeacherLevelCodesQueryResolver } from "../../domain/teacher/queries/viewer-teacher-level-codes/viewer-teacher-level-codes.query";
+import { avatarsQueryResolver } from "../../domain/avatar/queries/avatars/avatars.query";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -57,4 +58,5 @@ export const queryResolvers: GQLResolvers['Query'] = {
     viewerTeacherClasses: viewerTeacherClassesQueryResolver,
     classStudents: classStudentsQueryResolver,
     viewerTeacherLevelCodes: viewerTeacherLevelCodesQueryResolver,
+    avatars: avatarsQueryResolver,
 }
