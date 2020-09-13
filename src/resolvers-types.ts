@@ -22,6 +22,7 @@ import { LevelCodeEntity } from './entities/level-code.entity';
 import { LevelEntity } from './entities/level.entity';
 import { ThemeEntity } from './entities/theme.entity';
 import { ThemeIconEntity } from './entities/themes/theme-icon.entity';
+import { ChallengeEntity } from './entities/challenge.entity';
 import { UserRoleEntity } from './entities/user-role.entity';
 import { Role } from './domain/authorization/types/role.type';
 import { Permission } from './domain/authorization/types/permission.type';
@@ -404,12 +405,14 @@ export type GQLUpdateThemeInput = {
 
 export type GQLQuery = {
   readonly __typename?: 'Query';
+  readonly activeChallenge: GQLChallenge;
   readonly activities: ReadonlyArray<GQLActivityUnion>;
   readonly activity: Maybe<GQLActivityUnion>;
   readonly activityComments: ReadonlyArray<GQLActivityComment>;
   readonly availableActivitiesForCycle: ReadonlyArray<GQLActivityUnion>;
   readonly availableThemes: ReadonlyArray<GQLTheme>;
   readonly avatars: ReadonlyArray<GQLAvatar>;
+  readonly challenges: ReadonlyArray<GQLChallenge>;
   readonly classStudents: ReadonlyArray<GQLUser>;
   readonly classes: ReadonlyArray<GQLClass>;
   readonly currentUser: Maybe<GQLUser>;
@@ -620,6 +623,13 @@ export type GQLAvatar = {
   readonly extension: Scalars['String'];
   readonly thumbnailUrl: Scalars['String'];
   readonly listUrl: Scalars['String'];
+};
+
+export type GQLChallenge = {
+  readonly __typename?: 'Challenge';
+  readonly id: Scalars['ID'];
+  readonly text: Scalars['String'];
+  readonly startAt: Scalars['DateTime'];
 };
 
 export type GQLClass = {
@@ -954,6 +964,7 @@ export type GQLResolversTypes = {
   HtmlActivityData: ResolverTypeWrapper<HtmlActivityDataEntity>;
   Activity: GQLResolversTypes['EmbeddedActivity'] | GQLResolversTypes['HtmlActivity'];
   Avatar: ResolverTypeWrapper<AvatarEntity>;
+  Challenge: ResolverTypeWrapper<ChallengeEntity>;
   Class: ResolverTypeWrapper<ClassEntity>;
   ActivityComment: ResolverTypeWrapper<ActivityCommentEntity>;
   Comment: GQLResolversTypes['ActivityComment'];
@@ -1031,6 +1042,7 @@ export type GQLResolversParentTypes = {
   HtmlActivityData: HtmlActivityDataEntity;
   Activity: GQLResolversParentTypes['EmbeddedActivity'] | GQLResolversParentTypes['HtmlActivity'];
   Avatar: AvatarEntity;
+  Challenge: ChallengeEntity;
   Class: ClassEntity;
   ActivityComment: ActivityCommentEntity;
   Comment: GQLResolversParentTypes['ActivityComment'];
@@ -1113,12 +1125,14 @@ export type GQLStartActivityResultResolvers<ContextType = GraphQLContext, Parent
 };
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
+  activeChallenge: Resolver<GQLResolversTypes['Challenge'], ParentType, ContextType>;
   activities: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType>;
   activity: Resolver<Maybe<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryactivityArgs, 'id'>>;
   activityComments: Resolver<ReadonlyArray<GQLResolversTypes['ActivityComment']>, ParentType, ContextType, RequireFields<GQLQueryactivityCommentsArgs, 'data'>>;
   availableActivitiesForCycle: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryavailableActivitiesForCycleArgs, 'cycleId'>>;
   availableThemes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQueryavailableThemesArgs, 'availableThemesInputData'>>;
   avatars: Resolver<ReadonlyArray<GQLResolversTypes['Avatar']>, ParentType, ContextType>;
+  challenges: Resolver<ReadonlyArray<GQLResolversTypes['Challenge']>, ParentType, ContextType>;
   classStudents: Resolver<ReadonlyArray<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryclassStudentsArgs, 'data'>>;
   classes: Resolver<ReadonlyArray<GQLResolversTypes['Class']>, ParentType, ContextType>;
   currentUser: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>;
@@ -1249,6 +1263,13 @@ export type GQLAvatarResolvers<ContextType = GraphQLContext, ParentType extends 
   extension: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   thumbnailUrl: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   listUrl: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type GQLChallengeResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Challenge'] = GQLResolversParentTypes['Challenge']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  text: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  startAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1463,6 +1484,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   HtmlActivityData: GQLHtmlActivityDataResolvers<ContextType>;
   Activity: GQLActivityResolvers<ContextType>;
   Avatar: GQLAvatarResolvers<ContextType>;
+  Challenge: GQLChallengeResolvers<ContextType>;
   Class: GQLClassResolvers<ContextType>;
   ActivityComment: GQLActivityCommentResolvers<ContextType>;
   Comment: GQLCommentResolvers<ContextType>;

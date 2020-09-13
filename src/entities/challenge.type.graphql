@@ -1,0 +1,5 @@
+type Challenge {
+    id: ID!
+    text: String!
+    startAt: DateTime!
+}

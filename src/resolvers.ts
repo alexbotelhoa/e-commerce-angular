@@ -38,6 +38,7 @@ import { DeleteActivityCommentSuccessResultResolvers } from "./domain/activity/m
 import { completeActivityResultResolver } from "./domain/activity/mutations/complete-activity/complete-activity.mutation";
 import { startActivityResultResolver } from "./domain/activity/mutations/start-activity/start-activity.mutation";
 import { viewerChangeAvatarMutationErrorResolvers, viewerChangeAvatarMutationResultResolvers } from "./domain/avatar/mutations/viewer-change-avatar/viewer-change-avatar.types";
+import { challengeResolvers } from "./shared/resolvers/challenge.resolver";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -82,6 +83,7 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Avatar: avatarResolvers,
     ViewerChangeAvatarMutationError: viewerChangeAvatarMutationErrorResolvers,
     ViewerChangeAvatarMutationResult: viewerChangeAvatarMutationResultResolvers,
+    Challenge: challengeResolvers,
 };
 
 

@@ -43,6 +43,7 @@ generates:
         Level: ./entities/level.entity#LevelEntity
         Theme: ./entities/theme.entity#ThemeEntity
         ThemeIcon: ./entities/themes/theme-icon.entity#ThemeIconEntity
+        Challenge: ./entities/challenge.entity#ChallengeEntity
         UserRole: ./entities/user-role.entity#UserRoleEntity
         Role: ./domain/authorization/types/role.type#Role
         Permission: ./domain/authorization/types/permission.type#Permission
