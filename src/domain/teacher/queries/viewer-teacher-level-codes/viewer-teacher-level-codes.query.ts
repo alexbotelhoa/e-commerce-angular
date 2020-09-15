@@ -9,7 +9,7 @@ export const viewerTeacherLevelCodesQueryResolver: GQLQueryResolvers['viewerTeac
         return [];
     }
     return await context.database
-        .select(`${LEVEL_CODE_TABLE}.*`)
+        .distinct(`${LEVEL_CODE_TABLE}.*`)
         .from(LEVEL_CODE_TABLE)
         .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.levelCodeId`, `${LEVEL_CODE_TABLE}.id`)
         .innerJoin(TEACHER_CLASS_TABLE, `${TEACHER_CLASS_TABLE}.classId`, `${CLASS_TABLE}.id`)
