@@ -47,10 +47,7 @@ const app = fastify({
 
   // register GraphQL endpoint
   app.register(fastifyGQL, {
-    schema: addMocksToSchema({
-      schema: executableSchema,
-      preserveResolvers: true,
-    }),
+    schema: executableSchema,
     resolvers: {},
     context: graphQLContextFactory(databaseService),
     jit: 5,
