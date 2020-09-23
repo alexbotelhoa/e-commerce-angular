@@ -1,5 +1,6 @@
 import { GQLActivityTimerResolvers } from "../../resolvers-types";
 import { ActivityTimerEntity } from "../../entities/activities/activity-timer.entity";
+import { getCycleActivityById } from "../repositories/cycle-activity.repository";
 
 export const activityTimerEntityResolvers: Pick<GQLActivityTimerResolvers, keyof ActivityTimerEntity> = {
     id: obj => obj.id.toString(10),
@@ -13,4 +14,5 @@ export const activityTimerEntityResolvers: Pick<GQLActivityTimerResolvers, keyof
 
 export const activityTimerResolvers: GQLActivityTimerResolvers = {
     ...activityTimerEntityResolvers,
+    cycleActivity: async (obj, params, context) => (await getCycleActivityById(context.database)(obj.cycleActivityId))!,
 }

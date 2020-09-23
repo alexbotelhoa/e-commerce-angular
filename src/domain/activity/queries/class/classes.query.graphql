@@ -1,3 +1,11 @@
 type Query {
-    classes: [Class!]!
+    classes(data: ClassesQueryInput!): [Class!]!
+}
+
+input ClassesQueryInput {
+    ids: [ID!]
+    institutionIds: [ID!]
+    sessionIds: [ID!]
+    periodIds: [ID!]
+    carrerIds: [ID!]
 }

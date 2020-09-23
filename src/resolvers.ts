@@ -39,6 +39,7 @@ import { completeActivityResultResolver } from "./domain/activity/mutations/comp
 import { startActivityResultResolver } from "./domain/activity/mutations/start-activity/start-activity.mutation";
 import { viewerChangeAvatarMutationErrorResolvers, viewerChangeAvatarMutationResultResolvers } from "./domain/avatar/mutations/viewer-change-avatar/viewer-change-avatar.types";
 import { challengeResolvers } from "./shared/resolvers/challenge.resolver";
+import { classStudentGradeResolvers } from "./domain/activity/resolvers/class/class-student-grade.type.resolvers";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -84,6 +85,7 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     ViewerChangeAvatarMutationError: viewerChangeAvatarMutationErrorResolvers,
     ViewerChangeAvatarMutationResult: viewerChangeAvatarMutationResultResolvers,
     Challenge: challengeResolvers,
+    ClassStudentGrade: classStudentGradeResolvers,
 };
 
 

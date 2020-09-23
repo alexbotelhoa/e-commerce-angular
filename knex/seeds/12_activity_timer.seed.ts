@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import { deleteAllActivityTimers, insertActivityTimer } from "../../src/shared/repositories/activity-timer.repository";
 import { ActivityTimerEntity } from "../../src/entities/activities/activity-timer.entity";
-import { cycleActivity1Seed } from "./06_cycle_activity";
+import { cycleActivity1Seed, cycleActivity2Seed } from "./06_cycle_activity";
 import { studentUserSeed } from "./07_user.seed";
 import { basicClass1Seed } from "./09_class.seed";
 
@@ -18,7 +18,7 @@ const activityTimer2Seed: Partial<ActivityTimerEntity> = {
     id: 2,
     completed: true,
     completionTime: new Date(),
-    cycleActivityId: cycleActivity1Seed.id,
+    cycleActivityId: cycleActivity2Seed.id,
     userId: studentUserSeed.id,
     classId: basicClass1Seed.id,
 };

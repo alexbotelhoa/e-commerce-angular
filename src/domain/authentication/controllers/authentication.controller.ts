@@ -28,10 +28,19 @@ const AlunosResponsavel = t.type({
     Nome: t.string,
 });
 
+const TurmaType = t.type({
+    Id: t.Int,
+    Nome: t.string,
+    carrerId: t.union([t.string, t.undefined]),
+    institutionId: t.union([t.string, t.undefined]),
+    periodId: t.union([t.string, t.undefined]),
+    sessionId: t.union([t.string, t.undefined]),
+});
+
 const MatriculasAluno = t.type({
     Id: t.Int,
     Nome: t.string,
-    Turmas: t.array(AlunosResponsavel),
+    Turmas: t.array(TurmaType),
 });
 
 const AuthenticationInput = t.type({
@@ -39,7 +48,7 @@ const AuthenticationInput = t.type({
     Nome: t.string,
     "Alunos-Responsavel": t.array(AlunosResponsavel),
     "Matriculas-Aluno": t.array(MatriculasAluno),
-    "Turmas-Professor": t.array(AlunosResponsavel),
+    "Turmas-Professor": t.array(TurmaType),
 });
 
 const exactAuthenticationInput = t.exact(AuthenticationInput);
@@ -136,6 +145,10 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
                     id: turma.Id,
                     levelCodeId: matricula.Id,
                     name: turma.Nome,
+                    carrerId: turma.carrerId || null,
+                    institutionId: turma.institutionId || null,
+                    periodId: turma.periodId || null,
+                    sessionId: turma.sessionId || null,
                 }))
         })
         .reduce<ClassEntity[]>(concatArrayReducer, []);

@@ -3,4 +3,9 @@ type Class {
     name: String!
     levelCodeId: ID!
     levelCode: LevelCode!
+    institutionId: ID
+    periodId: ID
+    carrerId: ID
+    sessionId: ID
+    studentGrades: [ClassStudentGrade!]!
 }

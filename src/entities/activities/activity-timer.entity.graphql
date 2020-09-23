@@ -6,4 +6,5 @@ type ActivityTimer {
     completionTime: DateTime
     completed: Boolean!
     classId: ID!
+    cycleActivity: CycleActivity!
 }

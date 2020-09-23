@@ -7,18 +7,30 @@ export const basicClass1Seed: ClassEntity = {
     id: 1,
     name: 'Class Basic - 1',
     levelCodeId: basic1LevelCodeSeed.id,
+    carrerId: null,
+    institutionId: null,
+    periodId: null,
+    sessionId: null,
 }
 
 export const intermediaryClass2Seed: ClassEntity = {
     id: 2,
     name: 'Class Intermediary - 2',
     levelCodeId: intermediary1LevelCodeSeed.id,
+    carrerId: null,
+    institutionId: null,
+    periodId: null,
+    sessionId: null,
 }
 
 export const advancedClass3Seed: ClassEntity = {
     id: 3,
     name: 'Class Advanced - 3',
     levelCodeId: advanced1LevelCodeSeed.id,
+    carrerId: null,
+    institutionId: null,
+    periodId: null,
+    sessionId: null,
 }
 
 export const allClassSeeds = [

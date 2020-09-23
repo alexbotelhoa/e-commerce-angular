@@ -1,0 +1,8 @@
+type ClassStudentGrade {
+    studentId: ID!
+    totalActivities: Int!
+    viewedActivities: Int!
+    completedActivities: Int!
+    viewGrade: Float!
+    completionGrade: Float!
+}
