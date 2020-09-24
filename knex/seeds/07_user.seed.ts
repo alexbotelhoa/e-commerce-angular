@@ -39,7 +39,7 @@ export const guardianUserSeed: UserEntityWithRoles = {
 }
 
 export const fullUserSeed: UserEntityWithRoles = {
-    id: 5,
+    id: 999999,
     name: 'FULL',
     onboarded: false,
     avatarId: null,
