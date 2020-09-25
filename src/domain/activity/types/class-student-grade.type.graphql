@@ -5,4 +5,5 @@ type ClassStudentGrade {
     completedActivities: Int!
     viewGrade: Float!
     completionGrade: Float!
+    grades: [StudentGrade!]!
 }

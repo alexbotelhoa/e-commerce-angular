@@ -13,6 +13,7 @@ import { graphQLContextFactory } from './shared/services/graphql-context.service
 import { validateURL } from './shared/utils/validate-url'
 import { filterHTML } from './shared/utils/filter-html'
 import { makeRequest } from './shared/utils/make-http-request'
+import { classStudentGradesController } from './domain/activity/controllers/class-student-grades.controller';
 
 
 const environment = environmentFactory();
@@ -86,9 +87,9 @@ const app = fastify({
       .send(await filterHTML(await makeRequest(url), url))
   })
 
-  app.post('/authentication', {
-    schema: {}
-  }, authenticationController(environment.CI_PORTAL_URL, databaseService));
+  app.post('/authentication', {}, authenticationController(environment.CI_PORTAL_URL, databaseService));
+
+  app.post('/student-grades', {}, classStudentGradesController(environment, databaseService));
 })();
 
 

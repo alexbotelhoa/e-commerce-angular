@@ -14,6 +14,8 @@ export const classEntityResolvers: Pick<GQLClassResolvers, keyof ClassEntity> = 
     institutionId: obj => obj.institutionId,
     periodId: obj => obj.periodId,
     sessionId: obj => obj.sessionId,
+    startDate: obj => obj.startDate,
+    endDate: obj => obj.endDate,
 }
 
 const classLevelCodeSorter = createDataloaderSingleSort<LevelCodeEntity, number, LevelCodeEntity>('id');

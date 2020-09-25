@@ -40,6 +40,8 @@ import { startActivityResultResolver } from "./domain/activity/mutations/start-a
 import { viewerChangeAvatarMutationErrorResolvers, viewerChangeAvatarMutationResultResolvers } from "./domain/avatar/mutations/viewer-change-avatar/viewer-change-avatar.types";
 import { challengeResolvers } from "./shared/resolvers/challenge.resolver";
 import { classStudentGradeResolvers } from "./domain/activity/resolvers/class/class-student-grade.type.resolvers";
+import { studentGradesResolvers } from "./domain/activity/resolvers/student-grades.type.resolvers";
+import { GradeTypeId } from "./domain/activity/enums/grade-type-id.enum";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -86,6 +88,8 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     ViewerChangeAvatarMutationResult: viewerChangeAvatarMutationResultResolvers,
     Challenge: challengeResolvers,
     ClassStudentGrade: classStudentGradeResolvers,
+    StudentGrade: studentGradesResolvers,
+    GradeTypeId: GradeTypeId,
 };
 
 

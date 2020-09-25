@@ -1,4 +1,4 @@
-import https from 'https'
+import https from 'https';
 
 export const makeRequest = (url: string): Promise<string> => new Promise((resolve, reject) => https.get(url, res => {
     let data = '';

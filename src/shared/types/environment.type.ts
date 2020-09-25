@@ -8,4 +8,6 @@ export interface Environment {
     JWT_SECRET: string;
     CI_PORTAL_URL: string;
     PRODUCTION: boolean;
+    STUDENT_GRADE_INTEGRATION_URL: string,
+    STUDENT_GRADE_INTEGRATION_API_KEY: string,
 }

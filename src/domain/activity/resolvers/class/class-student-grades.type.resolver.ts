@@ -1,80 +1,90 @@
-import { GQLClassResolvers } from "../../../../resolvers-types";
+import { GQLClassResolvers, GQLClassstudentGradesArgs } from "../../../../resolvers-types";
 import { DatabaseLoaderFactory } from "../../../../shared/types/database-loader.type";
 import { createDataloaderMultiSort } from "../../../../shared/utils/dataloader-multi-sort";
 import { ClassStudentGrade } from "../../types/class-student-grade.type";
 
 const classStudentGradesByClassIdSorter = createDataloaderMultiSort<ClassStudentGrade, number>('classId');
 
-const classStudentGradesByClassIdLoader: DatabaseLoaderFactory<number, ClassStudentGrade[], ClassStudentGrade[], undefined> = {
+const classStudentGradesByClassIdLoader: DatabaseLoaderFactory<number, ClassStudentGrade[], ClassStudentGrade[], GQLClassstudentGradesArgs> = {
     id: 'classStudentGradesByClassIdLoader',
-    batchFn: (db) => async (ids) => {
+    batchFn: (db, params) => async (ids) => {
+        const studentIds = params.data?.studentIds || [];
+        const studentIdsParameters = studentIds.length > 0
+            ? studentIds.map(() => '?').join(',')
+            : null;
+        const idsParameters = ids.map(() => '?').join(',');
         const result = await db.raw<[ClassStudentGrade[]]>(`
 SELECT
-	user.id as studentId,
+	user.id AS studentId,
     totalActivitiesByClass.classId,
 	totalActivitiesByClass.totalActivities, 
 	viewedActivitiesByUserAndClass.viewedActivities,
 	completedActivitiesByUserAndClass.completedActivities,
-    (viewedActivitiesByUserAndClass.viewedActivities / totalActivitiesByClass.totalActivities) * 100 as viewGrade,
-    (completedActivitiesByUserAndClass.completedActivities / totalActivitiesByClass.totalActivities) * 100 as completionGrade
+    (viewedActivitiesByUserAndClass.viewedActivities / totalActivitiesByClass.totalActivities) * 100 AS viewGrade,
+    (completedActivitiesByUserAndClass.completedActivities / totalActivitiesByClass.totalActivities) * 100 AS completionGrade
 FROM user
-inner join enrollment on enrollment.userId = user.id
-inner join enrollment_class on enrollment_class.enrollmentId = enrollment.id
-inner join
+INNER JOIN enrollment on enrollment.userId = user.id
+INNER JOIN enrollment_class on enrollment_class.enrollmentId = enrollment.id
+INNER JOIN
 (
-	SELECT COUNT(*) as totalActivities, class.id as classId, class.name, class.levelCodeId  from class
-    inner join level_code on level_code.id = class.levelCodeId
-	inner join level on level.id = level_code.levelId
-    inner join level_theme on level_theme.levelId = level.id
-    inner join cycle on cycle.levelThemeId = level_theme.id
-    inner join cycle_activity on cycle_activity.cycleId = cycle.id
-    group by classId
-) as totalActivitiesByClass
+	SELECT COUNT(*) AS totalActivities, class.id AS classId
+    FROM class
+    INNER JOIN level_code on level_code.id = class.levelCodeId
+	INNER JOIN level on level.id = level_code.levelId
+    INNER JOIN level_theme on level_theme.levelId = level.id
+    INNER JOIN cycle on cycle.levelThemeId = level_theme.id
+    INNER JOIN cycle_activity on cycle_activity.cycleId = cycle.id
+    WHERE class.id IN (${idsParameters})
+    GROUP BY classId
+) AS totalActivitiesByClass
 on totalActivitiesByClass.classId = enrollment_class.classId
-left join (
-	select count(*) as viewedActivities 
-     , activity_timer.userId
-     , class.id as classId
-    from activity_timer
-    inner join cycle_activity on cycle_activity.id = activity_timer.cycleActivityId
-    inner join cycle on cycle.id = cycle_activity.cycleId
-    inner join level_theme on level_theme.id = cycle.levelThemeId
-    inner join level on level.id = level_theme.levelId
-    inner join level_code on level_code.levelId = level.id
-    inner join class on class.levelCodeId = level_code.id
-    group by activity_timer.userId, class.id
-) as viewedActivitiesByUserAndClass
+LEFT JOIN (
+	SELECT count(*) AS viewedActivities 
+      , activity_timer.userId
+      , activity_timer.classId AS classId
+    FROM activity_timer
+    WHERE activity_timer.classId IN (${idsParameters})
+    ${studentIdsParameters
+                ? 'AND activity_timer.userId IN (' + studentIdsParameters + ')'
+                : ''
+            }
+    GROUP BY activity_timer.userId, activity_timer.classId
+) AS viewedActivitiesByUserAndClass
 on 
 	viewedActivitiesByUserAndClass.classId = totalActivitiesByClass.classId 
-    and viewedActivitiesByUserAndClass.userId = user.id
-left join (
-	select count(*) as completedActivities
+    AND viewedActivitiesByUserAndClass.userId = user.id
+LEFT JOIN (
+	SELECT count(*) AS completedActivities
      , activity_timer.userId
-     , class.id as classId
-    from activity_timer
-    inner join cycle_activity on cycle_activity.id = activity_timer.cycleActivityId
-    inner join cycle on cycle.id = cycle_activity.cycleId
-    inner join level_theme on level_theme.id = cycle.levelThemeId
-    inner join level on level.id = level_theme.levelId
-    inner join level_code on level_code.levelId = level.id
-    inner join class on class.levelCodeId = level_code.id
-    where activity_timer.completed = true
-    group by activity_timer.userId, class.id
-) as completedActivitiesByUserAndClass
+     , activity_timer.classId AS classId
+    FROM activity_timer
+    WHERE activity_timer.completed = true
+    AND activity_timer.classId IN (${idsParameters})
+    ${studentIdsParameters
+                ? 'AND activity_timer.userId IN (' + studentIdsParameters + ')'
+                : ''
+            }
+    GROUP BY activity_timer.userId, activity_timer.classId
+) AS completedActivitiesByUserAndClass
 on 
 	completedActivitiesByUserAndClass.classId = totalActivitiesByClass.classId 
-	and completedActivitiesByUserAndClass.userId = user.id
-where enrollment_class.classId in (${ids.map(() => '?').join(',')})
-;`, ids);
+	AND completedActivitiesByUserAndClass.userId = user.id
+WHERE enrollment_class.classId IN (${idsParameters})
+${studentIdsParameters
+                ? 'AND user.id IN (' + studentIdsParameters + ')'
+                : ''
+            }
+;`, [...ids, ...ids, ...studentIds, ...ids, ...studentIds, ...ids, ...studentIds]);
         const entities = result[0];
-        console.log(entities);
 
         return classStudentGradesByClassIdSorter(ids)(entities);
     }
 }
 
 export const classStudentGradesFieldResolver: GQLClassResolvers['studentGrades'] = async (obj, params, context) => {
-    return context.getDatabaseLoader(classStudentGradesByClassIdLoader, undefined).load(obj.id);
+    return context.getDatabaseLoader(classStudentGradesByClassIdLoader, {
+        data: params.data || null
+    }).load(obj.id);
 
 
 }

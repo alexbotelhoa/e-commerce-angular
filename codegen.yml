@@ -21,6 +21,7 @@ generates:
         LevelTypeId: ./domain/activity/enums/level-type.enum#LevelTypeId
         RoleId: ./domain/authorization/enums/role-id.enum#RoleId
         PermissionId: ./domain/authorization/enums/permission-id.enum#PermissionId
+        GradeTypeId: ./domain/activity/enums/grade-type-id.enum#GradeTypeId
       mappers:
         Avatar: ./entities/avatar.entity#AvatarEntity
         User: ./entities/user.entity#UserEntity
@@ -50,3 +51,5 @@ generates:
         SimpleError: ./shared/types/errors/simple-error.type#SimpleError
         GenericError: ./shared/types/errors/generic-error.interface#GenericError
         DeleteActivityCommentSuccessResult: ./domain/activity/mutations/delete-activity-comment/delete-activity-comment-success-result.type#DeleteActivityCommentSuccessResult
+        ClassStudentGrade: ./domain/activity/types/class-student-grade.type#ClassStudentGrade
+        StudentGrade: ./domain/activity/types/student-grade.type#StudentGrade

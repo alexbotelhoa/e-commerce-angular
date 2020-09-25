@@ -7,5 +7,6 @@ type Class {
     periodId: ID
     carrerId: ID
     sessionId: ID
-    studentGrades: [ClassStudentGrade!]!
+    startDate: DateTime
+    endDate: DateTime
 }

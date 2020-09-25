@@ -1,0 +1,4 @@
+type StudentGrade {
+    typeId: GradeTypeId!
+    grade: Float!
+}

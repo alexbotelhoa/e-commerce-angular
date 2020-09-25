@@ -1,0 +1,7 @@
+type Class {
+    studentGrades(data: ClassStudentGradesInput): [ClassStudentGrade!]!
+}
+
+input ClassStudentGradesInput {
+    studentIds: [ID!]
+}

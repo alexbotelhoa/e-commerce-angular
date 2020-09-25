@@ -6,7 +6,7 @@ import { getUserById, insertUser, updateUser, selectUser } from "../../../shared
 import { insertUserRole, selectUserRole, deleteUserRole } from "../../../shared/repositories/user-role.repository";
 import { UserRoleEntity } from "../../../entities/user-role.entity";
 import { insertEnrollment, selectEnrollment, deleteEnrollment } from "../../../shared/repositories/enrollment.repository";
-import { insertClass, selectClass } from "../../../shared/repositories/class.repository";
+import { insertClass, selectClass, updateClass } from "../../../shared/repositories/class.repository";
 import { ClassEntity } from "../../../entities/class.entity";
 import { EnrollmentEntity } from "../../../entities/enrollment.entity";
 import { concatArrayReducer } from "../../../shared/utils/concat-array-reducer";
@@ -31,10 +31,17 @@ const AlunosResponsavel = t.type({
 const TurmaType = t.type({
     Id: t.Int,
     Nome: t.string,
-    carrerId: t.union([t.string, t.undefined]),
-    institutionId: t.union([t.string, t.undefined]),
-    periodId: t.union([t.string, t.undefined]),
-    sessionId: t.union([t.string, t.undefined]),
+    carreira: t.union([t.string, t.undefined]),
+    instituicao: t.union([t.string, t.undefined]),
+    periodo: t.union([t.string, t.undefined]),
+    sessao: t.union([t.string, t.undefined]),
+    dataInicio: t.union([t.string, t.undefined]),
+    dataFim: t.union([t.string, t.undefined]),
+});
+
+const TurmaProfessorType = t.type({
+    Id: t.Int,
+    Nome: t.string,
 });
 
 const MatriculasAluno = t.type({
@@ -48,7 +55,7 @@ const AuthenticationInput = t.type({
     Nome: t.string,
     "Alunos-Responsavel": t.array(AlunosResponsavel),
     "Matriculas-Aluno": t.array(MatriculasAluno),
-    "Turmas-Professor": t.array(TurmaType),
+    "Turmas-Professor": t.array(TurmaProfessorType),
 });
 
 const exactAuthenticationInput = t.exact(AuthenticationInput);
@@ -145,10 +152,12 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
                     id: turma.Id,
                     levelCodeId: matricula.Id,
                     name: turma.Nome,
-                    carrerId: turma.carrerId || null,
-                    institutionId: turma.institutionId || null,
-                    periodId: turma.periodId || null,
-                    sessionId: turma.sessionId || null,
+                    carrerId: turma.carreira || null,
+                    institutionId: turma.instituicao || null,
+                    periodId: turma.periodo || null,
+                    sessionId: turma.sessao || null,
+                    endDate: turma.dataFim || null,
+                    startDate: turma.dataInicio || null,
                 }))
         })
         .reduce<ClassEntity[]>(concatArrayReducer, []);
@@ -206,6 +215,33 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
 
     // filter out classes that are already saved
     const classesToInsert = studentClassEntities.filter(classEntity => !savedStudentClasses.find(savedClass => savedClass.id === classEntity.id));
+    // filter exactly the classes that requires updating
+    const classesToUpdate = studentClassEntities.filter(classEntity => savedStudentClasses.find(savedClass => {
+        return savedClass.id === classEntity.id
+            && (
+                savedClass.carrerId !== classEntity.carrerId
+                || savedClass.institutionId !== classEntity.institutionId
+                || savedClass.name !== classEntity.name
+                || savedClass.periodId !== classEntity.periodId
+                || savedClass.sessionId !== classEntity.sessionId
+                || savedClass.startDate !== classEntity.startDate
+                || savedClass.endDate !== classEntity.endDate
+                || savedClass.levelCodeId !== classEntity.levelCodeId
+            );
+    }));
+
+    for (const classToUpdate of classesToUpdate) {
+        await updateClass(db)({
+            name: classToUpdate.name,
+            carrerId: classToUpdate.carrerId,
+            institutionId: classToUpdate.institutionId,
+            periodId: classToUpdate.periodId,
+            sessionId: classToUpdate.sessionId,
+            levelCodeId: classToUpdate.levelCodeId,
+            startDate: classToUpdate.startDate,
+            endDate: classToUpdate.endDate,
+        })(builder => builder.andWhere('id', classToUpdate.id));
+    }
 
     const userRoleEntities = roles.map<Omit<UserRoleEntity, 'id'>>(role => ({
         roleId: role,

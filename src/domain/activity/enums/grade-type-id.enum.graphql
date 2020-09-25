@@ -1,0 +1,5 @@
+enum GradeTypeId {
+    VIEW
+    COMPLETION
+}
+

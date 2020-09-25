@@ -19,6 +19,8 @@ export const environmentFactory = (): Environment => {
         JWT_SECRET: getEnvironmentVariable('JWT_SECRET'),
         CI_PORTAL_URL: getEnvironmentVariable('CI_PORTAL_URL'),
         PRODUCTION: DB_HOST !== 'localhost',
+        STUDENT_GRADE_INTEGRATION_URL: getEnvironmentVariable('STUDENT_GRADE_INTEGRATION_URL'),
+        STUDENT_GRADE_INTEGRATION_API_KEY: getEnvironmentVariable('STUDENT_GRADE_INTEGRATION_API_KEY'),
     };
 
     console.log(environment);

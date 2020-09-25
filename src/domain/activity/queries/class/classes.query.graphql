@@ -1,5 +1,5 @@
 type Query {
-    classes(data: ClassesQueryInput!): [Class!]!
+    classes(data: ClassesQueryInput): [Class!]!
 }
 
 input ClassesQueryInput {
