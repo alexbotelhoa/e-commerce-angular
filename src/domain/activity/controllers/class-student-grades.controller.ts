@@ -91,8 +91,8 @@ query ClassStudentGrades(
             "periodo": body.periodo || null,
             "sessao": body.sessao || null,
             "chaveRequest": body.chaveRequest,
-            "responseTotal": '1',
-            "responsePart": '1',
+            "responseTotal": 1,
+            "responsePart": 1,
             turmas: graphqlResult.data.turmas,
         }, {
             headers: {
