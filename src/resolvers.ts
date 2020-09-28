@@ -42,6 +42,7 @@ import { challengeResolvers } from "./shared/resolvers/challenge.resolver";
 import { classStudentGradeResolvers } from "./domain/activity/resolvers/class/class-student-grade.type.resolvers";
 import { studentGradesResolvers } from "./domain/activity/resolvers/student-grades.type.resolvers";
 import { GradeTypeId } from "./domain/activity/enums/grade-type-id.enum";
+import { overallClassCompletedActivitiesResolvers } from "./domain/teacher/queries/overall-class-completed-activities/overall-class-completed-activities.type";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -90,6 +91,7 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     ClassStudentGrade: classStudentGradeResolvers,
     StudentGrade: studentGradesResolvers,
     GradeTypeId: GradeTypeId,
+    OverallClassCompletedActivities: overallClassCompletedActivitiesResolvers,
 };
 
 

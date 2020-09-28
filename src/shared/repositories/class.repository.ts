@@ -1,5 +1,6 @@
 import { createRepository } from "../services/repository.service";
 import { ClassEntity, CLASS_TABLE } from "../../entities/class.entity";
+import { DatabaseService } from "../services/database.service";
 
 export const {
     getById: getClassById,

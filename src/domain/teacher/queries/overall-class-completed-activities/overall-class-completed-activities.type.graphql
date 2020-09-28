@@ -1,0 +1,7 @@
+type OverallClassCompletedActivities {
+    classId: ID!
+    totalActivities: Int!
+    completedActivities: Int!
+    totalStudents: Int!
+    overallCompletion: Float!
+}

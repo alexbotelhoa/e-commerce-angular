@@ -434,6 +434,7 @@ export type GQLQuery = {
   readonly levels: ReadonlyArray<GQLLevel>;
   readonly myEnrollments: ReadonlyArray<GQLEnrollment>;
   readonly myLevels: ReadonlyArray<GQLLevel>;
+  readonly overallClassCompletedActivities: Maybe<GQLOverallClassCompletedActivities>;
   readonly teacherClasses: ReadonlyArray<GQLTeacherClass>;
   readonly theme: Maybe<GQLTheme>;
   readonly themes: ReadonlyArray<GQLTheme>;
@@ -499,6 +500,11 @@ export type GQLQuerylevelThemeArgs = {
 
 export type GQLQuerylevelThemesArgs = {
   data: GQLLevelThemesQueryInput;
+};
+
+
+export type GQLQueryoverallClassCompletedActivitiesArgs = {
+  classId: Scalars['ID'];
 };
 
 
@@ -637,6 +643,15 @@ export type GQLViewerChangeAvatarMutationResult = GQLUser | GQLViewerChangeAvata
 
 export type GQLClassStudentsQueryInput = {
   readonly classId: Scalars['ID'];
+};
+
+export type GQLOverallClassCompletedActivities = {
+  readonly __typename?: 'OverallClassCompletedActivities';
+  readonly classId: Scalars['ID'];
+  readonly totalActivities: Scalars['Int'];
+  readonly completedActivities: Scalars['Int'];
+  readonly totalStudents: Scalars['Int'];
+  readonly overallCompletion: Scalars['Float'];
 };
 
 export type GQLTeacherClassesQueryInput = {
@@ -1022,6 +1037,7 @@ export type GQLResolversTypes = {
   ViewerChangeAvatarMutationError: ResolverTypeWrapper<GQLViewerChangeAvatarMutationError>;
   ViewerChangeAvatarMutationResult: GQLResolversTypes['User'] | GQLResolversTypes['ViewerChangeAvatarMutationError'];
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
+  OverallClassCompletedActivities: ResolverTypeWrapper<GQLOverallClassCompletedActivities>;
   TeacherClassesQueryInput: GQLTeacherClassesQueryInput;
   ActivityData: GQLResolversTypes['EmbeddedActivityData'] | GQLResolversTypes['HtmlActivityData'];
   ActivityTimer: ResolverTypeWrapper<ActivityTimerEntity>;
@@ -1105,6 +1121,7 @@ export type GQLResolversParentTypes = {
   ViewerChangeAvatarMutationError: GQLViewerChangeAvatarMutationError;
   ViewerChangeAvatarMutationResult: GQLResolversParentTypes['User'] | GQLResolversParentTypes['ViewerChangeAvatarMutationError'];
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
+  OverallClassCompletedActivities: GQLOverallClassCompletedActivities;
   TeacherClassesQueryInput: GQLTeacherClassesQueryInput;
   ActivityData: GQLResolversParentTypes['EmbeddedActivityData'] | GQLResolversParentTypes['HtmlActivityData'];
   ActivityTimer: ActivityTimerEntity;
@@ -1220,6 +1237,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   levels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
   myEnrollments: Resolver<ReadonlyArray<GQLResolversTypes['Enrollment']>, ParentType, ContextType>;
   myLevels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
+  overallClassCompletedActivities: Resolver<Maybe<GQLResolversTypes['OverallClassCompletedActivities']>, ParentType, ContextType, RequireFields<GQLQueryoverallClassCompletedActivitiesArgs, 'classId'>>;
   teacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType, RequireFields<GQLQueryteacherClassesArgs, 'data'>>;
   theme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQuerythemeArgs, 'id'>>;
   themes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType>;
@@ -1319,6 +1337,15 @@ export type GQLViewerChangeAvatarMutationErrorResolvers<ContextType = GraphQLCon
 
 export type GQLViewerChangeAvatarMutationResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ViewerChangeAvatarMutationResult'] = GQLResolversParentTypes['ViewerChangeAvatarMutationResult']> = {
   __resolveType: TypeResolveFn<'User' | 'ViewerChangeAvatarMutationError', ParentType, ContextType>;
+};
+
+export type GQLOverallClassCompletedActivitiesResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['OverallClassCompletedActivities'] = GQLResolversParentTypes['OverallClassCompletedActivities']> = {
+  classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  totalActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  completedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  totalStudents: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  overallCompletion: Resolver<GQLResolversTypes['Float'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type GQLActivityDataResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ActivityData'] = GQLResolversParentTypes['ActivityData']> = {
@@ -1579,6 +1606,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Role: GQLRoleResolvers<ContextType>;
   ViewerChangeAvatarMutationError: GQLViewerChangeAvatarMutationErrorResolvers<ContextType>;
   ViewerChangeAvatarMutationResult: GQLViewerChangeAvatarMutationResultResolvers<ContextType>;
+  OverallClassCompletedActivities: GQLOverallClassCompletedActivitiesResolvers<ContextType>;
   ActivityData: GQLActivityDataResolvers<ContextType>;
   ActivityTimer: GQLActivityTimerResolvers<ContextType>;
   EmbeddedActivityData: GQLEmbeddedActivityDataResolvers<ContextType>;

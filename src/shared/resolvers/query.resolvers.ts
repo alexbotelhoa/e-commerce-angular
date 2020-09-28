@@ -34,6 +34,7 @@ import { avatarsQueryResolver } from "../../domain/avatar/queries/avatars/avatar
 import { challengesQueryResolver } from "../../domain/activity/queries/challenges/challenges.query";
 import { activeChallengeQueryResolver } from "../../domain/activity/queries/active-challenge/active-challenge.query";
 import { classQueryResolver } from "../../domain/activity/queries/class/class.query";
+import { overallClassCompletedActivitiesQueryResolver } from "../../domain/teacher/queries/overall-class-completed-activities/overall-class-completed-activities.query";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -65,4 +66,5 @@ export const queryResolvers: GQLResolvers['Query'] = {
     challenges: challengesQueryResolver,
     activeChallenge: activeChallengeQueryResolver,
     class: classQueryResolver,
+    overallClassCompletedActivities: overallClassCompletedActivitiesQueryResolver,
 }
