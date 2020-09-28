@@ -419,6 +419,7 @@ export type GQLQuery = {
   readonly avatars: ReadonlyArray<GQLAvatar>;
   readonly challenges: ReadonlyArray<GQLChallenge>;
   readonly class: Maybe<GQLClass>;
+  readonly classLevelThemes: ReadonlyArray<GQLLevelTheme>;
   readonly classStudents: ReadonlyArray<GQLUser>;
   readonly classes: ReadonlyArray<GQLClass>;
   readonly currentUser: Maybe<GQLUser>;
@@ -465,6 +466,11 @@ export type GQLQueryavailableThemesArgs = {
 
 export type GQLQueryclassArgs = {
   id: Scalars['ID'];
+};
+
+
+export type GQLQueryclassLevelThemesArgs = {
+  classId: Scalars['ID'];
 };
 
 
@@ -1222,6 +1228,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   avatars: Resolver<ReadonlyArray<GQLResolversTypes['Avatar']>, ParentType, ContextType>;
   challenges: Resolver<ReadonlyArray<GQLResolversTypes['Challenge']>, ParentType, ContextType>;
   class: Resolver<Maybe<GQLResolversTypes['Class']>, ParentType, ContextType, RequireFields<GQLQueryclassArgs, 'id'>>;
+  classLevelThemes: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQueryclassLevelThemesArgs, 'classId'>>;
   classStudents: Resolver<ReadonlyArray<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryclassStudentsArgs, 'data'>>;
   classes: Resolver<ReadonlyArray<GQLResolversTypes['Class']>, ParentType, ContextType, RequireFields<GQLQueryclassesArgs, never>>;
   currentUser: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>;
