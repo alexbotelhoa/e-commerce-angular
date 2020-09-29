@@ -1,0 +1,3 @@
+type LevelTheme {
+    classOverallCompletion(classId: ID!): Float!
+}

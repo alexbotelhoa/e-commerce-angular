@@ -15,6 +15,7 @@ import { CountObj } from "../types/count-obj.type"
 import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
 import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
 import { CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-activity.entity";
+import { levelThemeClassOverallCompletionFieldResolver } from "../../domain/teacher/fields/level-theme.class-overall-completion.field";
 
 const levelThemeEntityResolvers: Pick<GQLLevelThemeResolvers, keyof LevelThemeEntity> = {
     id: obj => obj.id.toString(),
@@ -87,7 +88,7 @@ type LevelThemeTotalActivitiesQueryResult = CountObj & Pick<CycleEntity, 'levelT
 
 const levelTotalActivitiesSorter = createDataloaderCountSort<LevelThemeTotalActivitiesQueryResult, number>('levelThemeId');
 
-const levelThemeTotalResourcesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number> = {
+export const levelThemeTotalResourcesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number> = {
     id: 'levelThemeTotalResourcesByLevelThemeId',
     batchFn: (db) => async (ids) => {
         const entities: LevelThemeTotalActivitiesQueryResult[] = await db
@@ -151,4 +152,5 @@ export const levelThemeResolvers: GQLLevelThemeResolvers = {
     totalActivities: totalActivitiesFieldResolver,
     viewerTotalCompletedActivities: levelThemeViewerTotalCompletedActivitiesFieldResolver,
     studentTotalCompletedActivities: levelThemeStudentTotalCompletedActivitiesFieldResolver,
+    classOverallCompletion: levelThemeClassOverallCompletionFieldResolver,
 }

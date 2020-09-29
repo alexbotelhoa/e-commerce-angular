@@ -23,8 +23,7 @@ left join
 (
 	select count(*) as completedActivities
      , activity_timer.classId as classId
-     from user
-     left join activity_timer on activity_timer.userId = user.id
+     from activity_timer
     where activity_timer.completed = true
     and activity_timer.classId = :classId
 )
