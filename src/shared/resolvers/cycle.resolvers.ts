@@ -141,7 +141,7 @@ export const cycleResolvers: GQLCycleResolvers = {
     activities: cycleActivitiesResolver,
     totalActivities: totalActivitiesResolver,
     viewerHasCompleted: cycleViewerHasCompletedResolver,
-    studentHasCompleted: cycleViewerHasCompletedResolver,
+    studentHasCompleted: cycleStudentHasCompletedResolver,
 }
 
 
