@@ -21,11 +21,22 @@ from (
 ) as totalActivitiesPerClass
 left join 
 (
-	select count(*) as completedActivities
+	SELECT count(*) as completedActivities
      , activity_timer.classId as classId
-     from activity_timer
-    where activity_timer.completed = true
-    and activity_timer.classId = :classId
+    FROM activity_timer
+    WHERE activity_timer.completed = true
+    AND activity_timer.classId = :classId
+    AND EXISTS (
+        SELECT cycle_activity.*
+        from class
+        inner join level_code on level_code.id = class.levelCodeId
+        inner join level on level.id = level_code.levelId
+        inner join level_theme on level_theme.levelId = level.id
+        inner join cycle on cycle.levelThemeId = level_theme.id
+        inner join cycle_activity on cycle_activity.cycleId = cycle.id
+        where class.id = :classId
+        and cycle_activity.id = activity_timer.cycleActivityId
+    )
 )
 as completedActivitiesPerClass
 on completedActivitiesPerClass.classId = totalActivitiesPerClass.classId
