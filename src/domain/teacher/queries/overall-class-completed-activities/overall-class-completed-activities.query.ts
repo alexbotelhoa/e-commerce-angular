@@ -48,6 +48,5 @@ where totalActivitiesPerClass.classId = :classId
         , {
             classId: params.classId
         });
-    console.log(results);
     return results[0][0];
 }

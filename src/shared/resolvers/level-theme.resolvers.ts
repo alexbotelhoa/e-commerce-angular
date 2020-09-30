@@ -16,6 +16,7 @@ import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
 import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
 import { CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-activity.entity";
 import { levelThemeClassOverallCompletionFieldResolver } from "../../domain/teacher/fields/level-theme.class-overall-completion.field";
+import { levelThemeClassOverallCompletionRatioFieldResolver } from "../../domain/teacher/fields/level-theme.class-overall-completion-ratio.field";
 
 const levelThemeEntityResolvers: Pick<GQLLevelThemeResolvers, keyof LevelThemeEntity> = {
     id: obj => obj.id.toString(),
@@ -109,8 +110,7 @@ export const totalActivitiesFieldResolver: GQLLevelThemeResolvers['totalActiviti
     return context.getDatabaseLoader(levelThemeTotalResourcesByLevelThemeIdLoader, undefined).load(obj.id);
 }
 
-
-const levelViewerTotalCompletedActivitiesSorter = createDataloaderCountSort<LevelThemeTotalActivitiesQueryResult, number>('levelThemeId');
+const levelThemeViewerTotalCompletedActivitiesSorter = createDataloaderCountSort<LevelThemeTotalActivitiesQueryResult, number>('levelThemeId');
 
 const levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number, number> = {
     id: 'levelThemeUserTotalCompletedResourcesByLevelThemeId',
@@ -126,7 +126,7 @@ const levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoader
             .andWhere(`${ACTIVITY_TIMER_TABLE}.userId`, userId)
             .groupBy(`${CYCLE_TABLE}.levelThemeId`);
 
-        const sorted = levelViewerTotalCompletedActivitiesSorter(ids)(entities);
+        const sorted = levelThemeViewerTotalCompletedActivitiesSorter(ids)(entities);
         return sorted;
     }
 }
@@ -153,4 +153,5 @@ export const levelThemeResolvers: GQLLevelThemeResolvers = {
     viewerTotalCompletedActivities: levelThemeViewerTotalCompletedActivitiesFieldResolver,
     studentTotalCompletedActivities: levelThemeStudentTotalCompletedActivitiesFieldResolver,
     classOverallCompletion: levelThemeClassOverallCompletionFieldResolver,
+    classOverallCompletionRatio: levelThemeClassOverallCompletionRatioFieldResolver,
 }

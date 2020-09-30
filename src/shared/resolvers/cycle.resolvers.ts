@@ -14,6 +14,8 @@ import { CountObj } from "../types/count-obj.type"
 import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
 import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
 import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
+import { cycleClassOverallCompletionFieldResolver } from "../../domain/teacher/fields/cycle/cycle.class-overall-completion.field";
+import { cycleClassOverallCompletionRatioFieldResolver } from "../../domain/teacher/fields/cycle/cycle.class-overall-completion-ratio.field";
 
 const cycleEntityResolvers: Pick<GQLCycleResolvers, keyof CycleEntity> = {
     id: obj => obj.id.toString(),
@@ -142,6 +144,8 @@ export const cycleResolvers: GQLCycleResolvers = {
     totalActivities: totalActivitiesResolver,
     viewerHasCompleted: cycleViewerHasCompletedResolver,
     studentHasCompleted: cycleStudentHasCompletedResolver,
+    classOverallCompletion: cycleClassOverallCompletionFieldResolver,
+    classOverallCompletionRatio: cycleClassOverallCompletionRatioFieldResolver,
 }
 
 

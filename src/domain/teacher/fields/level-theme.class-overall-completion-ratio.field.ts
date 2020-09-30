@@ -3,7 +3,7 @@ import { levelThemeTotalResourcesByLevelThemeIdLoader } from "../../../shared/re
 import { classTotalStudentsByClassIdLoader } from "../dataloaders/class-total-students-by-class-id.loader";
 import { levelThemeClassTotalCompletedActivitiesByLevelThemeIdLoader } from "../dataloaders/level-theme-class-total-completed-activities-by-level-theme-id.loader";
 
-export const levelThemeClassOverallCompletionFieldResolver: GQLLevelThemeResolvers['classOverallCompletion'] = async (obj, params, context) => {
+export const levelThemeClassOverallCompletionRatioFieldResolver: GQLLevelThemeResolvers['classOverallCompletion'] = async (obj, params, context) => {
     const classId = parseInt(params.classId, 10);
     const [
         totalActivities,
@@ -16,10 +16,10 @@ export const levelThemeClassOverallCompletionFieldResolver: GQLLevelThemeResolve
             context.getDatabaseLoader(classTotalStudentsByClassIdLoader, undefined).load(classId)
         ]);
 
-    const result = totalActivitiesCompleted / totalClassStudents;
-    // clamp to maximum value in case of database anomaly (e.g. old activities done by students not part of theme anymore)
-    if (result > totalActivities) {
-        return totalActivities;
+    const result = totalActivitiesCompleted / totalClassStudents / totalActivities;
+    // clamp to max value in case of some database anomaly
+    if (result > 1) {
+        return 1;
     }
     return result;
 }
