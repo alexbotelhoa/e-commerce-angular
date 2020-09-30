@@ -48,6 +48,17 @@ LEFT JOIN (
                 ? 'AND activity_timer.userId IN (' + studentIdsParameters + ')'
                 : ''
             }
+    AND EXISTS (
+        SELECT cycle_activity.*
+        from class
+        inner join level_code on level_code.id = class.levelCodeId
+        inner join level on level.id = level_code.levelId
+        inner join level_theme on level_theme.levelId = level.id
+        inner join cycle on cycle.levelThemeId = level_theme.id
+        inner join cycle_activity on cycle_activity.cycleId = cycle.id
+        where class.id = activity_timer.classId
+        and cycle_activity.id = activity_timer.cycleActivityId
+    )
     GROUP BY activity_timer.userId, activity_timer.classId
 ) AS viewedActivitiesByUserAndClass
 on 
@@ -64,6 +75,17 @@ LEFT JOIN (
                 ? 'AND activity_timer.userId IN (' + studentIdsParameters + ')'
                 : ''
             }
+    AND EXISTS (
+        SELECT cycle_activity.*
+        from class
+        inner join level_code on level_code.id = class.levelCodeId
+        inner join level on level.id = level_code.levelId
+        inner join level_theme on level_theme.levelId = level.id
+        inner join cycle on cycle.levelThemeId = level_theme.id
+        inner join cycle_activity on cycle_activity.cycleId = cycle.id
+        where class.id = activity_timer.classId
+        and cycle_activity.id = activity_timer.cycleActivityId
+    )
     GROUP BY activity_timer.userId, activity_timer.classId
 ) AS completedActivitiesByUserAndClass
 on 
