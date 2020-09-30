@@ -136,11 +136,33 @@ export const levelThemeViewerTotalCompletedActivitiesFieldResolver: GQLLevelThem
     if (!user) {
         return 0;
     }
-    return context.getDatabaseLoader(levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, user.id).load(obj.id);
+    const [
+        totalActivities,
+        totalStudentCompletedActivities
+    ] = await Promise.all([
+        context.getDatabaseLoader(levelThemeTotalResourcesByLevelThemeIdLoader, undefined).load(obj.id),
+        context.getDatabaseLoader(levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, user.id).load(obj.id),
+    ]);
+    // clamp here to max total activities
+    if (totalStudentCompletedActivities > totalActivities) {
+        return totalActivities;
+    }
+    return totalStudentCompletedActivities;
 }
 
 export const levelThemeStudentTotalCompletedActivitiesFieldResolver: GQLLevelThemeResolvers['studentTotalCompletedActivities'] = async (obj, params, context) => {
-    return context.getDatabaseLoader(levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, parseInt(params.studentId, 10)).load(obj.id);
+    const [
+        totalActivities,
+        totalStudentCompletedActivities
+    ] = await Promise.all([
+        context.getDatabaseLoader(levelThemeTotalResourcesByLevelThemeIdLoader, undefined).load(obj.id),
+        context.getDatabaseLoader(levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, parseInt(params.studentId, 10)).load(obj.id),
+    ]);
+    // clamp here to max total activities
+    if (totalStudentCompletedActivities > totalActivities) {
+        return totalActivities;
+    }
+    return totalStudentCompletedActivities;
 }
 
 export const levelThemeResolvers: GQLLevelThemeResolvers = {
