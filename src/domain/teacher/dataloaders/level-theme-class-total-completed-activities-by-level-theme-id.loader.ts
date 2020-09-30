@@ -1,28 +1,27 @@
+import { CountObj } from "../../../shared/types/count-obj.type";
 import { DatabaseLoaderFactory } from "../../../shared/types/database-loader.type";
-import { createDataloaderSingleSort } from "../../../shared/utils/dataloader-single-sort";
+import { createDataloaderCountSort } from "../../../shared/utils/dataloader-count-sort";
 
-export interface LevelThemeClassTotalCompletedActivitiesRow {
-    completedActivities: number;
+export type LevelThemeClassTotalCompletedActivitiesRow = CountObj & {
     classId: number;
     levelThemeId: number;
 }
 
 export const levelThemeClassTotalCompletedActivitiesSorter =
-    createDataloaderSingleSort<LevelThemeClassTotalCompletedActivitiesRow, number, LevelThemeClassTotalCompletedActivitiesRow>('levelThemeId')
+    createDataloaderCountSort<LevelThemeClassTotalCompletedActivitiesRow, number>('levelThemeId')
 
 export const levelThemeClassTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number, number> = {
     id: 'levelThemeClassTotalCompletedActivitiesByLevelThemeIdLoader',
     batchFn: (db, classId) => async ids => {
         const levelThemeIdsParameters = ids.map(() => '?').join(',');
         const result = await db.raw(
-            `select count(*) as completedActivities
+            `select count(*)
     , activity_timer.classId as classId
     , level_theme.id as levelThemeId
 from activity_timer
-inner join class on class.id = activity_timer.classId
-inner join level_code on level_code.id = class.levelCodeId
-inner join level on level.id = level_code.levelId
-inner join level_theme on level.id = level_theme.levelId
+inner join cycle_activity on cycle_activity.id = activity_timer.cycleActivityId
+inner join cycle on cycle.id = cycle_activity.cycleId
+inner join level_theme on level_theme.id = cycle.levelThemeId
 where 
 activity_timer.completed = true
 and activity_timer.classId = ?
@@ -34,6 +33,6 @@ group by activity_timer.classId, level_theme.id`
             ])
 
         const sorted = levelThemeClassTotalCompletedActivitiesSorter(ids)(result[0]);
-        return sorted.map(value => value.completedActivities);
+        return sorted;
     }
 }
