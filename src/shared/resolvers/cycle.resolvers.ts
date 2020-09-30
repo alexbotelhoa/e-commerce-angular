@@ -119,7 +119,7 @@ export const cycleUserHasCompletedLoader
             if (!entity) {
                 return false;
             }
-            return entity.completedActivities === entity.totalActivities;
+            return entity.completedActivities >= entity.totalActivities;
         });
         return result;
     }
