@@ -8,13 +8,13 @@ import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 
 export const teacherClassEntityResolvers: Pick<GQLTeacherClassResolvers, keyof TeacherClassEntity> = {
     id: obj => obj.id.toString(10),
-    classId: obj => obj.classId.toString(10),
-    teacherId: obj => obj.teacherId.toString(10),
+    classId: obj => obj.classId,
+    teacherId: obj => obj.teacherId,
 }
 
-const teacherClassClassByClassIdSorter = createDataloaderSingleSort<ClassEntity, number, ClassEntity>('id');
+const teacherClassClassByClassIdSorter = createDataloaderSingleSort<ClassEntity, string, ClassEntity>('id');
 
-export const teacherClassClassByClassIdLoader: DatabaseLoaderFactory<number, ClassEntity, ClassEntity> = {
+export const teacherClassClassByClassIdLoader: DatabaseLoaderFactory<string, ClassEntity, ClassEntity> = {
     id: 'teacherClassClassByClassIdLoader',
     batchFn: (db) => async (ids) => {
         const entities = await getClassesByIds(db)(ids);

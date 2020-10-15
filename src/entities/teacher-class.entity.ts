@@ -1,7 +1,7 @@
 export interface TeacherClassEntity {
     id: number;
-    teacherId: number;
-    classId: number;
+    teacherId: string;
+    classId: string;
 }
 
 export const TEACHER_CLASS_TABLE = 'teacher_class';

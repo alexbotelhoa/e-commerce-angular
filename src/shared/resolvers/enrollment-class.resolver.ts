@@ -7,13 +7,13 @@ import { ClassEntity } from "../../entities/class.entity";
 
 export const enrollmentClassEntityResolvers: Pick<GQLEnrollmentClassResolvers, keyof EnrollmentClassEntity> = {
     id: obj => obj.id.toString(10),
-    classId: obj => obj.classId.toString(10),
+    classId: obj => obj.classId,
     enrollmentId: obj => obj.enrollmentId.toString(10),
 }
 
-const enrollmentClassClassByIdSorter = createDataloaderSingleSort<ClassEntity, number, ClassEntity>('id');
+const enrollmentClassClassByIdSorter = createDataloaderSingleSort<ClassEntity, string, ClassEntity>('id');
 
-const enrollmentClassClassByIdDataLoader: DatabaseLoaderFactory<number, ClassEntity> = {
+const enrollmentClassClassByIdDataLoader: DatabaseLoaderFactory<string, ClassEntity> = {
     id: 'enrollmentClassClassByIdDataLoader',
     batchFn: db => async (ids) => {
         const classes = await getClassesByIds(db)(ids);

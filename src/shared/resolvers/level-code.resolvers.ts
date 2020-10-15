@@ -43,7 +43,7 @@ type TeacherClassWithLevelCodeId = TeacherClassEntity & Pick<ClassEntity, 'level
 
 const levelCodeViewerTeacherClassesByLevelCodeIdSorter = createDataloaderMultiSort<TeacherClassWithLevelCodeId, number>('levelCodeId');
 
-export const levelCodeViewerTeacherClassesByLevelCodeIdLoader: DatabaseLoaderFactory<number, TeacherClassEntity[], TeacherClassEntity[], number> = {
+export const levelCodeViewerTeacherClassesByLevelCodeIdLoader: DatabaseLoaderFactory<number, TeacherClassEntity[], TeacherClassEntity[], string> = {
     id: 'levelCodeViewerTeacherClassesByLevelCodeId',
     batchFn: (db, userId) => async (ids) => {
         const entities: TeacherClassWithLevelCodeId[] = await db

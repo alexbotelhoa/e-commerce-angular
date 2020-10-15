@@ -2,7 +2,7 @@ import { ActivityTypeId } from "../../domain/activity/enums/activity-type.enum";
 
 export interface ActivitySubmissionEntity {
     id: number;
-    userId: number;
+    userId: string;
     cycleActivityId: number;
     typeId: ActivityTypeId;
     createdAt: string;

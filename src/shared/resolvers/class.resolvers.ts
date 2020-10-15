@@ -7,7 +7,7 @@ import { getLevelCodesByIds } from "../repositories/level-code.repository";
 import { classStudentGradesFieldResolver } from "../../domain/activity/resolvers/class/class-student-grades.type.resolver";
 
 export const classEntityResolvers: Pick<GQLClassResolvers, keyof ClassEntity> = {
-    id: obj => obj.id.toString(10),
+    id: obj => obj.id,
     levelCodeId: obj => obj.levelCodeId.toString(10),
     name: obj => obj.name,
     carrerId: obj => obj.carrerId,

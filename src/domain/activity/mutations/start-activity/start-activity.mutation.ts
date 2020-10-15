@@ -23,7 +23,7 @@ export const startActivityMutationResolver: GQLMutationResolvers['startActivity'
         }
 
         const insertedActivityId = await insertActivityTimer(context.database)({
-            classId: parseInt(data.classId, 10),
+            classId: data.classId,
             completed: false,
             completionTime: null,
             cycleActivityId: parseInt(data.cycleActivityId, 10),

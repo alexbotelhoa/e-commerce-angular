@@ -112,7 +112,7 @@ export const totalActivitiesFieldResolver: GQLLevelThemeResolvers['totalActiviti
 
 const levelThemeViewerTotalCompletedActivitiesSorter = createDataloaderCountSort<LevelThemeTotalActivitiesQueryResult, number>('levelThemeId');
 
-const levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number, number> = {
+const levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number, string> = {
     id: 'levelThemeUserTotalCompletedResourcesByLevelThemeId',
     batchFn: (db, userId) => async (ids) => {
         const entities: LevelThemeTotalActivitiesQueryResult[] = await db
@@ -156,7 +156,7 @@ export const levelThemeStudentTotalCompletedActivitiesFieldResolver: GQLLevelThe
         totalStudentCompletedActivities
     ] = await Promise.all([
         context.getDatabaseLoader(levelThemeTotalResourcesByLevelThemeIdLoader, undefined).load(obj.id),
-        context.getDatabaseLoader(levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, parseInt(params.studentId, 10)).load(obj.id),
+        context.getDatabaseLoader(levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, params.studentId).load(obj.id),
     ]);
     // clamp here to max total activities
     if (totalStudentCompletedActivities > totalActivities) {

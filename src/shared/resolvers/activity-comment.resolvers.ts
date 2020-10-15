@@ -10,10 +10,10 @@ import { UserEntity } from "../../entities/user.entity";
 export const activityCommentEntityResolvers: Pick<GQLActivityCommentResolvers, keyof ActivityCommentEntity> = {
     id: obj => obj.id.toString(10),
     activityId: obj => obj.activityId.toString(10),
-    classId: obj => obj.classId.toString(10),
+    classId: obj => obj.classId,
     text: obj => obj.text,
     parentId: obj => obj.parentId ? obj.parentId.toString(10) : null,
-    userId: obj => obj.userId.toString(10),
+    userId: obj => obj.userId,
     createdAt: obj => obj.createdAt,
 }
 
@@ -32,9 +32,9 @@ const activityCommentRepliesFieldResolver: GQLActivityCommentResolvers['replies'
     return context.getDatabaseLoader(activityCommentRepliesByIdLoader, undefined).load(obj.id);
 }
 
-const activityCommentUserSorter = createDataloaderSingleSort<UserEntity, number, UserEntity>('id');
+const activityCommentUserSorter = createDataloaderSingleSort<UserEntity, string, UserEntity>('id');
 
-const activityCommentUserByIdLoader: DatabaseLoaderFactory<number, UserEntity, UserEntity> = {
+const activityCommentUserByIdLoader: DatabaseLoaderFactory<string, UserEntity, UserEntity> = {
     id: 'activityCommentUserByIdLoader',
     batchFn: db => async (ids) => {
         const entities = await selectUser(db).whereIn('id', ids);

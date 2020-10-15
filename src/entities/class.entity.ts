@@ -1,5 +1,5 @@
 export interface ClassEntity {
-    id: number;
+    id: string;
     name: string;
     levelCodeId: number;
     institutionId: string | null;

@@ -7,7 +7,7 @@ import { RoleId } from "../../src/domain/authorization/enums/role-id.enum";
 import { concatArrayReducer } from "../../src/shared/utils/concat-array-reducer";
 
 export const adminUserSeed: UserEntityWithRoles = {
-    id: 1,
+    id: '1',
     name: 'ADMIN',
     onboarded: false,
     avatarId: null,
@@ -15,7 +15,7 @@ export const adminUserSeed: UserEntityWithRoles = {
 }
 
 export const teacherUserSeed: UserEntityWithRoles = {
-    id: 2,
+    id: '2',
     name: 'TEACHER',
     onboarded: false,
     avatarId: null,
@@ -23,7 +23,7 @@ export const teacherUserSeed: UserEntityWithRoles = {
 }
 
 export const studentUserSeed: UserEntityWithRoles = {
-    id: 3,
+    id: '3',
     name: 'STUDENT',
     onboarded: false,
     avatarId: null,
@@ -31,7 +31,7 @@ export const studentUserSeed: UserEntityWithRoles = {
 }
 
 export const guardianUserSeed: UserEntityWithRoles = {
-    id: 4,
+    id: '4',
     name: 'GUARDIAN',
     onboarded: false,
     avatarId: null,
@@ -39,7 +39,7 @@ export const guardianUserSeed: UserEntityWithRoles = {
 }
 
 export const fullUserSeed: UserEntityWithRoles = {
-    id: 999999,
+    id: '999999',
     name: 'FULL',
     onboarded: false,
     avatarId: null,
@@ -95,7 +95,7 @@ function generateUser(id: number): UserEntityWithRoles {
         max: 4,
     })) as RoleId;
     return {
-        id: id,
+        id: id.toString(),
         name: `${faker.name.firstName()} ${faker.name.lastName()} ${faker.name.lastName()}`,
         onboarded: false,
         avatarId: null,

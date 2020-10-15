@@ -66,7 +66,7 @@ export const cycleActivityPreviousActivityFieldResolver: GQLCycleActivityResolve
 const cycleActivityUserHasCompletedSorter = createDataloaderSingleSort<ActivityTimerEntity, number, ActivityTimerEntity | undefined>('cycleActivityId');
 
 
-export const cycleActivityUserHasCompletedLoader: DatabaseLoaderFactory<number, boolean, boolean, number> = {
+export const cycleActivityUserHasCompletedLoader: DatabaseLoaderFactory<number, boolean, boolean, string> = {
     id: 'cycleActivityUserHasCompleted',
     batchFn: (db, userId) => async (cycleActivityIds) => {
         const entities = await selectActivityTimer(db)
@@ -87,7 +87,7 @@ const cycleActivityViewerHasCompletedFieldResolver: GQLCycleActivityResolvers['v
 }
 
 const cycleActivityStudentHasCompletedFieldResolver: GQLCycleActivityResolvers['studentHasCompleted'] = async (obj, params, context) => {
-    return context.getDatabaseLoader(cycleActivityUserHasCompletedLoader, parseInt(params.studentId, 10)).load(obj.id);
+    return context.getDatabaseLoader(cycleActivityUserHasCompletedLoader, params.studentId).load(obj.id);
 }
 
 

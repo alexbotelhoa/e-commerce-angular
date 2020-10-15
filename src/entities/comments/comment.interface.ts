@@ -1,7 +1,7 @@
 export interface CommentEntity {
     id: number;
     text: string;
-    userId: number;
+    userId: string;
     parentId: number | null;
     createdAt: string | Date;
 }

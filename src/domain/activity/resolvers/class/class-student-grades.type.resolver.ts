@@ -3,9 +3,9 @@ import { DatabaseLoaderFactory } from "../../../../shared/types/database-loader.
 import { createDataloaderMultiSort } from "../../../../shared/utils/dataloader-multi-sort";
 import { ClassStudentGrade } from "../../types/class-student-grade.type";
 
-const classStudentGradesByClassIdSorter = createDataloaderMultiSort<ClassStudentGrade, number>('classId');
+const classStudentGradesByClassIdSorter = createDataloaderMultiSort<ClassStudentGrade, string>('classId');
 
-const classStudentGradesByClassIdLoader: DatabaseLoaderFactory<number, ClassStudentGrade[], ClassStudentGrade[], GQLClassstudentGradesArgs> = {
+const classStudentGradesByClassIdLoader: DatabaseLoaderFactory<string, ClassStudentGrade[], ClassStudentGrade[], GQLClassstudentGradesArgs> = {
     id: 'classStudentGradesByClassIdLoader',
     batchFn: (db, params) => async (ids) => {
         const studentIds = params.data?.studentIds || [];

@@ -12,6 +12,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "knex migrate:latest",
     "migration:make": "knex migrate:make -x ts",
+    "migration:rollback": "knex migrate:rollback",
     "migration:rollback-all": "knex migrate:rollback --all",
     "seed:make": "knex seed:make -x ts",
     "seed:run": "knex seed:run"

@@ -1,6 +1,6 @@
 export interface EnrollmentEntity {
     id: number;
-    userId: number;
+    userId: string;
     levelCodeId: number;
 }
 

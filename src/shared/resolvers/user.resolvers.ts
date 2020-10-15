@@ -29,9 +29,9 @@ const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     avatarId: obj => obj.avatarId?.toString(10) || null,
 }
 
-const userUserRoleSorter = createDataloaderMultiSort<UserRoleEntity, number>('userId');
+const userUserRoleSorter = createDataloaderMultiSort<UserRoleEntity, string>('userId');
 
-const userUserRoleDataloader: DatabaseLoaderFactory<number, UserRoleEntity[]> = {
+const userUserRoleDataloader: DatabaseLoaderFactory<string, UserRoleEntity[]> = {
     id: 'userUserRoleByUserId',
     batchFn: db => async (ids) => {
         const entities = await selectUserRole(db).whereIn('userId', ids);
@@ -70,10 +70,10 @@ export const userIsTeacherFieldResolver: GQLUserResolvers['isTeacher'] = async (
 
 type UserActivitiesCount = CountObj & { userId: number };
 
-export const userCountAtivitiesSorter = createDataloaderCountSort<UserActivitiesCount, number>('userId');
+export const userCountAtivitiesSorter = createDataloaderCountSort<UserActivitiesCount, string>('userId');
 
 
-export const userAvailableActivitiesByIdLoader: DatabaseLoaderFactory<number, number, number> = {
+export const userAvailableActivitiesByIdLoader: DatabaseLoaderFactory<string, number, number> = {
     id: 'userAvailableActivitiesById',
     batchFn: (db) => async ids => {
         // This query currently has a bug that if a user is enrolled in two or more different classes for the same level, it'll
@@ -98,7 +98,7 @@ export const totalAvailableActivitiesFieldResolver: GQLUserResolvers['totalAvail
 }
 
 
-export const userCompletedActivitiesByIdLoader: DatabaseLoaderFactory<number, number, number> = {
+export const userCompletedActivitiesByIdLoader: DatabaseLoaderFactory<string, number, number> = {
     id: 'userCompletedActivitiesById',
     batchFn: (db) => async ids => {
         const entities = await countActivityTimers(db)
@@ -111,9 +111,9 @@ export const userCompletedActivitiesByIdLoader: DatabaseLoaderFactory<number, nu
     },
 }
 
-const teacherClassesteacherClassesSorter = createDataloaderMultiSort<TeacherClassEntity, number>('teacherId');
+const teacherClassesteacherClassesSorter = createDataloaderMultiSort<TeacherClassEntity, string>('teacherId');
 
-const teacherClassesDataloader: DatabaseLoaderFactory<number, TeacherClassEntity[]> = {
+const teacherClassesDataloader: DatabaseLoaderFactory<string, TeacherClassEntity[]> = {
     id: 'teacherClassesByUserId',
     batchFn: db => async (ids) => {
         const entities = await db(TEACHER_CLASS_TABLE)

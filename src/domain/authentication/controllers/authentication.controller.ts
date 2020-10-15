@@ -24,12 +24,12 @@ import { pickObject } from "../../../shared/utils/pick-object.util";
 import { insertEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 
 const AlunosResponsavel = t.type({
-    Id: t.Int,
+    Id: t.union([t.Int, t.string]),
     Nome: t.string,
 });
 
 const TurmaType = t.type({
-    Id: t.Int,
+    Id: t.union([t.Int, t.string]),
     Nome: t.string,
     carreira: t.union([t.string, t.undefined]),
     instituicao: t.union([t.string, t.undefined]),
@@ -40,7 +40,7 @@ const TurmaType = t.type({
 });
 
 const TurmaProfessorType = t.type({
-    Id: t.Int,
+    Id: t.union([t.Int, t.string]),
     Nome: t.string,
 });
 
@@ -51,7 +51,7 @@ const MatriculasAluno = t.type({
 });
 
 const AuthenticationInput = t.type({
-    Id: t.Int,
+    Id: t.union([t.Int, t.string]),
     Nome: t.string,
     "Alunos-Responsavel": t.array(AlunosResponsavel),
     "Matriculas-Aluno": t.array(MatriculasAluno),
@@ -75,7 +75,7 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
 
     const body = decodedBody.right;
 
-    const userId = body.Id;
+    const userId = body.Id.toString();
 
     // we're using an array of roles here for shorter JWT payload
     const roles: RoleId[] = [
@@ -85,7 +85,7 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     const matriculasAluno = body["Matriculas-Aluno"];
     const turmasProfessor = body["Turmas-Professor"];
 
-    if (userId === 999999) {
+    if (userId === '999999') {
         roles.push(RoleId.ADMIN);
     }
 
@@ -106,22 +106,22 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     }
 
     const jwtPayload: JWTPayload = {
-        userId: userId,
+        userId: userId.toString(),
         roles: roles,
     }
 
     const userEntity = await getUserById(db)(userId);
 
     const studentEntities = alunosResponsavel.map<UserEntity>(aluno => ({
-        id: aluno.Id,
+        id: aluno.Id.toString(),
         name: aluno.Nome,
         onboarded: false,
         avatarId: null,
     }));
 
     const guardianStudentEntities = alunosResponsavel.map<GuardianStudentEntity>(student => ({
-        guardianId: userId,
-        studentId: student.Id,
+        guardianId: userId.toString(),
+        studentId: student.Id.toString(),
     }));
 
     const guardianStudentIds = guardianStudentEntities
@@ -149,7 +149,7 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
         .map(matricula => {
             return matricula.Turmas
                 .map<ClassEntity>(turma => ({
-                    id: turma.Id,
+                    id: turma.Id.toString(),
                     levelCodeId: matricula.Id,
                     name: turma.Nome,
                     carrerId: turma.carreira || null,
@@ -185,7 +185,7 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     const enrollmentEntities = matriculasAluno
         .map<EnrollmentWithClasses>(matricula => ({
             classes: matricula.Turmas.map<Omit<EnrollmentClassEntity, 'id' | 'enrollmentId'>>(turma => ({
-                classId: turma.Id,
+                classId: turma.Id.toString(),
                 userId: userId,
             })),
             levelCodeId: matricula.Id,
@@ -202,7 +202,7 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     //     }).reduce(concatArrayReducer, []);
 
     const teacherClassEntities = turmasProfessor.map<Omit<TeacherClassEntity, 'id'>>(turma => ({
-        classId: turma.Id,
+        classId: turma.Id.toString(),
         teacherId: userId,
     }));
 
@@ -316,7 +316,7 @@ async function insertEnrollmentWithClasses(db: DatabaseService<any, any>, elemen
 
 async function consolidateUserRoles(
     db: DatabaseService,
-    userId: t.Branded<number, t.IntBrand>,
+    userId: string,
     userRoleEntities: Pick<UserRoleEntity, "userId" | "roleId">[],
 ) {
     // user already exists, we need to make a diff on the other entities
@@ -336,7 +336,7 @@ async function consolidateUserRoles(
 
 async function consolidateUserEnrollments(
     db: DatabaseService,
-    userId: t.Branded<number, t.IntBrand>,
+    userId: string,
     enrollmentEntities: EnrollmentWithClasses[],
 ) {
     const existingEnrollments = await selectEnrollment(db).andWhere('userId', userId);
@@ -361,7 +361,7 @@ async function consolidateUserEnrollments(
 
 async function consolidateTeacherClasses(
     db: DatabaseService,
-    userId: t.Branded<number, t.IntBrand>,
+    userId: string,
     teacherClasses: Pick<TeacherClassEntity, "classId" | "teacherId">[],
 ) {
     const existingClasses = await selectTeacherClass(db).andWhere('teacherId', userId);
@@ -381,7 +381,7 @@ async function consolidateTeacherClasses(
 
 async function consolidateGuardianStudents(
     db: DatabaseService,
-    userId: t.Branded<number, t.IntBrand>,
+    userId: string,
     guardianStudents: GuardianStudentEntity[],
 ) {
     const existingGuardianStudents = await selectGuardianStudent(db).andWhere('guardianId', userId);

@@ -62,7 +62,7 @@ const levelCodesResolver: GQLLevelResolvers['codes'] = async (obj, params, conte
 
 const levelViewerEnrollmentClassesSorter = createDataloaderMultiSort<EnrollmentClassEntity & { levelId: number }, number>('levelId');
 
-const levelViewerEnrollmentClassesLoader: DatabaseLoaderFactory<number, EnrollmentClassEntity[], EnrollmentClassEntity[], number> = {
+const levelViewerEnrollmentClassesLoader: DatabaseLoaderFactory<number, EnrollmentClassEntity[], EnrollmentClassEntity[], string> = {
     id: 'levelViewerEnrollmentClasses',
     batchFn: (db, userId) => async (ids) => {
         const entities = await db.select([`${ENROLLMENT_CLASS_TABLE}.*`, `${LEVEL_CODE_TABLE}.levelId`])
@@ -107,7 +107,7 @@ const levelTotalCycleActivitiesByLevelIdLoader: DatabaseLoaderFactory<number, nu
 
 const levelViewerTotalCompletedActivitiesSorter = createDataloaderCountSort<TotalCycleActivitiesQueryResult, number>('levelId');
 
-const levelViewerTotalCompletedActivitiesByLevelIdLoader: DatabaseLoaderFactory<number, number, number, number> = {
+const levelViewerTotalCompletedActivitiesByLevelIdLoader: DatabaseLoaderFactory<number, number, number, string> = {
     id: 'levelViewerTotalCompletedActivitiesByLevelId',
     batchFn: (db, userId) => async (ids) => {
         const entities: TotalCycleActivitiesQueryResult[] = await db

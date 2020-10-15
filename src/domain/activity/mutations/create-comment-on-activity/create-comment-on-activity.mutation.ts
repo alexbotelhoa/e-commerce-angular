@@ -19,7 +19,7 @@ export const createCommentOnActivityMutationResolver: GQLMutationResolvers['crea
 
             const insertedCommentId = await insertActivityComment(trx)({
                 activityId: parseInt(data.activityId, 10),
-                classId: parseInt(data.classId, 10),
+                classId: data.classId,
                 parentId: data.parentCommentId
                     ? parseInt(data.parentCommentId, 10)
                     : null,

@@ -3,7 +3,7 @@ import { RoleId } from "../../domain/authorization/enums/role-id.enum";
 import { Role } from "../../domain/authorization/types/role.type";
 
 export interface AuthenticatedUser {
-    id: number;
+    id: string;
     roleIds: RoleId[];
     roles: Role[];
     permissionMap: PermissionMap;

@@ -8,7 +8,7 @@ import { LevelCodeEntity } from "../../entities/level-code.entity";
 export const enrollmentEntityResolvers: Pick<GQLEnrollmentResolvers, keyof EnrollmentEntity> = {
     id: obj => obj.id.toString(10),
     levelCodeId: obj => obj.levelCodeId.toString(10),
-    userId: obj => obj.userId.toString(10),
+    userId: obj => obj.userId,
 }
 
 const enrollmentLevelCodeByIdSorter = createDataloaderSingleSort<LevelCodeEntity, number, LevelCodeEntity>('id');
