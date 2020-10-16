@@ -9,5 +9,6 @@ export const classStudentsQueryResolver: GQLQueryResolvers['classStudents'] = as
         .from(USER_TABLE)
         .innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.userId`, `${USER_TABLE}.id`)
         .innerJoin(ENROLLMENT_CLASS_TABLE, `${ENROLLMENT_CLASS_TABLE}.enrollmentId`, `${ENROLLMENT_TABLE}.id`)
-        .andWhere(`${ENROLLMENT_CLASS_TABLE}.classId`, data.classId);
+        .andWhere(`${ENROLLMENT_CLASS_TABLE}.classId`, data.classId)
+        .orderBy(`${USER_TABLE}.name`);
 }
