@@ -16,7 +16,9 @@ export const levelThemeClassOverallCompletionFieldResolver: GQLLevelThemeResolve
             context.getDatabaseLoader(classTotalStudentsByClassIdLoader, undefined).load(classId)
         ]);
 
-    const result = totalActivitiesCompleted / totalClassStudents;
+    const result = totalClassStudents > 0
+        ? totalActivitiesCompleted / totalClassStudents
+        : 0;
     // clamp to maximum value in case of database anomaly (e.g. old activities done by students not part of theme anymore)
     if (result > totalActivities) {
         return totalActivities;

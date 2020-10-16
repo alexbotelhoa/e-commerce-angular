@@ -16,7 +16,12 @@ export const cycleClassOverallCompletionRatioFieldResolver: GQLCycleResolvers['c
             context.getDatabaseLoader(classTotalStudentsByClassIdLoader, undefined).load(classId)
         ]);
 
-    const result = totalActivitiesCompleted / totalClassStudents / totalActivities;
+    let result: number;
+    if (totalClassStudents === 0 || totalActivities === 0) {
+        result = 0
+    } else {
+        result = totalActivitiesCompleted / totalClassStudents / totalActivities;
+    }
     // clamp to max value in case of some database anomaly
     if (result > 1) {
         return 1;
