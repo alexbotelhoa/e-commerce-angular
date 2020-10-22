@@ -90,6 +90,8 @@ query ClassStudentGrades(
             "carreira": body.carreira || null,
             "periodo": body.periodo || null,
             "sessao": body.sessao || null,
+            "turma": body.turma || null,
+            "emplid": body.emplid || null,
             "chaveRequest": body.chaveRequest,
             "responseTotal": 1,
             "responsePart": 1,
