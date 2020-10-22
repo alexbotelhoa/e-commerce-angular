@@ -13,7 +13,7 @@ const ClassStudentGradesFilters = t.type({
     periodo: t.union([t.string, t.undefined, t.null]),
     sessao: t.union([t.string, t.undefined, t.null]),
     turma: t.union([t.string, t.undefined, t.null]),
-    emplid: t.union([t.string, t.undefined, t.null]),
+    aluno: t.union([t.string, t.undefined, t.null]),
 });
 
 const exactClassStudentGradesFilters = t.exact(ClassStudentGradesFilters);
@@ -36,7 +36,7 @@ export const classStudentGradesController = (env: Environment, db: DatabaseServi
     };
 
     const classStudentGradesInput: GQLClassStudentGradesInput = {
-        studentIds: body.emplid ? [body.emplid] : []
+        studentIds: body.aluno ? [body.aluno] : []
     }
 
     const context = await graphQLContextFactory(db)(request);
@@ -91,7 +91,7 @@ query ClassStudentGrades(
             "periodo": body.periodo || null,
             "sessao": body.sessao || null,
             "turma": body.turma || null,
-            "emplid": body.emplid || null,
+            "emplid": body.aluno || null,
             "chaveRequest": body.chaveRequest,
             "responseTotal": 1,
             "responsePart": 1,
