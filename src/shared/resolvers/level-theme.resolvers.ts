@@ -117,14 +117,21 @@ const levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoader
     batchFn: (db, userId) => async (ids) => {
         const entities: LevelThemeTotalActivitiesQueryResult[] = await db
             .count('*')
-            .select([`${CYCLE_TABLE}.levelThemeId`])
+            .select([`${CYCLE_TABLE}.levelThemeId`, `${ACTIVITY_TIMER_TABLE}.classId`])
             .from(ACTIVITY_TIMER_TABLE)
             .innerJoin(CYCLE_ACTIVITY_TABLE, `${CYCLE_ACTIVITY_TABLE}.id`, `${ACTIVITY_TIMER_TABLE}.cycleActivityId`)
             .innerJoin(CYCLE_TABLE, `${CYCLE_TABLE}.id`, `${CYCLE_ACTIVITY_TABLE}.cycleId`)
             .whereIn(`${CYCLE_TABLE}.levelThemeId`, ids)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.completed`, true)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.userId`, userId)
-            .groupBy(`${CYCLE_TABLE}.levelThemeId`);
+            // we have to group by classId as well otherwise we might get 
+            // duplicated counts for the same activity
+            .groupBy(`${CYCLE_TABLE}.levelThemeId`, `${ACTIVITY_TIMER_TABLE}.classId`)
+            // if user has activities completed in different classes for the same activity, 
+            // we need to get the class with the most count, so we order it here as asc, 
+            // because the last value found for the same id
+            // is the one that counts when sorted by the algorithm
+            .orderBy('count(*)', 'asc');
 
         const sorted = levelThemeViewerTotalCompletedActivitiesSorter(ids)(entities);
         return sorted;
