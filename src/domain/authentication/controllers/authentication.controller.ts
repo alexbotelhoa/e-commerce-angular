@@ -21,7 +21,9 @@ import { EnrollmentClassEntity } from "../../../entities/enrollment-class.entity
 import { LevelCodeEntity } from "../../../entities/level-code.entity";
 import { selectLevelCode, insertLevelCode } from "../../../shared/repositories/level-code.repository";
 import { pickObject } from "../../../shared/utils/pick-object.util";
-import { insertEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
+import { deleteEnrollmentClass, insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
+import { insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
+import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
 
 const AlunosResponsavel = t.type({
     Id: t.union([t.Int, t.string]),
@@ -192,15 +194,6 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
             userId: userId,
         }));
 
-    // const enrollmentClassEntities: Omit<EnrollmentClassEntity, 'id'>[] = matriculasAluno
-    //     .map(matricula => {
-    //         return matricula.Turmas
-    //             .map<Omit<EnrollmentClassEntity, 'id'>>(turma => ({
-    //                 classId: turma.Id,
-    //                 userId: userId,
-    //             }))
-    //     }).reduce(concatArrayReducer, []);
-
     const teacherClassEntities = turmasProfessor.map<Omit<TeacherClassEntity, 'id'>>(turma => ({
         classId: turma.Id.toString(),
         teacherId: userId,
@@ -351,6 +344,57 @@ async function consolidateUserEnrollments(
     if (idsToDelete.length > 0) {
         await deleteEnrollment(db)(builder => builder.andWhere('userId', userId).whereIn('levelCodeId', idsToDelete));
     }
+
+    const entitiesToUpdate = consolidation.toUpdate;
+    if (entitiesToUpdate.length > 0) {
+        const savedEnrollmentsToUpdate = existingEnrollments.filter(existing => {
+            return Boolean(entitiesToUpdate.find(toUpdate => toUpdate.levelCodeId === existing.levelCodeId));
+        });
+        for (const enrollmentToUpdate of savedEnrollmentsToUpdate) {
+            const enrollmentId = enrollmentToUpdate.id;
+            const newEnrollmentToUpdate = entitiesToUpdate.find(entity => entity.levelCodeId === enrollmentToUpdate.levelCodeId)!;
+            const savedEnrollmentClasses = await selectEnrollmentClass(db)
+                .andWhere('enrollmentId', enrollmentId);
+            const savedEnrollmentClassIds = savedEnrollmentClasses.map(savedEnrollmentClass => savedEnrollmentClass.classId);
+            // we need to find the new classes only to actually know if we need to do anything here
+            const newClasses = newEnrollmentToUpdate.classes
+                .filter((newClass) => !savedEnrollmentClassIds.find(savedClassId => savedClassId === newClass.classId));
+            if (newClasses.length === 0) {
+                continue;
+            }
+            const enrollmentClassesToDelete = savedEnrollmentClasses
+                .filter(saved => !newEnrollmentToUpdate.classes.find(currentClass => currentClass.classId === saved.classId));
+            const enrollmentClassesToDeleteClassIds = enrollmentClassesToDelete.map(classToDelete => classToDelete.classId);
+            const enrollmentClassesToDeleteIds = enrollmentClassesToDelete.map(classToDelete => classToDelete.id);
+            const activitiesToTransitionToNewClasses = await selectActivityTimer(db)
+                .whereIn('classId', enrollmentClassesToDeleteClassIds)
+                .andWhere('userId', userId);
+            const activityTimerEntitiesToSave = newClasses
+                .reduce<Omit<ActivityTimerEntity, 'id'>[]>((acc, newClass) => {
+                    const newActivityTimerEntities = activitiesToTransitionToNewClasses
+                        .map<Omit<ActivityTimerEntity, 'id'>>(saved => ({
+                            classId: newClass.classId,
+                            completed: saved.completed,
+                            completionTime: saved.completionTime,
+                            cycleActivityId: saved.cycleActivityId,
+                            startTime: saved.startTime,
+                            userId: saved.userId,
+                        }));
+                    return acc.concat(newActivityTimerEntities);
+                }, []);
+            const newEnrollmentClassEntitiesToInsert = newClasses.map<Omit<EnrollmentClassEntity, 'id'>>(newClass => ({
+                classId: newClass.classId,
+                enrollmentId: enrollmentToUpdate.id,
+            }));
+            await db.transaction(async trx => {
+                await insertActivityTimer(trx)(activityTimerEntitiesToSave);
+                await insertEnrollmentClass(trx)(newEnrollmentClassEntitiesToInsert);
+                await deleteEnrollmentClass(trx)(builder => builder.whereIn('id', enrollmentClassesToDeleteIds));
+            })
+        }
+
+    }
+
     if (entitiesToInsert.length > 0) {
         for (let index = 0; index < entitiesToInsert.length; index++) {
             const element = entitiesToInsert[index];
