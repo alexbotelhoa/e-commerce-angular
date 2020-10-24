@@ -386,11 +386,18 @@ async function consolidateUserEnrollments(
                 classId: newClass.classId,
                 enrollmentId: enrollmentToUpdate.id,
             }));
-            await db.transaction(async trx => {
-                await insertActivityTimer(trx)(activityTimerEntitiesToSave);
-                await insertEnrollmentClass(trx)(newEnrollmentClassEntitiesToInsert);
-                await deleteEnrollmentClass(trx)(builder => builder.whereIn('id', enrollmentClassesToDeleteIds));
-            })
+            if (activityTimerEntitiesToSave.length > 0
+                || newEnrollmentClassEntitiesToInsert.length > 0
+                || enrollmentClassesToDeleteIds.length > 0
+            ) {
+                await db.transaction(async trx => {
+                    if (activityTimerEntitiesToSave.length > 0) {
+                        await insertActivityTimer(trx)(activityTimerEntitiesToSave);
+                    }
+                    await insertEnrollmentClass(trx)(newEnrollmentClassEntitiesToInsert);
+                    await deleteEnrollmentClass(trx)(builder => builder.whereIn('id', enrollmentClassesToDeleteIds));
+                })
+            }
         }
 
     }
