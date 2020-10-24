@@ -394,8 +394,12 @@ async function consolidateUserEnrollments(
                     if (activityTimerEntitiesToSave.length > 0) {
                         await insertActivityTimer(trx)(activityTimerEntitiesToSave);
                     }
-                    await insertEnrollmentClass(trx)(newEnrollmentClassEntitiesToInsert);
-                    await deleteEnrollmentClass(trx)(builder => builder.whereIn('id', enrollmentClassesToDeleteIds));
+                    if (newEnrollmentClassEntitiesToInsert.length > 0) {
+                        await insertEnrollmentClass(trx)(newEnrollmentClassEntitiesToInsert);
+                    }
+                    if (enrollmentClassesToDeleteIds.length > 0) {
+                        await deleteEnrollmentClass(trx)(builder => builder.whereIn('id', enrollmentClassesToDeleteIds));
+                    }
                 })
             }
         }
