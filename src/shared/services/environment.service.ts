@@ -8,9 +8,11 @@ dotenv.config({
 export const environmentFactory = (): Environment => {
 
     const DB_HOST = getEnvironmentVariable('DB_HOST');
+    const DB_READONLY_HOST = getEnvironmentVariable('DB_READONLY_HOST');
 
     const environment: Environment = {
         DB_HOST: DB_HOST,
+        DB_READONLY_HOST: DB_READONLY_HOST,
         DB_PORT: getEnvironmentVariable('DB_PORT'),
         DB_USER: getEnvironmentVariable('DB_USER'),
         DB_PASSWORD: JSON.parse(getEnvironmentVariable('DB_PASSWORD')).password,

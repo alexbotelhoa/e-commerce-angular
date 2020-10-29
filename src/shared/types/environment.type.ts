@@ -1,5 +1,6 @@
 export interface Environment {
     DB_HOST: string;
+    DB_READONLY_HOST: string;
     DB_PORT: string;
     DB_USER: string;
     DB_PASSWORD: string;

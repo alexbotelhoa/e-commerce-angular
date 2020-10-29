@@ -19,9 +19,29 @@ const ClassStudentGradesFilters = t.type({
 const exactClassStudentGradesFilters = t.exact(ClassStudentGradesFilters);
 
 
-export const classStudentGradesController = (env: Environment, db: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+export const classStudentGradesController = (env: Environment, db: DatabaseService, readonlyDb: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+    const logger = request.log;
+
+    console.log(JSON.stringify({
+        msg: 'ClassStudentGrades request received',
+        body: request.body,
+    }));
+
+
+    logger.info({
+        data: {
+            body: request.body,
+        }
+    }, 'ClassStudentGrades request received');
+
     const decodedBody = exactClassStudentGradesFilters.decode(request.body);
     if (decodedBody._tag === 'Left') {
+        logger.error({
+            msg: 'classStudentGradesController validation error',
+            data: {
+                body: request.body,
+            }
+        });
         throw new Error(`invalid input`);
     }
 
@@ -39,7 +59,30 @@ export const classStudentGradesController = (env: Environment, db: DatabaseServi
         studentIds: body.aluno ? [body.aluno] : []
     }
 
-    const context = await graphQLContextFactory(db)(request);
+    console.log(JSON.stringify({
+        msg: 'ClassStudentGrades request received',
+        data: {
+            classesInput,
+            classStudentGradesInput,
+        }
+    }));
+
+    logger.info({
+        msg: 'classStudentGradesController variables defined',
+        data: {
+            classesInput,
+            classStudentGradesInput,
+        }
+    });
+
+    const context = await graphQLContextFactory(db, readonlyDb)(request);
+
+    logger.info({
+        msg: 'classStudentGradesController created graphql context',
+        data: {
+            context,
+        }
+    });
 
     const graphqlResult = await reply.graphql(`
 query ClassStudentGrades(
@@ -62,29 +105,100 @@ query ClassStudentGrades(
         classStudentGradesInput: classStudentGradesInput,
     });
 
+    logger.info({
+        data: {
+            graphqlResult: graphqlResult,
+        }
+    }, 'classStudentGradesController executed graphql');
+
     if (graphqlResult.errors) {
+        logger.error({
+            data: {
+                graphqlResult: graphqlResult,
+            }
+        }, 'classStudentGradesController error in graphql execution');
         return reply
             .status(400)
             .send({
-                message: graphqlResult.errors.join(','),
+                msg: graphqlResult.errors.join(','),
             });
     }
 
     if (!graphqlResult.data) {
+        logger.info({
+            data: {
+                graphqlResult: graphqlResult,
+            }
+        }, 'classStudentGradesController graphql execution resulted in empty data');
         return reply
             .status(400)
             .send({
-                message: 'Unable to process graphql request data.',
+                msg: 'Unable to process graphql request data.',
             });
     }
 
+    console.log(JSON.stringify({
+        msg: 'classStudentGradesController graphql execution success',
+        data: {
+            graphqlResult: graphqlResult,
+        }
+    }));
+
+    logger.info({
+        data: {
+            graphqlResult: graphqlResult,
+        }
+    }, 'classStudentGradesController graphql execution success');
+
+    const successfulMessage = {
+        msg: 'Ok'
+    };
+
     reply
         .status(200)
-        .send({
-            message: 'Ok'
-        });
+        .send(successfulMessage);
+
+    logger.info({
+        data: {
+            response: successfulMessage,
+        }
+    }, 'classStudentGradesController responded with successful reply');
 
     try {
+
+        console.log(JSON.stringify({
+            msg: 'classStudentGradesController preparing integration request',
+            data: {
+                data: {
+                    "instituicao": body.instituicao || null,
+                    "carreira": body.carreira || null,
+                    "periodo": body.periodo || null,
+                    "sessao": body.sessao || null,
+                    "turma": body.turma || null,
+                    "emplid": body.aluno || null,
+                    "chaveRequest": body.chaveRequest,
+                    "responseTotal": 1,
+                    "responsePart": 1,
+                },
+            }
+        }));
+
+        logger.info({
+            data: {
+                data: {
+                    "instituicao": body.instituicao || null,
+                    "carreira": body.carreira || null,
+                    "periodo": body.periodo || null,
+                    "sessao": body.sessao || null,
+                    "turma": body.turma || null,
+                    "emplid": body.aluno || null,
+                    "chaveRequest": body.chaveRequest,
+                    "responseTotal": 1,
+                    "responsePart": 1,
+                },
+            }
+        }, 'classStudentGradesController preparing integration request');
+
         const integrationRequest = await axios.post(env.STUDENT_GRADE_INTEGRATION_URL, {
             "instituicao": body.instituicao || null,
             "carreira": body.carreira || null,
@@ -102,12 +216,30 @@ query ClassStudentGrades(
             },
             responseType: 'json',
         });
+
+        console.log(JSON.stringify({
+            msg: 'classStudentGradesController integration response received',
+            data: {
+                response: integrationRequest,
+            }
+        }));
+
+        logger.info({
+            data: {
+                response: integrationRequest,
+            }
+        }, 'classStudentGradesController integration response received');
     }
     catch (error) {
-        console.error({
-            message: 'Error integrating with Digibee endpoint',
-            error: error,
-        });
+        console.error(JSON.stringify({
+            msg: 'classStudentGradesController integration response error',
+            data: {
+                error: error,
+            }
+        }));
+        logger.error({
+            err: error
+        }, 'classStudentGradesController integration response error');
     }
 
 }

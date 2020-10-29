@@ -15,3 +15,12 @@ export const databaseConfigurationFromEnvironment = (env: Environment): Database
     user: env.DB_USER,
     password: env.DB_PASSWORD,
 })
+
+
+export const readonlyDatabaseConfigurationFromEnvironment = (env: Environment): DatabaseConfiguration => ({
+    client: env.DB_CLIENT,
+    host: env.DB_READONLY_HOST,
+    name: env.DB_NAME,
+    user: env.DB_USER,
+    password: env.DB_PASSWORD,
+})

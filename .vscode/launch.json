@@ -11,6 +11,7 @@
             "args": [
                 "${workspaceRoot}/src/index.ts"
             ],
+            "outputCapture": "std",
             "runtimeArgs": [
                 "-r",
                 "ts-node/register"

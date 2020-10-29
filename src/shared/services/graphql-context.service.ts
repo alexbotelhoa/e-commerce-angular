@@ -4,11 +4,14 @@ import { createCurrentUserFromRequest } from "../../domain/authorization/service
 import { getDatabaseLoaderFactory } from "./get-database-loader.service";
 import { DatabaseService } from "./database.service";
 
-export const graphQLContextFactory = (databaseService: DatabaseService) => async (request: FastifyRequest): Promise<GraphQLContext> => {
-    const context: GraphQLContext = {
-        database: databaseService,
-        currentUser: await createCurrentUserFromRequest(request),
-        getDatabaseLoader: getDatabaseLoaderFactory(databaseService),
-    };
-    return context;
-}
+export const graphQLContextFactory = (databaseService: DatabaseService, readonlyDatabaseService: DatabaseService) =>
+    async (request: FastifyRequest): Promise<GraphQLContext> => {
+        const context: GraphQLContext = {
+            logger: request.log,
+            database: databaseService,
+            readonlyDatabase: readonlyDatabaseService,
+            currentUser: await createCurrentUserFromRequest(request),
+            getDatabaseLoader: getDatabaseLoaderFactory(readonlyDatabaseService),
+        };
+        return context;
+    }

@@ -3,11 +3,11 @@ import fastifyGQL from 'fastify-gql';
 import fastifyJwt from 'fastify-jwt';
 import fastifyCors from 'fastify-cors';
 
-import { makeExecutableSchema, addMocksToSchema, loadTypedefs, GraphQLFileLoader, mergeTypeDefs } from 'graphql-tools';
+import { makeExecutableSchema, loadTypedefs, GraphQLFileLoader, mergeTypeDefs } from 'graphql-tools';
 import { resolvers } from './resolvers';
 import { environmentFactory } from './shared/services/environment.service';
 import { DatabaseService, databaseServiceFactory } from './shared/services/database.service';
-import { databaseConfigurationFromEnvironment } from './shared/constants/configuration.constant';
+import { databaseConfigurationFromEnvironment, readonlyDatabaseConfigurationFromEnvironment } from './shared/constants/configuration.constant';
 import { authenticationController } from './domain/authentication/controllers/authentication.controller';
 import { graphQLContextFactory } from './shared/services/graphql-context.service';
 import { validateURL } from './shared/utils/validate-url'
@@ -15,11 +15,10 @@ import { filterHTML } from './shared/utils/filter-html'
 import { makeRequest } from './shared/utils/make-http-request'
 import { classStudentGradesController } from './domain/activity/controllers/class-student-grades.controller';
 
-
 const environment = environmentFactory();
 
 export const databaseService: DatabaseService = databaseServiceFactory(databaseConfigurationFromEnvironment(environment));
-
+export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(readonlyDatabaseConfigurationFromEnvironment(environment));
 // Require the framework and instantiate it
 const app = fastify({
   logger: true,
@@ -50,7 +49,7 @@ const app = fastify({
   app.register(fastifyGQL, {
     schema: executableSchema,
     resolvers: {},
-    context: graphQLContextFactory(databaseService),
+    context: graphQLContextFactory(databaseService, readonlyDatabaseService),
     jit: 5,
     queryDepth: 20,
     allowBatchedQueries: true,
@@ -89,7 +88,7 @@ const app = fastify({
 
   app.post('/authentication', {}, authenticationController(environment.CI_PORTAL_URL, databaseService));
 
-  app.post('/student-grades', {}, classStudentGradesController(environment, databaseService));
+  app.post('/student-grades', {}, classStudentGradesController(environment, databaseService, readonlyDatabaseService));
 })();
 
 
