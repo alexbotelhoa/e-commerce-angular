@@ -164,8 +164,24 @@ query ClassStudentGrades(
         }
     }, 'classStudentGradesController responded with successful reply');
 
-    try {
+    const turmas: any[] = graphqlResult.data.turmas;
 
+    const maxResultsPerRequest = 100;
+
+    const totalParts = Math.ceil(turmas.length / maxResultsPerRequest);
+
+    const parts = turmas.reduce<any[][]>((acc, turma, index) => {
+        const currentPartIndex = Math.floor(index / maxResultsPerRequest);
+        if (!acc[currentPartIndex]) {
+            acc.push([]);
+        }
+        const currentArray = acc[currentPartIndex];
+        currentArray.push(turma);
+        return acc;
+    }, []);
+
+    for (let i = 0; i < totalParts; i++) {
+        const part = parts[i];
         console.log(JSON.stringify({
             msg: 'classStudentGradesController preparing integration request',
             data: {
@@ -177,8 +193,8 @@ query ClassStudentGrades(
                     "turma": body.turma || null,
                     "emplid": body.aluno || null,
                     "chaveRequest": body.chaveRequest,
-                    "responseTotal": 1,
-                    "responsePart": 1,
+                    "responseTotal": totalParts,
+                    "responsePart": i + 1,
                 },
             }
         }));
@@ -193,53 +209,65 @@ query ClassStudentGrades(
                     "turma": body.turma || null,
                     "emplid": body.aluno || null,
                     "chaveRequest": body.chaveRequest,
-                    "responseTotal": 1,
-                    "responsePart": 1,
+                    "responseTotal": totalParts,
+                    "responsePart": i + 1,
                 },
             }
         }, 'classStudentGradesController preparing integration request');
 
-        const integrationRequest = await axios.post(env.STUDENT_GRADE_INTEGRATION_URL, {
-            "instituicao": body.instituicao || null,
-            "carreira": body.carreira || null,
-            "periodo": body.periodo || null,
-            "sessao": body.sessao || null,
-            "turma": body.turma || null,
-            "emplid": body.aluno || null,
-            "chaveRequest": body.chaveRequest,
-            "responseTotal": 1,
-            "responsePart": 1,
-            turmas: graphqlResult.data.turmas,
-        }, {
-            headers: {
-                'apikey': env.STUDENT_GRADE_INTEGRATION_API_KEY,
-            },
-            responseType: 'json',
-        });
+        try {
+            const integrationRequest = await axios.post(env.STUDENT_GRADE_INTEGRATION_URL, {
+                "instituicao": body.instituicao || null,
+                "carreira": body.carreira || null,
+                "periodo": body.periodo || null,
+                "sessao": body.sessao || null,
+                "turma": body.turma || null,
+                "emplid": body.aluno || null,
+                "chaveRequest": body.chaveRequest,
+                "responseTotal": totalParts,
+                "responsePart": i,
+                turmas: part,
+            }, {
+                headers: {
+                    'apikey': env.STUDENT_GRADE_INTEGRATION_API_KEY,
+                },
+                responseType: 'json',
+            });
 
-        console.log(JSON.stringify({
-            msg: 'classStudentGradesController integration response received',
-            data: {
-                response: integrationRequest,
-            }
-        }));
+            console.log(JSON.stringify({
+                msg: 'classStudentGradesController integration response received',
+                data: {
+                    response: {
+                        data: integrationRequest.data,
+                        status: integrationRequest.status,
+                        headers: integrationRequest.headers,
+                        statusText: integrationRequest.statusText,
+                    },
+                }
+            }));
 
-        logger.info({
-            data: {
-                response: integrationRequest,
-            }
-        }, 'classStudentGradesController integration response received');
-    }
-    catch (error) {
-        console.error(JSON.stringify({
-            msg: 'classStudentGradesController integration response error',
-            data: {
-                error: error,
-            }
-        }));
-        logger.error({
-            err: error
-        }, 'classStudentGradesController integration response error');
+            logger.info({
+                data: {
+                    response: {
+                        data: integrationRequest.data,
+                        status: integrationRequest.status,
+                        headers: integrationRequest.headers,
+                        statusText: integrationRequest.statusText,
+                    },
+                }
+            }, 'classStudentGradesController integration response received');
+        }
+        catch (error) {
+            console.error(JSON.stringify({
+                msg: 'classStudentGradesController integration response error',
+                data: {
+                    error: error,
+                }
+            }));
+            logger.error({
+                err: error
+            }, 'classStudentGradesController integration response error');
+        }
     }
 
 }
