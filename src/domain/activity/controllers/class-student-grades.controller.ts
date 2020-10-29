@@ -22,12 +22,6 @@ const exactClassStudentGradesFilters = t.exact(ClassStudentGradesFilters);
 export const classStudentGradesController = (env: Environment, db: DatabaseService, readonlyDb: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
     const logger = request.log;
 
-    console.log(JSON.stringify({
-        msg: 'ClassStudentGrades request received',
-        body: request.body,
-    }));
-
-
     logger.info({
         data: {
             body: request.body,
@@ -58,14 +52,6 @@ export const classStudentGradesController = (env: Environment, db: DatabaseServi
     const classStudentGradesInput: GQLClassStudentGradesInput = {
         studentIds: body.aluno ? [body.aluno] : []
     }
-
-    console.log(JSON.stringify({
-        msg: 'ClassStudentGrades request received',
-        data: {
-            classesInput,
-            classStudentGradesInput,
-        }
-    }));
 
     logger.info({
         msg: 'classStudentGradesController variables defined',
@@ -137,13 +123,6 @@ query ClassStudentGrades(
             });
     }
 
-    console.log(JSON.stringify({
-        msg: 'classStudentGradesController graphql execution success',
-        data: {
-            graphqlResult: graphqlResult,
-        }
-    }));
-
     logger.info({
         data: {
             graphqlResult: graphqlResult,
@@ -183,22 +162,6 @@ query ClassStudentGrades(
     for (let i = 0; i < totalParts; i++) {
         const part = parts[i];
         const responsePart = i + 1;
-        console.log(JSON.stringify({
-            msg: 'classStudentGradesController preparing integration request',
-            data: {
-                data: {
-                    "instituicao": body.instituicao || null,
-                    "carreira": body.carreira || null,
-                    "periodo": body.periodo || null,
-                    "sessao": body.sessao || null,
-                    "turma": body.turma || null,
-                    "emplid": body.aluno || null,
-                    "chaveRequest": body.chaveRequest,
-                    "responseTotal": totalParts,
-                    "responsePart": responsePart,
-                },
-            }
-        }));
 
         logger.info({
             data: {
@@ -235,18 +198,6 @@ query ClassStudentGrades(
                 responseType: 'json',
             });
 
-            console.log(JSON.stringify({
-                msg: 'classStudentGradesController integration response received',
-                data: {
-                    response: {
-                        data: integrationRequest.data,
-                        status: integrationRequest.status,
-                        headers: integrationRequest.headers,
-                        statusText: integrationRequest.statusText,
-                    },
-                }
-            }));
-
             logger.info({
                 data: {
                     response: {
@@ -259,12 +210,6 @@ query ClassStudentGrades(
             }, 'classStudentGradesController integration response received');
         }
         catch (error) {
-            console.error(JSON.stringify({
-                msg: 'classStudentGradesController integration response error',
-                data: {
-                    error: error,
-                }
-            }));
             logger.error({
                 err: error
             }, 'classStudentGradesController integration response error');
