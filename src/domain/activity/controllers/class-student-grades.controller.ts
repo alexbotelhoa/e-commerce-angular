@@ -182,6 +182,7 @@ query ClassStudentGrades(
 
     for (let i = 0; i < totalParts; i++) {
         const part = parts[i];
+        const responsePart = i + 1;
         console.log(JSON.stringify({
             msg: 'classStudentGradesController preparing integration request',
             data: {
@@ -194,7 +195,7 @@ query ClassStudentGrades(
                     "emplid": body.aluno || null,
                     "chaveRequest": body.chaveRequest,
                     "responseTotal": totalParts,
-                    "responsePart": i + 1,
+                    "responsePart": responsePart,
                 },
             }
         }));
@@ -210,7 +211,7 @@ query ClassStudentGrades(
                     "emplid": body.aluno || null,
                     "chaveRequest": body.chaveRequest,
                     "responseTotal": totalParts,
-                    "responsePart": i + 1,
+                    "responsePart": responsePart,
                 },
             }
         }, 'classStudentGradesController preparing integration request');
@@ -225,7 +226,7 @@ query ClassStudentGrades(
                 "emplid": body.aluno || null,
                 "chaveRequest": body.chaveRequest,
                 "responseTotal": totalParts,
-                "responsePart": i,
+                "responsePart": responsePart,
                 turmas: part,
             }, {
                 headers: {
