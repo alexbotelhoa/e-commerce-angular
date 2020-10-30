@@ -11,7 +11,7 @@ export const graphQLContextFactory = (databaseService: DatabaseService, readonly
             database: databaseService,
             readonlyDatabase: readonlyDatabaseService,
             currentUser: await createCurrentUserFromRequest(request),
-            getDatabaseLoader: getDatabaseLoaderFactory(readonlyDatabaseService),
+            getDatabaseLoader: getDatabaseLoaderFactory(databaseService),
         };
         return context;
     }
