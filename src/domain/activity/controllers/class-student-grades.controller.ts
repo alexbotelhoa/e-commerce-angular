@@ -175,6 +175,7 @@ query ClassStudentGrades(
                     "chaveRequest": body.chaveRequest,
                     "responseTotal": totalParts,
                     "responsePart": responsePart,
+                    "turmas": part
                 },
             }
         }, 'classStudentGradesController preparing integration request');
