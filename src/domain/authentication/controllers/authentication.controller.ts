@@ -220,8 +220,20 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
                 || savedClass.name !== classEntity.name
                 || savedClass.periodId !== classEntity.periodId
                 || savedClass.sessionId !== classEntity.sessionId
-                || (savedClass.startDate !== classEntity.startDate && savedClass.startDate instanceof Date && format(savedClass.startDate, 'yyyy-MM-dd') !== classEntity.startDate)
-                || (savedClass.endDate !== classEntity.endDate && savedClass.endDate instanceof Date && format(savedClass.endDate, 'yyyy-MM-dd') !== classEntity.endDate)
+                || (
+                    savedClass.startDate !== classEntity.startDate
+                    && savedClass.startDate === null
+                    || (
+                        savedClass.startDate instanceof Date
+                        && format(savedClass.startDate, 'yyyy-MM-dd') !== classEntity.startDate)
+                )
+                || (
+                    savedClass.endDate !== classEntity.endDate
+                    && savedClass.endDate === null
+                    || (
+                        savedClass.endDate instanceof Date
+                        && format(savedClass.endDate, 'yyyy-MM-dd') !== classEntity.endDate)
+                )
                 || savedClass.levelCodeId !== classEntity.levelCodeId
             );
     }));
