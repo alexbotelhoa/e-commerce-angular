@@ -78,6 +78,8 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
 
     const body = decodedBody.right;
 
+    request.log.info(body, 'Received authentication request');
+
     const userId = body.Id.toString();
 
     // we're using an array of roles here for shorter JWT payload
