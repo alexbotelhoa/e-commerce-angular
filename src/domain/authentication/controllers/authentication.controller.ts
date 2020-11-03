@@ -24,6 +24,7 @@ import { pickObject } from "../../../shared/utils/pick-object.util";
 import { deleteEnrollmentClass, insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 import { insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
 import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
+import { format } from "date-fns";
 
 const AlunosResponsavel = t.type({
     Id: t.union([t.Int, t.string]),
@@ -217,8 +218,8 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
                 || savedClass.name !== classEntity.name
                 || savedClass.periodId !== classEntity.periodId
                 || savedClass.sessionId !== classEntity.sessionId
-                || savedClass.startDate !== classEntity.startDate
-                || savedClass.endDate !== classEntity.endDate
+                || (savedClass.startDate !== classEntity.startDate && savedClass.startDate instanceof Date && format(savedClass.startDate, 'yyyy-MM-dd') !== classEntity.startDate)
+                || (savedClass.endDate !== classEntity.endDate && savedClass.endDate instanceof Date && format(savedClass.endDate, 'yyyy-MM-dd') !== classEntity.endDate)
                 || savedClass.levelCodeId !== classEntity.levelCodeId
             );
     }));
@@ -362,12 +363,13 @@ async function consolidateUserEnrollments(
             if (newClasses.length === 0) {
                 continue;
             }
+            const sameClassIds = savedEnrollmentClassIds.filter(saved => newEnrollmentToUpdate.classes.find(enrollment => enrollment.classId === saved));
             const enrollmentClassesToDelete = savedEnrollmentClasses
                 .filter(saved => !newEnrollmentToUpdate.classes.find(currentClass => currentClass.classId === saved.classId));
             const enrollmentClassesToDeleteClassIds = enrollmentClassesToDelete.map(classToDelete => classToDelete.classId);
             const enrollmentClassesToDeleteIds = enrollmentClassesToDelete.map(classToDelete => classToDelete.id);
             const activitiesToTransitionToNewClasses = await selectActivityTimer(db)
-                .whereIn('classId', enrollmentClassesToDeleteClassIds)
+                .whereIn('classId', enrollmentClassesToDeleteClassIds.concat(sameClassIds))
                 .andWhere('userId', userId);
             const activityTimerEntitiesToSave = newClasses
                 .reduce<Omit<ActivityTimerEntity, 'id'>[]>((acc, newClass) => {
