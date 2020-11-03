@@ -1,9 +1,10 @@
 export interface ClassStudentGrade {
     studentId: string;
     totalActivities: number;
-    viewedActivities: number;
+    totalProgressChecks: number;
     completedActivities: number;
-    viewGrade: number;
+    completedProgressChecks: number;
     completionGrade: number;
+    progressCheckGrade: number;
     classId: number;
 }

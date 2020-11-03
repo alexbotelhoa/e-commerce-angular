@@ -1,9 +1,10 @@
 type ClassStudentGrade {
     studentId: ID!
     totalActivities: Int!
-    viewedActivities: Int!
+    totalProgressChecks: Int!
     completedActivities: Int!
-    viewGrade: Float!
+    completedProgressChecks: Int!
     completionGrade: Float!
+    progressCheckGrade: Float!
     grades: [StudentGrade!]!
 }

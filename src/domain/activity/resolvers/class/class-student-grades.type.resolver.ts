@@ -17,11 +17,12 @@ const classStudentGradesByClassIdLoader: DatabaseLoaderFactory<string, ClassStud
 SELECT
 	user.id AS studentId,
     totalActivitiesByClass.classId,
-	totalActivitiesByClass.totalActivities, 
-	viewedActivitiesByUserAndClass.viewedActivities,
+	totalActivitiesByClass.totalActivities,
+	totalProgressChecksByClass.totalProgressChecks,
 	completedActivitiesByUserAndClass.completedActivities,
-    (viewedActivitiesByUserAndClass.viewedActivities / totalActivitiesByClass.totalActivities) * 100 AS viewGrade,
-    (completedActivitiesByUserAndClass.completedActivities / totalActivitiesByClass.totalActivities) * 100 AS completionGrade
+	completedProgressChecksByUserAndClass.completedProgressChecks,
+    (completedActivitiesByUserAndClass.completedActivities / totalActivitiesByClass.totalActivities) * 100 AS completionGrade,
+    (completedProgressChecksByUserAndClass.completedProgressChecks / totalProgressChecksByClass.totalProgressChecks) * 100 AS progressCheckGrade
 FROM user
 INNER JOIN enrollment on enrollment.userId = user.id
 INNER JOIN enrollment_class on enrollment_class.enrollmentId = enrollment.id
@@ -37,33 +38,21 @@ INNER JOIN
     WHERE class.id IN (${idsParameters})
     GROUP BY classId
 ) AS totalActivitiesByClass
-on totalActivitiesByClass.classId = enrollment_class.classId
-LEFT JOIN (
-	SELECT count(*) AS viewedActivities 
-      , activity_timer.userId
-      , activity_timer.classId AS classId
-    FROM activity_timer
-    WHERE activity_timer.classId IN (${idsParameters})
-    ${studentIdsParameters
-                ? 'AND activity_timer.userId IN (' + studentIdsParameters + ')'
-                : ''
-            }
-    AND EXISTS (
-        SELECT cycle_activity.*
-        from class
-        inner join level_code on level_code.id = class.levelCodeId
-        inner join level on level.id = level_code.levelId
-        inner join level_theme on level_theme.levelId = level.id
-        inner join cycle on cycle.levelThemeId = level_theme.id
-        inner join cycle_activity on cycle_activity.cycleId = cycle.id
-        where class.id = activity_timer.classId
-        and cycle_activity.id = activity_timer.cycleActivityId
-    )
-    GROUP BY activity_timer.userId, activity_timer.classId
-) AS viewedActivitiesByUserAndClass
-on 
-	viewedActivitiesByUserAndClass.classId = totalActivitiesByClass.classId 
-    AND viewedActivitiesByUserAndClass.userId = user.id
+ON totalActivitiesByClass.classId = enrollment_class.classId
+INNER JOIN
+(
+	SELECT COUNT(*) AS totalProgressChecks, class.id AS classId
+    FROM class
+    INNER JOIN level_code on level_code.id = class.levelCodeId
+	INNER JOIN level on level.id = level_code.levelId
+    INNER JOIN level_theme on level_theme.levelId = level.id
+    INNER JOIN cycle on cycle.levelThemeId = level_theme.id
+    INNER JOIN cycle_activity on cycle_activity.cycleId = cycle.id
+    INNER JOIN activity on activity.id = cycle_activity.activityId AND activity.name LIKE '%Progress Check%'
+    WHERE class.id IN (${idsParameters})
+    GROUP BY classId
+) AS totalProgressChecksByClass
+ON totalActivitiesByClass.classId = enrollment_class.classId
 LEFT JOIN (
 	SELECT count(*) AS completedActivities
      , activity_timer.userId
@@ -77,26 +66,57 @@ LEFT JOIN (
             }
     AND EXISTS (
         SELECT cycle_activity.*
-        from class
-        inner join level_code on level_code.id = class.levelCodeId
-        inner join level on level.id = level_code.levelId
-        inner join level_theme on level_theme.levelId = level.id
-        inner join cycle on cycle.levelThemeId = level_theme.id
-        inner join cycle_activity on cycle_activity.cycleId = cycle.id
-        where class.id = activity_timer.classId
-        and cycle_activity.id = activity_timer.cycleActivityId
+        FROM class
+        INNER JOIN level_code on level_code.id = class.levelCodeId
+        INNER JOIN level on level.id = level_code.levelId
+        INNER JOIN level_theme on level_theme.levelId = level.id
+        INNER JOIN cycle on cycle.levelThemeId = level_theme.id
+        INNER JOIN cycle_activity on cycle_activity.cycleId = cycle.id
+        WHERE class.id = activity_timer.classId
+        AND cycle_activity.id = activity_timer.cycleActivityId
     )
     GROUP BY activity_timer.userId, activity_timer.classId
 ) AS completedActivitiesByUserAndClass
-on 
+ON 
 	completedActivitiesByUserAndClass.classId = totalActivitiesByClass.classId 
-	AND completedActivitiesByUserAndClass.userId = user.id
+    AND completedActivitiesByUserAndClass.userId = user.id
+
+LEFT JOIN (
+	SELECT count(*) AS completedProgressChecks
+     , activity_timer.userId
+     , activity_timer.classId AS classId
+    FROM activity_timer
+    INNER JOIN cycle_activity ON cycle_activity.id = activity_timer.cycleActivityId
+    INNER JOIN activity ON activity.id = cycle_activity.activityId AND activity.name LIKE '%Progress Check%'
+    WHERE activity_timer.completed = true
+    AND activity_timer.classId IN (${idsParameters})
+    ${studentIdsParameters
+                ? 'AND activity_timer.userId IN (' + studentIdsParameters + ')'
+                : ''
+            }
+    AND EXISTS (
+        SELECT cycle_activity.*
+        FROM class
+        INNER JOIN level_code on level_code.id = class.levelCodeId
+        INNER JOIN level on level.id = level_code.levelId
+        INNER JOIN level_theme on level_theme.levelId = level.id
+        INNER JOIN cycle on cycle.levelThemeId = level_theme.id
+        INNER JOIN cycle_activity on cycle_activity.cycleId = cycle.id
+        WHERE class.id = activity_timer.classId
+        AND cycle_activity.id = activity_timer.cycleActivityId
+    )
+    GROUP BY activity_timer.userId, activity_timer.classId
+) AS completedProgressChecksByUserAndClass
+ON 
+	completedProgressChecksByUserAndClass.classId = totalActivitiesByClass.classId 
+	AND completedProgressChecksByUserAndClass.userId = user.id
+
 WHERE enrollment_class.classId IN (${idsParameters})
 ${studentIdsParameters
                 ? 'AND user.id IN (' + studentIdsParameters + ')'
                 : ''
             }
-;`, [...ids, ...ids, ...studentIds, ...ids, ...studentIds, ...ids, ...studentIds]);
+;`, [...ids, ...ids, ...ids, ...studentIds, ...ids, ...studentIds, ...ids, ...studentIds]);
         const entities = result[0];
 
         return classStudentGradesByClassIdSorter(ids)(entities);
