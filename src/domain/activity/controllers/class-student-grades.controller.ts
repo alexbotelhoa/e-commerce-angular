@@ -145,7 +145,7 @@ query ClassStudentGrades(
 
     const turmas: any[] = graphqlResult.data.turmas;
 
-    const maxResultsPerRequest = 100;
+    const maxResultsPerRequest = 50;
 
     const totalParts = Math.ceil(turmas.length / maxResultsPerRequest);
 
