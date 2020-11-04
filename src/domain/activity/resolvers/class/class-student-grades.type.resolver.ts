@@ -52,7 +52,7 @@ INNER JOIN
     WHERE class.id IN (${idsParameters})
     GROUP BY classId
 ) AS totalProgressChecksByClass
-ON totalActivitiesByClass.classId = enrollment_class.classId
+ON totalProgressChecksByClass.classId = enrollment_class.classId
 LEFT JOIN (
 	SELECT count(*) AS completedActivities
      , activity_timer.userId
