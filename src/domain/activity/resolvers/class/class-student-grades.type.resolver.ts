@@ -39,7 +39,7 @@ INNER JOIN
     GROUP BY classId
 ) AS totalActivitiesByClass
 ON totalActivitiesByClass.classId = enrollment_class.classId
-INNER JOIN
+LEFT JOIN
 (
 	SELECT COUNT(*) AS totalProgressChecks, class.id AS classId
     FROM class
