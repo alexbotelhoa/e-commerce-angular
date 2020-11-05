@@ -78,7 +78,7 @@ LEFT JOIN (
     GROUP BY activity_timer.userId, activity_timer.classId
 ) AS completedActivitiesByUserAndClass
 ON 
-	completedActivitiesByUserAndClass.classId = totalActivitiesByClass.classId 
+	completedActivitiesByUserAndClass.classId = class.id
     AND completedActivitiesByUserAndClass.userId = user.id
 
 LEFT JOIN (
@@ -108,7 +108,7 @@ LEFT JOIN (
     GROUP BY activity_timer.userId, activity_timer.classId
 ) AS completedProgressChecksByUserAndClass
 ON 
-	completedProgressChecksByUserAndClass.classId = totalActivitiesByClass.classId 
+	completedProgressChecksByUserAndClass.classId = class.id
 	AND completedProgressChecksByUserAndClass.userId = user.id
 
 WHERE enrollment_class.classId IN (${idsParameters})
