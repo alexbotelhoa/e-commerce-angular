@@ -239,16 +239,29 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     }));
 
     for (const classToUpdate of classesToUpdate) {
-        await updateClass(db)({
+        const updateObject: Partial<ClassEntity> = {
             name: classToUpdate.name,
-            carrerId: classToUpdate.carrerId,
-            institutionId: classToUpdate.institutionId,
-            periodId: classToUpdate.periodId,
-            sessionId: classToUpdate.sessionId,
             levelCodeId: classToUpdate.levelCodeId,
-            startDate: classToUpdate.startDate,
-            endDate: classToUpdate.endDate,
-        })(builder => builder.andWhere('id', classToUpdate.id));
+        };
+        if (classToUpdate.institutionId) {
+            updateObject.institutionId = classToUpdate.institutionId;
+        }
+        if (classToUpdate.carrerId) {
+            updateObject.carrerId = classToUpdate.carrerId;
+        }
+        if (classToUpdate.periodId) {
+            updateObject.periodId = classToUpdate.periodId;
+        }
+        if (classToUpdate.sessionId) {
+            updateObject.sessionId = classToUpdate.sessionId;
+        }
+        if (classToUpdate.startDate) {
+            updateObject.startDate = classToUpdate.startDate;
+        }
+        if (classToUpdate.endDate) {
+            updateObject.endDate = classToUpdate.endDate;
+        }
+        await updateClass(db)(updateObject)(builder => builder.andWhere('id', classToUpdate.id));
     }
 
     const userRoleEntities = roles.map<Omit<UserRoleEntity, 'id'>>(role => ({
