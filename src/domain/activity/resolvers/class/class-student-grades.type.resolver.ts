@@ -26,7 +26,7 @@ SELECT
 FROM user
 INNER JOIN enrollment on enrollment.userId = user.id
 INNER JOIN enrollment_class on enrollment_class.enrollmentId = enrollment.id
-INNER JOIN
+LEFT JOIN
 (
 	SELECT COUNT(*) AS totalActivities, class.id AS classId
     FROM class
