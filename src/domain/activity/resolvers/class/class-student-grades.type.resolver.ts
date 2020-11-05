@@ -16,7 +16,7 @@ const classStudentGradesByClassIdLoader: DatabaseLoaderFactory<string, ClassStud
         const result = await db.raw<[ClassStudentGrade[]]>(`
 SELECT
 	user.id AS studentId,
-    totalActivitiesByClass.classId,
+    enrollment_class.classId,
 	totalActivitiesByClass.totalActivities,
 	totalProgressChecksByClass.totalProgressChecks,
 	completedActivitiesByUserAndClass.completedActivities,
@@ -78,7 +78,7 @@ LEFT JOIN (
     GROUP BY activity_timer.userId, activity_timer.classId
 ) AS completedActivitiesByUserAndClass
 ON 
-	completedActivitiesByUserAndClass.classId = class.id
+	completedActivitiesByUserAndClass.classId = enrollment_class.classId
     AND completedActivitiesByUserAndClass.userId = user.id
 
 LEFT JOIN (
@@ -108,7 +108,7 @@ LEFT JOIN (
     GROUP BY activity_timer.userId, activity_timer.classId
 ) AS completedProgressChecksByUserAndClass
 ON 
-	completedProgressChecksByUserAndClass.classId = class.id
+	completedProgressChecksByUserAndClass.classId = enrollment_class.classId
 	AND completedProgressChecksByUserAndClass.userId = user.id
 
 WHERE enrollment_class.classId IN (${idsParameters})
