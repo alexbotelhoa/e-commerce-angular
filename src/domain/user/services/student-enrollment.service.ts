@@ -95,7 +95,7 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
             if (existingEnrollmentClasses.length === 0) {
                 await insertEnrollmentClass(db)({
                     classId: classData.id,
-                    enrollmentId: existingEnrollmentClasses[0].id,
+                    enrollmentId: existingEnrollment.id,
                 });
             }
         }
