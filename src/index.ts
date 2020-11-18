@@ -14,6 +14,7 @@ import { validateURL } from './shared/utils/validate-url'
 import { filterHTML } from './shared/utils/filter-html'
 import { makeRequest } from './shared/utils/make-http-request'
 import { classStudentGradesController } from './domain/activity/controllers/class-student-grades.controller';
+import { webhookEventsController } from './domain/user/controllers/webhook-events.controller';
 
 const environment = environmentFactory();
 
@@ -89,6 +90,8 @@ const app = fastify({
   app.post('/authentication', {}, authenticationController(environment.CI_PORTAL_URL, databaseService));
 
   app.post('/student-grades', {}, classStudentGradesController(environment, databaseService, readonlyDatabaseService));
+
+  app.post('/webhook-events', {}, webhookEventsController(databaseService));
 })();
 
 
