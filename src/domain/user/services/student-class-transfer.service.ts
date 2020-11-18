@@ -71,7 +71,7 @@ export const processStudentClassTransfer = (db: DatabaseService, log: FastifyLog
             enrollmentId: enrollmentId,
         });
     } else {
-        log.info(event, 'User is already enrolled in class.');
+        log.info(event as any, 'User is already enrolled in class.');
     }
 
     return {

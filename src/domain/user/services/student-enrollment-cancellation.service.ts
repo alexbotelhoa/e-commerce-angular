@@ -16,7 +16,7 @@ export const processStudentEnrollmentCancellation = (db: DatabaseService, log: F
         const existingClass = await getClassById(db)(data.classId);
 
         if (!existingClass) {
-            log.info(data, 'Class is not yet registered.')
+            log.info(event as any, 'Class is not yet registered.')
             return {
                 success: true,
             };
@@ -29,7 +29,7 @@ export const processStudentEnrollmentCancellation = (db: DatabaseService, log: F
         const enrollmentClassToDelete = allEnrollmentClasses.find(enrollmentClass => enrollmentClass.classId === data.classId);
 
         if (enrollmentClassToDelete) {
-            log.info(data, 'Processing enrollment cancellation, found enrollment class for user, removing');
+            log.info(event as any, 'Processing enrollment cancellation, found enrollment class for user, removing');
             await db.transaction(async trx => {
                 await deleteEnrollmentClass(trx)(where => where.andWhere('classId', data.classId).andWhere('enrollmentId', enrollment.id));
                 if (allEnrollmentClasses.length === 1) {
@@ -38,7 +38,7 @@ export const processStudentEnrollmentCancellation = (db: DatabaseService, log: F
                 }
             })
         } else {
-            log.info(data, 'Processing enrollment cancellation, enrollment class for user not found, nothing to do');
+            log.info(event as any, 'Processing enrollment cancellation, enrollment class for user not found, nothing to do');
         }
 
         return {
