@@ -46,7 +46,7 @@ export const deleteEntity =
 
 export const deleteAllEntities =
     <T>(table: string) =>
-        (db: DatabaseService<T, T[]>): Knex.QueryBuilder<T, T[]> =>
+        (db: DatabaseService<T, T[]>) =>
             db.table(table).del();
 
 export const selectEntity =

@@ -1,5 +1,5 @@
 import fastify from 'fastify';
-import fastifyGQL from 'fastify-gql';
+import mercurius from 'mercurius';
 import fastifyJwt from 'fastify-jwt';
 import fastifyCors from 'fastify-cors';
 
@@ -15,6 +15,7 @@ import { filterHTML } from './shared/utils/filter-html'
 import { makeRequest } from './shared/utils/make-http-request'
 import { classStudentGradesController } from './domain/activity/controllers/class-student-grades.controller';
 import { webhookEventsController } from './domain/user/controllers/webhook-events.controller';
+
 
 const environment = environmentFactory();
 
@@ -47,7 +48,7 @@ const app = fastify({
 
 
   // register GraphQL endpoint
-  app.register(fastifyGQL, {
+  app.register(mercurius, {
     schema: executableSchema,
     resolvers: {},
     context: graphQLContextFactory(databaseService, readonlyDatabaseService),
