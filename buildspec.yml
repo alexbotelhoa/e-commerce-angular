@@ -12,6 +12,7 @@ phases:
       - REPOSITORY_URI=944327110682.dkr.ecr.us-east-1.amazonaws.com/culturainglesa/lxp-backend
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - docker login –u AWS –p password –e none https://944327110682.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
       - echo Build started on `date`
