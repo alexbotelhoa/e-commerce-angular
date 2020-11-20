@@ -24,6 +24,13 @@ export const processStudentEnrollmentCancellation = (db: DatabaseService, log: F
 
         const [enrollment] = await selectEnrollment(db).andWhere('userId', data.userId).andWhere('levelCodeId', existingClass.levelCodeId);
 
+        if (!enrollment) {
+            log.info(event as any, 'User is not enrolled in this level code, so there is nothing to do, exiting.');
+            return {
+                success: true,
+            }
+        }
+
         // class exists
         const allEnrollmentClasses = await selectEnrollmentClass(db).andWhere('enrollmentId', enrollment.id);
         const enrollmentClassToDelete = allEnrollmentClasses.find(enrollmentClass => enrollmentClass.classId === data.classId);
