@@ -22,7 +22,9 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
+      - echo 5b33c080-70a0-4ed5-8908-edbb0df19927 | docker login --username alanjhonnes --password-stdin
       - docker push $REPOSITORY_URI:latest
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
       - printf '[{"name":"ApplicationServiceContainer","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
