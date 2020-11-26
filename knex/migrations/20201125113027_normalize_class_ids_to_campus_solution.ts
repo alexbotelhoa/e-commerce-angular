@@ -34,7 +34,7 @@ export async function up(knex: DatabaseService): Promise<void> {
         });
     }
     // only needed for hml environment
-    await deleteClass(knex)(where => where.andWhere('classId', 'LIKE', '0%'));
+    await deleteClass(knex)(where => where.andWhere('id', 'LIKE', '0%'));
 
     // first we need to drop all foreign keys related to class' id
     if (await hasForeignKey(knex, ACTIVITY_TIMER_TABLE, ['classId'])) {
