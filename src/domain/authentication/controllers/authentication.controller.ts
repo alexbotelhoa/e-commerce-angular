@@ -84,11 +84,9 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
 
     const userEntity = await getUserById(db)(userId);
 
-    if (!userEntity) {
-        throw new Error('User is not registered');
-    }
+    const turmasProfessor = body["Turmas-Professor"];
 
-    const userRoles = await selectUserRole(db).andWhere('userId', userEntity.id);
+    const userRoles = await selectUserRole(db).andWhere('userId', userId);
 
     // we're using an array of roles here for shorter JWT payload
     const roles: RoleId[] = userRoles.map(userRole => userRole.roleId);
@@ -173,12 +171,12 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     //         userId: userId,
     //     }));
 
-    // const teacherClassEntities = turmasProfessor.map<Omit<TeacherClassEntity, 'id'>>(turma => ({
-    //     classId: turma.Id.toString(),
-    //     teacherId: userId,
-    // }));
+    const teacherClassEntities = turmasProfessor.map<Omit<TeacherClassEntity, 'id'>>(turma => ({
+        classId: turma.Id.toString(),
+        teacherId: userId,
+    }));
 
-    // const teacherClassesClassIds = teacherClassEntities.map(teacherClass => teacherClass.classId);
+    const teacherClassesClassIds = teacherClassEntities.map(teacherClass => teacherClass.classId);
     // const studentClassEntitiesIds = studentClassEntities.map(classEntity => classEntity.id);
 
     // const savedStudentClasses = studentClassEntitiesIds.length > 0
@@ -251,53 +249,61 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     // }
 
     // // We retrieve the class entities for the teacher later to also get the new ones we may have inserted above
-    // const savedTeacherClasses = await selectClass(db).whereIn('id', teacherClassesClassIds);
+    const savedTeacherClasses = await selectClass(db).whereIn('id', teacherClassesClassIds);
 
     // // filter out class entities that are not yet registered in the database, making it unable for us to save the teacherClass entities 
     // // because the respective class does not yet exist.
-    // const possibleTeacherClassesToInsert = teacherClassEntities
-    //     .filter(teacherClass => Boolean(savedTeacherClasses.find(classEntity => classEntity.id === teacherClass.classId)));
+    const possibleTeacherClassesToInsert = teacherClassEntities
+        .filter(teacherClass => Boolean(savedTeacherClasses.find(classEntity => classEntity.id === teacherClass.classId)));
 
-    // if (!userEntity) {
-    //     // first time login, so let's insert everything related to the user avoiding additional checks
-    //     await insertUser(db)({
-    //         id: userId,
-    //         name: body.Nome,
-    //     });
+    const professorUserRole: Omit<UserRoleEntity, 'id'> = {
+        roleId: RoleId.TEACHER,
+        userId: userId,
+    }
 
-    //     if (userRoleEntities.length > 0) {
-    //         await insertUserRole(db)(userRoleEntities);
-    //     }
-    //     if (enrollmentEntities.length > 0) {
-    //         for (let index = 0; index < enrollmentEntities.length; index++) {
-    //             const element = enrollmentEntities[index];
-    //             await insertEnrollmentWithClasses(db, element);
-    //         }
-    //     }
-    // if (possibleTeacherClassesToInsert.length > 0) {
-    //     await insertTeacherClass(db)(possibleTeacherClassesToInsert);
-    // }
-    //     if (guardianStudentEntities.length > 0) {
-    //         await insertGuardianStudent(db)(guardianStudentEntities);
-    //     }
-    // } else {
-    //     // user is already registered, so we need to check everything to see what we need to delete/insert/update
-    //     if (userEntity.name !== body.Nome) {
-    //         // only update user if name is different
-    //         await updateUser(db)({
-    //             name: body.Nome,
-    //         })(builder => builder.andWhere('id', userId));
-    //     }
-    //     await consolidateUserRoles(db, userId, userRoleEntities);
-    //     await consolidateUserEnrollments(db, userId, enrollmentEntities);
-    //     await consolidateTeacherClasses(db, userId, possibleTeacherClassesToInsert);
-    //     await consolidateGuardianStudents(db, userId, guardianStudentEntities);
-    // }
-    //
-    // const jwt = await reply.jwtSign(jwtPayload);
-    // reply.status(200).send({
-    //     url: `${redirectUrl}?jwt=${jwt}`,
-    // });
+    if (!userEntity && turmasProfessor && turmasProfessor.length > 0) {
+        // first time professor login, so let's insert everything related to the user avoiding additional checks
+        await insertUser(db)({
+            id: userId,
+            name: body.Nome,
+        });
+
+        await insertUserRole(db)(professorUserRole);
+
+        // if (userRoleEntities.length > 0) {
+        //     await insertUserRole(db)(userRoleEntities);
+        // }
+        //     if (enrollmentEntities.length > 0) {
+        //         for (let index = 0; index < enrollmentEntities.length; index++) {
+        //             const element = enrollmentEntities[index];
+        //             await insertEnrollmentWithClasses(db, element);
+        //         }
+        //     }
+        if (possibleTeacherClassesToInsert.length > 0) {
+            await insertTeacherClass(db)(possibleTeacherClassesToInsert);
+        }
+        //     if (guardianStudentEntities.length > 0) {
+        //         await insertGuardianStudent(db)(guardianStudentEntities);
+        //     }
+    } else if (userEntity && turmasProfessor && turmasProfessor.length > 0) {
+        //     // user is already registered, so we need to check everything to see what we need to delete/insert/update
+        if (userEntity.name !== body.Nome) {
+            // only update user if name is different
+            await updateUser(db)({
+                name: body.Nome,
+            })(builder => builder.andWhere('id', userId));
+        }
+
+        // insert teacher role if it is different
+        const hasTeacherRole = Boolean(userRoles.find(userRole => userRole.roleId === RoleId.TEACHER));
+        if (!hasTeacherRole) {
+            await insertUserRole(db)(professorUserRole);
+        }
+        //     await consolidateUserRoles(db, userId, userRoleEntities);
+        //     await consolidateUserEnrollments(db, userId, enrollmentEntities);
+        await consolidateTeacherClasses(db, userId, possibleTeacherClassesToInsert);
+        //     await consolidateGuardianStudents(db, userId, guardianStudentEntities);
+    }
 
     const jwtPayload: JWTPayload = {
         userId: userId.toString(),
