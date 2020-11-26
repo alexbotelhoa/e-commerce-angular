@@ -4,13 +4,38 @@ import { CLASS_TABLE } from "../../src/entities/class.entity";
 import { ACTIVITY_COMMENT_TABLE } from "../../src/entities/comments/activity-comment.entity";
 import { ENROLLMENT_CLASS_TABLE } from "../../src/entities/enrollment-class.entity";
 import { TEACHER_CLASS_TABLE } from "../../src/entities/teacher-class.entity";
-import { selectClass, updateClass } from "../../src/shared/repositories/class.repository";
+import { deleteClass, selectClass, updateClass } from "../../src/shared/repositories/class.repository";
+import { deleteEnrollmentClass } from "../../src/shared/repositories/enrollment-class.repository";
 import { DatabaseService } from "../../src/shared/services/database.service";
 import { hasForeignKey } from "../utils/has-foreign-key.migration";
 import { hasIndex } from "../utils/has-index.migration";
 
 
 export async function up(knex: DatabaseService): Promise<void> {
+
+    if (!await hasForeignKey(knex, ENROLLMENT_CLASS_TABLE, ['classId'])) {
+        await knex.schema.alterTable(ENROLLMENT_CLASS_TABLE, table => {
+            table.foreign('classId').references(`${CLASS_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
+        });
+    }
+    if (!await hasForeignKey(knex, TEACHER_CLASS_TABLE, ['classId'])) {
+        await knex.schema.alterTable(TEACHER_CLASS_TABLE, table => {
+            table.foreign('classId').references(`${CLASS_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
+        });
+    }
+    if (!await hasForeignKey(knex, ACTIVITY_TIMER_TABLE, ['classId'])) {
+        await knex.schema.alterTable(ACTIVITY_TIMER_TABLE, table => {
+            table.foreign('classId').references(`${CLASS_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
+        });
+    }
+    if (!await hasForeignKey(knex, ACTIVITY_COMMENT_TABLE, ['classId'])) {
+        await knex.schema.alterTable(ACTIVITY_COMMENT_TABLE, table => {
+            table.foreign('classId').references(`${CLASS_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
+        });
+    }
+    // only needed for hml environment
+    await deleteClass(knex)(where => where.andWhere('classId', 'LIKE', '0%'));
+
     // first we need to drop all foreign keys related to class' id
     if (await hasForeignKey(knex, ACTIVITY_TIMER_TABLE, ['classId'])) {
         await knex.schema.alterTable(ACTIVITY_TIMER_TABLE, table => {
@@ -53,7 +78,6 @@ export async function up(knex: DatabaseService): Promise<void> {
         });
     }
 
-
     if (await hasForeignKey(knex, TEACHER_CLASS_TABLE, ['classId'])) {
         await knex.schema.alterTable(TEACHER_CLASS_TABLE, table => {
             table.dropForeign(['classId']);
@@ -76,7 +100,6 @@ export async function up(knex: DatabaseService): Promise<void> {
 
     await knex.schema.alterTable(ACTIVITY_TIMER_TABLE, table => {
         table.foreign('classId').references(`${CLASS_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
-
     });
 
     await knex.schema.alterTable(ACTIVITY_COMMENT_TABLE, table => {
@@ -86,7 +109,7 @@ export async function up(knex: DatabaseService): Promise<void> {
     const classes = await selectClass(knex);
 
     const classesToUpdate = classes.filter(klass => {
-        return !klass.id.includes('U');
+        return !klass.id.includes('U') || klass.id.startsWith('0');
     });
 
     for (const klass of classesToUpdate) {
