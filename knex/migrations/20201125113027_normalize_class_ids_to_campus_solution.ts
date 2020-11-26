@@ -6,38 +6,59 @@ import { ENROLLMENT_CLASS_TABLE } from "../../src/entities/enrollment-class.enti
 import { TEACHER_CLASS_TABLE } from "../../src/entities/teacher-class.entity";
 import { selectClass, updateClass } from "../../src/shared/repositories/class.repository";
 import { DatabaseService } from "../../src/shared/services/database.service";
+import { hasForeignKey } from "../utils/has-foreign-key.migration";
+import { hasIndex } from "../utils/has-index.migration";
 
 
 export async function up(knex: DatabaseService): Promise<void> {
     // first we need to drop all foreign keys related to class' id
-    await knex.schema.alterTable(ACTIVITY_TIMER_TABLE, table => {
-        table.dropForeign(['classId']);
-    });
+    if (await hasForeignKey(knex, ACTIVITY_TIMER_TABLE, ['classId'])) {
+        await knex.schema.alterTable(ACTIVITY_TIMER_TABLE, table => {
+            table.dropForeign(['classId']);
+        });
+    }
 
-    await knex.schema.alterTable(ACTIVITY_TIMER_TABLE, table => {
-        table.dropIndex('classId');
-    });
+    if (await hasIndex(knex, ACTIVITY_TIMER_TABLE, ['classId'])) {
+        await knex.schema.alterTable(ACTIVITY_TIMER_TABLE, table => {
+            table.dropIndex('classId');
+        });
+    }
+    if (await hasForeignKey(knex, ACTIVITY_COMMENT_TABLE, ['classId'])) {
+        await knex.schema.alterTable(ACTIVITY_COMMENT_TABLE, table => {
+            table.dropForeign(['classId']);
+        });
+    }
 
-    await knex.schema.alterTable(ACTIVITY_COMMENT_TABLE, table => {
-        table.dropForeign(['classId']);
-    });
+    if (await hasIndex(knex, ACTIVITY_COMMENT_TABLE, ['classId'])) {
+        await knex.schema.alterTable(ACTIVITY_COMMENT_TABLE, table => {
+            table.dropIndex('classId');
+        });
+    }
 
-    await knex.schema.alterTable(ACTIVITY_COMMENT_TABLE, table => {
-        table.dropIndex('classId');
-    });
+    if (await hasForeignKey(knex, ENROLLMENT_CLASS_TABLE, ['classId'])) {
+        await knex.schema.alterTable(ENROLLMENT_CLASS_TABLE, table => {
+            table.dropForeign(['classId']);
+        });
+    }
 
-    await knex.schema.alterTable(ENROLLMENT_CLASS_TABLE, table => {
-        table.dropForeign(['classId']);
-    });
+    if (await hasIndex(knex, ENROLLMENT_CLASS_TABLE, ['classId', 'enrollmentId'])) {
+        await knex.schema.alterTable(ENROLLMENT_CLASS_TABLE, table => {
+            table.dropIndex(['classId', 'enrollmentId']);
+        });
+    }
 
-    await knex.schema.alterTable(ENROLLMENT_CLASS_TABLE, table => {
-        table.dropIndex(['classId', 'enrollmentId']);
-        table.dropIndex(['enrollmentId', 'classId']);
-    });
+    if (await hasIndex(knex, ENROLLMENT_CLASS_TABLE, ['enrollmentId', 'classId'])) {
+        await knex.schema.alterTable(ENROLLMENT_CLASS_TABLE, table => {
+            table.dropIndex(['enrollmentId', 'classId']);
+        });
+    }
 
-    await knex.schema.alterTable(TEACHER_CLASS_TABLE, table => {
-        table.dropForeign(['classId']);
-    });
+
+    if (await hasForeignKey(knex, TEACHER_CLASS_TABLE, ['classId'])) {
+        await knex.schema.alterTable(TEACHER_CLASS_TABLE, table => {
+            table.dropForeign(['classId']);
+        });
+    }
 
     // await knex.schema.alterTable(TEACHER_CLASS_TABLE, table => {
     //     table.dropIndex(['classId', 'teacherId']);
