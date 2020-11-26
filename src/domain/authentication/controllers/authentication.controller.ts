@@ -82,240 +82,226 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
 
     const userId = body.Id.toString();
 
+    const userEntity = await getUserById(db)(userId);
+
+    if (!userEntity) {
+        throw new Error('User is not registered');
+    }
+
+    const userRoles = await selectUserRole(db).andWhere('userId', userEntity.id);
+
     // we're using an array of roles here for shorter JWT payload
-    const roles: RoleId[] = [
-    ];
+    const roles: RoleId[] = userRoles.map(userRole => userRole.roleId);
 
-    const alunosResponsavel = body["Alunos-Responsavel"];
-    const matriculasAluno = body["Matriculas-Aluno"];
-    const turmasProfessor = body["Turmas-Professor"];
+    // const studentEntities = alunosResponsavel.map<UserEntity>(aluno => ({
+    //     id: aluno.Id.toString(),
+    //     name: aluno.Nome,
+    //     onboarded: false,
+    //     avatarId: null,
+    // }));
 
-    if (userId === '999999') {
-        roles.push(RoleId.ADMIN);
-    }
+    // const guardianStudentEntities = alunosResponsavel.map<GuardianStudentEntity>(student => ({
+    //     guardianId: userId.toString(),
+    //     studentId: student.Id.toString(),
+    // }));
 
-    // infer guardian role
-    // if (alunosResponsavel.length > 0) {
-    //     roles.push(RoleId.GUARDIAN);
+    // const guardianStudentIds = guardianStudentEntities
+    //     .map(guardianStudent => guardianStudent.studentId);
+
+    // const savedUsers = guardianStudentIds.length > 0
+    //     ? await selectUser(db).whereIn('id', guardianStudentIds)
+    //     : [];
+
+    // const usersToInsert = studentEntities.filter(student => !savedUsers.find(savedUser => savedUser.id === student.id));
+    // const studentRolesToInsert = usersToInsert.map<Omit<UserRoleEntity, 'id'>>(user => ({
+    //     roleId: RoleId.STUDENT,
+    //     userId: user.id,
+    // }));
+
+    // // insert all students that weren't registered yet
+    // if (usersToInsert.length > 0) {
+    //     await insertUser(db)(usersToInsert);
     // }
-    // GUARDIAN ROLE IS CURRENTLY DISABLED
+    // if (studentRolesToInsert.length > 0) {
+    //     await insertUserRole(db)(studentRolesToInsert);
+    // }
 
-    // infer student role
-    if (matriculasAluno.length > 0) {
-        roles.push(RoleId.STUDENT);
-    }
+    // const studentClassEntities: ClassEntity[] = matriculasAluno
+    //     .map(matricula => {
+    //         return matricula.Turmas
+    //             .map<ClassEntity>(turma => ({
+    //                 id: turma.Id.toString(),
+    //                 levelCodeId: matricula.Id,
+    //                 name: turma.Nome,
+    //                 carrerId: turma.carreira || null,
+    //                 institutionId: turma.instituicao || null,
+    //                 periodId: turma.periodo || null,
+    //                 sessionId: turma.sessao || null,
+    //                 endDate: turma.dataFim || null,
+    //                 startDate: turma.dataInicio || null,
+    //             }))
+    //     })
+    //     .reduce<ClassEntity[]>(concatArrayReducer, []);
 
-    // infer teacher role
-    if (turmasProfessor.length > 0) {
-        roles.push(RoleId.TEACHER);
-    }
+    // const levelCodeEntities = matriculasAluno.map<Pick<LevelCodeEntity, 'id' | 'code' | 'active' | 'description'>>(matricula => ({
+    //     id: matricula.Id,
+    //     code: matricula.Nome,
+    //     active: true,
+    //     description: matricula.Nome,
+    // }));
+
+    // const levelCodeIds = levelCodeEntities.map(code => code.id);
+
+    // const savedLevelCodes = levelCodeIds.length > 0
+    //     ? await selectLevelCode(db).whereIn('id', levelCodeIds)
+    //     : [];
+
+    // // filter out levelCodes that are already saved
+    // const levelCodesToInsert = levelCodeEntities.filter(levelCode => !savedLevelCodes.find(savedLevelCode => savedLevelCode.id === levelCode.id));
+
+    // if (levelCodesToInsert.length > 0) {
+    //     await insertLevelCode(db)(levelCodesToInsert);
+    // }
+
+    // const enrollmentEntities = matriculasAluno
+    //     .map<EnrollmentWithClasses>(matricula => ({
+    //         classes: matricula.Turmas.map<Omit<EnrollmentClassEntity, 'id' | 'enrollmentId'>>(turma => ({
+    //             classId: turma.Id.toString(),
+    //             userId: userId,
+    //         })),
+    //         levelCodeId: matricula.Id,
+    //         userId: userId,
+    //     }));
+
+    // const teacherClassEntities = turmasProfessor.map<Omit<TeacherClassEntity, 'id'>>(turma => ({
+    //     classId: turma.Id.toString(),
+    //     teacherId: userId,
+    // }));
+
+    // const teacherClassesClassIds = teacherClassEntities.map(teacherClass => teacherClass.classId);
+    // const studentClassEntitiesIds = studentClassEntities.map(classEntity => classEntity.id);
+
+    // const savedStudentClasses = studentClassEntitiesIds.length > 0
+    //     ? await selectClass(db).whereIn('id', studentClassEntitiesIds)
+    //     : [];
+
+    // // filter out classes that are already saved
+    // const classesToInsert = studentClassEntities.filter(classEntity => !savedStudentClasses.find(savedClass => savedClass.id === classEntity.id));
+    // // filter exactly the classes that requires updating
+    // const classesToUpdate = studentClassEntities.filter(classEntity => savedStudentClasses.find(savedClass => {
+    //     return savedClass.id === classEntity.id
+    //         && (
+    //             savedClass.carrerId !== classEntity.carrerId
+    //             || savedClass.institutionId !== classEntity.institutionId
+    //             || savedClass.name !== classEntity.name
+    //             || savedClass.periodId !== classEntity.periodId
+    //             || savedClass.sessionId !== classEntity.sessionId
+    //             || (
+    //                 savedClass.startDate !== classEntity.startDate
+    //                 && savedClass.startDate === null
+    //                 || (
+    //                     savedClass.startDate instanceof Date
+    //                     && format(savedClass.startDate, 'yyyy-MM-dd') !== classEntity.startDate)
+    //             )
+    //             || (
+    //                 savedClass.endDate !== classEntity.endDate
+    //                 && savedClass.endDate === null
+    //                 || (
+    //                     savedClass.endDate instanceof Date
+    //                     && format(savedClass.endDate, 'yyyy-MM-dd') !== classEntity.endDate)
+    //             )
+    //             || savedClass.levelCodeId !== classEntity.levelCodeId
+    //         );
+    // }));
+
+    // for (const classToUpdate of classesToUpdate) {
+    //     const updateObject: Partial<ClassEntity> = {
+    //         name: classToUpdate.name,
+    //         levelCodeId: classToUpdate.levelCodeId,
+    //     };
+    //     if (classToUpdate.institutionId) {
+    //         updateObject.institutionId = classToUpdate.institutionId;
+    //     }
+    //     if (classToUpdate.carrerId) {
+    //         updateObject.carrerId = classToUpdate.carrerId;
+    //     }
+    //     if (classToUpdate.periodId) {
+    //         updateObject.periodId = classToUpdate.periodId;
+    //     }
+    //     if (classToUpdate.sessionId) {
+    //         updateObject.sessionId = classToUpdate.sessionId;
+    //     }
+    //     if (classToUpdate.startDate) {
+    //         updateObject.startDate = classToUpdate.startDate;
+    //     }
+    //     if (classToUpdate.endDate) {
+    //         updateObject.endDate = classToUpdate.endDate;
+    //     }
+    //     await updateClass(db)(updateObject)(builder => builder.andWhere('id', classToUpdate.id));
+    // }
+
+    // const userRoleEntities = roles.map<Omit<UserRoleEntity, 'id'>>(role => ({
+    //     roleId: role,
+    //     userId: userId,
+    // }));
+
+    // if (classesToInsert.length > 0) {
+    //     // classes do not have any dependency on the user, so we can insert them first
+    //     await insertClass(db)(classesToInsert);
+    // }
+
+    // // We retrieve the class entities for the teacher later to also get the new ones we may have inserted above
+    // const savedTeacherClasses = await selectClass(db).whereIn('id', teacherClassesClassIds);
+
+    // // filter out class entities that are not yet registered in the database, making it unable for us to save the teacherClass entities 
+    // // because the respective class does not yet exist.
+    // const possibleTeacherClassesToInsert = teacherClassEntities
+    //     .filter(teacherClass => Boolean(savedTeacherClasses.find(classEntity => classEntity.id === teacherClass.classId)));
+
+    // if (!userEntity) {
+    //     // first time login, so let's insert everything related to the user avoiding additional checks
+    //     await insertUser(db)({
+    //         id: userId,
+    //         name: body.Nome,
+    //     });
+
+    //     if (userRoleEntities.length > 0) {
+    //         await insertUserRole(db)(userRoleEntities);
+    //     }
+    //     if (enrollmentEntities.length > 0) {
+    //         for (let index = 0; index < enrollmentEntities.length; index++) {
+    //             const element = enrollmentEntities[index];
+    //             await insertEnrollmentWithClasses(db, element);
+    //         }
+    //     }
+    // if (possibleTeacherClassesToInsert.length > 0) {
+    //     await insertTeacherClass(db)(possibleTeacherClassesToInsert);
+    // }
+    //     if (guardianStudentEntities.length > 0) {
+    //         await insertGuardianStudent(db)(guardianStudentEntities);
+    //     }
+    // } else {
+    //     // user is already registered, so we need to check everything to see what we need to delete/insert/update
+    //     if (userEntity.name !== body.Nome) {
+    //         // only update user if name is different
+    //         await updateUser(db)({
+    //             name: body.Nome,
+    //         })(builder => builder.andWhere('id', userId));
+    //     }
+    //     await consolidateUserRoles(db, userId, userRoleEntities);
+    //     await consolidateUserEnrollments(db, userId, enrollmentEntities);
+    //     await consolidateTeacherClasses(db, userId, possibleTeacherClassesToInsert);
+    //     await consolidateGuardianStudents(db, userId, guardianStudentEntities);
+    // }
+    //
+    // const jwt = await reply.jwtSign(jwtPayload);
+    // reply.status(200).send({
+    //     url: `${redirectUrl}?jwt=${jwt}`,
+    // });
 
     const jwtPayload: JWTPayload = {
         userId: userId.toString(),
         roles: roles,
-    }
-
-    const userEntity = await getUserById(db)(userId);
-
-    const studentEntities = alunosResponsavel.map<UserEntity>(aluno => ({
-        id: aluno.Id.toString(),
-        name: aluno.Nome,
-        onboarded: false,
-        avatarId: null,
-    }));
-
-    const guardianStudentEntities = alunosResponsavel.map<GuardianStudentEntity>(student => ({
-        guardianId: userId.toString(),
-        studentId: student.Id.toString(),
-    }));
-
-    const guardianStudentIds = guardianStudentEntities
-        .map(guardianStudent => guardianStudent.studentId);
-
-    const savedUsers = guardianStudentIds.length > 0
-        ? await selectUser(db).whereIn('id', guardianStudentIds)
-        : [];
-
-    const usersToInsert = studentEntities.filter(student => !savedUsers.find(savedUser => savedUser.id === student.id));
-    const studentRolesToInsert = usersToInsert.map<Omit<UserRoleEntity, 'id'>>(user => ({
-        roleId: RoleId.STUDENT,
-        userId: user.id,
-    }));
-
-    // insert all students that weren't registered yet
-    if (usersToInsert.length > 0) {
-        await insertUser(db)(usersToInsert);
-    }
-    if (studentRolesToInsert.length > 0) {
-        await insertUserRole(db)(studentRolesToInsert);
-    }
-
-    const studentClassEntities: ClassEntity[] = matriculasAluno
-        .map(matricula => {
-            return matricula.Turmas
-                .map<ClassEntity>(turma => ({
-                    id: turma.Id.toString(),
-                    levelCodeId: matricula.Id,
-                    name: turma.Nome,
-                    carrerId: turma.carreira || null,
-                    institutionId: turma.instituicao || null,
-                    periodId: turma.periodo || null,
-                    sessionId: turma.sessao || null,
-                    endDate: turma.dataFim || null,
-                    startDate: turma.dataInicio || null,
-                }))
-        })
-        .reduce<ClassEntity[]>(concatArrayReducer, []);
-
-    const levelCodeEntities = matriculasAluno.map<Pick<LevelCodeEntity, 'id' | 'code' | 'active' | 'description'>>(matricula => ({
-        id: matricula.Id,
-        code: matricula.Nome,
-        active: true,
-        description: matricula.Nome,
-    }));
-
-    const levelCodeIds = levelCodeEntities.map(code => code.id);
-
-    const savedLevelCodes = levelCodeIds.length > 0
-        ? await selectLevelCode(db).whereIn('id', levelCodeIds)
-        : [];
-
-    // filter out levelCodes that are already saved
-    const levelCodesToInsert = levelCodeEntities.filter(levelCode => !savedLevelCodes.find(savedLevelCode => savedLevelCode.id === levelCode.id));
-
-    if (levelCodesToInsert.length > 0) {
-        await insertLevelCode(db)(levelCodesToInsert);
-    }
-
-    const enrollmentEntities = matriculasAluno
-        .map<EnrollmentWithClasses>(matricula => ({
-            classes: matricula.Turmas.map<Omit<EnrollmentClassEntity, 'id' | 'enrollmentId'>>(turma => ({
-                classId: turma.Id.toString(),
-                userId: userId,
-            })),
-            levelCodeId: matricula.Id,
-            userId: userId,
-        }));
-
-    const teacherClassEntities = turmasProfessor.map<Omit<TeacherClassEntity, 'id'>>(turma => ({
-        classId: turma.Id.toString(),
-        teacherId: userId,
-    }));
-
-    const teacherClassesClassIds = teacherClassEntities.map(teacherClass => teacherClass.classId);
-    const studentClassEntitiesIds = studentClassEntities.map(classEntity => classEntity.id);
-
-    const savedStudentClasses = studentClassEntitiesIds.length > 0
-        ? await selectClass(db).whereIn('id', studentClassEntitiesIds)
-        : [];
-
-    // filter out classes that are already saved
-    const classesToInsert = studentClassEntities.filter(classEntity => !savedStudentClasses.find(savedClass => savedClass.id === classEntity.id));
-    // filter exactly the classes that requires updating
-    const classesToUpdate = studentClassEntities.filter(classEntity => savedStudentClasses.find(savedClass => {
-        return savedClass.id === classEntity.id
-            && (
-                savedClass.carrerId !== classEntity.carrerId
-                || savedClass.institutionId !== classEntity.institutionId
-                || savedClass.name !== classEntity.name
-                || savedClass.periodId !== classEntity.periodId
-                || savedClass.sessionId !== classEntity.sessionId
-                || (
-                    savedClass.startDate !== classEntity.startDate
-                    && savedClass.startDate === null
-                    || (
-                        savedClass.startDate instanceof Date
-                        && format(savedClass.startDate, 'yyyy-MM-dd') !== classEntity.startDate)
-                )
-                || (
-                    savedClass.endDate !== classEntity.endDate
-                    && savedClass.endDate === null
-                    || (
-                        savedClass.endDate instanceof Date
-                        && format(savedClass.endDate, 'yyyy-MM-dd') !== classEntity.endDate)
-                )
-                || savedClass.levelCodeId !== classEntity.levelCodeId
-            );
-    }));
-
-    for (const classToUpdate of classesToUpdate) {
-        const updateObject: Partial<ClassEntity> = {
-            name: classToUpdate.name,
-            levelCodeId: classToUpdate.levelCodeId,
-        };
-        if (classToUpdate.institutionId) {
-            updateObject.institutionId = classToUpdate.institutionId;
-        }
-        if (classToUpdate.carrerId) {
-            updateObject.carrerId = classToUpdate.carrerId;
-        }
-        if (classToUpdate.periodId) {
-            updateObject.periodId = classToUpdate.periodId;
-        }
-        if (classToUpdate.sessionId) {
-            updateObject.sessionId = classToUpdate.sessionId;
-        }
-        if (classToUpdate.startDate) {
-            updateObject.startDate = classToUpdate.startDate;
-        }
-        if (classToUpdate.endDate) {
-            updateObject.endDate = classToUpdate.endDate;
-        }
-        await updateClass(db)(updateObject)(builder => builder.andWhere('id', classToUpdate.id));
-    }
-
-    const userRoleEntities = roles.map<Omit<UserRoleEntity, 'id'>>(role => ({
-        roleId: role,
-        userId: userId,
-    }));
-
-    if (classesToInsert.length > 0) {
-        // classes do not have any dependency on the user, so we can insert them first
-        await insertClass(db)(classesToInsert);
-    }
-
-    // We retrieve the class entities for the teacher later to also get the new ones we may have inserted above
-    const savedTeacherClasses = await selectClass(db).whereIn('id', teacherClassesClassIds);
-
-    // filter out class entities that are not yet registered in the database, making it unable for us to save the teacherClass entities 
-    // because the respective class does not yet exist.
-    const possibleTeacherClassesToInsert = teacherClassEntities
-        .filter(teacherClass => Boolean(savedTeacherClasses.find(classEntity => classEntity.id === teacherClass.classId)));
-
-    if (!userEntity) {
-        // first time login, so let's insert everything related to the user avoiding additional checks
-        await insertUser(db)({
-            id: userId,
-            name: body.Nome,
-        });
-
-        if (userRoleEntities.length > 0) {
-            await insertUserRole(db)(userRoleEntities);
-        }
-        if (enrollmentEntities.length > 0) {
-            for (let index = 0; index < enrollmentEntities.length; index++) {
-                const element = enrollmentEntities[index];
-                await insertEnrollmentWithClasses(db, element);
-            }
-        }
-        if (possibleTeacherClassesToInsert.length > 0) {
-            await insertTeacherClass(db)(possibleTeacherClassesToInsert);
-        }
-        if (guardianStudentEntities.length > 0) {
-            await insertGuardianStudent(db)(guardianStudentEntities);
-        }
-    } else {
-        // user is already registered, so we need to check everything to see what we need to delete/insert/update
-        if (userEntity.name !== body.Nome) {
-            // only update user if name is different
-            await updateUser(db)({
-                name: body.Nome,
-            })(builder => builder.andWhere('id', userId));
-        }
-        await consolidateUserRoles(db, userId, userRoleEntities);
-        await consolidateUserEnrollments(db, userId, enrollmentEntities);
-        await consolidateTeacherClasses(db, userId, possibleTeacherClassesToInsert);
-        await consolidateGuardianStudents(db, userId, guardianStudentEntities);
     }
 
     const jwt = await reply.jwtSign(jwtPayload);
