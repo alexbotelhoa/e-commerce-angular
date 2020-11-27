@@ -1,13 +1,14 @@
 import { FastifyLoggerInstance } from "fastify";
 import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
 import { insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
-import { getClassById, insertClass } from "../../../shared/repositories/class.repository";
+import { getClassById, insertClass, updateClass } from "../../../shared/repositories/class.repository";
 import { deleteEnrollmentClass, insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 import { insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
 import { getLevelCodeById, insertLevelCode } from "../../../shared/repositories/level-code.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { ClassData } from "../types/class-data.type";
 import { StudentClassTransferEvent, WebhookResponse } from "../types/webhook-events.types";
+import { isClassDataDivergent } from "./class-utils";
 
 export interface StudentClassTransferData {
     userId: string;
@@ -42,6 +43,19 @@ export const processStudentClassTransfer =
                 institutionId: newClass.institutionId,
                 levelCodeId: newClass.level.id,
             })
+        } else {
+            if (isClassDataDivergent(existingClass, newClass)) {
+                await updateClass(db)({
+                    name: newClass.name,
+                    carrerId: newClass.carrerId,
+                    endDate: newClass.endDate,
+                    institutionId: newClass.institutionId,
+                    levelCodeId: newClass.level.id,
+                    periodId: newClass.periodId,
+                    sessionId: newClass.sessionId,
+                    startDate: newClass.startDate,
+                })(where => where.andWhere('id', newClass.id));
+            }
         }
 
         const [enrollment] = await selectEnrollment(db).andWhere('userId', userId).andWhere('levelCodeId', levelData.id);

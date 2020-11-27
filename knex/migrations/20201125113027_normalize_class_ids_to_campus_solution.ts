@@ -5,7 +5,6 @@ import { ACTIVITY_COMMENT_TABLE } from "../../src/entities/comments/activity-com
 import { ENROLLMENT_CLASS_TABLE } from "../../src/entities/enrollment-class.entity";
 import { TEACHER_CLASS_TABLE } from "../../src/entities/teacher-class.entity";
 import { deleteClass, selectClass, updateClass } from "../../src/shared/repositories/class.repository";
-import { deleteEnrollmentClass } from "../../src/shared/repositories/enrollment-class.repository";
 import { DatabaseService } from "../../src/shared/services/database.service";
 import { hasForeignKey } from "../utils/has-foreign-key.migration";
 import { hasIndex } from "../utils/has-index.migration";

@@ -1,5 +1,5 @@
 import { FastifyLoggerInstance } from "fastify";
-import { getClassById, insertClass } from "../../../shared/repositories/class.repository";
+import { getClassById, insertClass, updateClass } from "../../../shared/repositories/class.repository";
 import { insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 import { insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
 import { getLevelCodeById, insertLevelCode } from "../../../shared/repositories/level-code.repository";
@@ -10,6 +10,7 @@ import { RoleId } from "../../authorization/enums/role-id.enum";
 import { ClassData } from "../types/class-data.type";
 import { UserData } from "../types/user-data.type";
 import { StudentEnrollmentEvent, WebhookResponse } from "../types/webhook-events.types";
+import { isClassDataDivergent } from "./class-utils";
 
 export interface StudentEnrollmentData {
     user: UserData;
@@ -37,11 +38,27 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
         await insertClass(db)({
             id: classData.id,
             name: classData.name,
-            carrerId: classData.carrerId,
-            endDate: classData.endDate,
             institutionId: classData.institutionId,
+            carrerId: classData.carrerId,
+            periodId: classData.periodId,
+            sessionId: classData.sessionId,
             levelCodeId: classData.level.id,
+            startDate: classData.startDate,
+            endDate: classData.endDate,
         })
+    } else {
+        if (isClassDataDivergent(existingClass, classData)) {
+            await updateClass(db)({
+                name: classData.name,
+                carrerId: classData.carrerId,
+                endDate: classData.endDate,
+                institutionId: classData.institutionId,
+                levelCodeId: classData.level.id,
+                periodId: classData.periodId,
+                sessionId: classData.sessionId,
+                startDate: classData.startDate,
+            })(where => where.andWhere('id', classData.id));
+        }
     }
     if (!existingUser) {
         await db.transaction(async trx => {
