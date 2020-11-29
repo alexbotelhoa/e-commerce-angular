@@ -1,4 +1,6 @@
 import { FastifyLoggerInstance } from "fastify";
+import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
+import { insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
 import { getClassById, insertClass, updateClass } from "../../../shared/repositories/class.repository";
 import { insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 import { insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
@@ -106,14 +108,37 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
             })
         } else {
             const existingEnrollmentClasses = await selectEnrollmentClass(db)
-                .andWhere('enrollmentId', existingEnrollment.id)
-                .andWhere('classId', classData.id);
+                .andWhere('enrollmentId', existingEnrollment.id);
+            const isCurrentlyEnrolledInClass = Boolean(existingEnrollmentClasses
+                .find(enrollmentClass => enrollmentClass.classId === classData.id))
             // enrollment exists, so we should only insert enrollment class if not already exist
-            if (existingEnrollmentClasses.length === 0) {
+            if (!isCurrentlyEnrolledInClass) {
                 await insertEnrollmentClass(db)({
                     classId: classData.id,
                     enrollmentId: existingEnrollment.id,
                 });
+                // we need to check if the student is enrolled in other classes of the same level, 
+                // to then replicate their activities to the new class
+                const oldClassIds = existingEnrollmentClasses
+                    .filter(enrollmentClass => enrollmentClass.classId !== classData.id)
+                    .map(enrollmentClass => enrollmentClass.classId);
+                const activitiesToTransitionToNewClass = await selectActivityTimer(db)
+                    .whereIn('classId', oldClassIds)
+                    .andWhere('userId', userData.id);
+                const activityTimerEntitiesToSave = activitiesToTransitionToNewClass
+                    .map<Omit<ActivityTimerEntity, 'id'>>(saved => ({
+                        classId: classData.id,
+                        completed: saved.completed,
+                        completionTime: saved.completionTime,
+                        cycleActivityId: saved.cycleActivityId,
+                        startTime: saved.startTime,
+                        userId: saved.userId,
+                    }));
+
+                const hasToSaveActivityTimerEntities = activityTimerEntitiesToSave.length > 0;
+                if (hasToSaveActivityTimerEntities) {
+                    await insertActivityTimer(db)(activityTimerEntitiesToSave);
+                }
             }
         }
     }
