@@ -72,6 +72,8 @@ export async function up(knex: DatabaseService): Promise<void> {
         });
     }
 
+    console.log('Migration step 1 complete');
+
     migrationStatus.step1 = true;
 
     if (!await hasForeignKey(knex, TEACHER_CLASS_TABLE, ['classId'])) {
@@ -79,6 +81,8 @@ export async function up(knex: DatabaseService): Promise<void> {
             table.foreign('classId').references(`${CLASS_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
         });
     }
+
+    console.log('Migration step 2 complete');
 
     migrationStatus.step2 = true;
 
@@ -88,6 +92,8 @@ export async function up(knex: DatabaseService): Promise<void> {
         });
     }
 
+    console.log('Migration step 3 complete');
+
     migrationStatus.step3 = true;
 
     if (!await hasForeignKey(knex, ACTIVITY_COMMENT_TABLE, ['classId'])) {
@@ -95,6 +101,8 @@ export async function up(knex: DatabaseService): Promise<void> {
             table.foreign('classId').references(`${CLASS_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
         });
     }
+
+    console.log('Migration step 4 complete');
 
     migrationStatus.step4 = true;
 
@@ -106,6 +114,8 @@ export async function up(knex: DatabaseService): Promise<void> {
         });
     }
 
+    console.log('Migration step 5 complete');
+
     migrationStatus.step5 = true;
 
     if (await hasIndex(knex, ACTIVITY_TIMER_TABLE, ['classId'])) {
@@ -113,6 +123,8 @@ export async function up(knex: DatabaseService): Promise<void> {
             table.dropIndex('classId');
         });
     }
+
+    console.log('Migration step 6 complete');
 
     migrationStatus.step6 = true;
 
@@ -122,6 +134,8 @@ export async function up(knex: DatabaseService): Promise<void> {
         });
     }
 
+    console.log('Migration step 7 complete');
+
     migrationStatus.step7 = true;
 
     if (await hasIndex(knex, ACTIVITY_COMMENT_TABLE, ['classId'])) {
@@ -129,6 +143,8 @@ export async function up(knex: DatabaseService): Promise<void> {
             table.dropIndex('classId');
         });
     }
+
+    console.log('Migration step 8 complete');
 
     migrationStatus.step8 = true;
 
@@ -138,6 +154,8 @@ export async function up(knex: DatabaseService): Promise<void> {
         });
     }
 
+    console.log('Migration step 9 complete');
+
     migrationStatus.step9 = true;
 
     if (await hasIndex(knex, ENROLLMENT_CLASS_TABLE, ['classId', 'enrollmentId'])) {
@@ -145,6 +163,8 @@ export async function up(knex: DatabaseService): Promise<void> {
             table.dropIndex(['classId', 'enrollmentId']);
         });
     }
+
+    console.log('Migration step 10 complete');
 
     migrationStatus.step10 = true;
 
@@ -154,6 +174,8 @@ export async function up(knex: DatabaseService): Promise<void> {
         });
     }
 
+    console.log('Migration step 11 complete');
+
     migrationStatus.step11 = true;
 
     if (await hasForeignKey(knex, TEACHER_CLASS_TABLE, ['classId'])) {
@@ -161,6 +183,8 @@ export async function up(knex: DatabaseService): Promise<void> {
             table.dropForeign(['classId']);
         });
     }
+
+    console.log('Migration step 12 complete');
 
     migrationStatus.step12 = true;
 
@@ -174,11 +198,15 @@ export async function up(knex: DatabaseService): Promise<void> {
         table.foreign('classId').references(`${CLASS_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
     });
 
+    console.log('Migration step 13 complete');
+
     migrationStatus.step13 = true;
 
     await knex.schema.alterTable(TEACHER_CLASS_TABLE, table => {
         table.foreign('classId').references(`${CLASS_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
     });
+
+    console.log('Migration step 14 complete');
 
     migrationStatus.step14 = true;
 
@@ -186,15 +214,21 @@ export async function up(knex: DatabaseService): Promise<void> {
         table.foreign('classId').references(`${CLASS_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
     });
 
+    console.log('Migration step 15 complete');
+
     migrationStatus.step15 = true;
 
     await knex.schema.alterTable(ACTIVITY_COMMENT_TABLE, table => {
         table.foreign('classId').references(`${CLASS_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
     });
 
+    console.log('Migration step 16 complete');
+
     migrationStatus.step16 = true;
 
     const classes = await selectClass(knex);
+
+    console.log('Migration step 17 complete');
 
     migrationStatus.step17 = true;
 
@@ -203,6 +237,8 @@ export async function up(knex: DatabaseService): Promise<void> {
     });
 
     migrationStatus.totalClasses = classesToUpdate.length;
+
+    console.log(`Migration step 18 complete, total classes: ${migrationStatus.totalClasses}`);
 
     migrationStatus.step18 = true;
 
@@ -214,12 +250,16 @@ export async function up(knex: DatabaseService): Promise<void> {
         migrationStatus.totalMigrated = migrationStatus.totalMigrated + 1;
     }
 
+    console.log(`Migration step 19 complete, total migrated: ${migrationStatus.totalMigrated}`);
+
     migrationStatus.step19 = true;
 
     await knex.schema.alterTable(ENROLLMENT_CLASS_TABLE, table => {
         table.index(['classId', 'enrollmentId']);
         table.index(['enrollmentId', 'classId']);
     });
+
+    console.log('Migration step 20 complete');
 
     migrationStatus.step20 = true;
 
@@ -232,11 +272,15 @@ export async function up(knex: DatabaseService): Promise<void> {
         table.index('classId');
     });
 
+    console.log('Migration step 21 complete');
+
     migrationStatus.step21 = true;
 
     await knex.schema.alterTable(ACTIVITY_COMMENT_TABLE, table => {
         table.index('classId');
     });
+
+    console.log('Migration step 22 complete');
 
     migrationStatus.step22 = true;
 }
