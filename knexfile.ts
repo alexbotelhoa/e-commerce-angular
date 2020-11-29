@@ -31,7 +31,6 @@ const connection: Knex.Config = {
 
 console.log(`Migration config: ${JSON.stringify(connection)}`);
 
-module.exports = {
-  development: connection,
-  production: connection,
-};
+export const knexFile = connection;
+export const development = connection;
+export const production = connection;
