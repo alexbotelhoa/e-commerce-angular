@@ -38,22 +38,25 @@ export const processStudentClassTransfer =
             await insertClass(db)({
                 id: newClass.id,
                 name: newClass.name,
-                carrerId: newClass.carrerId,
-                endDate: newClass.endDate,
                 institutionId: newClass.institutionId,
+                carrerId: newClass.carrerId,
+                periodId: newClass.periodId,
+                sessionId: newClass.sessionId,
                 levelCodeId: newClass.level.id,
+                startDate: newClass.startDate,
+                endDate: newClass.endDate,
             })
         } else {
             if (isClassDataDivergent(existingClass, newClass)) {
                 await updateClass(db)({
                     name: newClass.name,
                     carrerId: newClass.carrerId,
-                    endDate: newClass.endDate,
                     institutionId: newClass.institutionId,
-                    levelCodeId: newClass.level.id,
                     periodId: newClass.periodId,
                     sessionId: newClass.sessionId,
+                    levelCodeId: newClass.level.id,
                     startDate: newClass.startDate,
+                    endDate: newClass.endDate,
                 })(where => where.andWhere('id', newClass.id));
             }
         }

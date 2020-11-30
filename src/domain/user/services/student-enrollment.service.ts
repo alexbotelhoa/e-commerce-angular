@@ -52,13 +52,13 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
         if (isClassDataDivergent(existingClass, classData)) {
             await updateClass(db)({
                 name: classData.name,
-                carrerId: classData.carrerId,
-                endDate: classData.endDate,
                 institutionId: classData.institutionId,
-                levelCodeId: classData.level.id,
+                carrerId: classData.carrerId,
                 periodId: classData.periodId,
                 sessionId: classData.sessionId,
+                levelCodeId: classData.level.id,
                 startDate: classData.startDate,
+                endDate: classData.endDate,
             })(where => where.andWhere('id', classData.id));
         }
     }
