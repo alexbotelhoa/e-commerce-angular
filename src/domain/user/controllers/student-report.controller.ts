@@ -4,23 +4,24 @@ import { Environment } from "../../../shared/types/environment.type";
 import { parse } from 'json2csv';
 
 export const studentReportController = (env: Environment, db: DatabaseService, readonlyDb: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply) => {
-    const [result] = await db.raw(`
+    const [result] = await readonlyDb.raw(`
 SELECT
 	user.id AS id,
 	user.name AS Nome,
 	teacher.name as Professor,
-    enrollment_class.classId as Classe,
+    enrollment_class.classId as ClasseId,
+    class.name as Classe,
 	class.startDate as DataInicio,
 	class.endDate as DataFim,
 	-- DATEDIFF(class.endDate, CURDATE()) as DifDate,
 	level.name as Nivel,
 	level_code.code as CodigoNivel,
 	totalActivitiesByClass.totalActivities as TotalAtividades,
-	totalProgressChecksByClass.totalProgressChecks,
-	completedActivitiesByUserAndClass.completedActivities as AtividadesFinalizadas,
-	completedProgressChecksByUserAndClass.completedProgressChecks ProgressChecksFinalizados,
-    (completedActivitiesByUserAndClass.completedActivities / totalActivitiesByClass.totalActivities) * 100 AS completionGrade,
-    (completedProgressChecksByUserAndClass.completedProgressChecks / totalProgressChecksByClass.totalProgressChecks) * 100 AS progressCheckGrade
+	IFNULL(totalProgressChecksByClass.totalProgressChecks, 0) as totalProgressChecks,
+	IFNULL(completedActivitiesByUserAndClass.completedActivities, 0) as AtividadesFinalizadas,
+	IFNULL(completedProgressChecksByUserAndClass.completedProgressChecks, 0) as ProgressChecksFinalizados,
+    IFNULL((completedActivitiesByUserAndClass.completedActivities / totalActivitiesByClass.totalActivities) * 100, 0) AS completionGrade,
+    IFNULL((completedProgressChecksByUserAndClass.completedProgressChecks / totalProgressChecksByClass.totalProgressChecks) * 100, 0) AS progressCheckGrade
 FROM user
 INNER JOIN enrollment on enrollment.userId = user.id
 INNER JOIN enrollment_class on enrollment_class.enrollmentId = enrollment.id
