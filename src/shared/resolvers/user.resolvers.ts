@@ -21,6 +21,7 @@ import { LevelTypeId } from "../../domain/activity/enums/level-type.enum";
 import { AvatarEntity } from "../../entities/avatar.entity";
 import { getAvatarsByIds } from "../repositories/avatar.repository";
 import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
+import { userTotalProgressChecksCompletedForClassResolver } from "../../domain/activity/resolvers/user/user.total-progress-checks-completed-for-class.resolver";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
@@ -177,6 +178,7 @@ export const userResolvers: GQLUserResolvers = {
     totalAvailableActivities: totalAvailableActivitiesFieldResolver,
     defaultLevelTypeId: userDefaultLevelTypeIdFieldResolver,
     avatar: userAvatarFieldResolver,
+    totalProgressChecksCompletedForClass: userTotalProgressChecksCompletedForClassResolver,
 }
 
 
