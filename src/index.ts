@@ -92,7 +92,7 @@ const app = fastify({
   app.post('/authentication', {}, authenticationController(environment.CI_PORTAL_URL, databaseService));
 
   app.post('/student-grades', {}, classStudentGradesController(environment, databaseService, readonlyDatabaseService));
-  app.get('/student-report', {}, studentReportController(environment, databaseService, readonlyDatabaseService));
+  app.get('/student-report.csv', {}, studentReportController(environment, databaseService, readonlyDatabaseService));
 
   app.post('/webhook-events', {}, webhookEventsController(databaseService));
 })();
