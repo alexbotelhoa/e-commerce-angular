@@ -760,10 +760,16 @@ export type GQLOverallClassCompletedActivities = {
   readonly overallCompletion: Scalars['Float'];
 };
 
+export type GQLLevelCodeItem = {
+  readonly __typename?: 'LevelCodeItem';
+  readonly levelId: Scalars['String'];
+};
+
 export type GQLClassItem = {
   readonly __typename?: 'ClassItem';
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
+  readonly levelCode: GQLLevelCodeItem;
 };
 
 export type GQLTeacherClassesActivated = {
@@ -1110,6 +1116,7 @@ export type GQLResolversTypes = {
   LevelTheme: ResolverTypeWrapper<LevelThemeEntity>;
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
   OverallClassCompletedActivities: ResolverTypeWrapper<GQLOverallClassCompletedActivities>;
+  LevelCodeItem: ResolverTypeWrapper<GQLLevelCodeItem>;
   ClassItem: ResolverTypeWrapper<GQLClassItem>;
   TeacherClassesActivated: ResolverTypeWrapper<GQLTeacherClassesActivated>;
   TeacherClassesQueryInput: GQLTeacherClassesQueryInput;
@@ -1197,6 +1204,7 @@ export type GQLResolversParentTypes = {
   LevelTheme: LevelThemeEntity;
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
   OverallClassCompletedActivities: GQLOverallClassCompletedActivities;
+  LevelCodeItem: GQLLevelCodeItem;
   ClassItem: GQLClassItem;
   TeacherClassesActivated: GQLTeacherClassesActivated;
   TeacherClassesQueryInput: GQLTeacherClassesQueryInput;
@@ -1479,9 +1487,15 @@ export type GQLOverallClassCompletedActivitiesResolvers<ContextType = GraphQLCon
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
+export type GQLLevelCodeItemResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['LevelCodeItem'] = GQLResolversParentTypes['LevelCodeItem']> = {
+  levelId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
 export type GQLClassItemResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ClassItem'] = GQLResolversParentTypes['ClassItem']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  levelCode: Resolver<GQLResolversTypes['LevelCodeItem'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1714,6 +1728,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Cycle: GQLCycleResolvers<ContextType>;
   LevelTheme: GQLLevelThemeResolvers<ContextType>;
   OverallClassCompletedActivities: GQLOverallClassCompletedActivitiesResolvers<ContextType>;
+  LevelCodeItem: GQLLevelCodeItemResolvers<ContextType>;
   ClassItem: GQLClassItemResolvers<ContextType>;
   TeacherClassesActivated: GQLTeacherClassesActivatedResolvers<ContextType>;
   ThemeTotal: GQLThemeTotalResolvers<ContextType>;

@@ -1,6 +1,11 @@
+type LevelCodeItem {
+  levelId: String!
+}
+
 type ClassItem {
   id: ID!
   name: String!
+  levelCode: LevelCodeItem!
 }
 
 type TeacherClassesActivated {

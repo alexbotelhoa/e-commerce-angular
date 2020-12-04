@@ -1,5 +1,6 @@
 import { format } from "date-fns";
-import { GQLClassItemResolvers, GQLQueryResolvers, GQLTeacherClassesActivatedResolvers } from "../../../../resolvers-types";
+import { objOf } from "ramda";
+import { GQLClassItemResolvers, GQLLevelCodeItem, GQLLevelCodeItemResolvers, GQLQueryResolvers, GQLTeacherClassesActivatedResolvers } from "../../../../resolvers-types";
 
 export const teacherClassesActivatedQueryResolver: GQLQueryResolvers["teacherClassesActivated"] = async (obj, args, context) => {
     const user = context.currentUser;
@@ -8,10 +9,10 @@ export const teacherClassesActivatedQueryResolver: GQLQueryResolvers["teacherCla
     }
 
     const endDate = new Date();
-    const endDateFormated = format(endDate, 'yyyy-MM-dd')
+    const endDateFormated = format(endDate, 'yyyy-MM-dd');
 
     const result = await context.database.raw(`
-        select distinct lc.code, cl.id, cl.name
+        select distinct lc.code, cl.id, cl.name, lc.levelId
         from level_code lc
         inner join class cl on cl.levelCodeId = lc.id
         inner join teacher_class tc on cl.id=tc.classId
@@ -23,7 +24,10 @@ export const teacherClassesActivatedQueryResolver: GQLQueryResolvers["teacherCla
         code: item.code,
         class: {
             id: item.id,
-            name: item.name
+            name: item.name,
+            levelCode: {
+                levelId: item.levelId
+            }
         }
     }));
 }
@@ -36,4 +40,9 @@ export const teacherClassesActivatedResolvers: GQLTeacherClassesActivatedResolve
 export const classItemResolvers: GQLClassItemResolvers = {
     id: obj => obj.id || "",
     name: obj => obj.name || "",
+    levelCode: obj => obj.levelCode || null,
+}
+
+export const levelCodeItemResolvers: GQLLevelCodeItemResolvers = {
+    levelId: obj => obj.levelId || "",
 }
