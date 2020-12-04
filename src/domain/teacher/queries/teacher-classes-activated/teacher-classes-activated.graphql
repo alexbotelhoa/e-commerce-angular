@@ -1,0 +1,13 @@
+type ClassItem {
+  id: ID!
+  name: String!
+}
+
+type TeacherClassesActivated {
+  code: String!
+  class: ClassItem
+}
+
+type Query {
+  teacherClassesActivated: [TeacherClassesActivated!]!
+}
