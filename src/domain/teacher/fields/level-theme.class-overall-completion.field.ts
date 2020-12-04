@@ -4,7 +4,7 @@ import { classTotalStudentsByClassIdLoader } from "../dataloaders/class-total-st
 import { levelThemeClassTotalCompletedActivitiesByLevelThemeIdLoader } from "../dataloaders/level-theme-class-total-completed-activities-by-level-theme-id.loader";
 
 export const levelThemeClassOverallCompletionFieldResolver: GQLLevelThemeResolvers['classOverallCompletion'] = async (obj, params, context) => {
-    const classId = parseInt(params.classId, 10);
+    // const classId = parseInt(params.classId, 10);
     const [
         totalActivities,
         totalActivitiesCompleted,
@@ -12,8 +12,8 @@ export const levelThemeClassOverallCompletionFieldResolver: GQLLevelThemeResolve
     ] = await Promise.all(
         [
             context.getDatabaseLoader(levelThemeTotalResourcesByLevelThemeIdLoader, undefined).load(obj.id),
-            context.getDatabaseLoader(levelThemeClassTotalCompletedActivitiesByLevelThemeIdLoader, classId).load(obj.id),
-            context.getDatabaseLoader(classTotalStudentsByClassIdLoader, undefined).load(classId)
+            context.getDatabaseLoader(levelThemeClassTotalCompletedActivitiesByLevelThemeIdLoader, params.classId).load(obj.id),
+            context.getDatabaseLoader(classTotalStudentsByClassIdLoader, undefined).load(params.classId)
         ]);
 
     const result = totalClassStudents > 0

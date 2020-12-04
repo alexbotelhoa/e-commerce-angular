@@ -4,7 +4,7 @@ import { cycleClassTotalCompletedActivitiesbyCycleIdLoader } from "../../dataloa
 import { cycleTotalActivitiesByCycleIdLoader } from "../../dataloaders/cycle-total-activities-by-cycle-id.loader";
 
 export const cycleClassOverallCompletionRatioFieldResolver: GQLCycleResolvers['classOverallCompletionRatio'] = async (obj, params, context) => {
-    const classId = parseInt(params.classId, 10);
+    // const classId = parseInt(params.classId, 10);
     const [
         totalActivities,
         totalActivitiesCompleted,
@@ -12,8 +12,8 @@ export const cycleClassOverallCompletionRatioFieldResolver: GQLCycleResolvers['c
     ] = await Promise.all(
         [
             context.getDatabaseLoader(cycleTotalActivitiesByCycleIdLoader, undefined).load(obj.id),
-            context.getDatabaseLoader(cycleClassTotalCompletedActivitiesbyCycleIdLoader, classId).load(obj.id),
-            context.getDatabaseLoader(classTotalStudentsByClassIdLoader, undefined).load(classId)
+            context.getDatabaseLoader(cycleClassTotalCompletedActivitiesbyCycleIdLoader, params.classId).load(obj.id),
+            context.getDatabaseLoader(classTotalStudentsByClassIdLoader, undefined).load(params.classId)
         ]);
 
     let result: number;

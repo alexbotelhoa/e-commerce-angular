@@ -10,7 +10,7 @@ export type LevelThemeClassTotalCompletedActivitiesRow = CountObj & {
 export const levelThemeClassTotalCompletedActivitiesSorter =
     createDataloaderCountSort<LevelThemeClassTotalCompletedActivitiesRow, number>('levelThemeId')
 
-export const levelThemeClassTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number, number> = {
+export const levelThemeClassTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number, string> = {
     id: 'levelThemeClassTotalCompletedActivitiesByLevelThemeIdLoader',
     batchFn: (db, classId) => async ids => {
         const levelThemeIdsParameters = ids.map(() => '?').join(',');

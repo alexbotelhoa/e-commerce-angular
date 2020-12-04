@@ -9,9 +9,9 @@ export type ClassTotalStudentsLoaderRow = CountObj & {
     classId: number;
 }
 
-export const classTotalStudentsSorter = createDataloaderCountSort<ClassTotalStudentsLoaderRow, number>('classId');
+export const classTotalStudentsSorter = createDataloaderCountSort<ClassTotalStudentsLoaderRow, string>('classId');
 
-export const classTotalStudentsByClassIdLoader: DatabaseLoaderFactory<number, number, number, undefined> = {
+export const classTotalStudentsByClassIdLoader: DatabaseLoaderFactory<string, number, number, undefined> = {
     id: 'classTotalStudentsLoader',
     batchFn: (db) => async ids => {
         const result = await db
@@ -21,7 +21,8 @@ export const classTotalStudentsByClassIdLoader: DatabaseLoaderFactory<number, nu
             .innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.userId`, `${USER_TABLE}.id`)
             .innerJoin(ENROLLMENT_CLASS_TABLE, `${ENROLLMENT_CLASS_TABLE}.enrollmentId`, `${ENROLLMENT_TABLE}.id`)
             .whereIn(`${ENROLLMENT_CLASS_TABLE}.classId`, ids)
-        const sorted = classTotalStudentsSorter(ids)(result);
+        const resultFomarted = Array.isArray(result) ? result : [result]
+        const sorted = classTotalStudentsSorter(ids)(resultFomarted);
         return sorted;
     }
 }

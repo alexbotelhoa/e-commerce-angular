@@ -20,8 +20,8 @@ export const cycleTotalActivitiesByCycleIdLoader: DatabaseLoaderFactory<number, 
             .innerJoin(CYCLE_TABLE, `${CYCLE_TABLE}.id`, `${CYCLE_ACTIVITY_TABLE}.cycleId`)
             .whereIn(`${CYCLE_TABLE}.id`, ids)
             .groupBy(`${CYCLE_TABLE}.id`);
-
-        const sorted = cycleTotalActivitiesSorter(ids)(entities[0] as any);
+        const resultFomarted = Array.isArray(entities) ? entities : [entities]
+        const sorted = cycleTotalActivitiesSorter(ids)(resultFomarted);
         return sorted;
     }
 }

@@ -12,7 +12,7 @@ export type CycleClassTotalCompletedActivitiesbyCycleIdRow = CountObj & {
 
 const cycleTotalActivitiesSorter = createDataloaderCountSort<CycleClassTotalCompletedActivitiesbyCycleIdRow, number>('cycleId');
 
-export const cycleClassTotalCompletedActivitiesbyCycleIdLoader: DatabaseLoaderFactory<number, number, number, number> = {
+export const cycleClassTotalCompletedActivitiesbyCycleIdLoader: DatabaseLoaderFactory<number, number, number, string> = {
     id: 'cycleClassTotalCompletedActivitiesbyCycleId',
     batchFn: (db, classId) => async (ids) => {
         const entities: CycleClassTotalCompletedActivitiesbyCycleIdRow[] = await db
@@ -25,8 +25,8 @@ export const cycleClassTotalCompletedActivitiesbyCycleIdLoader: DatabaseLoaderFa
             .andWhere(`${ACTIVITY_TIMER_TABLE}.completed`, true)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.classId`, classId)
             .groupBy([`${ACTIVITY_TIMER_TABLE}.classId`, `${CYCLE_TABLE}.id`]);
-
-        const sorted = cycleTotalActivitiesSorter(ids)(entities);
+        const resultFomarted = Array.isArray(entities) ? entities : [entities]
+        const sorted = cycleTotalActivitiesSorter(ids)(resultFomarted);
         return sorted;
     }
 }
