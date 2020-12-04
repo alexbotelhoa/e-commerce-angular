@@ -1,0 +1,9 @@
+type ThemeTotal {
+  name: String!
+  total: Int!
+  totalCompleted: Int!
+}
+
+type Query {
+  themeTotal(classId: ID!): [ThemeTotal!]
+}
