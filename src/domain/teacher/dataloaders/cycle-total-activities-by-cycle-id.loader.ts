@@ -21,7 +21,7 @@ export const cycleTotalActivitiesByCycleIdLoader: DatabaseLoaderFactory<number, 
             .whereIn(`${CYCLE_TABLE}.id`, ids)
             .groupBy(`${CYCLE_TABLE}.id`);
 
-        const sorted = cycleTotalActivitiesSorter(ids)(entities);
+        const sorted = cycleTotalActivitiesSorter(ids)(entities[0] as any);
         return sorted;
     }
 }
