@@ -12,9 +12,9 @@ export const themeTotalQueryResolver: GQLQueryResolvers["themeTotal"] = async (o
         inner join level l on lc.levelId = l.id
         inner join level_theme lt on lt.levelId = l.id
         inner join theme t on lt.themeId = t.id
-        where cl.id = ${args.classId} 
+        where cl.id = ? 
         group by t.name;    
-    `);
+    `, [args.classId]);
 
     return result[0];
 }
