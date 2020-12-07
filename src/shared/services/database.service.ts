@@ -12,9 +12,9 @@ export const databaseServiceFactory = (config: DatabaseConfiguration, log: Fasti
     },
     debug: true,
     log: {
-        error: log.error,
-        warn: log.warn,
-        debug: log.debug,
+        error: (message) => log.error(message, "KNEX ERROR"),
+        warn: (message) => log.warn(message, "KNEX WARN"),
+        debug: (message) => log.debug(message, "KNEX DEBUG"),
         enableColors: true,
     },
 });
