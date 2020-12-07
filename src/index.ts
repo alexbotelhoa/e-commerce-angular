@@ -19,15 +19,14 @@ import { studentReportController } from './domain/user/controllers/student-repor
 
 
 const environment = environmentFactory();
-
-export const databaseService: DatabaseService = databaseServiceFactory(databaseConfigurationFromEnvironment(environment));
-export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(readonlyDatabaseConfigurationFromEnvironment(environment));
-// Require the framework and instantiate it
 const app = fastify({
   logger: true,
   bodyLimit: 4 * 1024 * 1024 // 4MiB
 });
 
+export const databaseService: DatabaseService = databaseServiceFactory(databaseConfigurationFromEnvironment(environment), app.log);
+export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(readonlyDatabaseConfigurationFromEnvironment(environment), app.log);
+// Require the framework and instantiate it
 (async function () {
   const typeDefsSources = await loadTypedefs('./src/**/*.graphql', {
     loaders: [new GraphQLFileLoader()]
