@@ -915,6 +915,15 @@ export type GQLLevelCode = {
   readonly viewerTeacherClasses: ReadonlyArray<GQLTeacherClass>;
 };
 
+
+export type GQLLevelCodeviewerTeacherClassesArgs = {
+  filters: Maybe<GQLLevelCodeViewTeacherClassFilterInput>;
+};
+
+export type GQLLevelCodeViewTeacherClassFilterInput = {
+  readonly active: Maybe<Scalars['Boolean']>;
+};
+
 export type GQLLevel = {
   readonly __typename?: 'Level';
   readonly id: Scalars['ID'];
@@ -1134,6 +1143,7 @@ export type GQLResolversTypes = {
   EnrollmentClass: ResolverTypeWrapper<EnrollmentClassEntity>;
   Enrollment: ResolverTypeWrapper<EnrollmentEntity>;
   LevelCode: ResolverTypeWrapper<LevelCodeEntity>;
+  LevelCodeViewTeacherClassFilterInput: GQLLevelCodeViewTeacherClassFilterInput;
   Level: ResolverTypeWrapper<LevelEntity>;
   TeacherClass: ResolverTypeWrapper<TeacherClassEntity>;
   Theme: ResolverTypeWrapper<ThemeEntity>;
@@ -1222,6 +1232,7 @@ export type GQLResolversParentTypes = {
   EnrollmentClass: EnrollmentClassEntity;
   Enrollment: EnrollmentEntity;
   LevelCode: LevelCodeEntity;
+  LevelCodeViewTeacherClassFilterInput: GQLLevelCodeViewTeacherClassFilterInput;
   Level: LevelEntity;
   TeacherClass: TeacherClassEntity;
   Theme: ThemeEntity;
@@ -1632,7 +1643,7 @@ export type GQLLevelCodeResolvers<ContextType = GraphQLContext, ParentType exten
   createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   levelId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
   level: Resolver<Maybe<GQLResolversTypes['Level']>, ParentType, ContextType>;
-  viewerTeacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType>;
+  viewerTeacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType, RequireFields<GQLLevelCodeviewerTeacherClassesArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 

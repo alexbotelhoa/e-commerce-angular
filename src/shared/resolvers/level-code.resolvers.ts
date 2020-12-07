@@ -1,4 +1,4 @@
-import { GQLLevelCodeResolvers } from "../../resolvers-types";
+import { GQLLevelCodeResolvers, GQLLevelCodeViewTeacherClassFilterInput } from "../../resolvers-types";
 import { LevelCodeEntity } from "../../entities/level-code.entity";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
 import { LevelEntity } from "../../entities/level.entity";
@@ -7,6 +7,7 @@ import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 import { TEACHER_CLASS_TABLE, TeacherClassEntity } from "../../entities/teacher-class.entity";
 import { CLASS_TABLE, ClassEntity } from "../../entities/class.entity";
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
+import { format } from "date-fns";
 
 const levelCodeEntityResolvers: Pick<GQLLevelCodeResolvers, keyof LevelCodeEntity> = {
     id: obj => obj.id.toString(10),
@@ -43,16 +44,29 @@ type TeacherClassWithLevelCodeId = TeacherClassEntity & Pick<ClassEntity, 'level
 
 const levelCodeViewerTeacherClassesByLevelCodeIdSorter = createDataloaderMultiSort<TeacherClassWithLevelCodeId, number>('levelCodeId');
 
-export const levelCodeViewerTeacherClassesByLevelCodeIdLoader: DatabaseLoaderFactory<number, TeacherClassEntity[], TeacherClassEntity[], string> = {
+interface LevelCodeViewTeacherClassFilterInput {
+    userId: string;
+    filters: GQLLevelCodeViewTeacherClassFilterInput | null | undefined
+}
+
+export const levelCodeViewerTeacherClassesByLevelCodeIdLoader: DatabaseLoaderFactory<number, TeacherClassEntity[], TeacherClassEntity[], LevelCodeViewTeacherClassFilterInput> = {
     id: 'levelCodeViewerTeacherClassesByLevelCodeId',
-    batchFn: (db, userId) => async (ids) => {
-        const entities: TeacherClassWithLevelCodeId[] = await db
+    batchFn: (db, params) => async (ids) => {
+        const query = db
             .select([`${TEACHER_CLASS_TABLE}.*`, `${CLASS_TABLE}.levelCodeId`])
             .from(TEACHER_CLASS_TABLE)
             .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${TEACHER_CLASS_TABLE}.classId`)
-            .andWhere(`${TEACHER_CLASS_TABLE}.teacherId`, userId)
+            .andWhere(`${TEACHER_CLASS_TABLE}.teacherId`, params.userId)
             .whereIn(`${CLASS_TABLE}.levelCodeId`, ids)
             ;
+
+        if (!!params.filters?.active) {
+            const endDate = new Date();
+            const endDateFormated = format(endDate, 'yyyy-MM-dd');
+            query.andWhere(`${CLASS_TABLE}.endDate`, '>=', endDateFormated)
+        }
+
+        const entities: TeacherClassWithLevelCodeId[] = await query;
         const sorted = levelCodeViewerTeacherClassesByLevelCodeIdSorter(ids)(entities);
         return sorted;
     }
@@ -60,10 +74,11 @@ export const levelCodeViewerTeacherClassesByLevelCodeIdLoader: DatabaseLoaderFac
 
 export const levelCodeViewerTeacherClassesResolver: GQLLevelCodeResolvers['viewerTeacherClasses'] = async (obj, params, context) => {
     const user = context.currentUser;
+    const filters = params.filters;
     if (!user) {
         return [];
     }
-    return context.getDatabaseLoader(levelCodeViewerTeacherClassesByLevelCodeIdLoader, user.id).load(obj.id);
+    return context.getDatabaseLoader(levelCodeViewerTeacherClassesByLevelCodeIdLoader, { userId: user.id, filters: filters }).load(obj.id);
 
 }
 
