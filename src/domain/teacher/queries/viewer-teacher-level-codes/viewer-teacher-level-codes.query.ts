@@ -8,10 +8,17 @@ export const viewerTeacherLevelCodesQueryResolver: GQLQueryResolvers['viewerTeac
     if (!user) {
         return [];
     }
-    return await context.database
+    const query = context.database
         .distinct(`${LEVEL_CODE_TABLE}.*`)
         .from(LEVEL_CODE_TABLE)
         .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.levelCodeId`, `${LEVEL_CODE_TABLE}.id`)
         .innerJoin(TEACHER_CLASS_TABLE, `${TEACHER_CLASS_TABLE}.classId`, `${CLASS_TABLE}.id`)
         .andWhere('teacherId', user.id);
+
+    if (params.filters?.active) {
+        query.andWhere(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate)`, '<', '30');
+    }
+
+    const entities = await query;
+    return entities;
 }
