@@ -7,7 +7,7 @@ import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 import { TEACHER_CLASS_TABLE, TeacherClassEntity } from "../../entities/teacher-class.entity";
 import { CLASS_TABLE, ClassEntity } from "../../entities/class.entity";
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 
 const levelCodeEntityResolvers: Pick<GQLLevelCodeResolvers, keyof LevelCodeEntity> = {
     id: obj => obj.id.toString(10),
@@ -60,8 +60,8 @@ export const levelCodeViewerTeacherClassesByLevelCodeIdLoader: DatabaseLoaderFac
             .whereIn(`${CLASS_TABLE}.levelCodeId`, ids)
             ;
 
-        if (!!params.filters?.active) {
-            const endDate = new Date();
+        if (params.filters?.active) {
+            const endDate = subDays(new Date(), 30);
             const endDateFormated = format(endDate, 'yyyy-MM-dd');
             query.andWhere(`${CLASS_TABLE}.endDate`, '>=', endDateFormated)
         }

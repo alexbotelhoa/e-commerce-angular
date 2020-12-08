@@ -1,9 +1,9 @@
 type Query {
   viewerTeacherLevelCodes(
-    filters: LevelCodeViewTeacherClassFilterInput
+    filters: ViewerTeacherLevelCodesFilterInput
   ): [LevelCode!]!
 }
 
-input LevelCodeViewTeacherClassFilterInput {
+input ViewerTeacherLevelCodesFilterInput {
   active: Boolean
 }

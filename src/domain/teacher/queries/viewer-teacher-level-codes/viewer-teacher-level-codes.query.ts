@@ -16,7 +16,7 @@ export const viewerTeacherLevelCodesQueryResolver: GQLQueryResolvers['viewerTeac
         .andWhere('teacherId', user.id);
 
     if (params.filters?.active) {
-        query.andWhere(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate)`, '<', '30');
+        query.andWhere(`${CLASS_TABLE}.endDate`, '>=', context.database.raw('DATE_ADD(CURRENT_DATE(), INTERVAL - 30 DAY)'));
     }
 
     const entities = await query;
