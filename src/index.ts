@@ -23,6 +23,7 @@ const app = fastify({
   logger: {
     level: "debug"
   },
+  connectionTimeout: 120000,
   bodyLimit: 4 * 1024 * 1024 // 4MiB
 });
 
