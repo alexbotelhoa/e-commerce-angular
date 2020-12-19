@@ -52,13 +52,21 @@ interface LevelCodeViewTeacherClassFilterInput {
 export const levelCodeViewerTeacherClassesByLevelCodeIdLoader: DatabaseLoaderFactory<number, TeacherClassEntity[], TeacherClassEntity[], LevelCodeViewTeacherClassFilterInput> = {
     id: 'levelCodeViewerTeacherClassesByLevelCodeId',
     batchFn: (db, params) => async (ids) => {
-        const query = db
-            .select([`${TEACHER_CLASS_TABLE}.*`, `${CLASS_TABLE}.levelCodeId`])
-            .from(TEACHER_CLASS_TABLE)
-            .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${TEACHER_CLASS_TABLE}.classId`)
-            .andWhere(`${TEACHER_CLASS_TABLE}.teacherId`, params.userId)
-            .whereIn(`${CLASS_TABLE}.levelCodeId`, ids)
-            ;
+        let query = null;
+
+        if (params.filters?.userId) {
+            query = db.select([`${TEACHER_CLASS_TABLE}.*`, `${CLASS_TABLE}.levelCodeId`])
+                .from(TEACHER_CLASS_TABLE)
+                .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${TEACHER_CLASS_TABLE}.classId`)
+                .andWhere(`${TEACHER_CLASS_TABLE}.teacherId`, params.userId)
+                .whereIn(`${CLASS_TABLE}.levelCodeId`, ids);
+        } else {
+            query = db.select([`${TEACHER_CLASS_TABLE}.*`, `${CLASS_TABLE}.levelCodeId`])
+                .from(TEACHER_CLASS_TABLE)
+                .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${TEACHER_CLASS_TABLE}.classId`)
+                .andWhere(`${TEACHER_CLASS_TABLE}.teacherId`, params.userId)
+                .whereIn(`${CLASS_TABLE}.levelCodeId`, ids);
+        }
 
         if (params.filters?.active) {
             const endDate = subDays(new Date(), 30);

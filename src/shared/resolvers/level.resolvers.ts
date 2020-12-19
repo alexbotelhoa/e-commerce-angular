@@ -148,23 +148,23 @@ const levelViewerNextUnfinishedActivityFieldResolver: GQLLevelResolvers['viewerN
     }
 
     const result = await context.database.raw(`
-SELECT cycle_activity.*
-FROM cycle_activity
-INNER JOIN cycle ON cycle.id = cycle_activity.cycleId
-INNER JOIN level_theme ON level_theme.id = cycle.levelThemeId
-WHERE level_theme.levelId = :levelId
-AND NOT EXISTS (
-    SELECT *
-    FROM activity_timer
-    WHERE activity_timer.cycleActivityId = cycle_activity.id
-    AND activity_timer.completed = true
-    AND activity_timer.userId = :userId
-)
-ORDER BY 
-    level_theme.order ASC,
-    cycle.order ASC,
-    cycle_activity.order ASC
-LIMIT 1
+        SELECT cycle_activity.*
+        FROM cycle_activity
+        INNER JOIN cycle ON cycle.id = cycle_activity.cycleId
+        INNER JOIN level_theme ON level_theme.id = cycle.levelThemeId
+        WHERE level_theme.levelId = :levelId
+        AND NOT EXISTS (
+            SELECT *
+            FROM activity_timer
+            WHERE activity_timer.cycleActivityId = cycle_activity.id
+            AND activity_timer.completed = true
+            AND activity_timer.userId = :userId
+        )
+        ORDER BY 
+            level_theme.order ASC,
+            cycle.order ASC,
+            cycle_activity.order ASC
+        LIMIT 1
 ;`, {
         userId: user.id,
         levelId: obj.id,

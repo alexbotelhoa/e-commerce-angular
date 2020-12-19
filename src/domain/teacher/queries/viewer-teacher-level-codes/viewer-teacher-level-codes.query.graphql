@@ -6,4 +6,5 @@ type Query {
 
 input ViewerTeacherLevelCodesFilterInput {
   active: Boolean
+  userId: ID
 }
