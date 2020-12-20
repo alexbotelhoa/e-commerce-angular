@@ -45,6 +45,9 @@ import { GradeTypeId } from "./domain/activity/enums/grade-type-id.enum";
 import { overallClassCompletedActivitiesResolvers } from "./domain/teacher/queries/overall-class-completed-activities/overall-class-completed-activities.type";
 import { themeTotalResolvers } from "./domain/theme/resolvers/theme.total-parts.resolvers";
 import { classItemResolvers, levelCodeItemResolvers, teacherClassesActivatedResolvers } from "./domain/teacher/queries/teacher-classes-activated/teacher-classes-activated.resolvers";
+import { regionalResolvers } from "./shared/resolvers/regional.resolvers";
+import { localResolvers } from "./shared/resolvers/local.resolvers";
+import { campusResolvers } from "./shared/resolvers/campus.resolvers";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -98,4 +101,7 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     TeacherClassesActivated: teacherClassesActivatedResolvers,
     ClassItem: classItemResolvers,
     LevelCodeItem: levelCodeItemResolvers,
+    Campus: campusResolvers,
+    Local: localResolvers,
+    Regional: regionalResolvers,
 };

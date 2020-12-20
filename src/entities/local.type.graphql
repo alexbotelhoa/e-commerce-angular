@@ -1,0 +1,6 @@
+type Local {
+    id: ID!
+    name: String!
+    description: String
+    campusId: ID
+}

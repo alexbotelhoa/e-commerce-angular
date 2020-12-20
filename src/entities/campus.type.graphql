@@ -1,0 +1,6 @@
+type Campus {
+    id: ID!
+    name: String!
+    description: String
+    regionalId: ID
+}
