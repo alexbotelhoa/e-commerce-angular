@@ -1,7 +1,6 @@
-import { StudentClassTransferData } from "../services/student-class-transfer.service";
+import * as t from "io-ts";
 import { StudentEnrollmentCancellationData } from "../services/student-enrollment-cancellation.service";
-import { StudentEnrollmentData } from "../services/student-enrollment.service";
-
+import { studantEnrollmentData, StudentClassTransferClassData, classSyncEventData } from "../controllers/webhook-events.controller"
 export interface WebhookSuccessResponse {
     success: true;
 }
@@ -16,7 +15,7 @@ export type WebhookResponse = WebhookSuccessResponse | WebhookErrorResponse;
 export interface StudentEnrollmentEvent {
     id: string;
     type: 'STUDENT_ENROLLMENT',
-    data: StudentEnrollmentData;
+    data: t.TypeOf<typeof studantEnrollmentData>;
 }
 
 export interface StudentEnrollmentCancellationEvent {
@@ -28,7 +27,13 @@ export interface StudentEnrollmentCancellationEvent {
 export interface StudentClassTransferEvent {
     id: string;
     type: 'STUDENT_CLASS_TRANSFER',
-    data: StudentClassTransferData;
+    data: t.TypeOf<typeof StudentClassTransferClassData>;
+}
+
+export interface ClassSyncEvent {
+    id: string;
+    type: 'CLASS_SYNC',
+    data: t.TypeOf<typeof classSyncEventData>
 }
 
 export type WebhookEvent = StudentEnrollmentEvent | StudentEnrollmentCancellationEvent | StudentClassTransferEvent;

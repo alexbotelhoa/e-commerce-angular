@@ -2,9 +2,12 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import * as t from "io-ts";
 import { API_KEYS } from "../../../shared/constants/api-keys.constant";
 import { DatabaseService } from "../../../shared/services/database.service";
+import { processClassSync } from "../services/class-sync.service";
 import { processStudentClassTransfer } from "../services/student-class-transfer.service";
 import { processStudentEnrollmentCancellation } from "../services/student-enrollment-cancellation.service";
 import { processStudentEnrollment } from "../services/student-enrollment.service";
+import { ClassDataType } from "../types/class-data.type";
+import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
 import { WebhookErrorResponse, WebhookResponse } from "../types/webhook-events.types";
 
 const UserDataType = t.type({
@@ -12,42 +15,58 @@ const UserDataType = t.type({
     name: t.string,
 });
 
-const LevelDataType = t.type({
-    id: t.number,
-    code: t.string,
+
+
+
+export const classSyncEventData = t.type({
+    class: ClassWithLocationsFullDataType,
 })
 
-const ClassDataType = t.type({
+const ClassSyncEventType = t.type({
     id: t.string,
-    name: t.string,
-    institutionId: t.string,
-    periodId: t.string,
-    sessionId: t.string,
-    carrerId: t.string,
-    startDate: t.string,
-    endDate: t.string,
-    level: LevelDataType,
+    type: t.literal('CLASS_SYNC'),
+    data: classSyncEventData
 })
+
+const studantEnrollmentNewData = t.type({
+    user: UserDataType,
+    ClassId: t.string,
+})
+
+const studantEnrollmentOldData = t.type({
+    user: UserDataType,
+    class: ClassDataType,
+})
+
+
+export const studantEnrollmentData = t.union([studantEnrollmentNewData, studantEnrollmentOldData])
+
 
 const StudentEnrollmentEventType = t.type({
     id: t.string,
     type: t.literal('STUDENT_ENROLLMENT'),
-    data: t.type({
-        user: UserDataType,
-        class: ClassDataType,
-    }),
+    data: studantEnrollmentData,
 });
 
-const StudentClassTransferEventType = t.exact(
-    t.type({
-        id: t.string,
-        type: t.literal('STUDENT_CLASS_TRANSFER'),
-        data: t.type({
-            userId: t.string,
-            oldClassId: t.string,
-            newClass: ClassDataType,
-        }),
-    }));
+const StudentClassTransferWithClassBodyType = t.type({
+    userId: t.string,
+    oldClassId: t.string,
+    newClass: ClassDataType,
+})
+
+const StudentClassTransferClassByIdType = t.type({
+    userId: t.string,
+    oldClassId: t.string,
+    newClassId: t.string,
+})
+
+export const StudentClassTransferClassData = t.union([StudentClassTransferClassByIdType, StudentClassTransferWithClassBodyType])
+
+const StudentClassTransferClassType = t.type({
+    id: t.string,
+    type: t.literal('STUDENT_CLASS_TRANSFER'),
+    data: StudentClassTransferClassData
+})
 
 const StudentEnrollmentCancellationEventType = t.type({
     id: t.string,
@@ -58,10 +77,12 @@ const StudentEnrollmentCancellationEventType = t.type({
     }),
 });
 
+
 const WebhookEventType = t.union([
     StudentEnrollmentEventType,
-    StudentClassTransferEventType,
+    StudentClassTransferClassType,
     StudentEnrollmentCancellationEventType,
+    ClassSyncEventType
 ]);
 
 export const webhookEventsController = (db: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
@@ -93,7 +114,7 @@ export const webhookEventsController = (db: DatabaseService) => async (request: 
             reply.status(400);
             const response: WebhookErrorResponse = {
                 success: false,
-                message: `Invalid input: ${JSON.stringify(decodedBody.left)}`,
+                message: decodedBody.left as any,
             };
             reply.send(response);
             return;
@@ -116,6 +137,10 @@ export const webhookEventsController = (db: DatabaseService) => async (request: 
             }
             case 'STUDENT_ENROLLMENT_CANCELLATION': {
                 response = await processStudentEnrollmentCancellation(db, request.log)(body);
+                break;
+            }
+            case 'CLASS_SYNC': {
+                response = await processClassSync(db, request.log)(body)
                 break;
             }
             default: {

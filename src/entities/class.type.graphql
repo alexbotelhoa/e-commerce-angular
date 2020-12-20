@@ -7,6 +7,9 @@ type Class {
     periodId: ID
     carrerId: ID
     sessionId: ID
+    localId: ID
+    campusId: ID
+    regionalId: ID
     startDate: DateTime
     endDate: DateTime
 }

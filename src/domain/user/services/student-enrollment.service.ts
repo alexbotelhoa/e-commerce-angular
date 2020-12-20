@@ -10,21 +10,60 @@ import { getUserById, insertUser } from "../../../shared/repositories/user.repos
 import { DatabaseService } from "../../../shared/services/database.service";
 import { RoleId } from "../../authorization/enums/role-id.enum";
 import { ClassData } from "../types/class-data.type";
-import { UserData } from "../types/user-data.type";
 import { StudentEnrollmentEvent, WebhookResponse } from "../types/webhook-events.types";
 import { isClassDataDivergent } from "./class-utils";
-
-export interface StudentEnrollmentData {
-    user: UserData;
-    class: ClassData;
-}
 
 export const processStudentEnrollment = (db: DatabaseService, log: FastifyLoggerInstance) => async (event: StudentEnrollmentEvent): Promise<WebhookResponse> => {
     const data = event.data;
     const userData = data.user;
-    const classData = data.class;
+    if ("class" in data) {
+        // data.class
+        await studantEnrollmentWithClassBody(userData, db, data.class);
+        return {
+            success: true,
+        };
+    }
+    if ("ClassId" in data) {
+
+        const classFound = await getClassById(db)(data.ClassId);
+        if (!classFound) {
+            return {
+                message: "When passed ClassId, class must already be synced.",
+                success: false,
+            };
+        }
+        const existingLevelCode = await getLevelCodeById(db)(classFound.levelCodeId);
+        if (!existingLevelCode) {
+            return {
+                message: "When passed ClassId, class level must already be synced.",
+                success: false,
+            };
+        }
+        await upsertUserAndMakeEnrollment(userData, db, userData, existingLevelCode, {
+            ...classFound,
+            endDate: classFound.endDate instanceof Date ? classFound.endDate?.toString() : classFound.endDate,
+            startDate: classFound.startDate instanceof Date ? classFound.startDate?.toString() : classFound.startDate, level: {
+                code: existingLevelCode.code, id: existingLevelCode.id
+            }
+        });
+        return {
+            success: true,
+        };
+    }
+
+    return {
+        success: false,
+        message: "unknown error."
+    };
+}
+
+
+async function studantEnrollmentWithClassBody(userData: {
+    id: string;
+    name: string;
+}, db: DatabaseService, classData: ClassData) {
     const levelData = classData.level;
-    const existingUser = await getUserById(db)(data.user.id);
+    const existingUser = await getUserById(db)(userData.id);
     const existingClass = await getClassById(db)(classData.id);
     const existingLevelCode = await getLevelCodeById(db)(classData.level.id);
     if (!existingLevelCode) {
@@ -47,7 +86,7 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
             levelCodeId: classData.level.id,
             startDate: classData.startDate,
             endDate: classData.endDate,
-        })
+        });
     } else {
         if (isClassDataDivergent(existingClass, classData)) {
             await updateClass(db)({
@@ -62,8 +101,16 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
             })(where => where.andWhere('id', classData.id));
         }
     }
+    await upsertUserAndMakeEnrollment(existingUser, db, userData, levelData, classData);
+}
+
+async function upsertUserAndMakeEnrollment(existingUser: { id: string; name: string; } | null,
+    db: DatabaseService,
+    userData: { id: string; name: string; },
+    levelData: { id: number; code: string; },
+    classData: ClassData) {
     if (!existingUser) {
-        await db.transaction(async trx => {
+        await db.transaction(async (trx) => {
             await insertUser(trx)({
                 id: userData.id,
                 name: userData.name,
@@ -82,7 +129,7 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
                 classId: classData.id,
                 enrollmentId: enrollmentId,
             });
-        })
+        });
     } else {
         const existingStudentRoles = await selectUserRole(db).andWhere('roleId', RoleId.STUDENT).andWhere('userId', userData.id);
         const [existingEnrollment] = await selectEnrollment(db).andWhere('userId', userData.id).andWhere('levelCodeId', levelData.id);
@@ -96,7 +143,7 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
 
         // no enrollments, we need to insert everything
         if (!existingEnrollment) {
-            await db.transaction(async trx => {
+            await db.transaction(async (trx) => {
                 const enrollmentId = await insertEnrollment(trx)({
                     userId: userData.id,
                     levelCodeId: levelData.id,
@@ -105,12 +152,12 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
                     classId: classData.id,
                     enrollmentId: enrollmentId,
                 });
-            })
+            });
         } else {
             const existingEnrollmentClasses = await selectEnrollmentClass(db)
                 .andWhere('enrollmentId', existingEnrollment.id);
             const isCurrentlyEnrolledInClass = Boolean(existingEnrollmentClasses
-                .find(enrollmentClass => enrollmentClass.classId === classData.id))
+                .find(enrollmentClass => enrollmentClass.classId === classData.id));
             // enrollment exists, so we should only insert enrollment class if not already exist
             if (!isCurrentlyEnrolledInClass) {
                 await insertEnrollmentClass(db)({
@@ -142,8 +189,5 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
             }
         }
     }
-
-    return {
-        success: true,
-    };
 }
+
