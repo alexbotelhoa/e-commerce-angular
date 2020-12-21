@@ -114,7 +114,7 @@ export const webhookEventsController = (db: DatabaseService) => async (request: 
             reply.status(400);
             const response: WebhookErrorResponse = {
                 success: false,
-                message: decodedBody.left as any,
+                message: `Invalid input: ${JSON.stringify(decodedBody.left)}`,
             };
             reply.send(response);
             return;
