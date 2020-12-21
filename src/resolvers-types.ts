@@ -442,6 +442,7 @@ export type GQLQuery = {
   readonly theme: Maybe<GQLTheme>;
   readonly themeTotal: Maybe<ReadonlyArray<GQLThemeTotal>>;
   readonly themes: ReadonlyArray<GQLTheme>;
+  readonly viewerEnrollmentLevelCodes: ReadonlyArray<GQLLevelCode>;
   readonly viewerTeacherClasses: ReadonlyArray<GQLTeacherClass>;
   readonly viewerTeacherLevelCodes: ReadonlyArray<GQLLevelCode>;
 };
@@ -534,6 +535,11 @@ export type GQLQuerythemeArgs = {
 
 export type GQLQuerythemeTotalArgs = {
   classId: Scalars['ID'];
+};
+
+
+export type GQLQueryviewerEnrollmentLevelCodesArgs = {
+  filters: Maybe<GQLViewerEnrollmenLevelCodestFilterInput>;
 };
 
 
@@ -690,6 +696,11 @@ export type GQLViewerChangeAvatarMutationError = GQLGenericError & {
 
 export type GQLViewerChangeAvatarMutationResult = GQLUser | GQLViewerChangeAvatarMutationError;
 
+export type GQLViewerEnrollmenLevelCodestFilterInput = {
+  readonly last30days: Maybe<Scalars['Boolean']>;
+  readonly userId: Maybe<Scalars['ID']>;
+};
+
 export type GQLCycle = {
   readonly __typename?: 'Cycle';
   readonly active: Scalars['Boolean'];
@@ -789,7 +800,7 @@ export type GQLTeacherClassesQueryInput = {
 };
 
 export type GQLViewerTeacherLevelCodesFilterInput = {
-  readonly active: Maybe<Scalars['Boolean']>;
+  readonly last30days: Maybe<Scalars['Boolean']>;
   readonly userId: Maybe<Scalars['ID']>;
 };
 
@@ -924,6 +935,7 @@ export type GQLLevelCode = {
   readonly levelId: Maybe<Scalars['ID']>;
   readonly level: Maybe<GQLLevel>;
   readonly viewerTeacherClasses: ReadonlyArray<GQLTeacherClass>;
+  readonly viewerClasses: ReadonlyArray<GQLClass>;
 };
 
 
@@ -931,9 +943,18 @@ export type GQLLevelCodeviewerTeacherClassesArgs = {
   filters: Maybe<GQLLevelCodeViewTeacherClassFilterInput>;
 };
 
+
+export type GQLLevelCodeviewerClassesArgs = {
+  filters: Maybe<GQLLevelCodeViewClassFilterInput>;
+};
+
 export type GQLLevelCodeViewTeacherClassFilterInput = {
   readonly active: Maybe<Scalars['Boolean']>;
   readonly userId: Maybe<Scalars['ID']>;
+};
+
+export type GQLLevelCodeViewClassFilterInput = {
+  readonly last30days: Maybe<Scalars['Boolean']>;
 };
 
 export type GQLLevel = {
@@ -1133,6 +1154,7 @@ export type GQLResolversTypes = {
   ViewerChangeAvatarInput: GQLViewerChangeAvatarInput;
   ViewerChangeAvatarMutationError: ResolverTypeWrapper<GQLViewerChangeAvatarMutationError>;
   ViewerChangeAvatarMutationResult: GQLResolversTypes['User'] | GQLResolversTypes['ViewerChangeAvatarMutationError'];
+  ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
   Cycle: ResolverTypeWrapper<CycleEntity>;
   LevelTheme: ResolverTypeWrapper<LevelThemeEntity>;
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
@@ -1157,6 +1179,7 @@ export type GQLResolversTypes = {
   Enrollment: ResolverTypeWrapper<EnrollmentEntity>;
   LevelCode: ResolverTypeWrapper<LevelCodeEntity>;
   LevelCodeViewTeacherClassFilterInput: GQLLevelCodeViewTeacherClassFilterInput;
+  LevelCodeViewClassFilterInput: GQLLevelCodeViewClassFilterInput;
   Level: ResolverTypeWrapper<LevelEntity>;
   TeacherClass: ResolverTypeWrapper<TeacherClassEntity>;
   Theme: ResolverTypeWrapper<ThemeEntity>;
@@ -1223,6 +1246,7 @@ export type GQLResolversParentTypes = {
   ViewerChangeAvatarInput: GQLViewerChangeAvatarInput;
   ViewerChangeAvatarMutationError: GQLViewerChangeAvatarMutationError;
   ViewerChangeAvatarMutationResult: GQLResolversParentTypes['User'] | GQLResolversParentTypes['ViewerChangeAvatarMutationError'];
+  ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
   Cycle: CycleEntity;
   LevelTheme: LevelThemeEntity;
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
@@ -1247,6 +1271,7 @@ export type GQLResolversParentTypes = {
   Enrollment: EnrollmentEntity;
   LevelCode: LevelCodeEntity;
   LevelCodeViewTeacherClassFilterInput: GQLLevelCodeViewTeacherClassFilterInput;
+  LevelCodeViewClassFilterInput: GQLLevelCodeViewClassFilterInput;
   Level: LevelEntity;
   TeacherClass: TeacherClassEntity;
   Theme: ThemeEntity;
@@ -1353,6 +1378,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   theme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQuerythemeArgs, 'id'>>;
   themeTotal: Resolver<Maybe<ReadonlyArray<GQLResolversTypes['ThemeTotal']>>, ParentType, ContextType, RequireFields<GQLQuerythemeTotalArgs, 'classId'>>;
   themes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType>;
+  viewerEnrollmentLevelCodes: Resolver<ReadonlyArray<GQLResolversTypes['LevelCode']>, ParentType, ContextType, RequireFields<GQLQueryviewerEnrollmentLevelCodesArgs, never>>;
   viewerTeacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType>;
   viewerTeacherLevelCodes: Resolver<ReadonlyArray<GQLResolversTypes['LevelCode']>, ParentType, ContextType, RequireFields<GQLQueryviewerTeacherLevelCodesArgs, never>>;
 };
@@ -1658,6 +1684,7 @@ export type GQLLevelCodeResolvers<ContextType = GraphQLContext, ParentType exten
   levelId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
   level: Resolver<Maybe<GQLResolversTypes['Level']>, ParentType, ContextType>;
   viewerTeacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType, RequireFields<GQLLevelCodeviewerTeacherClassesArgs, never>>;
+  viewerClasses: Resolver<ReadonlyArray<GQLResolversTypes['Class']>, ParentType, ContextType, RequireFields<GQLLevelCodeviewerClassesArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 

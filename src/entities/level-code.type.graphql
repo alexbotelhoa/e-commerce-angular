@@ -9,9 +9,14 @@ type LevelCode {
   viewerTeacherClasses(
     filters: LevelCodeViewTeacherClassFilterInput
   ): [TeacherClass!]!
+  viewerClasses(filters: LevelCodeViewClassFilterInput): [Class!]!
 }
 
 input LevelCodeViewTeacherClassFilterInput {
   active: Boolean
   userId: ID
+}
+
+input LevelCodeViewClassFilterInput {
+  last30days: Boolean
 }

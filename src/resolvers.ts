@@ -97,5 +97,5 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     ThemeTotal: themeTotalResolvers,
     TeacherClassesActivated: teacherClassesActivatedResolvers,
     ClassItem: classItemResolvers,
-    LevelCodeItem: levelCodeItemResolvers,
+    LevelCodeItem: levelCodeItemResolvers
 };
