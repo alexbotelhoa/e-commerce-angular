@@ -1,7 +1,7 @@
 
 
 import { createRepository } from "../services/repository.service";
-import { CAMPUS_TABLE, CampusEntity } from "../../entities/CAMPUS.entity";
+import { CAMPUS_TABLE, CampusEntity } from "../../entities/campus.entity";
 
 export const {
     getById: getCampusById,
