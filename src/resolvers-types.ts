@@ -437,6 +437,7 @@ export type GQLQuery = {
   readonly myEnrollments: ReadonlyArray<GQLEnrollment>;
   readonly myLevels: ReadonlyArray<GQLLevel>;
   readonly overallClassCompletedActivities: Maybe<GQLOverallClassCompletedActivities>;
+  readonly progressStudents: GQLProgressStudent;
   readonly teacherClasses: ReadonlyArray<GQLTeacherClass>;
   readonly teacherClassesActivated: ReadonlyArray<GQLTeacherClassesActivated>;
   readonly theme: Maybe<GQLTheme>;
@@ -520,6 +521,11 @@ export type GQLQuerylevelThemesArgs = {
 
 export type GQLQueryoverallClassCompletedActivitiesArgs = {
   classId: Scalars['ID'];
+};
+
+
+export type GQLQueryprogressStudentsArgs = {
+  data: GQLProgressStudentsQueryInput;
 };
 
 
@@ -775,6 +781,18 @@ export type GQLOverallClassCompletedActivities = {
   readonly completedActivities: Scalars['Int'];
   readonly totalStudents: Scalars['Int'];
   readonly overallCompletion: Scalars['Float'];
+};
+
+export type GQLProgressStudent = {
+  readonly __typename?: 'ProgressStudent';
+  readonly name: Scalars['String'];
+  readonly totalActivities: Scalars['Int'];
+  readonly totalActivitiesCompleted: Scalars['Int'];
+};
+
+export type GQLProgressStudentsQueryInput = {
+  readonly classId: Scalars['ID'];
+  readonly studentId: Scalars['ID'];
 };
 
 export type GQLLevelCodeItem = {
@@ -1159,6 +1177,8 @@ export type GQLResolversTypes = {
   LevelTheme: ResolverTypeWrapper<LevelThemeEntity>;
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
   OverallClassCompletedActivities: ResolverTypeWrapper<GQLOverallClassCompletedActivities>;
+  ProgressStudent: ResolverTypeWrapper<GQLProgressStudent>;
+  ProgressStudentsQueryInput: GQLProgressStudentsQueryInput;
   LevelCodeItem: ResolverTypeWrapper<GQLLevelCodeItem>;
   ClassItem: ResolverTypeWrapper<GQLClassItem>;
   TeacherClassesActivated: ResolverTypeWrapper<GQLTeacherClassesActivated>;
@@ -1251,6 +1271,8 @@ export type GQLResolversParentTypes = {
   LevelTheme: LevelThemeEntity;
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
   OverallClassCompletedActivities: GQLOverallClassCompletedActivities;
+  ProgressStudent: GQLProgressStudent;
+  ProgressStudentsQueryInput: GQLProgressStudentsQueryInput;
   LevelCodeItem: GQLLevelCodeItem;
   ClassItem: GQLClassItem;
   TeacherClassesActivated: GQLTeacherClassesActivated;
@@ -1373,6 +1395,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   myEnrollments: Resolver<ReadonlyArray<GQLResolversTypes['Enrollment']>, ParentType, ContextType>;
   myLevels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
   overallClassCompletedActivities: Resolver<Maybe<GQLResolversTypes['OverallClassCompletedActivities']>, ParentType, ContextType, RequireFields<GQLQueryoverallClassCompletedActivitiesArgs, 'classId'>>;
+  progressStudents: Resolver<GQLResolversTypes['ProgressStudent'], ParentType, ContextType, RequireFields<GQLQueryprogressStudentsArgs, 'data'>>;
   teacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType, RequireFields<GQLQueryteacherClassesArgs, 'data'>>;
   teacherClassesActivated: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClassesActivated']>, ParentType, ContextType>;
   theme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQuerythemeArgs, 'id'>>;
@@ -1535,6 +1558,13 @@ export type GQLOverallClassCompletedActivitiesResolvers<ContextType = GraphQLCon
   completedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   totalStudents: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   overallCompletion: Resolver<GQLResolversTypes['Float'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type GQLProgressStudentResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ProgressStudent'] = GQLResolversParentTypes['ProgressStudent']> = {
+  name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  totalActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  totalActivitiesCompleted: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
@@ -1780,6 +1810,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Cycle: GQLCycleResolvers<ContextType>;
   LevelTheme: GQLLevelThemeResolvers<ContextType>;
   OverallClassCompletedActivities: GQLOverallClassCompletedActivitiesResolvers<ContextType>;
+  ProgressStudent: GQLProgressStudentResolvers<ContextType>;
   LevelCodeItem: GQLLevelCodeItemResolvers<ContextType>;
   ClassItem: GQLClassItemResolvers<ContextType>;
   TeacherClassesActivated: GQLTeacherClassesActivatedResolvers<ContextType>;

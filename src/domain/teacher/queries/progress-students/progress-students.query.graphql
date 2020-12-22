@@ -1,0 +1,14 @@
+type Query {
+  progressStudents(data: ProgressStudentsQueryInput!): ProgressStudent!
+}
+
+type ProgressStudent {
+  name: String!
+  totalActivities: Int!
+  totalActivitiesCompleted: Int!
+}
+
+input ProgressStudentsQueryInput {
+  classId: ID!
+  studentId: ID!
+}

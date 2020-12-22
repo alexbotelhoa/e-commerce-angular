@@ -40,6 +40,7 @@ import { classCyclesQueryResolver } from "../../domain/teacher/queries/class-cyc
 import { themeTotalQueryResolver } from "../../domain/theme/resolvers/theme.total-parts.resolvers";
 import { teacherClassesActivatedQueryResolver } from "../../domain/teacher/queries/teacher-classes-activated/teacher-classes-activated.resolvers";
 import { viewerEnrollmentLevelCodesQueryResolver } from "../../domain/enrollment/queries/viewer-enrollment-level-codes/viewer-enrollment-level-codes.query";
+import { progressStudentsQueryResolver } from "../../domain/teacher/queries/progress-students/progress-students.query";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -77,4 +78,5 @@ export const queryResolvers: GQLResolvers['Query'] = {
     themeTotal: themeTotalQueryResolver,
     teacherClassesActivated: teacherClassesActivatedQueryResolver,
     viewerEnrollmentLevelCodes: viewerEnrollmentLevelCodesQueryResolver,
+    progressStudents: progressStudentsQueryResolver,
 }

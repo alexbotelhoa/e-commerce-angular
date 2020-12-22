@@ -1,10 +1,11 @@
 import { GQLQueryResolvers } from "../../../../resolvers-types";
 import { ENROLLMENT_TABLE } from "../../../../entities/enrollment.entity";
 import { LEVEL_CODE_TABLE } from "../../../../entities/level-code.entity";
+import { ENROLLMENT_CLASS_TABLE } from "../../../../entities/enrollment-class.entity";
 
 export const viewerEnrollmentLevelCodesQueryResolver: GQLQueryResolvers['viewerEnrollmentLevelCodes'] = async (obj, params, context) => {
     const user = context.currentUser;
-    if (!user) {
+    if (!user || !params || !params.filters) {
         return [];
     }
 
@@ -12,7 +13,7 @@ export const viewerEnrollmentLevelCodesQueryResolver: GQLQueryResolvers['viewerE
         .distinct(`${LEVEL_CODE_TABLE}.*`)
         .from(LEVEL_CODE_TABLE)
         .innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.levelCodeId`, `${LEVEL_CODE_TABLE}.id`)
-        .andWhere('userId', params.filters?.userId);
+        .andWhere('userId', params.filters.userId);
 
     const entities = await query;
     return entities;

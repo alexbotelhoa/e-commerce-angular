@@ -20,9 +20,9 @@ import { studentReportController } from './domain/user/controllers/student-repor
 
 const environment = environmentFactory();
 const app = fastify({
-  // logger: {
-  //   level: "debug"
-  // },
+  logger: {
+    level: "debug"
+  },
   bodyLimit: 4 * 1024 * 1024 // 4MiB
 });
 
