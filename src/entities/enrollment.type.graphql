@@ -1,6 +1,6 @@
 type Enrollment {
-    id: ID!
-    userId: ID!
-    levelCodeId: ID!
-    levelCode: LevelCode!
+  id: ID!
+  userId: ID!
+  levelCodeId: ID!
+  levelCode: LevelCode!
 }

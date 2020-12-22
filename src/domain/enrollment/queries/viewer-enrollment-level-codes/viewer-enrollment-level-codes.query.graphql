@@ -1,0 +1,10 @@
+type Query {
+  viewerEnrollmentLevelCodes(
+    filters: ViewerEnrollmenLevelCodestFilterInput
+  ): [LevelCode!]!
+}
+
+input ViewerEnrollmenLevelCodestFilterInput {
+  last30days: Boolean
+  userId: ID
+}

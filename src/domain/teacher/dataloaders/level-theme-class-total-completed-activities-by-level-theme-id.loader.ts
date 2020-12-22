@@ -16,17 +16,17 @@ export const levelThemeClassTotalCompletedActivitiesByLevelThemeIdLoader: Databa
         const levelThemeIdsParameters = ids.map(() => '?').join(',');
         const result = await db.raw(
             `select count(*)
-    , activity_timer.classId as classId
-    , level_theme.id as levelThemeId
-from activity_timer
-inner join cycle_activity on cycle_activity.id = activity_timer.cycleActivityId
-inner join cycle on cycle.id = cycle_activity.cycleId
-inner join level_theme on level_theme.id = cycle.levelThemeId
-where 
-activity_timer.completed = true
-and activity_timer.classId = ?
-and level_theme.id IN (${levelThemeIdsParameters})
-group by activity_timer.classId, level_theme.id`
+                , activity_timer.classId as classId
+                , level_theme.id as levelThemeId
+            from activity_timer
+            inner join cycle_activity on cycle_activity.id = activity_timer.cycleActivityId
+            inner join cycle on cycle.id = cycle_activity.cycleId
+            inner join level_theme on level_theme.id = cycle.levelThemeId
+            where 
+                activity_timer.completed = true
+                and activity_timer.classId = ?
+                and level_theme.id IN (${levelThemeIdsParameters})
+            group by activity_timer.classId, level_theme.id`
             , [
                 classId,
                 ...ids,

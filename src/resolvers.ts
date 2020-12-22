@@ -48,6 +48,7 @@ import { classItemResolvers, levelCodeItemResolvers, teacherClassesActivatedReso
 import { regionalResolvers } from "./shared/resolvers/regional.resolvers";
 import { localResolvers } from "./shared/resolvers/local.resolvers";
 import { campusResolvers } from "./shared/resolvers/campus.resolvers";
+import { progressStudentsResolver } from "./domain/teacher/queries/progress-students/progress-students.query";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -104,4 +105,5 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Campus: campusResolvers,
     Local: localResolvers,
     Regional: regionalResolvers,
+    ProgressStudent: progressStudentsResolver,
 };
