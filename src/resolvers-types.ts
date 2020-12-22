@@ -920,7 +920,6 @@ export type GQLEnrollmentClass = {
 export type GQLEnrollment = {
   readonly __typename?: 'Enrollment';
   readonly id: Scalars['ID'];
-  readonly name: Scalars['String'];
   readonly userId: Scalars['ID'];
   readonly levelCodeId: Scalars['ID'];
   readonly levelCode: GQLLevelCode;
@@ -1670,7 +1669,6 @@ export type GQLEnrollmentClassResolvers<ContextType = GraphQLContext, ParentType
 
 export type GQLEnrollmentResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Enrollment'] = GQLResolversParentTypes['Enrollment']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
-  name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   userId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   levelCodeId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   levelCode: Resolver<GQLResolversTypes['LevelCode'], ParentType, ContextType>;

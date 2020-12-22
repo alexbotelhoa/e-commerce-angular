@@ -1,6 +1,5 @@
 type Enrollment {
   id: ID!
-  name: String!
   userId: ID!
   levelCodeId: ID!
   levelCode: LevelCode!
