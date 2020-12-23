@@ -984,6 +984,7 @@ export type GQLLevelCodeViewTeacherClassFilterInput = {
 
 export type GQLLevelCodeViewClassFilterInput = {
   readonly last30days: Maybe<Scalars['Boolean']>;
+  readonly userId: Maybe<Scalars['ID']>;
 };
 
 export type GQLLevel = {

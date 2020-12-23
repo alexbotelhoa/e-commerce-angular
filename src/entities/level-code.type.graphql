@@ -19,4 +19,5 @@ input LevelCodeViewTeacherClassFilterInput {
 
 input LevelCodeViewClassFilterInput {
   last30days: Boolean
+  userId: ID
 }

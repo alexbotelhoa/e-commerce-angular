@@ -7,7 +7,6 @@ import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 import { TEACHER_CLASS_TABLE, TeacherClassEntity } from "../../entities/teacher-class.entity";
 import { CLASS_TABLE, ClassEntity } from "../../entities/class.entity";
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
-import { format, subDays } from "date-fns";
 import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
 
 const levelCodeEntityResolvers: Pick<GQLLevelCodeResolvers, keyof LevelCodeEntity> = {
@@ -81,9 +80,21 @@ export const levelCodeViewerTeacherClassesByLevelCodeIdLoader: DatabaseLoaderFac
 export const levelCodeViewerClassesByLevelCodeIdLoader: DatabaseLoaderFactory<number, ClassEntity[], ClassEntity[], LevelCodeViewClassFilterInput> = {
     id: 'levelCodeViewerClassesByLevelCodeId',
     batchFn: (db, params) => async (ids) => {
-        const query = db.select([`${CLASS_TABLE}.*`])
-                .from(CLASS_TABLE)
-                .whereIn(`${CLASS_TABLE}.levelCodeId`, ids);
+
+        if(!params || !params.filters || !params.filters.userId) {
+            return [];
+        }
+
+        const query = db
+            .distinct(`${CLASS_TABLE}.*`)
+            .from(ENROLLMENT_TABLE)
+            .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.id`, `${ENROLLMENT_TABLE}.levelCodeId`)
+            .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.levelCodeId`, `${LEVEL_CODE_TABLE}.id`)
+            .whereIn(`${LEVEL_CODE_TABLE}.id`, ids)
+
+        if (params.filters.userId) {
+            query.andWhere(`${ENROLLMENT_TABLE}.userId`, '=', params.filters.userId);
+        }
 
         if (params.filters?.last30days) {
             query.andWhere(`${CLASS_TABLE}.endDate`, '>=', db.raw('DATE_ADD(CURRENT_DATE(), INTERVAL - 30 DAY)'));

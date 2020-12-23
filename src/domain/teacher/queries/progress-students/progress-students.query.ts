@@ -46,8 +46,8 @@ export const progressStudentsQueryResolver: GQLQueryResolvers['progressStudents'
         where e.userId = '${data.studentId}' and c.id='${data.classId}'
     `);
 
-    const result: any = await query;
-    return result[0][0];
+    const resultQuery: any = await query;
+    return resultQuery[0][0];
 }
 
 export const progressStudentsResolver: GQLProgressStudentResolvers = {
