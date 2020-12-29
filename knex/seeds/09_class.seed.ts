@@ -13,6 +13,9 @@ export const basicClass1Seed: ClassEntity = {
     sessionId: null,
     startDate: null,
     endDate: null,
+    campusId: null,
+    localId: null,
+    regionalId: null
 }
 
 export const intermediaryClass2Seed: ClassEntity = {
@@ -25,6 +28,9 @@ export const intermediaryClass2Seed: ClassEntity = {
     sessionId: null,
     startDate: null,
     endDate: null,
+    campusId: null,
+    localId: null,
+    regionalId: null
 }
 
 export const advancedClass3Seed: ClassEntity = {
@@ -37,6 +43,9 @@ export const advancedClass3Seed: ClassEntity = {
     sessionId: null,
     startDate: null,
     endDate: null,
+    campusId: null,
+    localId: null,
+    regionalId: null
 }
 
 export const allClassSeeds = [
