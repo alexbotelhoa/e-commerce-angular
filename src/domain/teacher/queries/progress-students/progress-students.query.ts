@@ -7,6 +7,7 @@ export interface ProgressStudents {
 }
 
 export const progressStudentsQueryResolver: GQLQueryResolvers['progressStudents'] = async (obj, { data }, context) => {
+
     const query = context.database.raw<ProgressStudents>(`
         select u2.name, a.totalActivities, IFNULL(b.totalActivitiesCompleted, 0) as totalActivitiesCompleted
         from enrollment e 
@@ -47,7 +48,16 @@ export const progressStudentsQueryResolver: GQLQueryResolvers['progressStudents'
     `);
 
     const resultQuery: any = await query;
-    return resultQuery[0][0];
+    const item = resultQuery[0][0];
+    if (!item) {
+        return {
+            name: "",
+            totalActivities: 0,
+            totalActivitiesCompleted: 0
+        };
+    }
+
+    return item;
 }
 
 export const progressStudentsResolver: GQLProgressStudentResolvers = {
