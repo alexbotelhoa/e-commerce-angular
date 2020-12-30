@@ -39,7 +39,8 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
                 success: false,
             };
         }
-        await upsertUserAndMakeEnrollment(userData, db, userData, existingLevelCode, {
+        const existingUser = await getUserById(db)(userData.id);
+        await upsertUserAndMakeEnrollment(existingUser, db, userData, existingLevelCode, {
             ...classFound,
             endDate: classFound.endDate instanceof Date ? classFound.endDate?.toString() : classFound.endDate,
             startDate: classFound.startDate instanceof Date ? classFound.startDate?.toString() : classFound.startDate, level: {
