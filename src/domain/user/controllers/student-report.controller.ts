@@ -16,7 +16,13 @@ SELECT
 	-- DATEDIFF(class.endDate, CURDATE()) as DifDate,
 	level.name as Nivel,
 	level_code.code as CodigoNivel,
-	totalActivitiesByClass.totalActivities as TotalAtividades,
+    totalActivitiesByClass.totalActivities as TotalAtividades,
+    regional.name as Regional,
+	campus.name as Campus,
+	local.name as Local,
+	regional.description as RegionalDesc,
+	campus.description as CampusDesc,
+	local.description as LocalDesc,
 	IFNULL(totalProgressChecksByClass.totalProgressChecks, 0) as totalProgressChecks,
 	IFNULL(completedActivitiesByUserAndClass.completedActivities, 0) as AtividadesFinalizadas,
 	IFNULL(completedProgressChecksByUserAndClass.completedProgressChecks, 0) as ProgressChecksFinalizados,
@@ -29,6 +35,12 @@ inner join class on class.id = enrollment_class.classId
     AND ( (class.endDate is not null) or (class.startDate is not null))
  	 AND DATEDIFF(CURDATE(), class.endDate) < 29
     AND class.startDate <= CURDATE()
+inner join local on
+	 local.id = class.localId
+inner join campus on
+	campus.id = local.campusId
+inner join regional on 
+	regional.id = campus.regionalId	 
 inner join level_code on level_code.id = class.levelCodeId
 inner join level on level.id = level_code.levelId
 LEFT JOIN
