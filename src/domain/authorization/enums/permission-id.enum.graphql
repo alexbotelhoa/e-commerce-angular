@@ -6,4 +6,5 @@ enum PermissionId {
     EXECUTE_ACTIVITY
     MANAGE_COMMENTS
     MANAGE_CLASS
+    HORIZONT_ONE
 }

@@ -19,6 +19,7 @@ export const studentRole: Role = {
     name: 'Student',
     permissionMap: {
         EXECUTE_ACTIVITY: true,
+        HORIZONT_ONE: true,
     }
 }
 
