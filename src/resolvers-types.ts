@@ -244,7 +244,7 @@ export type GQLMutationupdateThemeArgs = {
 
 
 export type GQLMutationupsertOrRemoveUserInterestArgs = {
-  data: GQLupsertUserInterest;
+  data: GQLUpsertUserInterestInput;
 };
 
 
@@ -416,9 +416,8 @@ export type GQLUpdateThemeInput = {
   readonly icon: GQLIconDataInput;
 };
 
-export type GQLupsertUserInterest = {
+export type GQLUpsertUserInterestInput = {
   readonly interestId: Scalars['Int'];
-  readonly userId: Scalars['ID'];
 };
 
 export type GQLQuery = {
@@ -1223,7 +1222,7 @@ export type GQLResolversTypes = {
   CreateThemeInput: GQLCreateThemeInput;
   IconDataInput: GQLIconDataInput;
   UpdateThemeInput: GQLUpdateThemeInput;
-  upsertUserInterest: GQLupsertUserInterest;
+  UpsertUserInterestInput: GQLUpsertUserInterestInput;
   Query: ResolverTypeWrapper<{}>;
   ActivityCommentsQueryInput: GQLActivityCommentsQueryInput;
   ClassesQueryInput: GQLClassesQueryInput;
@@ -1327,7 +1326,7 @@ export type GQLResolversParentTypes = {
   CreateThemeInput: GQLCreateThemeInput;
   IconDataInput: GQLIconDataInput;
   UpdateThemeInput: GQLUpdateThemeInput;
-  upsertUserInterest: GQLupsertUserInterest;
+  UpsertUserInterestInput: GQLUpsertUserInterestInput;
   Query: {};
   ActivityCommentsQueryInput: GQLActivityCommentsQueryInput;
   ClassesQueryInput: GQLClassesQueryInput;

@@ -13,17 +13,25 @@ async function calculateOrderUserInterest(db: DatabaseService<any, any>, userId:
     return 1
 }
 
-export const upsertOrRemoteUserInterestMutationResolver: GQLMutationResolvers['upsertOrRemoveUserInterest'] = async (obj, params, { database: db }) => {
-    const hasUserInterest = getOneOrNull(await selectUserInterest(db).where("userId", "=", params.data.userId)
+export const upsertOrRemoteUserInterestMutationResolver: GQLMutationResolvers['upsertOrRemoveUserInterest'] = async (obj, params, context) => {
+
+    const db = context.database;
+    const user = context.currentUser;
+
+    if (!user) {
+        return null;
+    }
+
+    const hasUserInterest = getOneOrNull(await selectUserInterest(db).where("userId", "=", user.id)
         .andWhere("interestId", "=", params.data.interestId))
     if (hasUserInterest) {
-        await deleteUserInterest(db)(builder => builder.andWhere("userId", "=", params.data.userId)
+        await deleteUserInterest(db)(builder => builder.andWhere("userId", "=", user.id)
             .andWhere("interestId", "=", params.data.interestId));
     } else {
-        const order = await calculateOrderUserInterest(db, params.data.userId)
+        const order = await calculateOrderUserInterest(db, user.id)
         await insertUserInterest(db)({
             interestId: params.data.interestId.toString(),
-            userId: params.data.userId,
+            userId: user.id,
             order
         })
         return getInterestById(db)(params.data.interestId.toString())

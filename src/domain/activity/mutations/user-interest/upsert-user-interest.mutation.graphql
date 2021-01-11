@@ -1,8 +1,7 @@
 type Mutation {
-    upsertOrRemoveUserInterest(data: upsertUserInterest!): Interest
+    upsertOrRemoveUserInterest(data: UpsertUserInterestInput!): Interest
 }
 
-input upsertUserInterest {
+input UpsertUserInterestInput {
     interestId: Int!
-    userId: ID!
 }
