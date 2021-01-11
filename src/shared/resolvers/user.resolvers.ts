@@ -1,5 +1,5 @@
 import { GQLUserInterest, GQLUserResolvers } from "../../resolvers-types"
-import { UserEntity } from "../../entities/user.entity";
+import { UserEntity, USER_TABLE } from "../../entities/user.entity";
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 import { UserRoleEntity } from "../../entities/user-role.entity";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
@@ -23,8 +23,9 @@ import { getAvatarsByIds } from "../repositories/avatar.repository";
 import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 import { totalProgressChecksByClassIdLoader } from "../../domain/activity/resolvers/user/user.total-progress-checks-completed-for-class.resolver";
 import { selectUserInterest } from "../repositories/user-interest.repository";
-import { getInterestById, selectInterest } from "../repositories/interest.repository";
-import { InterestEntity } from "../../entities/interest.entity";
+import { getInterestById } from "../repositories/interest.repository";
+import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
+import { ACTIVITY_TABLE } from "../../entities/activity.entity";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
@@ -191,6 +192,23 @@ export const userInterestResolver: GQLUserResolvers['userInterest'] = async (obj
     return response;
 }
 
+export const studentLevelResolver: GQLUserResolvers['studentLevel'] = async (obj, params, context) => {
+    let totalCompletedActivities = 0;
+    const result = await context.database.count().from(USER_TABLE)
+        .innerJoin(`${ACTIVITY_TIMER_TABLE}`, `${ACTIVITY_TIMER_TABLE}.userId`, `${USER_TABLE}.id`)
+        .innerJoin(`${CYCLE_ACTIVITY_TABLE}`, `${CYCLE_ACTIVITY_TABLE}.id`, `${ACTIVITY_TIMER_TABLE}.cycleActivityId`)
+        .innerJoin(`${ACTIVITY_TABLE}`, `${ACTIVITY_TABLE}.id`, `${CYCLE_ACTIVITY_TABLE}.activityId`)
+        .where(`${ACTIVITY_TIMER_TABLE}.completed`, "=", 1)
+        .andWhere(`${USER_TABLE}.id`, "=", obj.id)
+        .andWhere(context.database.raw(`${ACTIVITY_TABLE}.name NOT LIKE '%Progress Check%'`))
+    if (result.length > 0) {
+        totalCompletedActivities = result[0]["count(*)"]
+    }
+    return {
+        totalCompletedActivities
+    };
+}
+
 export const userResolvers: GQLUserResolvers = {
     ...userEntityResolvers,
     initials: userInitialsResolver,
@@ -204,6 +222,7 @@ export const userResolvers: GQLUserResolvers = {
     avatar: userAvatarFieldResolver,
     totalProgressChecksCompletedForClass: totalProgressChecksByClassFieldResolver,
     userInterest: userInterestResolver,
+    studentLevel: studentLevelResolver,
 }
 
 

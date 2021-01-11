@@ -13,4 +13,9 @@ type User {
   avatarId: ID
   avatar: Avatar
   userInterest: [UserInterest!]!
+  studentLevel: studentLevel!
+}
+
+type studentLevel {
+      totalCompletedActivities: Int!
 }

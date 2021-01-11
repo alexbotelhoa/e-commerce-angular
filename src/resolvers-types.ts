@@ -637,6 +637,7 @@ export type GQLUser = {
   readonly name: Scalars['String'];
   readonly onboarded: Scalars['Boolean'];
   readonly roles: ReadonlyArray<GQLRole>;
+  readonly studentLevel: GQLstudentLevel;
   readonly teacherClasses: ReadonlyArray<GQLTeacherClass>;
   readonly totalAvailableActivities: Scalars['Int'];
   readonly totalCompletedActivities: Scalars['Int'];
@@ -1092,6 +1093,11 @@ export type GQLUserRole = {
   readonly role: GQLRole;
 };
 
+export type GQLstudentLevel = {
+  readonly __typename?: 'studentLevel';
+  readonly totalCompletedActivities: Scalars['Int'];
+};
+
 
 export type GQLGenericError = {
   readonly message: Scalars['String'];
@@ -1279,6 +1285,7 @@ export type GQLResolversTypes = {
   ThemeIcon: ResolverTypeWrapper<ThemeIconEntity>;
   UserInterest: ResolverTypeWrapper<GQLUserInterest>;
   UserRole: ResolverTypeWrapper<UserRoleEntity>;
+  studentLevel: ResolverTypeWrapper<GQLstudentLevel>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   GenericError: ResolverTypeWrapper<GenericError>;
   SimpleError: ResolverTypeWrapper<SimpleError>;
@@ -1380,6 +1387,7 @@ export type GQLResolversParentTypes = {
   ThemeIcon: ThemeIconEntity;
   UserInterest: GQLUserInterest;
   UserRole: UserRoleEntity;
+  studentLevel: GQLstudentLevel;
   DateTime: Scalars['DateTime'];
   GenericError: GenericError;
   SimpleError: SimpleError;
@@ -1517,6 +1525,7 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   onboarded: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   roles: Resolver<ReadonlyArray<GQLResolversTypes['Role']>, ParentType, ContextType>;
+  studentLevel: Resolver<GQLResolversTypes['studentLevel'], ParentType, ContextType>;
   teacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType>;
   totalAvailableActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   totalCompletedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
@@ -1893,6 +1902,11 @@ export type GQLUserRoleResolvers<ContextType = GraphQLContext, ParentType extend
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GQLstudentLevelResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['studentLevel'] = GQLResolversParentTypes['studentLevel']> = {
+  totalCompletedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface GQLDateTimeScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
@@ -1963,6 +1977,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   ThemeIcon: GQLThemeIconResolvers<ContextType>;
   UserInterest: GQLUserInterestResolvers<ContextType>;
   UserRole: GQLUserRoleResolvers<ContextType>;
+  studentLevel: GQLstudentLevelResolvers<ContextType>;
   DateTime: GraphQLScalarType;
   GenericError: GQLGenericErrorResolvers<ContextType>;
   SimpleError: GQLSimpleErrorResolvers<ContextType>;

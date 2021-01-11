@@ -51,6 +51,7 @@ import { campusResolvers } from "./shared/resolvers/campus.resolvers";
 import { progressStudentsResolver } from "./domain/teacher/queries/progress-students/progress-students.query";
 import { interestEntityResolvers } from "./shared/resolvers/interest.resolver";
 import { userInterestResolvers } from "./shared/resolvers/user-interest.resolver";
+import { studentLevelResolvers } from "./shared/resolvers/student-level.resolvers";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -110,4 +111,5 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     ProgressStudent: progressStudentsResolver,
     Interest: interestEntityResolvers,
     UserInterest: userInterestResolvers,
+    studentLevel: studentLevelResolvers
 };
