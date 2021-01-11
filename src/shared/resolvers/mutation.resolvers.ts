@@ -37,6 +37,7 @@ import { startActivityMutationResolver } from "../../domain/activity/mutations/s
 import { completeActivityMutationResolver } from "../../domain/activity/mutations/complete-activity/complete-activity.mutation";
 import { viewerChangeAvatarMutationResolver } from "../../domain/avatar/mutations/viewer-change-avatar/viewer-change-avatar.mutation";
 import { finishOnboardMutationResolver } from "../../domain/activity/mutations/finish-onboard/finish-onboard.mutation";
+import { upsertOrRemoteUserInterestMutationResolver } from "../../domain/activity/mutations/user-interest/upsert-or-remove-user-interest.mutation";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,
@@ -87,4 +88,5 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     completeActivity: completeActivityMutationResolver,
     viewerChangeAvatar: viewerChangeAvatarMutationResolver,
     finishOnboard: finishOnboardMutationResolver,
+    upsertOrRemoveUserInterest: upsertOrRemoteUserInterestMutationResolver,
 }

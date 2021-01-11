@@ -88,6 +88,7 @@ export type GQLMutation = {
   readonly updateEmbeddedActivity: GQLEmbeddedActivity;
   readonly updateLevelThemesOrder: ReadonlyArray<GQLLevelTheme>;
   readonly updateTheme: GQLTheme;
+  readonly upsertOrRemoveUserInterest: Maybe<GQLInterest>;
   readonly viewerChangeAvatar: GQLViewerChangeAvatarMutationResult;
 };
 
@@ -239,6 +240,11 @@ export type GQLMutationupdateLevelThemesOrderArgs = {
 
 export type GQLMutationupdateThemeArgs = {
   data: GQLUpdateThemeInput;
+};
+
+
+export type GQLMutationupsertOrRemoveUserInterestArgs = {
+  data: GQLupsertUserInterest;
 };
 
 
@@ -410,6 +416,11 @@ export type GQLUpdateThemeInput = {
   readonly icon: GQLIconDataInput;
 };
 
+export type GQLupsertUserInterest = {
+  readonly interestId: Scalars['Int'];
+  readonly userId: Scalars['ID'];
+};
+
 export type GQLQuery = {
   readonly __typename?: 'Query';
   readonly activeChallenge: GQLChallenge;
@@ -431,6 +442,7 @@ export type GQLQuery = {
   readonly cycleActivity: Maybe<GQLCycleActivity>;
   readonly cycles: ReadonlyArray<GQLCycle>;
   readonly icons: ReadonlyArray<GQLThemeIcon>;
+  readonly interest: ReadonlyArray<GQLInterest>;
   readonly level: Maybe<GQLLevel>;
   readonly levelCodes: ReadonlyArray<GQLLevelCode>;
   readonly levelTheme: Maybe<GQLLevelTheme>;
@@ -506,6 +518,11 @@ export type GQLQuerycycleActivityArgs = {
 };
 
 
+export type GQLQueryinterestArgs = {
+  filters: GQLInterestPaginationData;
+};
+
+
 export type GQLQuerylevelArgs = {
   id: Scalars['ID'];
 };
@@ -568,6 +585,11 @@ export type GQLClassesQueryInput = {
   readonly carrerIds: Maybe<ReadonlyArray<Scalars['ID']>>;
 };
 
+export type GQLInterestPaginationData = {
+  readonly page: Maybe<Scalars['ID']>;
+  readonly perpage: Maybe<Scalars['ID']>;
+};
+
 export type GQLLevelThemesQueryInput = {
   readonly levelId: Scalars['ID'];
   readonly enrollmentStudent: Maybe<Scalars['ID']>;
@@ -619,6 +641,7 @@ export type GQLUser = {
   readonly totalAvailableActivities: Scalars['Int'];
   readonly totalCompletedActivities: Scalars['Int'];
   readonly totalProgressChecksCompletedForClass: Scalars['Int'];
+  readonly userInterest: ReadonlyArray<GQLUserInterest>;
   readonly userRoles: ReadonlyArray<GQLUserRole>;
 };
 
@@ -956,6 +979,12 @@ export type GQLEnrollment = {
   readonly levelCode: GQLLevelCode;
 };
 
+export type GQLInterest = {
+  readonly __typename?: 'Interest';
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['ID'];
+};
+
 export type GQLLevelCode = {
   readonly __typename?: 'LevelCode';
   readonly id: Scalars['ID'];
@@ -1043,6 +1072,15 @@ export type GQLThemeIcon = {
   readonly __typename?: 'ThemeIcon';
   readonly themeId: Scalars['ID'];
   readonly content: Scalars['String'];
+};
+
+export type GQLUserInterest = {
+  readonly __typename?: 'UserInterest';
+  readonly id: Scalars['ID'];
+  readonly order: Scalars['Int'];
+  readonly interestId: Scalars['ID'];
+  readonly userId: Scalars['ID'];
+  readonly interest: GQLInterest;
 };
 
 export type GQLUserRole = {
@@ -1179,9 +1217,11 @@ export type GQLResolversTypes = {
   CreateThemeInput: GQLCreateThemeInput;
   IconDataInput: GQLIconDataInput;
   UpdateThemeInput: GQLUpdateThemeInput;
+  upsertUserInterest: GQLupsertUserInterest;
   Query: ResolverTypeWrapper<{}>;
   ActivityCommentsQueryInput: GQLActivityCommentsQueryInput;
   ClassesQueryInput: GQLClassesQueryInput;
+  InterestPaginationData: GQLInterestPaginationData;
   LevelThemesQueryInput: GQLLevelThemesQueryInput;
   AvailableThemesInputData: GQLAvailableThemesInputData;
   Class: ResolverTypeWrapper<ClassEntity>;
@@ -1227,6 +1267,7 @@ export type GQLResolversTypes = {
   CycleActivity: ResolverTypeWrapper<CycleActivityEntity>;
   EnrollmentClass: ResolverTypeWrapper<EnrollmentClassEntity>;
   Enrollment: ResolverTypeWrapper<EnrollmentEntity>;
+  Interest: ResolverTypeWrapper<GQLInterest>;
   LevelCode: ResolverTypeWrapper<LevelCodeEntity>;
   LevelCodeViewTeacherClassFilterInput: GQLLevelCodeViewTeacherClassFilterInput;
   LevelCodeViewClassFilterInput: GQLLevelCodeViewClassFilterInput;
@@ -1236,6 +1277,7 @@ export type GQLResolversTypes = {
   TeacherClass: ResolverTypeWrapper<TeacherClassEntity>;
   Theme: ResolverTypeWrapper<ThemeEntity>;
   ThemeIcon: ResolverTypeWrapper<ThemeIconEntity>;
+  UserInterest: ResolverTypeWrapper<GQLUserInterest>;
   UserRole: ResolverTypeWrapper<UserRoleEntity>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   GenericError: ResolverTypeWrapper<GenericError>;
@@ -1278,9 +1320,11 @@ export type GQLResolversParentTypes = {
   CreateThemeInput: GQLCreateThemeInput;
   IconDataInput: GQLIconDataInput;
   UpdateThemeInput: GQLUpdateThemeInput;
+  upsertUserInterest: GQLupsertUserInterest;
   Query: {};
   ActivityCommentsQueryInput: GQLActivityCommentsQueryInput;
   ClassesQueryInput: GQLClassesQueryInput;
+  InterestPaginationData: GQLInterestPaginationData;
   LevelThemesQueryInput: GQLLevelThemesQueryInput;
   AvailableThemesInputData: GQLAvailableThemesInputData;
   Class: ClassEntity;
@@ -1324,6 +1368,7 @@ export type GQLResolversParentTypes = {
   CycleActivity: CycleActivityEntity;
   EnrollmentClass: EnrollmentClassEntity;
   Enrollment: EnrollmentEntity;
+  Interest: GQLInterest;
   LevelCode: LevelCodeEntity;
   LevelCodeViewTeacherClassFilterInput: GQLLevelCodeViewTeacherClassFilterInput;
   LevelCodeViewClassFilterInput: GQLLevelCodeViewClassFilterInput;
@@ -1333,6 +1378,7 @@ export type GQLResolversParentTypes = {
   TeacherClass: TeacherClassEntity;
   Theme: ThemeEntity;
   ThemeIcon: ThemeIconEntity;
+  UserInterest: GQLUserInterest;
   UserRole: UserRoleEntity;
   DateTime: Scalars['DateTime'];
   GenericError: GenericError;
@@ -1377,6 +1423,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   updateEmbeddedActivity: Resolver<GQLResolversTypes['EmbeddedActivity'], ParentType, ContextType, RequireFields<GQLMutationupdateEmbeddedActivityArgs, 'data'>>;
   updateLevelThemesOrder: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLMutationupdateLevelThemesOrderArgs, 'data'>>;
   updateTheme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType, RequireFields<GQLMutationupdateThemeArgs, 'data'>>;
+  upsertOrRemoveUserInterest: Resolver<Maybe<GQLResolversTypes['Interest']>, ParentType, ContextType, RequireFields<GQLMutationupsertOrRemoveUserInterestArgs, 'data'>>;
   viewerChangeAvatar: Resolver<GQLResolversTypes['ViewerChangeAvatarMutationResult'], ParentType, ContextType, RequireFields<GQLMutationviewerChangeAvatarArgs, 'data'>>;
 };
 
@@ -1422,6 +1469,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   cycleActivity: Resolver<Maybe<GQLResolversTypes['CycleActivity']>, ParentType, ContextType, RequireFields<GQLQuerycycleActivityArgs, 'id'>>;
   cycles: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType>;
   icons: Resolver<ReadonlyArray<GQLResolversTypes['ThemeIcon']>, ParentType, ContextType>;
+  interest: Resolver<ReadonlyArray<GQLResolversTypes['Interest']>, ParentType, ContextType, RequireFields<GQLQueryinterestArgs, 'filters'>>;
   level: Resolver<Maybe<GQLResolversTypes['Level']>, ParentType, ContextType, RequireFields<GQLQuerylevelArgs, 'id'>>;
   levelCodes: Resolver<ReadonlyArray<GQLResolversTypes['LevelCode']>, ParentType, ContextType>;
   levelTheme: Resolver<Maybe<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQuerylevelThemeArgs, 'id'>>;
@@ -1473,6 +1521,7 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   totalAvailableActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   totalCompletedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   totalProgressChecksCompletedForClass: Resolver<GQLResolversTypes['Int'], ParentType, ContextType, RequireFields<GQLUsertotalProgressChecksCompletedForClassArgs, 'classId'>>;
+  userInterest: Resolver<ReadonlyArray<GQLResolversTypes['UserInterest']>, ParentType, ContextType>;
   userRoles: Resolver<ReadonlyArray<GQLResolversTypes['UserRole']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1751,6 +1800,12 @@ export type GQLEnrollmentResolvers<ContextType = GraphQLContext, ParentType exte
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GQLInterestResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Interest'] = GQLResolversParentTypes['Interest']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  name: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GQLLevelCodeResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['LevelCode'] = GQLResolversParentTypes['LevelCode']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   code: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
@@ -1817,6 +1872,15 @@ export type GQLThemeResolvers<ContextType = GraphQLContext, ParentType extends G
 export type GQLThemeIconResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ThemeIcon'] = GQLResolversParentTypes['ThemeIcon']> = {
   themeId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   content: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GQLUserInterestResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['UserInterest'] = GQLResolversParentTypes['UserInterest']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  order: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  interestId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  userId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  interest: Resolver<GQLResolversTypes['Interest'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1889,6 +1953,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   CycleActivity: GQLCycleActivityResolvers<ContextType>;
   EnrollmentClass: GQLEnrollmentClassResolvers<ContextType>;
   Enrollment: GQLEnrollmentResolvers<ContextType>;
+  Interest: GQLInterestResolvers<ContextType>;
   LevelCode: GQLLevelCodeResolvers<ContextType>;
   Level: GQLLevelResolvers<ContextType>;
   Local: GQLLocalResolvers<ContextType>;
@@ -1896,6 +1961,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   TeacherClass: GQLTeacherClassResolvers<ContextType>;
   Theme: GQLThemeResolvers<ContextType>;
   ThemeIcon: GQLThemeIconResolvers<ContextType>;
+  UserInterest: GQLUserInterestResolvers<ContextType>;
   UserRole: GQLUserRoleResolvers<ContextType>;
   DateTime: GraphQLScalarType;
   GenericError: GQLGenericErrorResolvers<ContextType>;

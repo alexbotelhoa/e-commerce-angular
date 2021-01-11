@@ -12,4 +12,5 @@ type User {
   defaultLevelTypeId: LevelTypeId!
   avatarId: ID
   avatar: Avatar
+  userInterest: [UserInterest!]!
 }
