@@ -18,7 +18,33 @@ const enrollmentClassClassByIdDataLoader: DatabaseLoaderFactory<string, ClassEnt
     batchFn: db => async (ids) => {
         const classes = await getClassesByIds(db)(ids);
         const sortedClasses = enrollmentClassClassByIdSorter(ids)(classes);
-        return sortedClasses;
+        const now = new Date().getTime()
+        const validClasses = sortedClasses.filter(item => {
+            if (item.startDate instanceof Date) {
+                return item.startDate.getTime() <= now;
+            }
+            return false;
+        })
+        const invalidClasses = sortedClasses.filter(item => {
+            if (item.startDate instanceof Date) {
+                return item.startDate.getTime() > now;
+            }
+            return false;
+        })
+        const sortedActiveClasses = validClasses.sort((a, b) => {
+            let endDateA = a.endDate
+            let endDateB = b.endDate
+            endDateA = endDateA instanceof Date && endDateA ? endDateA : endDateA
+            endDateB = endDateB instanceof Date && endDateB ? endDateB : endDateB
+            if (endDateA instanceof Date && endDateB instanceof Date) {
+                return endDateA.getTime() < endDateB.getTime() ? 1 : -1;
+            } else if (endDateA && endDateB) {
+                return new Date(endDateA).getTime() > new Date(endDateB).getTime() ? 1 : -1;
+            } else {
+                return -1
+            }
+        });
+        return [...sortedActiveClasses, ...invalidClasses];
     }
 }
 
