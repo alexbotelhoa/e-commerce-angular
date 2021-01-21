@@ -19,6 +19,7 @@ import { webhookEventsController } from './domain/user/controllers/webhook-event
 import { studentReportController } from './domain/user/controllers/student-report.controller';
 
 
+
 const environment = environmentFactory();
 const app = fastify({
   logger: {
