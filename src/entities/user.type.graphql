@@ -1,6 +1,8 @@
 type User {
   id: ID!
   name: String!
+  macPass: String
+  macId: String
   initials: String!
   roles: [Role!]!
   userRoles: [UserRole!]!

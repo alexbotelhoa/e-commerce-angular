@@ -8,6 +8,7 @@ export interface Environment {
     DB_NAME: string;
     JWT_SECRET: string;
     CI_PORTAL_URL: string;
+    HORIZON_ONE_URL: string;
     PRODUCTION: boolean;
     STUDENT_GRADE_INTEGRATION_URL: string,
     STUDENT_GRADE_INTEGRATION_API_KEY: string,

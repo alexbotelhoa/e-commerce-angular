@@ -95,6 +95,8 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
 
   app.post('/authentication', {}, authenticationController(environment.CI_PORTAL_URL, databaseService));
 
+  app.post('/horizon-one-authentication', {}, authenticationController(environment.HORIZON_ONE_URL, databaseService));
+
   app.post('/student-grades', {}, classStudentGradesController(environment, databaseService, readonlyDatabaseService));
   app.get('/student-report.csv', {}, studentReportController(environment, databaseService, readonlyDatabaseService));
 

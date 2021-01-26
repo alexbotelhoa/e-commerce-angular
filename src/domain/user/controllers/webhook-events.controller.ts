@@ -13,6 +13,8 @@ import { WebhookErrorResponse, WebhookResponse } from "../types/webhook-events.t
 const UserDataType = t.type({
     id: t.string,
     name: t.string,
+    macId: t.union([t.string, t.null]),
+    macPass: t.union([t.string, t.null]),
 });
 
 

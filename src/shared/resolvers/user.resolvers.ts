@@ -32,6 +32,8 @@ const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     name: obj => obj.name,
     onboarded: obj => obj.onboarded,
     avatarId: obj => obj.avatarId?.toString(10) || null,
+    macId: obj => obj.macId || null,
+    macPass: obj => obj.macPass || null,
 }
 
 const userUserRoleSorter = createDataloaderMultiSort<UserRoleEntity, string>('userId');

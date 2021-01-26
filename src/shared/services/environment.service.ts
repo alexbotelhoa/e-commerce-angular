@@ -19,6 +19,7 @@ export const environmentFactory = (): Environment => {
         DB_CLIENT: getEnvironmentVariable('DB_CLIENT'),
         DB_NAME: getEnvironmentVariable('DB_NAME'),
         JWT_SECRET: getEnvironmentVariable('JWT_SECRET'),
+        HORIZON_ONE_URL: getEnvironmentVariable('HORIZON_ONE_URL'),
         CI_PORTAL_URL: getEnvironmentVariable('CI_PORTAL_URL'),
         PRODUCTION: DB_HOST !== 'localhost',
         STUDENT_GRADE_INTEGRATION_URL: getEnvironmentVariable('STUDENT_GRADE_INTEGRATION_URL'),

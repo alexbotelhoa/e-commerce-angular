@@ -633,6 +633,8 @@ export type GQLUser = {
   readonly id: Scalars['ID'];
   readonly initials: Scalars['String'];
   readonly isTeacher: Scalars['Boolean'];
+  readonly macId: Maybe<Scalars['String']>;
+  readonly macPass: Maybe<Scalars['String']>;
   readonly name: Scalars['String'];
   readonly onboarded: Scalars['Boolean'];
   readonly roles: ReadonlyArray<GQLRole>;
@@ -1521,6 +1523,8 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   initials: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   isTeacher: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  macId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  macPass: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   onboarded: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   roles: Resolver<ReadonlyArray<GQLResolversTypes['Role']>, ParentType, ContextType>;
