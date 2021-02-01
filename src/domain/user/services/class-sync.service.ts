@@ -21,6 +21,7 @@ import { RoleId } from "../../../resolvers-types";
 import { UserRoleEntity } from "../../../entities/user-role.entity";
 import { deleteTeacherClass, insertTeacherClass, selectTeacherClass } from "../../../shared/repositories/teacher-class.repository";
 import { consolidateEntities, ConsolidateFinder } from "../../../shared/utils/consolidate-entities";
+import { insertMeeting } from "../../../shared/repositories/meeting.repository";
 
 
 export const processClassSync =
@@ -66,6 +67,7 @@ export const processClassSync =
                 ...times,
             })
             await processTeacherData(db, classData)
+            await processMeetingData(db, classData)
             return {
                 success: true,
             }
@@ -96,6 +98,7 @@ export const processClassSync =
                 })(where => where.andWhere('id', classData.id));
             }
             await processTeacherData(db, classData)
+            await processMeetingData(db, classData)
             return {
                 success: true,
             }
@@ -179,6 +182,20 @@ async function processTeacherData(db: DatabaseService, classData: t.TypeOf<typeo
             await consolidateTeacherClasses(db, teacher.id, [teacherClassData]);
         }
     }
+}
+
+async function processMeetingData(db: DatabaseService, classData: t.TypeOf<typeof ClassWithLocationsFullDataType>) {
+    const meetings = classData.meetings
+    const classId = classData.id;
+    if (meetings.length > 0) {
+        for (const meet of meetings) {
+            await insertMeeting(db)({
+                classId,
+                ...meet,
+            })
+        }
+    }
+
 }
 
 async function consolidateTeacherClasses(
