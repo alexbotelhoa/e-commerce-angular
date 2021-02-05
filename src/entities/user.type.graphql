@@ -16,6 +16,7 @@ type User {
   avatar: Avatar
   userInterest: [UserInterest!]!
   studentLevel: studentLevel!
+  meeting: [Meeting]
 }
 
 type studentLevel {

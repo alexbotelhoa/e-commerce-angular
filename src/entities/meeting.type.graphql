@@ -1,9 +1,9 @@
 type Meeting {
     id: ID!
-    date: string;
-    objetive: string;
-    startHour: string;
-    endHour: string;
+    date: String
+    objetive: String
+    startHour: String
+    endHour: String
     classId: ID!
     class: Class!
 }

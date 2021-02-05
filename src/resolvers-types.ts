@@ -37,6 +37,7 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -635,6 +636,7 @@ export type GQLUser = {
   readonly isTeacher: Scalars['Boolean'];
   readonly macId: Maybe<Scalars['String']>;
   readonly macPass: Maybe<Scalars['String']>;
+  readonly meeting: Maybe<ReadonlyArray<Maybe<GQLMeeting>>>;
   readonly name: Scalars['String'];
   readonly onboarded: Scalars['Boolean'];
   readonly roles: ReadonlyArray<GQLRole>;
@@ -1044,6 +1046,17 @@ export type GQLLocal = {
   readonly campusId: Maybe<Scalars['ID']>;
 };
 
+export type GQLMeeting = {
+  readonly __typename?: 'Meeting';
+  readonly id: Scalars['ID'];
+  readonly date: Maybe<Scalars['String']>;
+  readonly objetive: Maybe<Scalars['String']>;
+  readonly startHour: Maybe<Scalars['String']>;
+  readonly endHour: Maybe<Scalars['String']>;
+  readonly classId: Scalars['ID'];
+  readonly class: GQLClass;
+};
+
 export type GQLRegional = {
   readonly __typename?: 'Regional';
   readonly id: Scalars['ID'];
@@ -1280,6 +1293,7 @@ export type GQLResolversTypes = {
   LevelCodeViewClassFilterInput: GQLLevelCodeViewClassFilterInput;
   Level: ResolverTypeWrapper<LevelEntity>;
   Local: ResolverTypeWrapper<GQLLocal>;
+  Meeting: ResolverTypeWrapper<Omit<GQLMeeting, 'class'> & { class: GQLResolversTypes['Class'] }>;
   Regional: ResolverTypeWrapper<GQLRegional>;
   TeacherClass: ResolverTypeWrapper<TeacherClassEntity>;
   Theme: ResolverTypeWrapper<ThemeEntity>;
@@ -1382,6 +1396,7 @@ export type GQLResolversParentTypes = {
   LevelCodeViewClassFilterInput: GQLLevelCodeViewClassFilterInput;
   Level: LevelEntity;
   Local: GQLLocal;
+  Meeting: Omit<GQLMeeting, 'class'> & { class: GQLResolversParentTypes['Class'] };
   Regional: GQLRegional;
   TeacherClass: TeacherClassEntity;
   Theme: ThemeEntity;
@@ -1525,6 +1540,7 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   isTeacher: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   macId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   macPass: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  meeting: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Meeting']>>>, ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   onboarded: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   roles: Resolver<ReadonlyArray<GQLResolversTypes['Role']>, ParentType, ContextType>;
@@ -1855,6 +1871,17 @@ export type GQLLocalResolvers<ContextType = GraphQLContext, ParentType extends G
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GQLMeetingResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Meeting'] = GQLResolversParentTypes['Meeting']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  date: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  objetive: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  startHour: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  endHour: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  class: Resolver<GQLResolversTypes['Class'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GQLRegionalResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Regional'] = GQLResolversParentTypes['Regional']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
@@ -1974,6 +2001,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   LevelCode: GQLLevelCodeResolvers<ContextType>;
   Level: GQLLevelResolvers<ContextType>;
   Local: GQLLocalResolvers<ContextType>;
+  Meeting: GQLMeetingResolvers<ContextType>;
   Regional: GQLRegionalResolvers<ContextType>;
   TeacherClass: GQLTeacherClassResolvers<ContextType>;
   Theme: GQLThemeResolvers<ContextType>;

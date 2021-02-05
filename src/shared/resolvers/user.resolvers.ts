@@ -211,6 +211,12 @@ export const studentLevelResolver: GQLUserResolvers['studentLevel'] = async (obj
     };
 }
 
+export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, context) => {
+
+    return null
+
+}
+
 export const userResolvers: GQLUserResolvers = {
     ...userEntityResolvers,
     initials: userInitialsResolver,
@@ -225,6 +231,7 @@ export const userResolvers: GQLUserResolvers = {
     totalProgressChecksCompletedForClass: totalProgressChecksByClassFieldResolver,
     userInterest: userInterestResolver,
     studentLevel: studentLevelResolver,
+    meeting: meetingResolver,
 }
 
 
