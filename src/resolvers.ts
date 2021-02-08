@@ -49,6 +49,10 @@ import { regionalResolvers } from "./shared/resolvers/regional.resolvers";
 import { localResolvers } from "./shared/resolvers/local.resolvers";
 import { campusResolvers } from "./shared/resolvers/campus.resolvers";
 import { progressStudentsResolver } from "./domain/teacher/queries/progress-students/progress-students.query";
+import { interestEntityResolvers } from "./shared/resolvers/interest.resolver";
+import { userInterestResolvers } from "./shared/resolvers/user-interest.resolver";
+import { studentLevelResolvers } from "./shared/resolvers/student-level.resolvers";
+import { meetingResolvers } from "./shared/resolvers/meeting.resolver";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -106,4 +110,8 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Local: localResolvers,
     Regional: regionalResolvers,
     ProgressStudent: progressStudentsResolver,
+    Interest: interestEntityResolvers,
+    UserInterest: userInterestResolvers,
+    studentLevel: studentLevelResolvers,
+    Meeting: meetingResolvers,
 };

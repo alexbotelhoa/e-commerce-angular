@@ -1,0 +1,8 @@
+type Query {
+    interest(filters: InterestPaginationData!): [Interest!]!
+}
+
+input InterestPaginationData {
+    page: ID
+    perpage: ID
+}

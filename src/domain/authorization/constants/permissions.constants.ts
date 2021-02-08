@@ -38,6 +38,11 @@ export const permissionsById: Record<PermissionId, Permission> = {
         name: 'Manage class',
         description: `Manage classes`
     },
+    HORIZONT_ONE: {
+        id: 'HORIZONT_ONE',
+        name: 'Horizont One',
+        description: `Horizont One`
+    },
 }
 
 export const permissionsList: ReadonlyArray<Permission> = objectKeys(permissionsById)

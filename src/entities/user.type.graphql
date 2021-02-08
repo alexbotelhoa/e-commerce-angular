@@ -1,6 +1,8 @@
 type User {
   id: ID!
   name: String!
+  macPass: String
+  macId: String
   initials: String!
   roles: [Role!]!
   userRoles: [UserRole!]!
@@ -12,4 +14,11 @@ type User {
   defaultLevelTypeId: LevelTypeId!
   avatarId: ID
   avatar: Avatar
+  userInterest: [UserInterest!]!
+  studentLevel: studentLevel!
+  meeting: [Meeting]
+}
+
+type studentLevel {
+      totalCompletedActivities: Int!
 }

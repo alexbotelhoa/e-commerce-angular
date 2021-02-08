@@ -28,6 +28,13 @@ const LevelDataType = t.type({
     code: t.string,
 })
 
+const meeting = t.type({
+    date: t.string,
+    objetive: t.string,
+    startHour: t.string,
+    endHour: t.string
+})
+
 export const ClassWithLocationsFullDataType = t.type({
     id: t.string,
     name: t.string,
@@ -54,6 +61,7 @@ export const ClassWithLocationsFullDataType = t.type({
     reportCard1P: t.string,
     reportCard2P: t.string,
     assessment: t.array(assessment),
+    meetings: t.array(meeting),
     instructor: t.array(instructor)
 })
 

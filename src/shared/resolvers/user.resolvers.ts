@@ -1,5 +1,5 @@
-import { GQLUserResolvers } from "../../resolvers-types"
-import { UserEntity } from "../../entities/user.entity";
+import { GQLUserInterest, GQLUserResolvers } from "../../resolvers-types"
+import { UserEntity, USER_TABLE } from "../../entities/user.entity";
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 import { UserRoleEntity } from "../../entities/user-role.entity";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
@@ -22,12 +22,21 @@ import { AvatarEntity } from "../../entities/avatar.entity";
 import { getAvatarsByIds } from "../repositories/avatar.repository";
 import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 import { totalProgressChecksByClassIdLoader } from "../../domain/activity/resolvers/user/user.total-progress-checks-completed-for-class.resolver";
+import { selectUserInterest } from "../repositories/user-interest.repository";
+import { getInterestById } from "../repositories/interest.repository";
+import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
+import { ACTIVITY_TABLE } from "../../entities/activity.entity";
+import { selectEnrollmentClass } from "../repositories/enrollment-class.repository";
+import { selectEnrollment } from "../repositories/enrollment.repository";
+import { selectMeeting } from "../repositories/meeting.repository";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
     name: obj => obj.name,
     onboarded: obj => obj.onboarded,
     avatarId: obj => obj.avatarId?.toString(10) || null,
+    macId: obj => obj.macId || null,
+    macPass: obj => obj.macPass || null,
 }
 
 const userUserRoleSorter = createDataloaderMultiSort<UserRoleEntity, string>('userId');
@@ -172,6 +181,53 @@ export const totalProgressChecksByClassFieldResolver: GQLUserResolvers['totalPro
     return context.getDatabaseLoader(totalProgressChecksByClassIdLoader, params.classId).load(obj.id);
 }
 
+export const userInterestResolver: GQLUserResolvers['userInterest'] = async (obj, params, context) => {
+    const userId = obj.id;
+    const userInterests = await selectUserInterest(context.database).where(`userId`, "=", userId)
+    const response: GQLUserInterest[] = [];
+    for await (const int of userInterests) {
+        const interest = await getInterestById(context.database)(int.interestId)
+        if (interest) {
+            response.push({
+                ...int,
+                interest,
+            })
+        }
+    }
+    return response;
+}
+
+export const studentLevelResolver: GQLUserResolvers['studentLevel'] = async (obj, params, context) => {
+    let totalCompletedActivities = 0;
+    const result = await context.database.count().from(USER_TABLE)
+        .innerJoin(`${ACTIVITY_TIMER_TABLE}`, `${ACTIVITY_TIMER_TABLE}.userId`, `${USER_TABLE}.id`)
+        .innerJoin(`${CYCLE_ACTIVITY_TABLE}`, `${CYCLE_ACTIVITY_TABLE}.id`, `${ACTIVITY_TIMER_TABLE}.cycleActivityId`)
+        .innerJoin(`${ACTIVITY_TABLE}`, `${ACTIVITY_TABLE}.id`, `${CYCLE_ACTIVITY_TABLE}.activityId`)
+        .where(`${ACTIVITY_TIMER_TABLE}.completed`, "=", 1)
+        .andWhere(`${USER_TABLE}.id`, "=", obj.id)
+        .andWhere(context.database.raw(`${ACTIVITY_TABLE}.name NOT LIKE '%Progress Check%'`))
+    if (result.length > 0) {
+        totalCompletedActivities = result[0]["count(*)"]
+    }
+    return {
+        totalCompletedActivities
+    };
+}
+
+export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, context) => {
+    const userId = obj.id;
+
+    const enrollment = await selectEnrollment(context.readonlyDatabase).where(`userId`, "=", userId)
+    if (enrollment.length === 0) {
+        return []
+    }
+    const ids = enrollment.map(i => i.id)
+    const classes = await selectEnrollmentClass(context.readonlyDatabase).whereIn("id", ids)
+    const classIds = classes.map(c => c.classId)
+    const meetings = await selectMeeting(context.readonlyDatabase).whereIn("classId", classIds)
+    return meetings
+}
+
 export const userResolvers: GQLUserResolvers = {
     ...userEntityResolvers,
     initials: userInitialsResolver,
@@ -184,7 +240,9 @@ export const userResolvers: GQLUserResolvers = {
     defaultLevelTypeId: userDefaultLevelTypeIdFieldResolver,
     avatar: userAvatarFieldResolver,
     totalProgressChecksCompletedForClass: totalProgressChecksByClassFieldResolver,
-
+    userInterest: userInterestResolver,
+    studentLevel: studentLevelResolver,
+    meeting: meetingResolver,
 }
 
 

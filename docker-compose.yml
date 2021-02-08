@@ -21,6 +21,7 @@ services:
       DB_NAME: CulturaInglesa
       JWT_SECRET: 883e105e-64bb-4614-b392-83a4c3d8a7a3
       CI_PORTAL_URL: http://localhost:4200
+      HORIZON_ONE_URL: http://localhost:4200/horizon-one
 
     ports:
       - "3000:3000"

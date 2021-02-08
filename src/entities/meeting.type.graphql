@@ -1,0 +1,8 @@
+type Meeting {
+    id: ID!
+    date: String
+    objetive: String
+    startHour: String
+    endHour: String
+    classId: ID!
+}

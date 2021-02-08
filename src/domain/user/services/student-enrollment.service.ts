@@ -6,7 +6,7 @@ import { insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/re
 import { insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
 import { getLevelCodeById, insertLevelCode } from "../../../shared/repositories/level-code.repository";
 import { insertUserRole, selectUserRole } from "../../../shared/repositories/user-role.repository";
-import { getUserById, insertUser } from "../../../shared/repositories/user.repository";
+import { getUserById, insertUser, updateUser } from "../../../shared/repositories/user.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { RoleId } from "../../authorization/enums/role-id.enum";
 import { ClassData } from "../types/class-data.type";
@@ -62,6 +62,8 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
 async function studantEnrollmentWithClassBody(userData: {
     id: string;
     name: string;
+    macId: string | null;
+    macPass: string | null;
 }, db: DatabaseService, classData: ClassData) {
     const levelData = classData.level;
     const existingUser = await getUserById(db)(userData.id);
@@ -105,9 +107,11 @@ async function studantEnrollmentWithClassBody(userData: {
     await upsertUserAndMakeEnrollment(existingUser, db, userData, levelData, classData);
 }
 
-async function upsertUserAndMakeEnrollment(existingUser: { id: string; name: string; } | null,
+async function upsertUserAndMakeEnrollment(existingUser: {
+    id: string; name: string;
+} | null,
     db: DatabaseService,
-    userData: { id: string; name: string; },
+    userData: { id: string; name: string; macId: string | null; macPass: string | null; },
     levelData: { id: number; code: string; },
     classData: ClassData) {
     if (!existingUser) {
@@ -117,6 +121,8 @@ async function upsertUserAndMakeEnrollment(existingUser: { id: string; name: str
                 name: userData.name,
                 avatarId: null,
                 onboarded: false,
+                macId: userData.macId,
+                macPass: userData.macPass,
             });
             await insertUserRole(trx)({
                 roleId: RoleId.STUDENT,
@@ -134,7 +140,11 @@ async function upsertUserAndMakeEnrollment(existingUser: { id: string; name: str
     } else {
         const existingStudentRoles = await selectUserRole(db).andWhere('roleId', RoleId.STUDENT).andWhere('userId', userData.id);
         const [existingEnrollment] = await selectEnrollment(db).andWhere('userId', userData.id).andWhere('levelCodeId', levelData.id);
-
+        // we need to update user, because mac id and pass are required for some systems
+        await updateUser(db)({
+            macId: userData.macId,
+            macPass: userData.macPass,
+        })(where => where.andWhere('id', existingUser.id));
         if (existingStudentRoles.length === 0) {
             await insertUserRole(db)({
                 roleId: RoleId.STUDENT,

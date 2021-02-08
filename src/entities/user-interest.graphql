@@ -1,0 +1,7 @@
+type UserInterest {
+  id: ID!
+  order: Int!
+  interestId: ID!
+  userId: ID!
+  interest: Interest!
+}
