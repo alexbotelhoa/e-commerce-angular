@@ -26,6 +26,9 @@ import { selectUserInterest } from "../repositories/user-interest.repository";
 import { getInterestById } from "../repositories/interest.repository";
 import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
 import { ACTIVITY_TABLE } from "../../entities/activity.entity";
+import { selectEnrollmentClass } from "../repositories/enrollment-class.repository";
+import { selectEnrollment } from "../repositories/enrollment.repository";
+import { selectMeeting } from "../repositories/meeting.repository";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
@@ -212,9 +215,17 @@ export const studentLevelResolver: GQLUserResolvers['studentLevel'] = async (obj
 }
 
 export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, context) => {
+    const userId = obj.id;
 
-    return null
-
+    const enrollment = await selectEnrollment(context.readonlyDatabase).where(`userId`, "=", userId)
+    if (enrollment.length === 0) {
+        return []
+    }
+    const ids = enrollment.map(i => i.id)
+    const classes = await selectEnrollmentClass(context.readonlyDatabase).whereIn("id", ids)
+    const classIds = classes.map(c => c.classId)
+    const meetings = await selectMeeting(context.readonlyDatabase).whereIn("classId", classIds)
+    return meetings
 }
 
 export const userResolvers: GQLUserResolvers = {

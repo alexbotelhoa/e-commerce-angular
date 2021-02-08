@@ -5,5 +5,4 @@ type Meeting {
     startHour: String
     endHour: String
     classId: ID!
-    class: Class!
 }
