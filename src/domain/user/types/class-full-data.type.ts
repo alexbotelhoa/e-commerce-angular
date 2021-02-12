@@ -61,7 +61,7 @@ export const ClassWithLocationsFullDataType = t.type({
     reportCard1P: t.string,
     reportCard2P: t.string,
     assessment: t.array(assessment),
-    meetings: t.array(meeting),
+    meetings: t.union([t.array(meeting), t.null, t.undefined]),
     instructor: t.array(instructor)
 })
 
