@@ -27,12 +27,7 @@ export const meetingEntityResolvers: Pick<GQLMeetingResolvers, keyof MeetingEnti
     startHour: obj => obj.startHour
 }
 
-export const teacherClassClassesFieldResolver: GQLMeetingResolvers['class'] = async (obj, params, context) => {
-    return context.getDatabaseLoader(MeetingClassByClassIdLoader, undefined).load(obj.classId);
-};
-
 
 export const meetingResolvers: GQLMeetingResolvers = {
-    ...meetingEntityResolvers,
-    class: teacherClassClassesFieldResolver
+    ...meetingEntityResolvers
 }
