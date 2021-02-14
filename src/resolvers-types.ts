@@ -1,4 +1,4 @@
-import { EnrollmentEntity } from './entities/enrollment.entity';
+import { CycleActivityEntity } from './entities/cycle-activity.entity';
 import { ActivityTypeId } from './domain/activity/enums/activity-type.enum';
 import { RoleId } from './domain/authorization/enums/role-id.enum';
 import { PermissionId } from './domain/authorization/enums/permission-id.enum';
@@ -18,8 +18,8 @@ import { HtmlActivityDataEntity } from './entities/activities/html-activity-data
 import { ClassEntity } from './entities/class.entity';
 import { ActivityCommentEntity } from './entities/comments/activity-comment.entity';
 import { CycleEntity } from './entities/cycle.entity';
-import { CycleActivityEntity } from './entities/cycle-activity.entity';
 import { LevelTypeId } from './domain/activity/enums/level-type.enum';
+import { EnrollmentEntity } from './entities/enrollment.entity';
 import { EnrollmentClassEntity } from './entities/enrollment-class.entity';
 import { TeacherClassEntity } from './entities/teacher-class.entity';
 import { LevelThemeEntity } from './entities/level-theme.entity';
@@ -37,7 +37,6 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Mayb
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type Maybe<T> = T | null;
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
