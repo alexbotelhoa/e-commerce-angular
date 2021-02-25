@@ -1,0 +1,24 @@
+type Event {
+  id: ID!
+  userId: ID!
+  classId: String!
+  periodId: String
+  sessionId: String
+  startDate: String
+  endDate: String!
+  vacancies: String
+  enrolled: String
+  subject: String
+  daysOfWeekSchedule: String
+  status: String
+  teacherConclusion: String
+  career: String
+  zoomRoom: String
+  link: String
+  typeFaceToFace: String
+  category: String
+  statusEnrollment: String
+  eventInfo: [EventInfo]
+  adress: EventAdress
+  instructor: [EventInstructor]
+}

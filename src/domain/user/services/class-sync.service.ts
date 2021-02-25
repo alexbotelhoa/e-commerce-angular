@@ -187,11 +187,13 @@ async function processTeacherData(db: DatabaseService, classData: t.TypeOf<typeo
 async function processMeetingData(db: DatabaseService, classData: t.TypeOf<typeof ClassWithLocationsFullDataType>) {
     const meetings = classData.meetings
     const classId = classData.id;
-    if (meetings.length > 0) {
+    if (meetings && meetings.length > 0) {
         for (const meet of meetings) {
+            const date = format(new Date(meet.date), "yyyy-MM-dd")
             await insertMeeting(db)({
                 classId,
                 ...meet,
+                date,
             })
         }
     }

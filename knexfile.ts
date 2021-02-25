@@ -7,6 +7,7 @@ const environment = environmentFactory();
 
 const databaseConfig = databaseConfigurationFromEnvironment(environment);
 
+
 const connection: Knex.Config = {
   client: databaseConfig.client,
   connection: {

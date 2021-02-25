@@ -53,6 +53,10 @@ import { interestEntityResolvers } from "./shared/resolvers/interest.resolver";
 import { userInterestResolvers } from "./shared/resolvers/user-interest.resolver";
 import { studentLevelResolvers } from "./shared/resolvers/student-level.resolvers";
 import { meetingResolvers } from "./shared/resolvers/meeting.resolver";
+import { eventResolvers } from "./shared/resolvers/event.resolver";
+import { eventAdressResolvers } from "./shared/resolvers/event-adress.resolver";
+import { eventInfoResolvers } from "./shared/resolvers/event-info.resolver";
+import { eventInstructorResolvers } from "./shared/resolvers/event-instructor.resolvers";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -114,4 +118,8 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     UserInterest: userInterestResolvers,
     studentLevel: studentLevelResolvers,
     Meeting: meetingResolvers,
+    Event: eventResolvers,
+    EventAdress: eventAdressResolvers,
+    EventInfo: eventInfoResolvers,
+    EventInstructor: eventInstructorResolvers
 };
