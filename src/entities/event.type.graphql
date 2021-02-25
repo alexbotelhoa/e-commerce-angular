@@ -1,22 +1,24 @@
 type Event {
   id: ID!
   userId: ID!
-  classId: string!
-  period: string!
-  aula: string!
-  startDate: string!
-  endDate: string!
-  vacancies: string!
-  enrolled: string!
-  subject: string!
-  daysOfWeekSchedule: string!
-  status: string!
-  teacherConclusion: string!
-  career: string!
-  zoomRoom: string!
-  link: string!
-  typeFaceToFace: string!
-  category: string!
-  statusEnrollment: string!
+  classId: String!
+  periodId: String
+  sessionId: String
+  startDate: String
+  endDate: String!
+  vacancies: String
+  enrolled: String
+  subject: String
+  daysOfWeekSchedule: String
+  status: String
+  teacherConclusion: String
+  career: String
+  zoomRoom: String
+  link: String
+  typeFaceToFace: String
+  category: String
+  statusEnrollment: String
   eventInfo: [EventInfo]
+  adress: EventAdress
+  instructor: [EventInstructor]
 }

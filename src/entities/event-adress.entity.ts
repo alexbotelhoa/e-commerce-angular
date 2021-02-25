@@ -1,6 +1,6 @@
 export interface EventAdressEntity {
     id: string;
-    eventInfoId: string;
+    eventId: string;
     street: string;
     number: string;
     complement: string;

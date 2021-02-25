@@ -2,14 +2,14 @@ export interface EventEntity {
     id: string;
     userId: string;
     classId: string;
-    period: string;
-    aula: string;
+    periodId: string;
+    sessionId: string;
     startDate: string,
     endDate: string,
     vacancies: string;
     enrolled: string;
     subject: string;
-    DaysOfWeekSchedule: string;
+    daysOfWeekSchedule: string;
     status: string;
     teacherConclusion: string;
     career: string;
