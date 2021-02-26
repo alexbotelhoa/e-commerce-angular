@@ -79,7 +79,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string('postalCode', 100);
         table.string('city', 100);
         table.string('state', 100);
-        table.integer('eventInfoId').unsigned().references(`${EVENT_INFO_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
+        table.integer('eventId').unsigned().references(`${EVENT_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
     });
 
 }

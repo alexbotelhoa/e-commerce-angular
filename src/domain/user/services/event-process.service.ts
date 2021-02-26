@@ -33,10 +33,11 @@ export const eventProcess = async (userId: string, database: DatabaseService<any
         const ActualEvents = await selectEvent(database).where("userId", "=", userId)
         const transformedData = await transformEventData(integrationRequest.data, userId)
         for (const event of transformedData) {
-            const eventCp = { ...event }
+            const eventCp: any = { ...event }
             delete eventCp.adress;
             delete eventCp.instructor;
             delete eventCp.eventInfo;
+            delete eventCp.__typename;
             if (ActualEvents.some(e => e.classId === event.classId)) {
                 const actualEventToUpdate = ActualEvents.find(e => e.classId === event.classId)
                 const eventId = await updateEvent(database)(eventCp)(builder => builder.andWhere("id", actualEventToUpdate?.id))
