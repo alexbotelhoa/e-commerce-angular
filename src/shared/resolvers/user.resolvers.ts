@@ -1,4 +1,4 @@
-import { GQLUserInterest, GQLUserResolvers } from "../../resolvers-types"
+import { GQLEvent, GQLUserInterest, GQLUserResolvers } from "../../resolvers-types"
 import { UserEntity, USER_TABLE } from "../../entities/user.entity";
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 import { UserRoleEntity } from "../../entities/user-role.entity";
@@ -29,6 +29,12 @@ import { ACTIVITY_TABLE } from "../../entities/activity.entity";
 import { selectEnrollmentClass } from "../repositories/enrollment-class.repository";
 import { selectEnrollment } from "../repositories/enrollment.repository";
 import { selectMeeting } from "../repositories/meeting.repository";
+import { eventResolvers } from "./event.resolver";
+import { selectEvent } from "../repositories/event.repository";
+import { selectEventAdress } from "../repositories/event-adress.repository";
+import { selectEventInfo } from "../repositories/event-info.repository";
+import { selectEventInstructor } from "../repositories/event-instructor.repository";
+import { eventProcess } from "../../domain/user/services/event-process.service";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
@@ -228,6 +234,22 @@ export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, 
     return meetings
 }
 
+export const eventResolver: GQLUserResolvers['event'] = async (obj, params, context) => {
+    const userId = obj.id;
+    const event = await eventProcess(userId, context.database, context.logger)
+    const evententity = (await selectEvent(context.database).where("userId", "=", userId))
+    console.log(evententity, event, "AQUIIIIIIIIIIIIII")
+    // const event: GQLEvent = {
+    //     ...evententity || {},
+    //     adress: (await selectEventAdress(context.database).where("eventId", "=", evententity.id))[0] || {},
+    //     eventInfo: (await selectEventInfo(context.database).where("eventId", "=", evententity.id)) || [],
+    //     instructor: (await selectEventInstructor(context.database).where("eventId", "=", evententity.id)) || [],
+    // }
+    return event || [];
+
+}
+
+
 export const userResolvers: GQLUserResolvers = {
     ...userEntityResolvers,
     initials: userInitialsResolver,
@@ -243,6 +265,7 @@ export const userResolvers: GQLUserResolvers = {
     userInterest: userInterestResolver,
     studentLevel: studentLevelResolver,
     meeting: meetingResolver,
+    event: eventResolver,
 }
 
 

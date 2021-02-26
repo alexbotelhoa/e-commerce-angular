@@ -10,4 +10,4 @@ export interface EventAdressEntity {
     state: string;
 }
 
-export const EVENT_ADRESS_TABLE = "event-adress";
+export const EVENT_ADRESS_TABLE = "event_adress";

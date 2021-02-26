@@ -6,6 +6,7 @@ import { selectUserRole } from "../../../shared/repositories/user-role.repositor
 import { EnrollmentEntity } from "../../../entities/enrollment.entity";
 import * as t from "io-ts";
 import { EnrollmentClassEntity } from "../../../entities/enrollment-class.entity";
+import { getUserById } from "../../../shared/repositories/user.repository";
 
 const AlunosResponsavel = t.type({
     Id: t.union([t.Int, t.string]),
@@ -57,8 +58,8 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     request.log.info(body, 'Received authentication request');
 
     const userId = body.Id.toString();
-
-    // const userEntity = await getUserById(db)(userId);
+    const userEntity = await getUserById(db)(userId);
+    console.log(userId, userEntity, ">>>>>>>>>>>>>>>>>>>")
 
     // const turmasProfessor = body["Turmas-Professor"];
 
@@ -66,16 +67,21 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
 
     // we're using an array of roles here for shorter JWT payload
     const roles: RoleId[] = userRoles.map(userRole => userRole.roleId);
+    if (userEntity) {
+        const jwtPayload: JWTPayload = {
+            userId: userId.toString(),
+            roles: roles,
+        }
 
-    const jwtPayload: JWTPayload = {
-        userId: userId.toString(),
-        roles: roles,
+        const jwt = await reply.jwtSign(jwtPayload);
+        reply.status(200).send({
+            url: `${redirectUrl}?jwt=${jwt}`,
+        });
+    } else {
+        reply.status(404).send({
+            msg: `user not found`,
+        });
     }
-
-    const jwt = await reply.jwtSign(jwtPayload);
-    reply.status(200).send({
-        url: `${redirectUrl}?jwt=${jwt}`,
-    });
 
 }
 

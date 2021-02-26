@@ -1,12 +1,8 @@
-import { CycleActivityEntity } from './entities/cycle-activity.entity';
 import { ActivityTypeId } from './domain/activity/enums/activity-type.enum';
+import { LevelTypeId } from './domain/activity/enums/level-type.enum';
 import { RoleId } from './domain/authorization/enums/role-id.enum';
 import { PermissionId } from './domain/authorization/enums/permission-id.enum';
 import { GradeTypeId } from './domain/activity/enums/grade-type-id.enum';
-import { GraphQLContext } from './shared/types/context.type';
-import { StudentGrade } from './domain/activity/types/student-grade.type';
-import { ClassStudentGrade } from './domain/activity/types/class-student-grade.type';
-import { DeleteActivityCommentSuccessResult } from './domain/activity/mutations/delete-activity-comment/delete-activity-comment-success-result.type';
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { AvatarEntity } from './entities/avatar.entity';
 import { UserEntity } from './entities/user.entity';
@@ -18,7 +14,7 @@ import { HtmlActivityDataEntity } from './entities/activities/html-activity-data
 import { ClassEntity } from './entities/class.entity';
 import { ActivityCommentEntity } from './entities/comments/activity-comment.entity';
 import { CycleEntity } from './entities/cycle.entity';
-import { LevelTypeId } from './domain/activity/enums/level-type.enum';
+import { CycleActivityEntity } from './entities/cycle-activity.entity';
 import { EnrollmentEntity } from './entities/enrollment.entity';
 import { EnrollmentClassEntity } from './entities/enrollment-class.entity';
 import { TeacherClassEntity } from './entities/teacher-class.entity';
@@ -33,10 +29,14 @@ import { Role } from './domain/authorization/types/role.type';
 import { Permission } from './domain/authorization/types/permission.type';
 import { SimpleError } from './shared/types/errors/simple-error.type';
 import { GenericError } from './shared/types/errors/generic-error.interface';
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+import { DeleteActivityCommentSuccessResult } from './domain/activity/mutations/delete-activity-comment/delete-activity-comment-success-result.type';
+import { ClassStudentGrade } from './domain/activity/types/class-student-grade.type';
+import { StudentGrade } from './domain/activity/types/student-grade.type';
+import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -630,6 +630,7 @@ export type GQLUser = {
   readonly avatar: Maybe<GQLAvatar>;
   readonly avatarId: Maybe<Scalars['ID']>;
   readonly defaultLevelTypeId: LevelTypeId;
+  readonly event: Maybe<ReadonlyArray<Maybe<GQLEvent>>>;
   readonly id: Scalars['ID'];
   readonly initials: Scalars['String'];
   readonly isTeacher: Scalars['Boolean'];
@@ -1615,6 +1616,7 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   avatar: Resolver<Maybe<GQLResolversTypes['Avatar']>, ParentType, ContextType>;
   avatarId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
   defaultLevelTypeId: Resolver<GQLResolversTypes['LevelTypeId'], ParentType, ContextType>;
+  event: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Event']>>>, ParentType, ContextType>;
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   initials: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   isTeacher: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;

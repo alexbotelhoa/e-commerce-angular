@@ -17,6 +17,7 @@ type User {
   userInterest: [UserInterest!]!
   studentLevel: studentLevel!
   meeting: [Meeting]
+  event: [Event]
 }
 
 type studentLevel {

@@ -23,4 +23,4 @@ export interface EventInfoEntity {
     endDate: string;
 }
 
-export const EVENT_INFO_TABLE = 'event-info';
+export const EVENT_INFO_TABLE = 'event_info';

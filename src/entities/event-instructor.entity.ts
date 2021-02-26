@@ -6,4 +6,4 @@ export interface EventInstructorEntity {
     macPass: string | null;
 }
 
-export const EVENT_INSTRUCTOR_TABLE = 'event-instructor';
+export const EVENT_INSTRUCTOR_TABLE = 'event_instructor';
