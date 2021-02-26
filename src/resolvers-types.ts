@@ -1128,6 +1128,8 @@ export type GQLMeeting = {
   readonly startHour: Maybe<Scalars['String']>;
   readonly endHour: Maybe<Scalars['String']>;
   readonly classId: Scalars['ID'];
+  readonly teacherName: Maybe<Scalars['String']>;
+  readonly courseName: Maybe<Scalars['String']>;
 };
 
 export type GQLRegional = {
@@ -2034,6 +2036,8 @@ export type GQLMeetingResolvers<ContextType = GraphQLContext, ParentType extends
   startHour: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   endHour: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  teacherName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  courseName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

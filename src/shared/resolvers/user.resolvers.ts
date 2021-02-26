@@ -35,6 +35,10 @@ import { selectEventAdress } from "../repositories/event-adress.repository";
 import { selectEventInfo } from "../repositories/event-info.repository";
 import { selectEventInstructor } from "../repositories/event-instructor.repository";
 import { eventProcess } from "../../domain/user/services/event-process.service";
+import { getUserById, selectUser } from "../repositories/user.repository";
+import { selectTeacherClass } from "../repositories/teacher-class.repository";
+import { getClassById } from "../repositories/class.repository";
+import { getLevelCodeById } from "../repositories/level-code.repository";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
@@ -231,7 +235,20 @@ export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, 
     const classes = await selectEnrollmentClass(context.readonlyDatabase).whereIn("enrollmentId", ids)
     const classIds = classes.map(c => c.classId)
     const meetings = await selectMeeting(context.readonlyDatabase).whereIn("classId", classIds)
-    return meetings
+    const response: any = []
+
+    for (const meet of meetings) {
+        const teacherClass = (await selectTeacherClass(context.database).where(`classId`, "=", meet.classId))[0]
+        const teacher = await getUserById(context.database)(teacherClass.teacherId)
+        const classA = await getClassById(context.database)(teacherClass.classId)
+        const courseName = classA?.levelCodeId ? (await getLevelCodeById(context.database)(classA.levelCodeId))?.code || null : null
+        response.push({
+            ...meet,
+            teacherName: teacher && teacher.name || null,
+            courseName: courseName
+        })
+    }
+    return response
 }
 
 export const eventResolver: GQLUserResolvers['event'] = async (obj, params, context) => {

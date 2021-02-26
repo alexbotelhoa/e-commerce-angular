@@ -5,4 +5,7 @@ type Meeting {
     startHour: String
     endHour: String
     classId: ID!
+    teacherName: String
+    courseName: String
+    
 }
