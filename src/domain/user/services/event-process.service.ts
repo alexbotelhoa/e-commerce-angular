@@ -32,12 +32,15 @@ export const eventProcess = async (userId: string, database: DatabaseService<any
         });
         const ActualEvents = await selectEvent(database).where("userId", "=", userId)
         const transformedData = await transformEventData(integrationRequest.data, userId)
+        console.log(transformedData.length, "quanto eventos tem ?")
+        const response = []
         for (const event of transformedData) {
             const eventCp: any = { ...event }
             delete eventCp.adress;
             delete eventCp.instructor;
             delete eventCp.eventInfo;
             delete eventCp.__typename;
+
             if (ActualEvents.some(e => e.classId === event.classId)) {
                 const actualEventToUpdate = ActualEvents.find(e => e.classId === event.classId)
                 const eventId = await updateEvent(database)(eventCp)(builder => builder.andWhere("id", actualEventToUpdate?.id))
@@ -56,21 +59,8 @@ export const eventProcess = async (userId: string, database: DatabaseService<any
                         await updateEventInfo(database)({ ...eventInfo, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
                     }
                 }
-                const evententity = (await selectEvent(database).where("userId", "=", userId))
-                const response = []
-                for (const event of evententity) {
-                    const eventData: GQLEvent = {
-                        ...event || {},
-                        adress: (await selectEventAdress(database).where("eventId", "=", event.id))[0] || {},
-                        eventInfo: (await selectEventInfo(database).where("eventId", "=", event.id)) || [],
-                        instructor: (await selectEventInstructor(database).where("eventId", "=", event.id)) || [],
-                    }
-                    response.push(eventData)
-                }
-                return response;
             } else {
                 const eventId = await insertEvent(database)(eventCp)
-
                 if (event.adress) {
                     await insertEventAdress(database)({ ...event.adress, eventId: eventId.toString() })
                 }
@@ -79,27 +69,25 @@ export const eventProcess = async (userId: string, database: DatabaseService<any
                         await insertEventInstructor(database)({ ...teacher, eventId: eventId.toString() })
                     }
                 }
-
                 if (event.eventInfo && event.eventInfo?.length > 0) {
                     for (const eventInfo of event.eventInfo) {
                         await insertEventInfo(database)({ ...eventInfo, eventId: eventId.toString() })
                     }
                 }
-                const evententity = (await selectEvent(database).where("userId", "=", userId))
-                const response = []
-                for (const event of evententity) {
-                    const eventData: GQLEvent = {
-                        ...event || {},
-                        adress: (await selectEventAdress(database).where("eventId", "=", event.id))[0] || {},
-                        eventInfo: (await selectEventInfo(database).where("eventId", "=", event.id)) || [],
-                        instructor: (await selectEventInstructor(database).where("eventId", "=", event.id)) || [],
-                    }
-                    response.push(eventData)
-                }
-                return response;
-            }
 
+            }
         }
+        const evententity = (await selectEvent(database).where("userId", "=", userId))
+        for (const event of evententity) {
+            const eventData: GQLEvent = {
+                ...event || {},
+                adress: (await selectEventAdress(database).where("eventId", "=", event.id))[0] || {},
+                eventInfo: (await selectEventInfo(database).where("eventId", "=", event.id)) || [],
+                instructor: (await selectEventInstructor(database).where("eventId", "=", event.id)) || [],
+            }
+            response.push(eventData)
+        }
+        return response;
     } catch (error) {
         logger.error({
             msg: 'event process request error',

@@ -237,16 +237,7 @@ export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, 
 export const eventResolver: GQLUserResolvers['event'] = async (obj, params, context) => {
     const userId = obj.id;
     const event = await eventProcess(userId, context.database, context.logger)
-    const evententity = (await selectEvent(context.database).where("userId", "=", userId))
-    console.log(evententity, event, "AQUIIIIIIIIIIIIII")
-    // const event: GQLEvent = {
-    //     ...evententity || {},
-    //     adress: (await selectEventAdress(context.database).where("eventId", "=", evententity.id))[0] || {},
-    //     eventInfo: (await selectEventInfo(context.database).where("eventId", "=", evententity.id)) || [],
-    //     instructor: (await selectEventInstructor(context.database).where("eventId", "=", evententity.id)) || [],
-    // }
     return event || [];
-
 }
 
 
