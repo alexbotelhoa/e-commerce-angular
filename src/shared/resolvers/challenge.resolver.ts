@@ -6,6 +6,7 @@ export const challengeEntityResolvers: Pick<GQLChallengeResolvers, keyof Challen
     text: obj => obj.text,
     startAt: obj => obj.startAt,
     endAt: obj => obj.endAt,
+    active: obj => obj.active,
 }
 
 

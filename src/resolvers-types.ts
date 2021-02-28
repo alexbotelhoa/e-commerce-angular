@@ -58,6 +58,7 @@ export { LevelTypeId };
 export type GQLMutation = {
   readonly __typename?: 'Mutation';
   readonly activateActivity: GQLActivityUnion;
+  readonly activateChallenge: Maybe<GQLChallenge>;
   readonly activateCycle: GQLCycle;
   readonly activateLevel: GQLLevel;
   readonly activateTheme: Maybe<GQLTheme>;
@@ -73,6 +74,7 @@ export type GQLMutation = {
   readonly createLevelCode: GQLLevelCode;
   readonly createTheme: GQLTheme;
   readonly deactivateActivity: GQLActivityUnion;
+  readonly deactivateChallenge: Maybe<GQLChallenge>;
   readonly deactivateCycle: GQLCycle;
   readonly deactivateLevel: GQLLevel;
   readonly deactivateTheme: Maybe<GQLTheme>;
@@ -96,6 +98,11 @@ export type GQLMutation = {
 
 
 export type GQLMutationactivateActivityArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type GQLMutationactivateChallengeArgs = {
   id: Scalars['ID'];
 };
 
@@ -171,6 +178,11 @@ export type GQLMutationcreateThemeArgs = {
 
 
 export type GQLMutationdeactivateActivityArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type GQLMutationdeactivateChallengeArgs = {
   id: Scalars['ID'];
 };
 
@@ -954,6 +966,7 @@ export type GQLChallenge = {
   readonly text: Scalars['String'];
   readonly startAt: Scalars['DateTime'];
   readonly endAt: Scalars['DateTime'];
+  readonly active: Scalars['Boolean'];
 };
 
 export type GQLActivityComment = GQLComment & {
@@ -1536,6 +1549,7 @@ export type GQLLevelTypeIdResolvers = EnumResolverSignature<{ ADULT: any, YOUNG:
 
 export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
   activateActivity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType, RequireFields<GQLMutationactivateActivityArgs, 'id'>>;
+  activateChallenge: Resolver<Maybe<GQLResolversTypes['Challenge']>, ParentType, ContextType, RequireFields<GQLMutationactivateChallengeArgs, 'id'>>;
   activateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationactivateCycleArgs, 'id'>>;
   activateLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationactivateLevelArgs, 'id'>>;
   activateTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationactivateThemeArgs, 'id'>>;
@@ -1551,6 +1565,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   createLevelCode: Resolver<GQLResolversTypes['LevelCode'], ParentType, ContextType, RequireFields<GQLMutationcreateLevelCodeArgs, 'data'>>;
   createTheme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType, RequireFields<GQLMutationcreateThemeArgs, 'data'>>;
   deactivateActivity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType, RequireFields<GQLMutationdeactivateActivityArgs, 'id'>>;
+  deactivateChallenge: Resolver<Maybe<GQLResolversTypes['Challenge']>, ParentType, ContextType, RequireFields<GQLMutationdeactivateChallengeArgs, 'id'>>;
   deactivateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationdeactivateCycleArgs, 'id'>>;
   deactivateLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationdeactivateLevelArgs, 'id'>>;
   deactivateTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationdeactivateThemeArgs, 'id'>>;
@@ -1730,7 +1745,7 @@ export type GQLStudentGradeResolvers<ContextType = GraphQLContext, ParentType ex
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type GQLPermissionIdResolvers = EnumResolverSignature<{ MANAGE_LEVEL: any, MANAGE_THEME: any, MANAGE_CYCLE: any, MANAGE_ACTIVITY: any, EXECUTE_ACTIVITY: any, MANAGE_COMMENTS: any, MANAGE_CLASS: any, HORIZONT_ONE: any }, GQLResolversTypes['PermissionId']>;
+export type GQLPermissionIdResolvers = EnumResolverSignature<{ MANAGE_LEVEL: any, MANAGE_THEME: any, MANAGE_CYCLE: any, MANAGE_ACTIVITY: any, EXECUTE_ACTIVITY: any, MANAGE_COMMENTS: any, MANAGE_CLASS: any, MANAGE_CHALLENGE: any, HORIZONT_ONE: any }, GQLResolversTypes['PermissionId']>;
 
 export type GQLRoleIdResolvers = EnumResolverSignature<{ ADMIN: any, STUDENT: any, TEACHER: any, GUARDIAN: any }, GQLResolversTypes['RoleId']>;
 
@@ -1894,6 +1909,7 @@ export type GQLChallengeResolvers<ContextType = GraphQLContext, ParentType exten
   text: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   startAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   endAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
+  active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

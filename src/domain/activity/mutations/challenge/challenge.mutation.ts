@@ -29,3 +29,11 @@ export const updateChallengeMutationResolver: GQLMutationResolvers['updateChalle
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return (await getChallengeById(context.database)(data.id))!;
 }
+
+export const toggleChallengeState: (data: Record<'active', boolean>) => GQLMutationResolvers['activateChallenge'] | GQLMutationResolvers['deactivateChallenge'] =
+    (data: Record<'active', boolean>) =>
+        async (obj, { id }, { database: db }) => {
+            await updateChallenge(db)(data)(builder => builder.andWhere('id', parseInt(id)))
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            return (await getChallengeById(db)(id))!;
+        }

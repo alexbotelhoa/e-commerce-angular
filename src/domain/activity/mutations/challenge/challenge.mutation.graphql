@@ -1,6 +1,8 @@
 type Mutation {
   createChallenge(data: CreateChallengeInput!) : Challenge!
   updateChallenge(data: UpdateChallengeInput!) : Challenge!
+  deactivateChallenge(id:ID!) : Challenge
+  activateChallenge(id:ID!) : Challenge
 }
 
 input CreateChallengeInput {

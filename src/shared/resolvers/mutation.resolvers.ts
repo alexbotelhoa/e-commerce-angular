@@ -38,7 +38,7 @@ import { completeActivityMutationResolver } from "../../domain/activity/mutation
 import { viewerChangeAvatarMutationResolver } from "../../domain/avatar/mutations/viewer-change-avatar/viewer-change-avatar.mutation";
 import { finishOnboardMutationResolver } from "../../domain/activity/mutations/finish-onboard/finish-onboard.mutation";
 import { upsertOrRemoteUserInterestMutationResolver } from "../../domain/activity/mutations/user-interest/upsert-or-remove-user-interest.mutation";
-import { createChallengeMutationResolver, updateChallengeMutationResolver } from "../../domain/activity/mutations/challenge/challenge.mutation";
+import { createChallengeMutationResolver, toggleChallengeState, updateChallengeMutationResolver } from "../../domain/activity/mutations/challenge/challenge.mutation";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,
@@ -69,9 +69,11 @@ const levelEntityResolvers: Pick<GQLMutationResolvers, 'addThemesToLevel' | 'act
     deleteThemeFromLevel: deleteThemeFromLevelMutation,
 }
 
-const challengeEntityResolvers: Pick<GQLMutationResolvers, 'createChallenge' | 'updateChallenge'> = {
+const challengeEntityResolvers: Pick<GQLMutationResolvers, 'createChallenge' | 'updateChallenge' | 'deactivateChallenge' | 'activateChallenge'> = {
     createChallenge: createChallengeMutationResolver,
     updateChallenge: updateChallengeMutationResolver,
+    activateChallenge: toggleChallengeState({ active: true }),
+    deactivateChallenge: toggleChallengeState({ active: false }),
 }
 
 export const mutationResolvers: GQLResolvers['Mutation'] = {
