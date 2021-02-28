@@ -1,8 +1,12 @@
+import { CycleActivityEntity } from './entities/cycle-activity.entity';
 import { ActivityTypeId } from './domain/activity/enums/activity-type.enum';
-import { LevelTypeId } from './domain/activity/enums/level-type.enum';
 import { RoleId } from './domain/authorization/enums/role-id.enum';
 import { PermissionId } from './domain/authorization/enums/permission-id.enum';
 import { GradeTypeId } from './domain/activity/enums/grade-type-id.enum';
+import { GraphQLContext } from './shared/types/context.type';
+import { StudentGrade } from './domain/activity/types/student-grade.type';
+import { ClassStudentGrade } from './domain/activity/types/class-student-grade.type';
+import { DeleteActivityCommentSuccessResult } from './domain/activity/mutations/delete-activity-comment/delete-activity-comment-success-result.type';
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { AvatarEntity } from './entities/avatar.entity';
 import { UserEntity } from './entities/user.entity';
@@ -14,7 +18,7 @@ import { HtmlActivityDataEntity } from './entities/activities/html-activity-data
 import { ClassEntity } from './entities/class.entity';
 import { ActivityCommentEntity } from './entities/comments/activity-comment.entity';
 import { CycleEntity } from './entities/cycle.entity';
-import { CycleActivityEntity } from './entities/cycle-activity.entity';
+import { LevelTypeId } from './domain/activity/enums/level-type.enum';
 import { EnrollmentEntity } from './entities/enrollment.entity';
 import { EnrollmentClassEntity } from './entities/enrollment-class.entity';
 import { TeacherClassEntity } from './entities/teacher-class.entity';
@@ -29,14 +33,10 @@ import { Role } from './domain/authorization/types/role.type';
 import { Permission } from './domain/authorization/types/permission.type';
 import { SimpleError } from './shared/types/errors/simple-error.type';
 import { GenericError } from './shared/types/errors/generic-error.interface';
-import { DeleteActivityCommentSuccessResult } from './domain/activity/mutations/delete-activity-comment/delete-activity-comment-success-result.type';
-import { ClassStudentGrade } from './domain/activity/types/class-student-grade.type';
-import { StudentGrade } from './domain/activity/types/student-grade.type';
-import { GraphQLContext } from './shared/types/context.type';
-export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type Maybe<T> = T | null;
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -64,6 +64,7 @@ export type GQLMutation = {
   readonly addActivitiesToCycle: GQLCycle;
   readonly addThemesToLevel: GQLLevel;
   readonly completeActivity: GQLCompleteActivityResult;
+  readonly createChallenge: GQLChallenge;
   readonly createCommentOnActivity: GQLCreateCommentOnActivityResult;
   readonly createCycle: GQLCycle;
   readonly createEmbeddedActivity: GQLEmbeddedActivity;
@@ -82,6 +83,7 @@ export type GQLMutation = {
   readonly finishOnboard: GQLUser;
   readonly startActivity: GQLStartActivityResult;
   readonly updateBasicLevelInfo: GQLLevel;
+  readonly updateChallenge: GQLChallenge;
   readonly updateCycle: GQLCycle;
   readonly updateCycleActivitiesOrder: ReadonlyArray<GQLCycleActivity>;
   readonly updateCyclesOrder: ReadonlyArray<GQLCycle>;
@@ -125,6 +127,11 @@ export type GQLMutationaddThemesToLevelArgs = {
 
 export type GQLMutationcompleteActivityArgs = {
   data: GQLCompleteActivityInput;
+};
+
+
+export type GQLMutationcreateChallengeArgs = {
+  data: GQLCreateChallengeInput;
 };
 
 
@@ -213,6 +220,11 @@ export type GQLMutationupdateBasicLevelInfoArgs = {
 };
 
 
+export type GQLMutationupdateChallengeArgs = {
+  data: GQLUpdateChallengeInput;
+};
+
+
 export type GQLMutationupdateCycleArgs = {
   data: GQLUpdateCycleInput;
 };
@@ -284,6 +296,19 @@ export type GQLUpdateEmbeddedActivityInput = {
   readonly active: Scalars['Boolean'];
   readonly estimatedTime: Scalars['String'];
   readonly data: GQLEmbeddedActivityDataInput;
+};
+
+export type GQLCreateChallengeInput = {
+  readonly text: Scalars['String'];
+  readonly startAt: Scalars['String'];
+  readonly endAt: Scalars['String'];
+};
+
+export type GQLUpdateChallengeInput = {
+  readonly id: Scalars['ID'];
+  readonly text: Scalars['String'];
+  readonly startAt: Scalars['String'];
+  readonly endAt: Scalars['String'];
 };
 
 export type GQLCompleteActivityInput = {
@@ -429,6 +454,7 @@ export type GQLQuery = {
   readonly availableActivitiesForCycle: ReadonlyArray<GQLActivityUnion>;
   readonly availableThemes: ReadonlyArray<GQLTheme>;
   readonly avatars: ReadonlyArray<GQLAvatar>;
+  readonly challenge: Maybe<GQLChallenge>;
   readonly challenges: ReadonlyArray<GQLChallenge>;
   readonly class: Maybe<GQLClass>;
   readonly classCycles: ReadonlyArray<GQLCycle>;
@@ -479,6 +505,11 @@ export type GQLQueryavailableActivitiesForCycleArgs = {
 
 export type GQLQueryavailableThemesArgs = {
   availableThemesInputData: GQLAvailableThemesInputData;
+};
+
+
+export type GQLQuerychallengeArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -922,6 +953,7 @@ export type GQLChallenge = {
   readonly id: Scalars['ID'];
   readonly text: Scalars['String'];
   readonly startAt: Scalars['DateTime'];
+  readonly endAt: Scalars['DateTime'];
 };
 
 export type GQLActivityComment = GQLComment & {
@@ -1288,6 +1320,8 @@ export type GQLResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   HtmlActivityDataInput: GQLHtmlActivityDataInput;
   UpdateEmbeddedActivityInput: GQLUpdateEmbeddedActivityInput;
+  CreateChallengeInput: GQLCreateChallengeInput;
+  UpdateChallengeInput: GQLUpdateChallengeInput;
   CompleteActivityInput: GQLCompleteActivityInput;
   CompleteActivityResult: GQLResolversTypes['ActivityTimer'] | GQLResolversTypes['SimpleError'];
   CreateCommentOnActivityInput: GQLCreateCommentOnActivityInput;
@@ -1397,6 +1431,8 @@ export type GQLResolversParentTypes = {
   Int: Scalars['Int'];
   HtmlActivityDataInput: GQLHtmlActivityDataInput;
   UpdateEmbeddedActivityInput: GQLUpdateEmbeddedActivityInput;
+  CreateChallengeInput: GQLCreateChallengeInput;
+  UpdateChallengeInput: GQLUpdateChallengeInput;
   CompleteActivityInput: GQLCompleteActivityInput;
   CompleteActivityResult: GQLResolversParentTypes['ActivityTimer'] | GQLResolversParentTypes['SimpleError'];
   CreateCommentOnActivityInput: GQLCreateCommentOnActivityInput;
@@ -1506,6 +1542,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   addActivitiesToCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationaddActivitiesToCycleArgs, 'data'>>;
   addThemesToLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationaddThemesToLevelArgs, 'data'>>;
   completeActivity: Resolver<GQLResolversTypes['CompleteActivityResult'], ParentType, ContextType, RequireFields<GQLMutationcompleteActivityArgs, 'data'>>;
+  createChallenge: Resolver<GQLResolversTypes['Challenge'], ParentType, ContextType, RequireFields<GQLMutationcreateChallengeArgs, 'data'>>;
   createCommentOnActivity: Resolver<GQLResolversTypes['CreateCommentOnActivityResult'], ParentType, ContextType, RequireFields<GQLMutationcreateCommentOnActivityArgs, 'data'>>;
   createCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationcreateCycleArgs, 'data'>>;
   createEmbeddedActivity: Resolver<GQLResolversTypes['EmbeddedActivity'], ParentType, ContextType, RequireFields<GQLMutationcreateEmbeddedActivityArgs, 'data'>>;
@@ -1524,6 +1561,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   finishOnboard: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
   startActivity: Resolver<GQLResolversTypes['StartActivityResult'], ParentType, ContextType, RequireFields<GQLMutationstartActivityArgs, 'data'>>;
   updateBasicLevelInfo: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationupdateBasicLevelInfoArgs, 'data'>>;
+  updateChallenge: Resolver<GQLResolversTypes['Challenge'], ParentType, ContextType, RequireFields<GQLMutationupdateChallengeArgs, 'data'>>;
   updateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationupdateCycleArgs, 'data'>>;
   updateCycleActivitiesOrder: Resolver<ReadonlyArray<GQLResolversTypes['CycleActivity']>, ParentType, ContextType, RequireFields<GQLMutationupdateCycleActivitiesOrderArgs, 'data'>>;
   updateCyclesOrder: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLMutationupdateCyclesOrderArgs, 'data'>>;
@@ -1564,6 +1602,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   availableActivitiesForCycle: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryavailableActivitiesForCycleArgs, 'cycleId'>>;
   availableThemes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQueryavailableThemesArgs, 'availableThemesInputData'>>;
   avatars: Resolver<ReadonlyArray<GQLResolversTypes['Avatar']>, ParentType, ContextType>;
+  challenge: Resolver<Maybe<GQLResolversTypes['Challenge']>, ParentType, ContextType, RequireFields<GQLQuerychallengeArgs, 'id'>>;
   challenges: Resolver<ReadonlyArray<GQLResolversTypes['Challenge']>, ParentType, ContextType>;
   class: Resolver<Maybe<GQLResolversTypes['Class']>, ParentType, ContextType, RequireFields<GQLQueryclassArgs, 'id'>>;
   classCycles: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLQueryclassCyclesArgs, 'classId'>>;
@@ -1854,6 +1893,7 @@ export type GQLChallengeResolvers<ContextType = GraphQLContext, ParentType exten
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   text: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   startAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
+  endAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

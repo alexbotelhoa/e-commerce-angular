@@ -1,0 +1,3 @@
+type Query {
+    challenge(id: ID!): Challenge
+}
