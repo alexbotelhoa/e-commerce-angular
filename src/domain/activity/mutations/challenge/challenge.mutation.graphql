@@ -1,0 +1,19 @@
+type Mutation {
+  createChallenge(data: CreateChallengeInput!) : Challenge!
+  updateChallenge(data: UpdateChallengeInput!) : Challenge!
+  deactivateChallenge(id:ID!) : Challenge
+  activateChallenge(id:ID!) : Challenge
+}
+
+input CreateChallengeInput {
+  text: String!
+  startAt: String!
+  endAt: String!
+}
+
+input UpdateChallengeInput {
+  id: ID!
+  text: String!
+  startAt: String!
+  endAt: String!
+}

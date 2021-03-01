@@ -2,4 +2,6 @@ type Challenge {
     id: ID!
     text: String!
     startAt: DateTime!
+    endAt: DateTime!
+    active: Boolean!
 }

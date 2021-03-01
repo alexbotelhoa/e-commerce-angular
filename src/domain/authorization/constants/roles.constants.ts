@@ -11,6 +11,7 @@ export const adminRole: Role = {
         MANAGE_LEVEL: true,
         MANAGE_THEME: true,
         MANAGE_COMMENTS: true,
+        MANAGE_CHALLENGE: true,
     }
 }
 

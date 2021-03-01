@@ -1,4 +1,4 @@
-import { GQLEvent, GQLUserInterest, GQLUserResolvers } from "../../resolvers-types"
+import { GQLUserInterest, GQLUserResolvers } from "../../resolvers-types"
 import { UserEntity, USER_TABLE } from "../../entities/user.entity";
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 import { UserRoleEntity } from "../../entities/user-role.entity";
@@ -29,13 +29,8 @@ import { ACTIVITY_TABLE } from "../../entities/activity.entity";
 import { selectEnrollmentClass } from "../repositories/enrollment-class.repository";
 import { selectEnrollment } from "../repositories/enrollment.repository";
 import { selectMeeting } from "../repositories/meeting.repository";
-import { eventResolvers } from "./event.resolver";
-import { selectEvent } from "../repositories/event.repository";
-import { selectEventAdress } from "../repositories/event-adress.repository";
-import { selectEventInfo } from "../repositories/event-info.repository";
-import { selectEventInstructor } from "../repositories/event-instructor.repository";
 import { eventProcess } from "../../domain/user/services/event-process.service";
-import { getUserById, selectUser } from "../repositories/user.repository";
+import { getUserById } from "../repositories/user.repository";
 import { selectTeacherClass } from "../repositories/teacher-class.repository";
 import { getClassById } from "../repositories/class.repository";
 import { getLevelCodeById } from "../repositories/level-code.repository";
