@@ -1,4 +1,4 @@
-import { GQLResolvers, ActivityTypeId, LevelTypeId } from "./resolvers-types";
+import { GQLResolvers, ActivityTypeId, LevelTypeId, GQLEventRegistrationResponseSuccess } from "./resolvers-types";
 
 import { mutationResolvers } from "./shared/resolvers/mutation.resolvers"
 import { queryResolvers } from "./shared/resolvers/query.resolvers"
@@ -57,6 +57,8 @@ import { eventResolvers } from "./shared/resolvers/event.resolver";
 import { eventAdressResolvers } from "./shared/resolvers/event-adress.resolver";
 import { eventInfoResolvers } from "./shared/resolvers/event-info.resolver";
 import { eventInstructorResolvers } from "./shared/resolvers/event-instructor.resolvers";
+import { RegisterEventMutationResolver } from "./domain/activity/mutations/event/event-registration.mutation";
+import { registerEventResultResolver } from "./shared/resolvers/a.resolver";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -121,5 +123,7 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Event: eventResolvers,
     EventAdress: eventAdressResolvers,
     EventInfo: eventInfoResolvers,
-    EventInstructor: eventInstructorResolvers
+    EventInstructor: eventInstructorResolvers,
+    EventRegistrationResponseSuccess: registerEventResultResolver,
 };
+

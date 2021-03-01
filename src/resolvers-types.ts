@@ -80,6 +80,7 @@ export type GQLMutation = {
   readonly deleteCycleFromLevelTheme: GQLLevelTheme;
   readonly deleteThemeFromLevel: GQLLevel;
   readonly finishOnboard: GQLUser;
+  readonly registerEventMutation: GQLEventRegistrationResponseSuccess;
   readonly startActivity: GQLStartActivityResult;
   readonly updateBasicLevelInfo: GQLLevel;
   readonly updateCycle: GQLCycle;
@@ -200,6 +201,11 @@ export type GQLMutationdeleteCycleFromLevelThemeArgs = {
 
 export type GQLMutationdeleteThemeFromLevelArgs = {
   levelThemeId: Scalars['ID'];
+};
+
+
+export type GQLMutationregisterEventMutationArgs = {
+  data: GQLeventParameters;
 };
 
 
@@ -347,6 +353,16 @@ export type GQLDeleteActivityCommentSuccessResult = {
 };
 
 export type GQLDeleteActivityCommentResult = GQLDeleteActivityCommentSuccessResult | GQLSimpleError;
+
+export type GQLeventParameters = {
+  readonly classId: Scalars['ID'];
+};
+
+export type GQLEventRegistrationResponseSuccess = {
+  readonly __typename?: 'EventRegistrationResponseSuccess';
+  readonly success: Scalars['Boolean'];
+  readonly message: Scalars['String'];
+};
 
 export type GQLUpdateLevelThemesOrderInput = {
   readonly levelThemeId: Scalars['ID'];
@@ -1301,6 +1317,8 @@ export type GQLResolversTypes = {
   DeleteActivityCommentInput: GQLDeleteActivityCommentInput;
   DeleteActivityCommentSuccessResult: ResolverTypeWrapper<DeleteActivityCommentSuccessResult>;
   DeleteActivityCommentResult: GQLResolversTypes['DeleteActivityCommentSuccessResult'] | GQLResolversTypes['SimpleError'];
+  eventParameters: GQLeventParameters;
+  EventRegistrationResponseSuccess: ResolverTypeWrapper<GQLEventRegistrationResponseSuccess>;
   UpdateLevelThemesOrderInput: GQLUpdateLevelThemesOrderInput;
   CreateLevelCodeInput: GQLCreateLevelCodeInput;
   CreateLevelInput: GQLCreateLevelInput;
@@ -1410,6 +1428,8 @@ export type GQLResolversParentTypes = {
   DeleteActivityCommentInput: GQLDeleteActivityCommentInput;
   DeleteActivityCommentSuccessResult: DeleteActivityCommentSuccessResult;
   DeleteActivityCommentResult: GQLResolversParentTypes['DeleteActivityCommentSuccessResult'] | GQLResolversParentTypes['SimpleError'];
+  eventParameters: GQLeventParameters;
+  EventRegistrationResponseSuccess: GQLEventRegistrationResponseSuccess;
   UpdateLevelThemesOrderInput: GQLUpdateLevelThemesOrderInput;
   CreateLevelCodeInput: GQLCreateLevelCodeInput;
   CreateLevelInput: GQLCreateLevelInput;
@@ -1522,6 +1542,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   deleteCycleFromLevelTheme: Resolver<GQLResolversTypes['LevelTheme'], ParentType, ContextType, RequireFields<GQLMutationdeleteCycleFromLevelThemeArgs, 'cycleId'>>;
   deleteThemeFromLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationdeleteThemeFromLevelArgs, 'levelThemeId'>>;
   finishOnboard: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
+  registerEventMutation: Resolver<GQLResolversTypes['EventRegistrationResponseSuccess'], ParentType, ContextType, RequireFields<GQLMutationregisterEventMutationArgs, 'data'>>;
   startActivity: Resolver<GQLResolversTypes['StartActivityResult'], ParentType, ContextType, RequireFields<GQLMutationstartActivityArgs, 'data'>>;
   updateBasicLevelInfo: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationupdateBasicLevelInfoArgs, 'data'>>;
   updateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationupdateCycleArgs, 'data'>>;
@@ -1550,6 +1571,12 @@ export type GQLDeleteActivityCommentSuccessResultResolvers<ContextType = GraphQL
 
 export type GQLDeleteActivityCommentResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['DeleteActivityCommentResult'] = GQLResolversParentTypes['DeleteActivityCommentResult']> = {
   __resolveType: TypeResolveFn<'DeleteActivityCommentSuccessResult' | 'SimpleError', ParentType, ContextType>;
+};
+
+export type GQLEventRegistrationResponseSuccessResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['EventRegistrationResponseSuccess'] = GQLResolversParentTypes['EventRegistrationResponseSuccess']> = {
+  success: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  message: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GQLStartActivityResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['StartActivityResult'] = GQLResolversParentTypes['StartActivityResult']> = {
@@ -2119,6 +2146,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   CreateCommentOnActivityResult: GQLCreateCommentOnActivityResultResolvers<ContextType>;
   DeleteActivityCommentSuccessResult: GQLDeleteActivityCommentSuccessResultResolvers<ContextType>;
   DeleteActivityCommentResult: GQLDeleteActivityCommentResultResolvers<ContextType>;
+  EventRegistrationResponseSuccess: GQLEventRegistrationResponseSuccessResolvers<ContextType>;
   StartActivityResult: GQLStartActivityResultResolvers<ContextType>;
   Query: GQLQueryResolvers<ContextType>;
   Class: GQLClassResolvers<ContextType>;
