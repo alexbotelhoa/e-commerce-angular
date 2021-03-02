@@ -1,17 +1,26 @@
 import { FastifyLoggerInstance } from "fastify";
+import Knex from "knex";
 import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
 import { insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
 import { getClassById, insertClass, updateClass } from "../../../shared/repositories/class.repository";
 import { insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 import { insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
 import { getLevelCodeById, insertLevelCode } from "../../../shared/repositories/level-code.repository";
-import { insertUserRole, selectUserRole } from "../../../shared/repositories/user-role.repository";
+import { deleteUserRole, insertUserRole, selectUserRole } from "../../../shared/repositories/user-role.repository";
 import { getUserById, insertUser, updateUser } from "../../../shared/repositories/user.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { RoleId } from "../../authorization/enums/role-id.enum";
 import { ClassData } from "../types/class-data.type";
 import { StudentEnrollmentEvent, WebhookResponse } from "../types/webhook-events.types";
 import { isClassDataDivergent } from "./class-utils";
+
+interface UserData {
+    id: string;
+    name: string;
+    macId: string | null;
+    macPass: string | null;
+}
+
 
 export const processStudentEnrollment = (db: DatabaseService, log: FastifyLoggerInstance) => async (event: StudentEnrollmentEvent): Promise<WebhookResponse> => {
     const data = event.data;
@@ -111,7 +120,7 @@ async function upsertUserAndMakeEnrollment(existingUser: {
     id: string; name: string;
 } | null,
     db: DatabaseService,
-    userData: { id: string; name: string; macId: string | null; macPass: string | null; },
+    userData: UserData,
     levelData: { id: number; code: string; },
     classData: ClassData) {
     if (!existingUser) {
@@ -124,18 +133,14 @@ async function upsertUserAndMakeEnrollment(existingUser: {
                 macId: userData.macId,
                 macPass: userData.macPass,
             });
-            await insertUserRole(trx)({
-                roleId: RoleId.STUDENT,
-                userId: userData.id,
-            });
-            await insertUserRole(trx)({
-                roleId: RoleId.HORIZON_ONE,
-                userId: userData.id,
-            });
+
+            await upsertRole(trx, userData);
+
             const enrollmentId = await insertEnrollment(trx)({
                 userId: userData.id,
                 levelCodeId: levelData.id,
             });
+            
             await insertEnrollmentClass(trx)({
                 classId: classData.id,
                 enrollmentId: enrollmentId,
@@ -150,14 +155,7 @@ async function upsertUserAndMakeEnrollment(existingUser: {
             macPass: userData.macPass,
         })(where => where.andWhere('id', existingUser.id));
         if (existingStudentRoles.length === 0) {
-            await insertUserRole(db)({
-                roleId: RoleId.STUDENT,
-                userId: userData.id,
-            });
-            await insertUserRole(db)({
-                roleId: RoleId.HORIZON_ONE,
-                userId: userData.id,
-            });
+            await upsertRole(db, userData);
         }
 
         // no enrollments, we need to insert everything
@@ -210,3 +208,16 @@ async function upsertUserAndMakeEnrollment(existingUser: {
     }
 }
 
+async function upsertRole(trx: Knex.Transaction | DatabaseService, userData: UserData) {
+    await deleteUserRole(trx)(builder => builder.andWhere({ userId: userData.id }));
+
+    await insertUserRole(trx)({
+        roleId: RoleId.STUDENT,
+        userId: userData.id,
+    });
+
+    await insertUserRole(trx)({
+        roleId: RoleId.HORIZON_ONE,
+        userId: userData.id,
+    });
+}
