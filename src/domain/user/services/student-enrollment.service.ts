@@ -140,23 +140,23 @@ async function upsertUserAndMakeEnrollment(existingUser: {
                 userId: userData.id,
                 levelCodeId: levelData.id,
             });
-            
+
             await insertEnrollmentClass(trx)({
                 classId: classData.id,
                 enrollmentId: enrollmentId,
             });
         });
     } else {
-        const existingStudentRoles = await selectUserRole(db).andWhere('roleId', RoleId.STUDENT).andWhere('userId', userData.id);
+        // const existingStudentRoles = await selectUserRole(db).andWhere('roleId', RoleId.STUDENT).andWhere('userId', userData.id);
         const [existingEnrollment] = await selectEnrollment(db).andWhere('userId', userData.id).andWhere('levelCodeId', levelData.id);
         // we need to update user, because mac id and pass are required for some systems
         await updateUser(db)({
             macId: userData.macId,
             macPass: userData.macPass,
         })(where => where.andWhere('id', existingUser.id));
-        if (existingStudentRoles.length === 0) {
-            await upsertRole(db, userData);
-        }
+        //if (existingStudentRoles.length === 0) {
+        await upsertRole(db, userData);
+        // }
 
         // no enrollments, we need to insert everything
         if (!existingEnrollment) {
