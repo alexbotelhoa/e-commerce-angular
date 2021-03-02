@@ -11,6 +11,8 @@ export const adminUserSeed: UserEntityWithRoles = {
     name: 'ADMIN',
     onboarded: false,
     avatarId: null,
+    macId: '',
+    macPass: '',
     roles: [RoleId.ADMIN],
 }
 
@@ -19,6 +21,8 @@ export const teacherUserSeed: UserEntityWithRoles = {
     name: 'TEACHER',
     onboarded: false,
     avatarId: null,
+    macId: '',
+    macPass: '',
     roles: [RoleId.TEACHER],
 }
 
@@ -27,6 +31,8 @@ export const studentUserSeed: UserEntityWithRoles = {
     name: 'STUDENT',
     onboarded: false,
     avatarId: null,
+    macId: '',
+    macPass: '',
     roles: [RoleId.STUDENT],
 }
 
@@ -35,6 +41,8 @@ export const guardianUserSeed: UserEntityWithRoles = {
     name: 'GUARDIAN',
     onboarded: false,
     avatarId: null,
+    macId: '',
+    macPass: '',
     roles: [RoleId.GUARDIAN],
 }
 
@@ -43,11 +51,14 @@ export const fullUserSeed: UserEntityWithRoles = {
     name: 'FULL',
     onboarded: false,
     avatarId: null,
+    macId: '',
+    macPass: '',
     roles: [
         RoleId.ADMIN,
         RoleId.TEACHER,
         RoleId.STUDENT,
         RoleId.GUARDIAN,
+        RoleId.HORIZON_ONE,
     ],
 }
 
@@ -78,6 +89,8 @@ export async function seed(knex: Knex): Promise<void> {
         id: user.id,
         name: user.name,
         onboarded: false,
+        macId: '',
+        macPass: '',
         avatarId: null,
     })));
     const rolesToInsert = userSeeds.map(user => user.roles.map(role => ({
@@ -99,6 +112,8 @@ function generateUser(id: number): UserEntityWithRoles {
         name: `${faker.name.firstName()} ${faker.name.lastName()} ${faker.name.lastName()}`,
         onboarded: false,
         avatarId: null,
+        macId: '',
+        macPass: '',
         roles: [
             roleId,
         ]

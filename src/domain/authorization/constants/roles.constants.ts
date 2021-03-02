@@ -20,7 +20,16 @@ export const studentRole: Role = {
     name: 'Student',
     permissionMap: {
         EXECUTE_ACTIVITY: true,
-        HORIZONT_ONE: true,
+        HORIZON_ONE: true,
+    }
+}
+
+export const horizonOneRole: Role = {
+    id: RoleId.HORIZON_ONE,
+    name: 'Horizon One',
+    permissionMap: {
+        EXECUTE_ACTIVITY: true,
+        HORIZON_ONE: true,
     }
 }
 
@@ -45,6 +54,7 @@ export const rolesById: Readonly<Record<RoleId, Role>> = {
     [RoleId.STUDENT]: studentRole,
     [RoleId.TEACHER]: teacherRole,
     [RoleId.GUARDIAN]: guardianRole,
+    [RoleId.HORIZON_ONE]: horizonOneRole,
 };
 
 export const rolesList: ReadonlyArray<Role> = objectKeys(rolesById)

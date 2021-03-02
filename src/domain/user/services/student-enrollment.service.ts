@@ -128,6 +128,10 @@ async function upsertUserAndMakeEnrollment(existingUser: {
                 roleId: RoleId.STUDENT,
                 userId: userData.id,
             });
+            await insertUserRole(trx)({
+                roleId: RoleId.HORIZON_ONE,
+                userId: userData.id,
+            });
             const enrollmentId = await insertEnrollment(trx)({
                 userId: userData.id,
                 levelCodeId: levelData.id,
@@ -148,6 +152,10 @@ async function upsertUserAndMakeEnrollment(existingUser: {
         if (existingStudentRoles.length === 0) {
             await insertUserRole(db)({
                 roleId: RoleId.STUDENT,
+                userId: userData.id,
+            });
+            await insertUserRole(db)({
+                roleId: RoleId.HORIZON_ONE,
                 userId: userData.id,
             });
         }

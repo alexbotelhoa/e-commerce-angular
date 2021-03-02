@@ -12,7 +12,7 @@ export const PermissionId = {
     MANAGE_COMMENTS: 'MANAGE_COMMENTS',
     MANAGE_CHALLENGE: 'MANAGE_CHALLENGE',
     MANAGE_CLASS: 'MANAGE_CLASS',
-    HORIZONT_ONE: 'HORIZONT_ONE',
+    HORIZON_ONE: 'HORIZON_ONE',
 } as const;
 
 export type PermissionId = EnumLiteral<typeof PermissionId>;

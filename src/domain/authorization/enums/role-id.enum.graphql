@@ -3,4 +3,5 @@ enum RoleId {
     STUDENT
     TEACHER
     GUARDIAN
+    HORIZON_ONE
 }

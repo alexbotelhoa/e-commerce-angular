@@ -43,10 +43,10 @@ export const permissionsById: Record<PermissionId, Permission> = {
         name: 'Manage challenge',
         description: `Manage challenges`
     },
-    HORIZONT_ONE: {
-        id: 'HORIZONT_ONE',
-        name: 'Horizont One',
-        description: `Horizont One`
+    HORIZON_ONE: {
+        id: 'HORIZON_ONE',
+        name: 'Horizon One',
+        description: `Horizon One`
     },
 }
 
