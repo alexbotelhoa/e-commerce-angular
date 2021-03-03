@@ -2,11 +2,12 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { RoleId } from "../../authorization/enums/role-id.enum";
 import { JWTPayload } from "../types/jwt-payload.type";
 import { DatabaseService } from "../../../shared/services/database.service";
-import { selectUserRole } from "../../../shared/repositories/user-role.repository";
+import { insertUserRole, selectUserRole } from "../../../shared/repositories/user-role.repository";
 import { EnrollmentEntity } from "../../../entities/enrollment.entity";
 import * as t from "io-ts";
 import { EnrollmentClassEntity } from "../../../entities/enrollment-class.entity";
 import { getUserById } from "../../../shared/repositories/user.repository";
+import { horizonOneRole } from "../../authorization/constants/roles.constants";
 
 const AlunosResponsavel = t.type({
     Id: t.union([t.Int, t.string]),
@@ -67,7 +68,16 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
 
     // we're using an array of roles here for shorter JWT payload
     const roles: RoleId[] = userRoles.map(userRole => userRole.roleId);
+    const hasHorizonOneRole = userRoles.some(role => role.roleId === horizonOneRole.id)
     if (userEntity) {
+        if (!hasHorizonOneRole) {
+            await db.transaction(async (trx) => {
+                await insertUserRole(trx)({
+                    roleId: RoleId.HORIZON_ONE,
+                    userId: userId,
+                });
+            })
+        }
         const jwtPayload: JWTPayload = {
             userId: userId.toString(),
             roles: roles,
