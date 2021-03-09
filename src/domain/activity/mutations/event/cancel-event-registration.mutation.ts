@@ -21,9 +21,11 @@ export const RegisterEventMutationResolver: GQLMutationResolvers['registerEventM
             }>(url, {
                 headers: {
                     'apikey': "Af9lMDeGfD9lZqn4aBfutv9ShC0h9K4O" || env.STUDENT_GRADE_INTEGRATION_API_KEY,
+                    'Content-Type': 'application/json'
                 },
                 responseType: 'json',
             });
+            console.log(integrationRequest)
             return {
                 message: integrationRequest.data.Result,
                 success: true,
@@ -35,5 +37,4 @@ export const RegisterEventMutationResolver: GQLMutationResolvers['registerEventM
             }
             return simpleError
         }
-
     };
