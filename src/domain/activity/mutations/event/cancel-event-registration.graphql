@@ -1,0 +1,12 @@
+type Mutation {
+    cancelRegisterEventMutation(data: eventParameters!): CancelEventRegistrationResponseSuccess!
+}
+
+input eventParameters {
+    classId: ID!
+}
+
+type CancelEventRegistrationResponseSuccess {
+    success: Boolean!
+    message: String!
+}

@@ -32,7 +32,7 @@
             "name": "Attach",
             "type": "node",
             "request": "attach",
-            "port": 9230
+            "port": 4321
         }
     ]
 }
