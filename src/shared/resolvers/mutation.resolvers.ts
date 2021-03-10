@@ -40,6 +40,7 @@ import { finishOnboardMutationResolver } from "../../domain/activity/mutations/f
 import { upsertOrRemoteUserInterestMutationResolver } from "../../domain/activity/mutations/user-interest/upsert-or-remove-user-interest.mutation";
 import { RegisterEventMutationResolver } from "../../domain/activity/mutations/event/event-registration.mutation";
 import { createChallengeMutationResolver, toggleChallengeState, updateChallengeMutationResolver } from "../../domain/activity/mutations/challenge/challenge.mutation";
+import { cancelRegisterEventMutationResolver } from "../../domain/activity/mutations/event/cancel-event-registration.mutation";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,
@@ -100,5 +101,5 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     finishOnboard: finishOnboardMutationResolver,
     upsertOrRemoveUserInterest: upsertOrRemoteUserInterestMutationResolver,
     registerEventMutation: RegisterEventMutationResolver,
-
+    cancelRegisterEventMutation: cancelRegisterEventMutationResolver,
 }

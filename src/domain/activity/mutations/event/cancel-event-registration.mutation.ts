@@ -2,7 +2,7 @@ import { GQLMutationResolvers } from "../../../../resolvers-types";
 import { environmentFactory } from "../../../../shared/services/environment.service";
 import axios from 'axios';
 
-export const RegisterEventMutationResolver: GQLMutationResolvers['registerEventMutation'] =
+export const cancelRegisterEventMutationResolver: GQLMutationResolvers['cancelRegisterEventMutation'] =
     async (obj, { data }, context) => {
         const user = context.currentUser;
         if (!user) {
@@ -25,14 +25,14 @@ export const RegisterEventMutationResolver: GQLMutationResolvers['registerEventM
                 },
                 responseType: 'json',
             });
-            console.log(integrationRequest)
+            console.log(integrationRequest.data, "OLAAAAAAAAAAAAAAAAAAAAA")
             return {
                 message: integrationRequest.data.Result,
                 success: true,
             }
         } catch (err) {
             const simpleError = {
-                message: err.message,
+                message: err.response.data.error,
                 success: false,
             }
             return simpleError

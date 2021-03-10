@@ -59,6 +59,7 @@ import { eventInfoResolvers } from "./shared/resolvers/event-info.resolver";
 import { eventInstructorResolvers } from "./shared/resolvers/event-instructor.resolvers";
 import { RegisterEventMutationResolver } from "./domain/activity/mutations/event/event-registration.mutation";
 import { registerEventResultResolver } from "./shared/resolvers/a.resolver";
+import { cancelRegisterEventResultResolver } from "./shared/resolvers/a.resolver";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -125,5 +126,6 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     EventInfo: eventInfoResolvers,
     EventInstructor: eventInstructorResolvers,
     EventRegistrationResponseSuccess: registerEventResultResolver,
+    CancelEventRegistrationResponseSuccess: cancelRegisterEventResultResolver,
 };
 
