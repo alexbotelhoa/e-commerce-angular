@@ -12,6 +12,7 @@ export const adminRole: Role = {
         MANAGE_THEME: true,
         MANAGE_COMMENTS: true,
         MANAGE_CHALLENGE: true,
+        MANAGE_NEWSLETTER: true,
     }
 }
 

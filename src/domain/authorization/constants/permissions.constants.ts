@@ -43,6 +43,11 @@ export const permissionsById: Record<PermissionId, Permission> = {
         name: 'Manage challenge',
         description: `Manage challenges`
     },
+    MANAGE_NEWSLETTER: {
+        id: 'MANAGE_NEWSLETTER',
+        name: 'Manage newsletter',
+        description: `Manage newsletter`
+    },
     HORIZON_ONE: {
         id: 'HORIZON_ONE',
         name: 'Horizon One',
