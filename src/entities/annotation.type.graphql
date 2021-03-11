@@ -1,0 +1,7 @@
+type Annotation {
+    userId: String!
+    meetingId: String!
+    createdDate: String!
+    updatedDate: String!
+    data: String!
+}

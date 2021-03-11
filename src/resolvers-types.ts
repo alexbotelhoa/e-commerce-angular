@@ -971,6 +971,15 @@ export type GQLActivity = {
   readonly estimatedTime: Scalars['String'];
 };
 
+export type GQLAnnotation = {
+  readonly __typename?: 'Annotation';
+  readonly userId: Scalars['String'];
+  readonly meetingId: Scalars['String'];
+  readonly createdDate: Scalars['String'];
+  readonly updatedDate: Scalars['String'];
+  readonly data: Scalars['String'];
+};
+
 export type GQLAvatar = {
   readonly __typename?: 'Avatar';
   readonly id: Scalars['ID'];
@@ -1432,6 +1441,7 @@ export type GQLResolversTypes = {
   EmbeddedActivityData: ResolverTypeWrapper<EmbeddedActivityDataEntity>;
   HtmlActivityData: ResolverTypeWrapper<HtmlActivityDataEntity>;
   Activity: GQLResolversTypes['EmbeddedActivity'] | GQLResolversTypes['HtmlActivity'];
+  Annotation: ResolverTypeWrapper<GQLAnnotation>;
   Avatar: ResolverTypeWrapper<AvatarEntity>;
   Campus: ResolverTypeWrapper<GQLCampus>;
   Challenge: ResolverTypeWrapper<ChallengeEntity>;
@@ -1544,6 +1554,7 @@ export type GQLResolversParentTypes = {
   EmbeddedActivityData: EmbeddedActivityDataEntity;
   HtmlActivityData: HtmlActivityDataEntity;
   Activity: GQLResolversParentTypes['EmbeddedActivity'] | GQLResolversParentTypes['HtmlActivity'];
+  Annotation: GQLAnnotation;
   Avatar: AvatarEntity;
   Campus: GQLCampus;
   Challenge: ChallengeEntity;
@@ -1935,6 +1946,15 @@ export type GQLActivityResolvers<ContextType = GraphQLContext, ParentType extend
   estimatedTime: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
 };
 
+export type GQLAnnotationResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Annotation'] = GQLResolversParentTypes['Annotation']> = {
+  userId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  meetingId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  createdDate: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  updatedDate: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  data: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GQLAvatarResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Avatar'] = GQLResolversParentTypes['Avatar']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
@@ -2254,6 +2274,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   EmbeddedActivityData: GQLEmbeddedActivityDataResolvers<ContextType>;
   HtmlActivityData: GQLHtmlActivityDataResolvers<ContextType>;
   Activity: GQLActivityResolvers<ContextType>;
+  Annotation: GQLAnnotationResolvers<ContextType>;
   Avatar: GQLAvatarResolvers<ContextType>;
   Campus: GQLCampusResolvers<ContextType>;
   Challenge: GQLChallengeResolvers<ContextType>;
