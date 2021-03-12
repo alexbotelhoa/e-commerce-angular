@@ -39,6 +39,8 @@ import { interestQueryResolver } from "../../domain/activity/queries/interest/in
 import { challengeQueryResolver } from "../../domain/activity/queries/challenge/challenge.query";
 import { notificationQueryResolver } from "../../domain/notification/queries/notification.resolver";
 import { annotationQueryResolver } from "../../domain/annotation/queries/annotation.resolver";
+import { newsletterQueryResolver } from "../../domain/activity/queries/newsletter/newsletter.query";
+import { newslettersQueryResolver } from "../../domain/activity/queries/newsletters/newsletters.query";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -81,4 +83,6 @@ export const queryResolvers: GQLResolvers['Query'] = {
     interest: interestQueryResolver,
     Notification: notificationQueryResolver,
     Annotation: annotationQueryResolver,
+    newsletter: newsletterQueryResolver,
+    newsletters: newslettersQueryResolver,
 }

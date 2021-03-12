@@ -41,6 +41,7 @@ import { upsertOrRemoteUserInterestMutationResolver } from "../../domain/activit
 import { RegisterEventMutationResolver } from "../../domain/activity/mutations/event/event-registration.mutation";
 import { createChallengeMutationResolver, toggleChallengeState, updateChallengeMutationResolver } from "../../domain/activity/mutations/challenge/challenge.mutation";
 import { cancelRegisterEventMutationResolver } from "../../domain/activity/mutations/event/cancel-event-registration.mutation";
+import { createNewsletterMutationResolver, toggleNewsletterState, updateNewsletterMutationResolver } from "../../domain/activity/mutations/newsletter/newsletter.mutation";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,
@@ -78,12 +79,20 @@ const challengeEntityResolvers: Pick<GQLMutationResolvers, 'createChallenge' | '
     deactivateChallenge: toggleChallengeState({ active: false }),
 }
 
+const newsletterEntityResolvers: Pick<GQLMutationResolvers, 'createNewsletter' | 'updateNewsletter' | 'deactivateNewsletter' | 'activateNewsletter'> = {
+    createNewsletter: createNewsletterMutationResolver,
+    updateNewsletter: updateNewsletterMutationResolver,
+    activateNewsletter: toggleNewsletterState({ active: true }),
+    deactivateNewsletter: toggleNewsletterState({ active: false }),
+}
+
 export const mutationResolvers: GQLResolvers['Mutation'] = {
     ...cycleEntityResolvers,
     ...themeEntityResolvers,
     ...activityEntityResolvers,
     ...levelEntityResolvers,
     ...challengeEntityResolvers,
+    ...newsletterEntityResolvers,
     createLevelCode: createLevelCodeMutation,
     createLevel: createLevelMutationResolver,
     updateBasicLevelInfo: updateBasicLevelInfoMutationResolver,

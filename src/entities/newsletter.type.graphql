@@ -1,0 +1,6 @@
+type Newsletter {
+    id: ID!
+    name: String!
+    linkUrl: String!
+    active: Boolean!
+}

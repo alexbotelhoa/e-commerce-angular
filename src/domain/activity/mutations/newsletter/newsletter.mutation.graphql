@@ -1,0 +1,17 @@
+type Mutation {
+  createNewsletter(data: CreateNewsletterInput!) : Newsletter!
+  updateNewsletter(data: UpdateNewsletterInput!) : Newsletter!
+  deactivateNewsletter(id:ID!) : Newsletter
+  activateNewsletter(id:ID!) : Newsletter
+}
+
+input CreateNewsletterInput {
+  name: String!
+  linkUrl: String!
+}
+
+input UpdateNewsletterInput {
+  id: ID!
+  name: String!
+  linkUrl: String!
+}
