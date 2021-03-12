@@ -61,6 +61,7 @@ export type GQLMutation = {
   readonly activateChallenge: Maybe<GQLChallenge>;
   readonly activateCycle: GQLCycle;
   readonly activateLevel: GQLLevel;
+  readonly activateNewsletter: Maybe<GQLNewsletter>;
   readonly activateTheme: Maybe<GQLTheme>;
   readonly addActivitiesToCycle: GQLCycle;
   readonly addThemesToLevel: GQLLevel;
@@ -73,11 +74,13 @@ export type GQLMutation = {
   readonly createHtmlActivity: GQLHtmlActivity;
   readonly createLevel: GQLLevel;
   readonly createLevelCode: GQLLevelCode;
+  readonly createNewsletter: GQLNewsletter;
   readonly createTheme: GQLTheme;
   readonly deactivateActivity: GQLActivityUnion;
   readonly deactivateChallenge: Maybe<GQLChallenge>;
   readonly deactivateCycle: GQLCycle;
   readonly deactivateLevel: GQLLevel;
+  readonly deactivateNewsletter: Maybe<GQLNewsletter>;
   readonly deactivateTheme: Maybe<GQLTheme>;
   readonly deleteActivityComment: GQLDeleteActivityCommentResult;
   readonly deleteActivityFromCycle: GQLCycle;
@@ -93,6 +96,7 @@ export type GQLMutation = {
   readonly updateCyclesOrder: ReadonlyArray<GQLCycle>;
   readonly updateEmbeddedActivity: GQLEmbeddedActivity;
   readonly updateLevelThemesOrder: ReadonlyArray<GQLLevelTheme>;
+  readonly updateNewsletter: GQLNewsletter;
   readonly updateTheme: GQLTheme;
   readonly upsertOrRemoveUserInterest: Maybe<GQLInterest>;
   readonly viewerChangeAvatar: GQLViewerChangeAvatarMutationResult;
@@ -115,6 +119,11 @@ export type GQLMutationactivateCycleArgs = {
 
 
 export type GQLMutationactivateLevelArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type GQLMutationactivateNewsletterArgs = {
   id: Scalars['ID'];
 };
 
@@ -179,6 +188,11 @@ export type GQLMutationcreateLevelCodeArgs = {
 };
 
 
+export type GQLMutationcreateNewsletterArgs = {
+  data: GQLCreateNewsletterInput;
+};
+
+
 export type GQLMutationcreateThemeArgs = {
   data: GQLCreateThemeInput;
 };
@@ -200,6 +214,11 @@ export type GQLMutationdeactivateCycleArgs = {
 
 
 export type GQLMutationdeactivateLevelArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type GQLMutationdeactivateNewsletterArgs = {
   id: Scalars['ID'];
 };
 
@@ -271,6 +290,11 @@ export type GQLMutationupdateEmbeddedActivityArgs = {
 
 export type GQLMutationupdateLevelThemesOrderArgs = {
   data: ReadonlyArray<GQLUpdateLevelThemesOrderInput>;
+};
+
+
+export type GQLMutationupdateNewsletterArgs = {
+  data: GQLUpdateNewsletterInput;
 };
 
 
@@ -454,6 +478,17 @@ export type GQLUpdateBasicLevelInfoInput = {
   readonly codes: ReadonlyArray<Scalars['ID']>;
 };
 
+export type GQLCreateNewsletterInput = {
+  readonly name: Scalars['String'];
+  readonly linkUrl: Scalars['String'];
+};
+
+export type GQLUpdateNewsletterInput = {
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['String'];
+  readonly linkUrl: Scalars['String'];
+};
+
 export type GQLStartActivityInput = {
   readonly cycleActivityId: Scalars['ID'];
   readonly classId: Scalars['ID'];
@@ -516,6 +551,8 @@ export type GQLQuery = {
   readonly levels: ReadonlyArray<GQLLevel>;
   readonly myEnrollments: ReadonlyArray<GQLEnrollment>;
   readonly myLevels: ReadonlyArray<GQLLevel>;
+  readonly newsletter: Maybe<GQLNewsletter>;
+  readonly newsletters: ReadonlyArray<GQLNewsletter>;
   readonly overallClassCompletedActivities: Maybe<GQLOverallClassCompletedActivities>;
   readonly progressStudents: GQLProgressStudent;
   readonly teacherClasses: ReadonlyArray<GQLTeacherClass>;
@@ -606,6 +643,11 @@ export type GQLQuerylevelThemeArgs = {
 
 export type GQLQuerylevelThemesArgs = {
   data: GQLLevelThemesQueryInput;
+};
+
+
+export type GQLQuerynewsletterArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -1217,6 +1259,14 @@ export type GQLMeeting = {
   readonly courseName: Maybe<Scalars['String']>;
 };
 
+export type GQLNewsletter = {
+  readonly __typename?: 'Newsletter';
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['String'];
+  readonly linkUrl: Scalars['String'];
+  readonly active: Scalars['Boolean'];
+};
+
 export type GQLRegional = {
   readonly __typename?: 'Regional';
   readonly id: Scalars['ID'];
@@ -1397,6 +1447,8 @@ export type GQLResolversTypes = {
   AddThemesToLevelItemsInput: GQLAddThemesToLevelItemsInput;
   AddThemesToLevelInput: GQLAddThemesToLevelInput;
   UpdateBasicLevelInfoInput: GQLUpdateBasicLevelInfoInput;
+  CreateNewsletterInput: GQLCreateNewsletterInput;
+  UpdateNewsletterInput: GQLUpdateNewsletterInput;
   StartActivityInput: GQLStartActivityInput;
   StartActivityResult: GQLResolversTypes['ActivityTimer'] | GQLResolversTypes['SimpleError'];
   CreateThemeInput: GQLCreateThemeInput;
@@ -1464,6 +1516,7 @@ export type GQLResolversTypes = {
   Level: ResolverTypeWrapper<LevelEntity>;
   Local: ResolverTypeWrapper<GQLLocal>;
   Meeting: ResolverTypeWrapper<GQLMeeting>;
+  Newsletter: ResolverTypeWrapper<GQLNewsletter>;
   Regional: ResolverTypeWrapper<GQLRegional>;
   TeacherClass: ResolverTypeWrapper<TeacherClassEntity>;
   Theme: ResolverTypeWrapper<ThemeEntity>;
@@ -1512,6 +1565,8 @@ export type GQLResolversParentTypes = {
   AddThemesToLevelItemsInput: GQLAddThemesToLevelItemsInput;
   AddThemesToLevelInput: GQLAddThemesToLevelInput;
   UpdateBasicLevelInfoInput: GQLUpdateBasicLevelInfoInput;
+  CreateNewsletterInput: GQLCreateNewsletterInput;
+  UpdateNewsletterInput: GQLUpdateNewsletterInput;
   StartActivityInput: GQLStartActivityInput;
   StartActivityResult: GQLResolversParentTypes['ActivityTimer'] | GQLResolversParentTypes['SimpleError'];
   CreateThemeInput: GQLCreateThemeInput;
@@ -1577,6 +1632,7 @@ export type GQLResolversParentTypes = {
   Level: LevelEntity;
   Local: GQLLocal;
   Meeting: GQLMeeting;
+  Newsletter: GQLNewsletter;
   Regional: GQLRegional;
   TeacherClass: TeacherClassEntity;
   Theme: ThemeEntity;
@@ -1600,6 +1656,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   activateChallenge: Resolver<Maybe<GQLResolversTypes['Challenge']>, ParentType, ContextType, RequireFields<GQLMutationactivateChallengeArgs, 'id'>>;
   activateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationactivateCycleArgs, 'id'>>;
   activateLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationactivateLevelArgs, 'id'>>;
+  activateNewsletter: Resolver<Maybe<GQLResolversTypes['Newsletter']>, ParentType, ContextType, RequireFields<GQLMutationactivateNewsletterArgs, 'id'>>;
   activateTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationactivateThemeArgs, 'id'>>;
   addActivitiesToCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationaddActivitiesToCycleArgs, 'data'>>;
   addThemesToLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationaddThemesToLevelArgs, 'data'>>;
@@ -1612,11 +1669,13 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   createHtmlActivity: Resolver<GQLResolversTypes['HtmlActivity'], ParentType, ContextType, RequireFields<GQLMutationcreateHtmlActivityArgs, 'data'>>;
   createLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationcreateLevelArgs, 'data'>>;
   createLevelCode: Resolver<GQLResolversTypes['LevelCode'], ParentType, ContextType, RequireFields<GQLMutationcreateLevelCodeArgs, 'data'>>;
+  createNewsletter: Resolver<GQLResolversTypes['Newsletter'], ParentType, ContextType, RequireFields<GQLMutationcreateNewsletterArgs, 'data'>>;
   createTheme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType, RequireFields<GQLMutationcreateThemeArgs, 'data'>>;
   deactivateActivity: Resolver<GQLResolversTypes['ActivityUnion'], ParentType, ContextType, RequireFields<GQLMutationdeactivateActivityArgs, 'id'>>;
   deactivateChallenge: Resolver<Maybe<GQLResolversTypes['Challenge']>, ParentType, ContextType, RequireFields<GQLMutationdeactivateChallengeArgs, 'id'>>;
   deactivateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationdeactivateCycleArgs, 'id'>>;
   deactivateLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationdeactivateLevelArgs, 'id'>>;
+  deactivateNewsletter: Resolver<Maybe<GQLResolversTypes['Newsletter']>, ParentType, ContextType, RequireFields<GQLMutationdeactivateNewsletterArgs, 'id'>>;
   deactivateTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationdeactivateThemeArgs, 'id'>>;
   deleteActivityComment: Resolver<GQLResolversTypes['DeleteActivityCommentResult'], ParentType, ContextType, RequireFields<GQLMutationdeleteActivityCommentArgs, 'data'>>;
   deleteActivityFromCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationdeleteActivityFromCycleArgs, 'cycleActivityId'>>;
@@ -1632,6 +1691,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   updateCyclesOrder: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLMutationupdateCyclesOrderArgs, 'data'>>;
   updateEmbeddedActivity: Resolver<GQLResolversTypes['EmbeddedActivity'], ParentType, ContextType, RequireFields<GQLMutationupdateEmbeddedActivityArgs, 'data'>>;
   updateLevelThemesOrder: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLMutationupdateLevelThemesOrderArgs, 'data'>>;
+  updateNewsletter: Resolver<GQLResolversTypes['Newsletter'], ParentType, ContextType, RequireFields<GQLMutationupdateNewsletterArgs, 'data'>>;
   updateTheme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType, RequireFields<GQLMutationupdateThemeArgs, 'data'>>;
   upsertOrRemoveUserInterest: Resolver<Maybe<GQLResolversTypes['Interest']>, ParentType, ContextType, RequireFields<GQLMutationupsertOrRemoveUserInterestArgs, 'data'>>;
   viewerChangeAvatar: Resolver<GQLResolversTypes['ViewerChangeAvatarMutationResult'], ParentType, ContextType, RequireFields<GQLMutationviewerChangeAvatarArgs, 'data'>>;
@@ -1701,6 +1761,8 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   levels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
   myEnrollments: Resolver<ReadonlyArray<GQLResolversTypes['Enrollment']>, ParentType, ContextType>;
   myLevels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
+  newsletter: Resolver<Maybe<GQLResolversTypes['Newsletter']>, ParentType, ContextType, RequireFields<GQLQuerynewsletterArgs, 'id'>>;
+  newsletters: Resolver<ReadonlyArray<GQLResolversTypes['Newsletter']>, ParentType, ContextType>;
   overallClassCompletedActivities: Resolver<Maybe<GQLResolversTypes['OverallClassCompletedActivities']>, ParentType, ContextType, RequireFields<GQLQueryoverallClassCompletedActivitiesArgs, 'classId'>>;
   progressStudents: Resolver<GQLResolversTypes['ProgressStudent'], ParentType, ContextType, RequireFields<GQLQueryprogressStudentsArgs, 'data'>>;
   teacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType, RequireFields<GQLQueryteacherClassesArgs, 'data'>>;
@@ -2171,6 +2233,14 @@ export type GQLMeetingResolvers<ContextType = GraphQLContext, ParentType extends
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GQLNewsletterResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Newsletter'] = GQLResolversParentTypes['Newsletter']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  linkUrl: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GQLRegionalResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Regional'] = GQLResolversParentTypes['Regional']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
@@ -2298,6 +2368,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Level: GQLLevelResolvers<ContextType>;
   Local: GQLLocalResolvers<ContextType>;
   Meeting: GQLMeetingResolvers<ContextType>;
+  Newsletter: GQLNewsletterResolvers<ContextType>;
   Regional: GQLRegionalResolvers<ContextType>;
   TeacherClass: GQLTeacherClassResolvers<ContextType>;
   Theme: GQLThemeResolvers<ContextType>;
