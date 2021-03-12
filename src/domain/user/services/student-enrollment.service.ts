@@ -129,7 +129,7 @@ async function upsertUserAndMakeEnrollment(existingUser: {
                 id: userData.id,
                 name: userData.name,
                 avatarId: null,
-                onboarded: false,
+                onboarded: true,
                 macId: userData.macId,
                 macPass: userData.macPass,
             });
