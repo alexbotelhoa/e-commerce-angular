@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { FastifyLoggerInstance } from 'fastify';
-import { update } from 'lodash';
 import { GQLEvent } from '../../../resolvers-types';
 import { insertEventAdress, selectEventAdress, updateEventAdress } from '../../../shared/repositories/event-adress.repository';
 import { insertEventInfo, selectEventInfo, updateEventInfo } from '../../../shared/repositories/event-info.repository';

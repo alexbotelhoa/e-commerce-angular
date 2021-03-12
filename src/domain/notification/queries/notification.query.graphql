@@ -1,0 +1,13 @@
+type Notification {
+    id: String
+    userId: String
+    title: String
+    description: String
+    category: String
+    link: String
+    isAlert: Boolean
+}
+
+type Query {
+  Notification: [Notification]
+}

@@ -487,6 +487,7 @@ export type GQLUpsertUserInterestInput = {
 
 export type GQLQuery = {
   readonly __typename?: 'Query';
+  readonly Notification: Maybe<ReadonlyArray<Maybe<GQLNotification>>>;
   readonly activeChallenge: GQLChallenge;
   readonly activities: ReadonlyArray<GQLActivityUnion>;
   readonly activity: Maybe<GQLActivityUnion>;
@@ -808,6 +809,17 @@ export type GQLViewerChangeAvatarMutationResult = GQLUser | GQLViewerChangeAvata
 export type GQLViewerEnrollmenLevelCodestFilterInput = {
   readonly last30days: Maybe<Scalars['Boolean']>;
   readonly userId: Maybe<Scalars['ID']>;
+};
+
+export type GQLNotification = {
+  readonly __typename?: 'Notification';
+  readonly id: Maybe<Scalars['String']>;
+  readonly userId: Maybe<Scalars['String']>;
+  readonly title: Maybe<Scalars['String']>;
+  readonly description: Maybe<Scalars['String']>;
+  readonly category: Maybe<Scalars['String']>;
+  readonly link: Maybe<Scalars['String']>;
+  readonly isAlert: Maybe<Scalars['Boolean']>;
 };
 
 export type GQLCycle = {
@@ -1415,6 +1427,7 @@ export type GQLResolversTypes = {
   ViewerChangeAvatarMutationError: ResolverTypeWrapper<GQLViewerChangeAvatarMutationError>;
   ViewerChangeAvatarMutationResult: GQLResolversTypes['User'] | GQLResolversTypes['ViewerChangeAvatarMutationError'];
   ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
+  Notification: ResolverTypeWrapper<GQLNotification>;
   Cycle: ResolverTypeWrapper<CycleEntity>;
   LevelTheme: ResolverTypeWrapper<LevelThemeEntity>;
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
@@ -1527,6 +1540,7 @@ export type GQLResolversParentTypes = {
   ViewerChangeAvatarMutationError: GQLViewerChangeAvatarMutationError;
   ViewerChangeAvatarMutationResult: GQLResolversParentTypes['User'] | GQLResolversParentTypes['ViewerChangeAvatarMutationError'];
   ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
+  Notification: GQLNotification;
   Cycle: CycleEntity;
   LevelTheme: LevelThemeEntity;
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
@@ -1658,6 +1672,7 @@ export type GQLStartActivityResultResolvers<ContextType = GraphQLContext, Parent
 };
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
+  Notification: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Notification']>>>, ParentType, ContextType>;
   activeChallenge: Resolver<GQLResolversTypes['Challenge'], ParentType, ContextType>;
   activities: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType>;
   activity: Resolver<Maybe<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryactivityArgs, 'id'>>;
@@ -1818,6 +1833,17 @@ export type GQLViewerChangeAvatarMutationErrorResolvers<ContextType = GraphQLCon
 
 export type GQLViewerChangeAvatarMutationResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ViewerChangeAvatarMutationResult'] = GQLResolversParentTypes['ViewerChangeAvatarMutationResult']> = {
   __resolveType: TypeResolveFn<'User' | 'ViewerChangeAvatarMutationError', ParentType, ContextType>;
+};
+
+export type GQLNotificationResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Notification'] = GQLResolversParentTypes['Notification']> = {
+  id: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  userId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  title: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  description: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  category: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  link: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  isAlert: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GQLCycleResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Cycle'] = GQLResolversParentTypes['Cycle']> = {
@@ -2241,6 +2267,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Role: GQLRoleResolvers<ContextType>;
   ViewerChangeAvatarMutationError: GQLViewerChangeAvatarMutationErrorResolvers<ContextType>;
   ViewerChangeAvatarMutationResult: GQLViewerChangeAvatarMutationResultResolvers<ContextType>;
+  Notification: GQLNotificationResolvers<ContextType>;
   Cycle: GQLCycleResolvers<ContextType>;
   LevelTheme: GQLLevelThemeResolvers<ContextType>;
   OverallClassCompletedActivities: GQLOverallClassCompletedActivitiesResolvers<ContextType>;
