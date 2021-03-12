@@ -59,11 +59,8 @@ import { eventInfoResolvers } from "./shared/resolvers/event-info.resolver";
 import { eventInstructorResolvers } from "./shared/resolvers/event-instructor.resolvers";
 import { registerEventResultResolver } from "./shared/resolvers/a.resolver";
 import { cancelRegisterEventResultResolver } from "./shared/resolvers/a.resolver";
-<<<<<<< HEAD
 import { notificationResolver } from "./shared/resolvers/notification.resolvers";
-=======
 import { newsletterResolvers } from "./shared/resolvers/newsletter.resolver";
->>>>>>> 60221d2c5c6dbf344a36b78684ca749ea932b92d
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -131,10 +128,7 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     EventInstructor: eventInstructorResolvers,
     EventRegistrationResponseSuccess: registerEventResultResolver,
     CancelEventRegistrationResponseSuccess: cancelRegisterEventResultResolver,
-<<<<<<< HEAD
     Notification: notificationResolver,
-=======
     Newsletter: newsletterResolvers,
->>>>>>> 60221d2c5c6dbf344a36b78684ca749ea932b92d
 };
 

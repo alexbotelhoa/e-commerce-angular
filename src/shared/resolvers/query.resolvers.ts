@@ -43,12 +43,9 @@ import { viewerEnrollmentLevelCodesQueryResolver } from "../../domain/enrollment
 import { progressStudentsQueryResolver } from "../../domain/teacher/queries/progress-students/progress-students.query";
 import { interestQueryResolver } from "../../domain/activity/queries/interest/interest.query";
 import { challengeQueryResolver } from "../../domain/activity/queries/challenge/challenge.query";
-<<<<<<< HEAD
 import { notificationQueryResolver } from "../../domain/notification/queries/notification.resolver";
-=======
 import { newsletterQueryResolver } from "../../domain/activity/queries/newsletter/newsletter.query";
 import { newslettersQueryResolver } from "../../domain/activity/queries/newsletters/newsletters.query";
->>>>>>> 60221d2c5c6dbf344a36b78684ca749ea932b92d
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -89,10 +86,7 @@ export const queryResolvers: GQLResolvers['Query'] = {
     viewerEnrollmentLevelCodes: viewerEnrollmentLevelCodesQueryResolver,
     progressStudents: progressStudentsQueryResolver,
     interest: interestQueryResolver,
-<<<<<<< HEAD
     Notification: notificationQueryResolver,
-=======
     newsletter: newsletterQueryResolver,
     newsletters: newslettersQueryResolver,
->>>>>>> 60221d2c5c6dbf344a36b78684ca749ea932b92d
 }
