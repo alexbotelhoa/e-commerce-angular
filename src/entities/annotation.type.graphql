@@ -1,4 +1,5 @@
 type Annotation {
+    id: ID!
     userId: String!
     meetingId: String!
     createdDate: String!

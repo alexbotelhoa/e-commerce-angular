@@ -973,6 +973,7 @@ export type GQLActivity = {
 
 export type GQLAnnotation = {
   readonly __typename?: 'Annotation';
+  readonly id: Scalars['ID'];
   readonly userId: Scalars['String'];
   readonly meetingId: Scalars['String'];
   readonly createdDate: Scalars['String'];
@@ -1947,6 +1948,7 @@ export type GQLActivityResolvers<ContextType = GraphQLContext, ParentType extend
 };
 
 export type GQLAnnotationResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Annotation'] = GQLResolversParentTypes['Annotation']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   userId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   meetingId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   createdDate: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;

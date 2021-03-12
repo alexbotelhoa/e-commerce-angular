@@ -7,7 +7,7 @@ export const annotationEntityResolvers: Pick<GQLAnnotationResolvers, keyof Annot
     createdDate: (obj) => obj.createdDate,
     updatedDate: (obj) => obj.updatedDate,
     data: (obj) => obj.data,
-    id: (obj) => obj
+    id: (obj) => obj.id,
 }
 
 
