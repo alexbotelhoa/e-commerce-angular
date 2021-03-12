@@ -35,29 +35,29 @@ export const eventProcess = async (userId: string, database: DatabaseService<any
         const response = []
         for (const event of transformedData) {
             const eventCp: any = { ...event }
+            delete eventCp.__typename;
             delete eventCp.adress;
             delete eventCp.instructor;
             delete eventCp.eventInfo;
-            delete eventCp.__typename;
 
             if (ActualEvents.some(e => e.classId === event.classId)) {
                 const actualEventToUpdate = ActualEvents.find(e => e.classId === event.classId)
                 const eventId = await updateEvent(database)(eventCp)(builder => builder.andWhere("id", actualEventToUpdate?.id))
 
-                if (event.adress) {
-                    await updateEventAdress(database)({ ...event.adress, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
-                }
-                if (event.instructor && event.instructor?.length > 0) {
-                    for (const teacher of event.instructor) {
-                        await updateEventInstructor(database)({ ...teacher, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
-                    }
-                }
+                // if (event.adress) {
+                //     await updateEventAdress(database)({ ...event.adress, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
+                // }
+                // if (event.instructor && event.instructor?.length > 0) {
+                //     for (const teacher of event.instructor) {
+                //         await updateEventInstructor(database)({ ...teacher, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
+                //     }
+                // }
 
-                if (event.eventInfo && event.eventInfo?.length > 0) {
-                    for (const eventInfo of event.eventInfo) {
-                        await updateEventInfo(database)({ ...eventInfo, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
-                    }
-                }
+                // if (event.eventInfo && event.eventInfo?.length > 0) {
+                //     for (const eventInfo of event.eventInfo) {
+                //         await updateEventInfo(database)({ ...eventInfo, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
+                //     }
+                // }
             } else {
                 const eventId = await insertEvent(database)(eventCp)
                 if (event.adress) {
