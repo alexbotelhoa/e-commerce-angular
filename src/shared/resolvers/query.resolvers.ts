@@ -1,22 +1,16 @@
 import { GQLResolvers } from "../../resolvers-types"
-
 import { levelsQueryResolver } from "../../domain/activity/queries/levels/levels.query";
 import { levelQueryResolver } from "../../domain/activity/queries/level/level.query";
 import { availableThemesResolver } from "../../domain/activity/queries/level/level.query"
-
 import { themesQueryResolver } from "../../domain/activity/queries/themes/themes.query";
 import { themeQueryResolver } from "../../domain/activity/queries/theme/theme.query";
-
 import { activitiesQueryResolver } from "../../domain/activity/queries/activities/activities.query";
 import { activityQueryResolver } from "../../domain/activity/queries/activity/activity.query";
-
 import { cyclesQueryResolver } from "../../domain/activity/queries/cycles/cycles.query"
 import { cycleQueryResolver } from "../../domain/activity/queries/cycle/cycle.query"
 import { availableActivitiesForCycleResolver } from "../../domain/activity/queries/cycle/available-activities-for-cycle.query"
-
 import { levelThemesQueryResolver } from "../../domain/activity/queries/level-themes/level-themes.query"
 import { levelThemeQueryResolver } from "../../domain/activity/queries/level-theme/level-theme.query"
-
 import { cycleActivitiesQueryResolver } from "../../domain/activity/queries/cycle-activities/cycle-activities.query"
 import { cycleActivityQueryResolver } from "../../domain/activity/queries/cycle-activity/cycle-activity.query"
 import { currentUserQueryResolver } from "../../domain/authentication/queries/current-user.query";
@@ -44,6 +38,7 @@ import { progressStudentsQueryResolver } from "../../domain/teacher/queries/prog
 import { interestQueryResolver } from "../../domain/activity/queries/interest/interest.query";
 import { challengeQueryResolver } from "../../domain/activity/queries/challenge/challenge.query";
 import { notificationQueryResolver } from "../../domain/notification/queries/notification.resolver";
+import { annotationQueryResolver } from "../../domain/annotation/queries/annotation.resolver";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -85,4 +80,5 @@ export const queryResolvers: GQLResolvers['Query'] = {
     progressStudents: progressStudentsQueryResolver,
     interest: interestQueryResolver,
     Notification: notificationQueryResolver,
+    Annotation: annotationQueryResolver,
 }

@@ -487,6 +487,7 @@ export type GQLUpsertUserInterestInput = {
 
 export type GQLQuery = {
   readonly __typename?: 'Query';
+  readonly Annotation: Maybe<GQLAnnotation>;
   readonly Notification: Maybe<ReadonlyArray<Maybe<GQLNotification>>>;
   readonly activeChallenge: GQLChallenge;
   readonly activities: ReadonlyArray<GQLActivityUnion>;
@@ -526,6 +527,11 @@ export type GQLQuery = {
   readonly viewerEnrollmentLevelCodes: ReadonlyArray<GQLLevelCode>;
   readonly viewerTeacherClasses: ReadonlyArray<GQLTeacherClass>;
   readonly viewerTeacherLevelCodes: ReadonlyArray<GQLLevelCode>;
+};
+
+
+export type GQLQueryAnnotationArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -1684,6 +1690,7 @@ export type GQLStartActivityResultResolvers<ContextType = GraphQLContext, Parent
 };
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
+  Annotation: Resolver<Maybe<GQLResolversTypes['Annotation']>, ParentType, ContextType, RequireFields<GQLQueryAnnotationArgs, 'id'>>;
   Notification: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Notification']>>>, ParentType, ContextType>;
   activeChallenge: Resolver<GQLResolversTypes['Challenge'], ParentType, ContextType>;
   activities: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType>;
