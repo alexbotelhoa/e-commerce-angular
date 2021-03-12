@@ -43,6 +43,7 @@ import { viewerEnrollmentLevelCodesQueryResolver } from "../../domain/enrollment
 import { progressStudentsQueryResolver } from "../../domain/teacher/queries/progress-students/progress-students.query";
 import { interestQueryResolver } from "../../domain/activity/queries/interest/interest.query";
 import { challengeQueryResolver } from "../../domain/activity/queries/challenge/challenge.query";
+import { notificationQueryResolver } from "../../domain/notification/queries/notification.resolver";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -83,5 +84,5 @@ export const queryResolvers: GQLResolvers['Query'] = {
     viewerEnrollmentLevelCodes: viewerEnrollmentLevelCodesQueryResolver,
     progressStudents: progressStudentsQueryResolver,
     interest: interestQueryResolver,
-
+    Notification: notificationQueryResolver,
 }

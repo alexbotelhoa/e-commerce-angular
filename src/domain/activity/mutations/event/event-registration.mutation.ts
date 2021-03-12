@@ -32,7 +32,7 @@ export const RegisterEventMutationResolver: GQLMutationResolvers['registerEventM
             }
         } catch (err) {
             const simpleError = {
-                message: err.message,
+                message: err.response.data.error,
                 success: false,
             }
             return simpleError

@@ -25,7 +25,6 @@ export const cancelRegisterEventMutationResolver: GQLMutationResolvers['cancelRe
                 },
                 responseType: 'json',
             });
-            console.log(integrationRequest.data, "OLAAAAAAAAAAAAAAAAAAAAA")
             return {
                 message: integrationRequest.data.Result,
                 success: true,
