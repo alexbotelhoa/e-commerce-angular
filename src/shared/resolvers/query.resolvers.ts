@@ -41,6 +41,7 @@ import { notificationQueryResolver } from "../../domain/notification/queries/not
 import { annotationQueryResolver } from "../../domain/annotation/queries/annotation.resolver";
 import { newsletterQueryResolver } from "../../domain/activity/queries/newsletter/newsletter.query";
 import { newslettersQueryResolver } from "../../domain/activity/queries/newsletters/newsletters.query";
+import { getMeetQueryResolver } from "../../domain/meeting/get-meet.resolver";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -85,4 +86,5 @@ export const queryResolvers: GQLResolvers['Query'] = {
     Annotation: annotationQueryResolver,
     newsletter: newsletterQueryResolver,
     newsletters: newslettersQueryResolver,
+    meet: getMeetQueryResolver,
 }
