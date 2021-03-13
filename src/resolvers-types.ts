@@ -98,6 +98,7 @@ export type GQLMutation = {
   readonly updateLevelThemesOrder: ReadonlyArray<GQLLevelTheme>;
   readonly updateNewsletter: GQLNewsletter;
   readonly updateTheme: GQLTheme;
+  readonly upsertAnnotation: Maybe<GQLAnnotation>;
   readonly upsertOrRemoveUserInterest: Maybe<GQLInterest>;
   readonly viewerChangeAvatar: GQLViewerChangeAvatarMutationResult;
 };
@@ -300,6 +301,11 @@ export type GQLMutationupdateNewsletterArgs = {
 
 export type GQLMutationupdateThemeArgs = {
   data: GQLUpdateThemeInput;
+};
+
+
+export type GQLMutationupsertAnnotationArgs = {
+  annotation: GQLAnnotationUpsertInput;
 };
 
 
@@ -823,6 +829,11 @@ export type GQLStudentGrade = {
   readonly __typename?: 'StudentGrade';
   readonly typeId: GradeTypeId;
   readonly grade: Scalars['Float'];
+};
+
+export type GQLAnnotationUpsertInput = {
+  readonly data: Scalars['String'];
+  readonly meetingId: Scalars['String'];
 };
 
 export { PermissionId };
@@ -1487,6 +1498,7 @@ export type GQLResolversTypes = {
   ClassStudentGrade: ResolverTypeWrapper<ClassStudentGrade>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   StudentGrade: ResolverTypeWrapper<StudentGrade>;
+  AnnotationUpsertInput: GQLAnnotationUpsertInput;
   PermissionId: PermissionId;
   RoleId: RoleId;
   Permission: ResolverTypeWrapper<Permission>;
@@ -1606,6 +1618,7 @@ export type GQLResolversParentTypes = {
   ClassStudentGrade: ClassStudentGrade;
   Float: Scalars['Float'];
   StudentGrade: StudentGrade;
+  AnnotationUpsertInput: GQLAnnotationUpsertInput;
   Permission: Permission;
   Role: Role;
   ViewerChangeAvatarInput: GQLViewerChangeAvatarInput;
@@ -1711,6 +1724,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   updateLevelThemesOrder: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLMutationupdateLevelThemesOrderArgs, 'data'>>;
   updateNewsletter: Resolver<GQLResolversTypes['Newsletter'], ParentType, ContextType, RequireFields<GQLMutationupdateNewsletterArgs, 'data'>>;
   updateTheme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType, RequireFields<GQLMutationupdateThemeArgs, 'data'>>;
+  upsertAnnotation: Resolver<Maybe<GQLResolversTypes['Annotation']>, ParentType, ContextType, RequireFields<GQLMutationupsertAnnotationArgs, 'annotation'>>;
   upsertOrRemoveUserInterest: Resolver<Maybe<GQLResolversTypes['Interest']>, ParentType, ContextType, RequireFields<GQLMutationupsertOrRemoveUserInterestArgs, 'data'>>;
   viewerChangeAvatar: Resolver<GQLResolversTypes['ViewerChangeAvatarMutationResult'], ParentType, ContextType, RequireFields<GQLMutationviewerChangeAvatarArgs, 'data'>>;
 };

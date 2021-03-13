@@ -1,0 +1,8 @@
+type Mutation {
+    upsertAnnotation(annotation: AnnotationUpsertInput!): Annotation
+}
+
+input AnnotationUpsertInput {
+    data: String!
+    meetingId: String!
+}

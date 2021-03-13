@@ -1,7 +1,6 @@
 import * as Knex from "knex";
 import { ANNOTATION_TABLE } from "../../src/entities/annotation.entity";
 import { MEETING_TABLE } from "../../src/entities/meeting.entity";
-import { USER_TABLE } from "../../src/entities/user.entity";
 
 
 

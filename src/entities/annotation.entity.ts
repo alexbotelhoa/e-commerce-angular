@@ -4,7 +4,7 @@ export interface AnnotationEntity {
     meetingId: string;
     createdDate: string;
     updatedDate: string;
-    data: string
+    data: string;
 }
 
 export const ANNOTATION_TABLE = 'annotation';
