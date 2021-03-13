@@ -14,6 +14,7 @@ export interface Turma {
     diasdasemanahorario: string;
     status: string;
     professor_conc: string;
+    descr_materia: string;
     carreira: string;
     sala_zoom: string;
     link_estatico: string;

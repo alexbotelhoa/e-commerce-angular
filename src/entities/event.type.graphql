@@ -21,4 +21,5 @@ type Event {
   eventInfo: [EventInfo]
   adress: EventAdress
   instructor: [EventInstructor]
+  title: String
 }

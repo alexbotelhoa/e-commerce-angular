@@ -112,6 +112,7 @@ async function transformEventData(eventDataRequest: EventDataRequest, userId: st
                 street: event.endereco.rua,
             } : undefined,
             career: event.carreira,
+            title: event.descr_materia,
             category: event.categoria,
             daysOfWeekSchedule: event.diasdasemanahorario,
             enrolled: event.matriculados,

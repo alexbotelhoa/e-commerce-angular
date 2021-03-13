@@ -18,6 +18,7 @@ export interface EventEntity {
     typeFaceToFace: string;
     category: string;
     statusEnrollment: string;
+    title: string;
 }
 
 export const EVENT_TABLE = 'event';
