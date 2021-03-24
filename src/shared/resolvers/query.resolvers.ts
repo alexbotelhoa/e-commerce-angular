@@ -42,6 +42,7 @@ import { annotationQueryResolver } from "../../domain/annotation/queries/annotat
 import { newsletterQueryResolver } from "../../domain/activity/queries/newsletter/newsletter.query";
 import { newslettersQueryResolver } from "../../domain/activity/queries/newsletters/newsletters.query";
 import { getMeetQueryResolver } from "../../domain/meeting/get-meet.resolver";
+import { getZoomUrlQueryResolver } from "../../domain/user/query/get-zoom-url.resolver";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -87,4 +88,5 @@ export const queryResolvers: GQLResolvers['Query'] = {
     newsletter: newsletterQueryResolver,
     newsletters: newslettersQueryResolver,
     meet: getMeetQueryResolver,
+    getZoom: getZoomUrlQueryResolver,
 }

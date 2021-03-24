@@ -549,6 +549,7 @@ export type GQLQuery = {
   readonly cycleActivities: ReadonlyArray<GQLCycleActivity>;
   readonly cycleActivity: Maybe<GQLCycleActivity>;
   readonly cycles: ReadonlyArray<GQLCycle>;
+  readonly getZoom: Maybe<Scalars['String']>;
   readonly icons: ReadonlyArray<GQLThemeIcon>;
   readonly interest: ReadonlyArray<GQLInterest>;
   readonly level: Maybe<GQLLevel>;
@@ -636,6 +637,11 @@ export type GQLQuerycycleArgs = {
 
 export type GQLQuerycycleActivityArgs = {
   id: Scalars['ID'];
+};
+
+
+export type GQLQuerygetZoomArgs = {
+  classId: Scalars['ID'];
 };
 
 
@@ -1792,6 +1798,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   cycleActivities: Resolver<ReadonlyArray<GQLResolversTypes['CycleActivity']>, ParentType, ContextType>;
   cycleActivity: Resolver<Maybe<GQLResolversTypes['CycleActivity']>, ParentType, ContextType, RequireFields<GQLQuerycycleActivityArgs, 'id'>>;
   cycles: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType>;
+  getZoom: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType, RequireFields<GQLQuerygetZoomArgs, 'classId'>>;
   icons: Resolver<ReadonlyArray<GQLResolversTypes['ThemeIcon']>, ParentType, ContextType>;
   interest: Resolver<ReadonlyArray<GQLResolversTypes['Interest']>, ParentType, ContextType, RequireFields<GQLQueryinterestArgs, 'filters'>>;
   level: Resolver<Maybe<GQLResolversTypes['Level']>, ParentType, ContextType, RequireFields<GQLQuerylevelArgs, 'id'>>;

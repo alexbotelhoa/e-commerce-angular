@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { FastifyLoggerInstance } from 'fastify';
 import { GQLEvent } from '../../../resolvers-types';
-import { insertEventAdress, selectEventAdress, updateEventAdress } from '../../../shared/repositories/event-adress.repository';
-import { insertEventInfo, selectEventInfo, updateEventInfo } from '../../../shared/repositories/event-info.repository';
-import { insertEventInstructor, selectEventInstructor, updateEventInstructor } from '../../../shared/repositories/event-instructor.repository';
+import { insertEventAdress, selectEventAdress } from '../../../shared/repositories/event-adress.repository';
+import { insertEventInfo, selectEventInfo } from '../../../shared/repositories/event-info.repository';
+import { insertEventInstructor, selectEventInstructor } from '../../../shared/repositories/event-instructor.repository';
 import { insertEvent, selectEvent, updateEvent } from '../../../shared/repositories/event.repository';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { environmentFactory } from '../../../shared/services/environment.service';
