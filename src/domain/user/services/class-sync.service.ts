@@ -21,7 +21,7 @@ import { RoleId } from "../../../resolvers-types";
 import { UserRoleEntity } from "../../../entities/user-role.entity";
 import { deleteTeacherClass, insertTeacherClass, selectTeacherClass } from "../../../shared/repositories/teacher-class.repository";
 import { consolidateEntities, ConsolidateFinder } from "../../../shared/utils/consolidate-entities";
-import { insertMeeting } from "../../../shared/repositories/meeting.repository";
+import { deleteMeeting, insertMeeting, selectMeeting, updateMeeting } from "../../../shared/repositories/meeting.repository";
 
 
 export const processClassSync =
@@ -187,14 +187,24 @@ async function processTeacherData(db: DatabaseService, classData: t.TypeOf<typeo
 async function processMeetingData(db: DatabaseService, classData: t.TypeOf<typeof ClassWithLocationsFullDataType>) {
     const meetings = classData.meetings
     const classId = classData.id;
+    const savedMeetings = await selectMeeting(db).where("classId", "=", classId)
     if (meetings && meetings.length > 0) {
         for (const meet of meetings) {
             const date = format(new Date(meet.date), "yyyy-MM-dd")
-            await insertMeeting(db)({
-                classId,
-                ...meet,
-                date,
-            })
+            const hasMeet = savedMeetings.find(item => item.date === meet.date && meet.endHour === item.endHour && item.startHour === meet.startHour);
+            if (hasMeet) {
+                await updateMeeting(db)({
+                    classId,
+                    ...meet,
+                    date
+                })(qb => qb.where("id", "=", hasMeet.id))
+            } else {
+                await insertMeeting(db)({
+                    classId,
+                    ...meet,
+                    date,
+                })
+            }
         }
     }
 
