@@ -190,8 +190,9 @@ async function processMeetingData(db: DatabaseService, classData: t.TypeOf<typeo
     const savedMeetings = await selectMeeting(db).where("classId", "=", classId)
     if (meetings && meetings.length > 0) {
         for (const meet of meetings) {
-            const date = format(new Date(meet.date), "yyyy-MM-dd")
-            const hasMeet = savedMeetings.find(item => item.date === meet.date && meet.endHour === item.endHour && item.startHour === meet.startHour);
+            const date = meet.date
+            const hasMeet = savedMeetings.find(item => item.date === meet.date
+                && meet.endHour === item.endHour && item.startHour === meet.startHour);
             if (hasMeet) {
                 await updateMeeting(db)({
                     classId,
