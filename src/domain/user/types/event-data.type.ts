@@ -20,7 +20,7 @@ export interface Turma {
     link_estatico: string;
     typeFaceToFace: string;
     categoria: string;
-    status_matricula: string;
+    matriculado: string;
     dados_aula: Dadosaula[];
     endereco: Endereco;
 }

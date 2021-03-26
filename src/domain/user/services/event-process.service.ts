@@ -124,7 +124,7 @@ async function transformEventData(eventDataRequest: EventDataRequest, userId: st
             classId: event.turma,
             endDate: event.final_da_aula,
             startDate: event.inicio_da_aula,
-            statusEnrollment: event.status_matricula,
+            statusEnrollment: event.matriculado,
             teacherConclusion: event.professor_conc,
             typeFaceToFace: event.typeFaceToFace,
             subject: event.materia,
