@@ -153,6 +153,7 @@ async function upsertUserAndMakeEnrollment(existingUser: {
         await updateUser(db)({
             macId: userData.macId,
             macPass: userData.macPass,
+            name: userData.name
         })(where => where.andWhere('id', existingUser.id));
         //if (existingStudentRoles.length === 0) {
         await upsertRole(db, userData);
