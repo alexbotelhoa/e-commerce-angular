@@ -765,6 +765,7 @@ export type GQLClassStudentGradesInput = {
 
 export type GQLUser = {
   readonly __typename?: 'User';
+  readonly accountId: Maybe<Scalars['String']>;
   readonly avatar: Maybe<GQLAvatar>;
   readonly avatarId: Maybe<Scalars['ID']>;
   readonly defaultLevelTypeId: LevelTypeId;
@@ -1842,6 +1843,7 @@ export type GQLClassResolvers<ContextType = GraphQLContext, ParentType extends G
 };
 
 export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['User'] = GQLResolversParentTypes['User']> = {
+  accountId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   avatar: Resolver<Maybe<GQLResolversTypes['Avatar']>, ParentType, ContextType>;
   avatarId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
   defaultLevelTypeId: Resolver<GQLResolversTypes['LevelTypeId'], ParentType, ContextType>;

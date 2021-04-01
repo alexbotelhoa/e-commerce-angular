@@ -5,6 +5,7 @@ export interface UserEntity {
     avatarId: number | null;
     macId: string | null;
     macPass: string | null;
+    accountId: string | null;
 }
 
 export const USER_TABLE = 'user';
