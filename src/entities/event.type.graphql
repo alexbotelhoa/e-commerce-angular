@@ -22,4 +22,5 @@ type Event {
   adress: EventAdress
   instructor: [EventInstructor]
   title: String
+  lastUpdateTime: String
 }

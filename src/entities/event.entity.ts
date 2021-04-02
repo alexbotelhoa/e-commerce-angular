@@ -19,6 +19,7 @@ export interface EventEntity {
     category: string;
     statusEnrollment: string;
     title: string;
+    lastUpdateTime: string;
 }
 
 export const EVENT_TABLE = 'event';

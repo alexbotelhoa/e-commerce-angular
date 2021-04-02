@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { format, differenceInMinutes } from 'date-fns';
 import { FastifyLoggerInstance } from 'fastify';
 import { GQLEvent } from '../../../resolvers-types';
 import { insertEventAdress, selectEventAdress } from '../../../shared/repositories/event-adress.repository';
@@ -17,11 +18,10 @@ export const eventProcess = async (userId: string, database: DatabaseService<any
     try {
         const integrationRequest = await axios.get<EventDataRequest>(url, {
             headers: {
-                'apikey': "Af9lMDeGfD9lZqn4aBfutv9ShC0h9K4O" || env.STUDENT_GRADE_INTEGRATION_API_KEY,
+                'apikey': env.STUDENT_GRADE_INTEGRATION_API_KEY,
             },
             responseType: 'json',
         });
-        console.log(integrationRequest, "OOOOOOOOOOOIIIIIIIIIIIIII")
         logger.info({
             msg: 'event process request response received',
             data: {
@@ -42,7 +42,10 @@ export const eventProcess = async (userId: string, database: DatabaseService<any
 
             if (ActualEvents.some(e => e.classId === event.classId)) {
                 const actualEventToUpdate = ActualEvents.find(e => e.classId === event.classId)
-                const eventId = await updateEvent(database)(eventCp)(builder => builder.andWhere("id", actualEventToUpdate?.id))
+                // if (actualEventToUpdate?.lastUpdateTime && differenceInMinutes(new Date(actualEventToUpdate.lastUpdateTime), new Date()) > 4) {
+
+                // }
+                const eventId = await updateEvent(database)({ ...eventCp, lastUpdateTime: new Date().toJSON() })(builder => builder.andWhere("id", actualEventToUpdate?.id))
 
                 // if (event.adress) {
                 //     await updateEventAdress(database)({ ...event.adress, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
@@ -59,7 +62,7 @@ export const eventProcess = async (userId: string, database: DatabaseService<any
                 //     }
                 // }
             } else {
-                const eventId = await insertEvent(database)(eventCp)
+                const eventId = await insertEvent(database)({ ...eventCp, lastUpdateTime: new Date().toJSON() })
                 if (event.adress) {
                     await insertEventAdress(database)({ ...event.adress, eventId: eventId.toString() })
                 }
@@ -164,7 +167,7 @@ async function transformEventData(eventDataRequest: EventDataRequest, userId: st
                         macPass: t.macPass
                     }
                 })
-            }).reduce((acc, item, index) => {
+            }).reduce((acc, item) => {
                 acc.push(...item)
                 return acc
             }, [])] : undefined,

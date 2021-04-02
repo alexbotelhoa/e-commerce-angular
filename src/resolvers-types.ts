@@ -1223,6 +1223,7 @@ export type GQLEvent = {
   readonly adress: Maybe<GQLEventAdress>;
   readonly instructor: Maybe<ReadonlyArray<Maybe<GQLEventInstructor>>>;
   readonly title: Maybe<Scalars['String']>;
+  readonly lastUpdateTime: Maybe<Scalars['String']>;
 };
 
 export type GQLInterest = {
@@ -2236,6 +2237,7 @@ export type GQLEventResolvers<ContextType = GraphQLContext, ParentType extends G
   adress: Resolver<Maybe<GQLResolversTypes['EventAdress']>, ParentType, ContextType>;
   instructor: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['EventInstructor']>>>, ParentType, ContextType>;
   title: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  lastUpdateTime: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

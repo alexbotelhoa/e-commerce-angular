@@ -26,7 +26,7 @@ export const EventEntityResolvers: Pick<GQLEventResolvers, keyof EventEntity> = 
     statusEnrollment: obj => obj.statusEnrollment,
     daysOfWeekSchedule: obj => obj.daysOfWeekSchedule,
     title: obj => obj.title,
-
+    lastUpdateTime: obj => obj.lastUpdateTime,
 }
 
 
