@@ -2,6 +2,7 @@ export interface NewsletterEntity {
     id: string;
     name: string;
     linkUrl: string;
+    imgSrc: string;
     active: boolean;
 }
 

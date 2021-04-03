@@ -8,10 +8,12 @@ type Mutation {
 input CreateNewsletterInput {
   name: String!
   linkUrl: String!
+  imgSrc: String!
 }
 
 input UpdateNewsletterInput {
   id: ID!
   name: String!
   linkUrl: String!
+  imgSrc: String!
 }

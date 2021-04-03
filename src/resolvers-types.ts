@@ -487,12 +487,14 @@ export type GQLUpdateBasicLevelInfoInput = {
 export type GQLCreateNewsletterInput = {
   readonly name: Scalars['String'];
   readonly linkUrl: Scalars['String'];
+  readonly imgSrc: Scalars['String'];
 };
 
 export type GQLUpdateNewsletterInput = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
   readonly linkUrl: Scalars['String'];
+  readonly imgSrc: Scalars['String'];
 };
 
 export type GQLStartActivityInput = {
@@ -562,6 +564,7 @@ export type GQLQuery = {
   readonly myLevels: ReadonlyArray<GQLLevel>;
   readonly newsletter: Maybe<GQLNewsletter>;
   readonly newsletters: ReadonlyArray<GQLNewsletter>;
+  readonly newslettersActive: ReadonlyArray<GQLNewsletter>;
   readonly overallClassCompletedActivities: Maybe<GQLOverallClassCompletedActivities>;
   readonly progressStudents: GQLProgressStudent;
   readonly teacherClasses: ReadonlyArray<GQLTeacherClass>;
@@ -1305,6 +1308,7 @@ export type GQLNewsletter = {
   readonly __typename?: 'Newsletter';
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
+  readonly imgSrc: Scalars['String'];
   readonly linkUrl: Scalars['String'];
   readonly active: Scalars['Boolean'];
 };
@@ -1813,6 +1817,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   myLevels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
   newsletter: Resolver<Maybe<GQLResolversTypes['Newsletter']>, ParentType, ContextType, RequireFields<GQLQuerynewsletterArgs, 'id'>>;
   newsletters: Resolver<ReadonlyArray<GQLResolversTypes['Newsletter']>, ParentType, ContextType>;
+  newslettersActive: Resolver<ReadonlyArray<GQLResolversTypes['Newsletter']>, ParentType, ContextType>;
   overallClassCompletedActivities: Resolver<Maybe<GQLResolversTypes['OverallClassCompletedActivities']>, ParentType, ContextType, RequireFields<GQLQueryoverallClassCompletedActivitiesArgs, 'classId'>>;
   progressStudents: Resolver<GQLResolversTypes['ProgressStudent'], ParentType, ContextType, RequireFields<GQLQueryprogressStudentsArgs, 'data'>>;
   teacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType, RequireFields<GQLQueryteacherClassesArgs, 'data'>>;
@@ -2299,6 +2304,7 @@ export type GQLMeetingResolvers<ContextType = GraphQLContext, ParentType extends
 export type GQLNewsletterResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Newsletter'] = GQLResolversParentTypes['Newsletter']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  imgSrc: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   linkUrl: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

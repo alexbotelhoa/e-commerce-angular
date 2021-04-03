@@ -22,6 +22,7 @@ export const updateNewsletterMutationResolver: GQLMutationResolvers['updateNewsl
         await updateNewsletter(trx)({
             name: data.name,
             linkUrl: data.linkUrl,
+            imgSrc: data.imgSrc,
         })(builder => builder.andWhere('id', data.id));
     })
 

@@ -39,7 +39,7 @@ import { interestQueryResolver } from "../../domain/activity/queries/interest/in
 import { challengeQueryResolver } from "../../domain/activity/queries/challenge/challenge.query";
 import { notificationQueryResolver } from "../../domain/notification/queries/notification.resolver";
 import { annotationQueryResolver } from "../../domain/annotation/queries/annotation.resolver";
-import { newsletterQueryResolver } from "../../domain/activity/queries/newsletter/newsletter.query";
+import { newslettersActiveQueryResolver, newsletterQueryResolver } from "../../domain/activity/queries/newsletter/newsletter.query";
 import { newslettersQueryResolver } from "../../domain/activity/queries/newsletters/newsletters.query";
 import { getMeetQueryResolver } from "../../domain/meeting/get-meet.resolver";
 import { getZoomUrlQueryResolver } from "../../domain/user/query/get-zoom-url.resolver";
@@ -87,6 +87,7 @@ export const queryResolvers: GQLResolvers['Query'] = {
     Annotation: annotationQueryResolver,
     newsletter: newsletterQueryResolver,
     newsletters: newslettersQueryResolver,
+    newslettersActive: newslettersActiveQueryResolver,
     meet: getMeetQueryResolver,
     getZoom: getZoomUrlQueryResolver,
 }

@@ -1,4 +1,4 @@
-import { GQLResolvers, ActivityTypeId, LevelTypeId, GQLEventRegistrationResponseSuccess } from "./resolvers-types";
+import { GQLResolvers, ActivityTypeId, LevelTypeId } from "./resolvers-types";
 
 import { mutationResolvers } from "./shared/resolvers/mutation.resolvers"
 import { queryResolvers } from "./shared/resolvers/query.resolvers"

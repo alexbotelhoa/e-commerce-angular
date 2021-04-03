@@ -5,6 +5,7 @@ export const newsletterEntityResolvers: Pick<GQLNewsletterResolvers, keyof Newsl
     id: obj => obj.id,
     name: obj => obj.name,
     linkUrl: obj => obj.linkUrl,
+    imgSrc: obj => obj.imgSrc,
     active: obj => obj.active,
 }
 
