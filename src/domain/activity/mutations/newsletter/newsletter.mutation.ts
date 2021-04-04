@@ -1,10 +1,10 @@
 import { GQLMutationResolvers } from "../../../../resolvers-types";
 import { getNewsletterById, insertNewsletter, updateNewsletter } from "../../../../shared/repositories/newsletter.repository";
 
-export const createNewsletterMutationResolver: GQLMutationResolvers['createNewsletter'] = async (obj, { data }, { database: db }) => {
-    const { name, linkUrl } = data;
+export const createNewsletterMutationResolver: GQLMutationResolvers['createNewsletter'] = async (obj, { data }: { data: { name: string, linkUrl: string, imgSrc: string } }, { database: db }) => {
+    const { name, linkUrl, imgSrc } = data;
     const insertedId = await db.transaction(async trx => {
-        const id = await insertNewsletter(trx)({ name, linkUrl });
+        const id = await insertNewsletter(trx)({ name, linkUrl, imgSrc });
         return id;
     });
 
