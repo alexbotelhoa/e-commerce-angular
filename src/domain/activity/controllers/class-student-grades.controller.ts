@@ -47,6 +47,7 @@ export const classStudentGradesController = (env: Environment, db: DatabaseServi
         institutionIds: body.instituicao ? [body.instituicao] : [],
         periodIds: body.periodo ? [body.periodo] : [],
         sessionIds: body.sessao ? [body.sessao] : [],
+        search: null,
     };
 
     const classStudentGradesInput: GQLClassStudentGradesInput = {

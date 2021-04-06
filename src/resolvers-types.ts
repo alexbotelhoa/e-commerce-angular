@@ -723,6 +723,7 @@ export type GQLClassesQueryInput = {
   readonly sessionIds: Maybe<ReadonlyArray<Scalars['ID']>>;
   readonly periodIds: Maybe<ReadonlyArray<Scalars['ID']>>;
   readonly carrerIds: Maybe<ReadonlyArray<Scalars['ID']>>;
+  readonly search: Maybe<Scalars['String']>;
 };
 
 export type GQLInterestPaginationData = {

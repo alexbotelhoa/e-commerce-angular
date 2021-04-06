@@ -4,6 +4,9 @@ import { selectClass } from "../../../../shared/repositories/class.repository";
 export const classesQueryResolver: GQLQueryResolvers['classes'] = async (obj, { data }, context) => {
     const query = selectClass(context.readonlyDatabase);
     if (data) {
+        if (data.search) {
+            query.where("id", "like", `%${data.search}%`)
+        }
         if (data.ids && data.ids.length > 0) {
             query.whereIn('id', data.ids);
         }

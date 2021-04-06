@@ -62,7 +62,7 @@ export const fullUserSeed: UserEntityWithRoles = {
     ],
 }
 
-interface UserEntityWithRoles extends UserEntity {
+interface UserEntityWithRoles extends Omit<UserEntity, "accountId"> {
     roles: RoleId[];
 }
 
@@ -85,7 +85,7 @@ export async function seed(knex: Knex): Promise<void> {
     await deleteAllUsers(knex);
 
     // Inserts seed entries
-    await insertUser(knex)(userSeeds.map<UserEntity>(user => ({
+    await insertUser(knex)(userSeeds.map<Omit<UserEntity, "accountId">>(user => ({
         id: user.id,
         name: user.name,
         onboarded: false,

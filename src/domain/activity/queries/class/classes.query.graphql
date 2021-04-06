@@ -8,4 +8,5 @@ input ClassesQueryInput {
     sessionIds: [ID!]
     periodIds: [ID!]
     carrerIds: [ID!]
+    search: String
 }
