@@ -22,6 +22,7 @@ import { UserRoleEntity } from "../../../entities/user-role.entity";
 import { deleteTeacherClass, insertTeacherClass, selectTeacherClass } from "../../../shared/repositories/teacher-class.repository";
 import { consolidateEntities, ConsolidateFinder } from "../../../shared/utils/consolidate-entities";
 import { insertMeeting, selectMeeting, updateMeeting } from "../../../shared/repositories/meeting.repository";
+import { upsertCountEntity } from "../../../shared/repositories/count.repository";
 
 
 export const processClassSync =
@@ -203,12 +204,14 @@ async function processMeetingData(db: DatabaseService, classData: t.TypeOf<typeo
                     ...meet,
                     date
                 })(qb => qb.where("id", "=", hasMeet.id))
+                await upsertCountEntity("meet", db)
             } else {
                 await insertMeeting(db)({
                     classId,
                     ...meet,
                     date,
                 })
+                await upsertCountEntity("meet", db)
             }
         }
     }

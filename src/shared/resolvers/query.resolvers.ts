@@ -43,6 +43,8 @@ import { newslettersActiveQueryResolver, newsletterQueryResolver } from "../../d
 import { newslettersQueryResolver } from "../../domain/activity/queries/newsletters/newsletters.query";
 import { getMeetQueryResolver } from "../../domain/meeting/get-meet.resolver";
 import { getZoomUrlQueryResolver } from "../../domain/user/query/get-zoom-url.resolver";
+import { logQueryResolver } from "../../domain/interest/log.resolver";
+import { countQueryResolver } from "../../domain/count/count.resolver";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -90,4 +92,6 @@ export const queryResolvers: GQLResolvers['Query'] = {
     newslettersActive: newslettersActiveQueryResolver,
     meet: getMeetQueryResolver,
     getZoom: getZoomUrlQueryResolver,
+    logs: logQueryResolver,
+    count: countQueryResolver
 }

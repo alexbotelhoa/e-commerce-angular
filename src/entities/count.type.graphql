@@ -1,0 +1,5 @@
+type Count {
+    id: ID!
+    name: String
+    count: Int
+}

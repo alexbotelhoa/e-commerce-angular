@@ -1,0 +1,10 @@
+
+
+type Query {
+    count(data: countQueryInput): [Count!]!
+}
+
+input countQueryInput {
+    ids: [ID!]
+    search: String
+}

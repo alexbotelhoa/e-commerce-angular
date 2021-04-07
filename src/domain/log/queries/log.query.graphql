@@ -1,0 +1,10 @@
+
+
+type Query {
+    logs(data: LogsQueryInput): [Log!]!
+}
+
+input LogsQueryInput {
+    ids: [ID!]
+    search: String
+}

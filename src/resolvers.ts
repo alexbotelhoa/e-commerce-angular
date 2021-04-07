@@ -63,6 +63,7 @@ import { annotationResolvers } from "./shared/resolvers/annotation.resolver";
 import { notificationResolver } from "./shared/resolvers/notification.resolvers";
 import { newsletterResolvers } from "./shared/resolvers/newsletter.resolver";
 import { logResolver } from "./shared/resolvers/log.resolver";
+import { countResolver } from "./shared/resolvers/count.resolver";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -134,5 +135,6 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Notification: notificationResolver,
     Newsletter: newsletterResolvers,
     Log: logResolver,
+    Count: countResolver,
 };
 
