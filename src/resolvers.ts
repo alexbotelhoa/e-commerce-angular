@@ -62,6 +62,7 @@ import { cancelRegisterEventResultResolver } from "./shared/resolvers/a.resolver
 import { annotationResolvers } from "./shared/resolvers/annotation.resolver";
 import { notificationResolver } from "./shared/resolvers/notification.resolvers";
 import { newsletterResolvers } from "./shared/resolvers/newsletter.resolver";
+import { logResolver } from "./shared/resolvers/log.resolver";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -132,5 +133,6 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Annotation: annotationResolvers,
     Notification: notificationResolver,
     Newsletter: newsletterResolvers,
+    Log: logResolver,
 };
 

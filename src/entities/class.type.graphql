@@ -12,4 +12,6 @@ type Class {
     regionalId: ID
     startDate: DateTime
     endDate: DateTime
+    hasEcampus: Boolean
+    hasEyoung: Boolean
 }

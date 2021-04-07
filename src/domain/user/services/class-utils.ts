@@ -48,20 +48,20 @@ export function isFullClassDataDivergent(existingClass: ClassEntity, data: t.Typ
             existingClass.periodId !== receivedClass.periodId ||
             existingClass.sessionId !== receivedClass.sessionId ||
             existingClass.levelCodeId !== receivedClass.level.id ||
+            existingClass.hasEcampus !== receivedClass.hasECampusAccess ||
+            existingClass.hasEyoung !== receivedClass.mnft ||
             (
                 existingClass.startDate !== receivedClass.startDate
                 && existingClass.startDate === null
                 || (
-                    existingClass.startDate instanceof Date
-                    && format(existingClass.startDate, 'yyyy-MM-dd') !== receivedClass.startDate
+                    existingClass.startDate !== receivedClass.startDate
                 )
             ) ||
             (
                 existingClass.endDate !== receivedClass.endDate
                 && existingClass.endDate === null
                 || (
-                    existingClass.endDate instanceof Date
-                    && format(existingClass.endDate, 'yyyy-MM-dd') !== receivedClass.endDate
+                    existingClass.endDate !== receivedClass.endDate
                 )
             )
         )

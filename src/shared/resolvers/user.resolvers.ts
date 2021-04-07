@@ -32,7 +32,7 @@ import { selectMeeting } from "../repositories/meeting.repository";
 import { eventProcess } from "../../domain/user/services/event-process.service";
 import { getUserById } from "../repositories/user.repository";
 import { selectTeacherClass } from "../repositories/teacher-class.repository";
-import { getClassById } from "../repositories/class.repository";
+import { getClassById, getClassesByIds } from "../repositories/class.repository";
 import { getLevelCodeById } from "../repositories/level-code.repository";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
@@ -235,8 +235,8 @@ export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, 
 
     for (const meet of meetings) {
         const teacherClass = (await selectTeacherClass(context.database).where(`classId`, "=", meet.classId))[0]
-        const teacher = await getUserById(context.database)(teacherClass.teacherId)
-        const classA = await getClassById(context.database)(teacherClass.classId)
+        const teacher = teacherClass?.teacherId ? await getUserById(context.database)(teacherClass.teacherId) : null;
+        const classA = teacherClass?.classId ? await getClassById(context.database)(teacherClass.classId) : null;
         const courseName = classA?.levelCodeId ? (await getLevelCodeById(context.database)(classA.levelCodeId))?.code || null : null
         response.push({
             ...meet,
@@ -253,6 +253,28 @@ export const eventResolver: GQLUserResolvers['event'] = async (obj, params, cont
     return event || [];
 }
 
+export const hasEcampusResolver: GQLUserResolvers["hasEcampus"] = async (obj, params, context) => {
+    const userId = context.currentUser?.id;
+    if (!userId) return false;
+    const enrollment = await selectEnrollment(context.readonlyDatabase).where(`userId`, "=", userId)
+    if (enrollment.length === 0) return false;
+    const ids = enrollment.map(i => i.id)
+    const Enclasses = await selectEnrollmentClass(context.readonlyDatabase).whereIn("enrollmentId", ids)
+    const classIds = Enclasses.map(c => c.classId)
+    const classes = await getClassesByIds(context.readonlyDatabase)(classIds)
+    return classes.some(c => c.hasEcampus);
+}
+export const hasEyoungResolver: GQLUserResolvers["hasEyoung"] = async (obj, params, context) => {
+    const userId = context.currentUser?.id;
+    if (!userId) return false;
+    const enrollment = await selectEnrollment(context.readonlyDatabase).where(`userId`, "=", userId)
+    if (enrollment.length === 0) return false;
+    const ids = enrollment.map(i => i.id)
+    const Enclasses = await selectEnrollmentClass(context.readonlyDatabase).whereIn("enrollmentId", ids)
+    const classIds = Enclasses.map(c => c.classId)
+    const classes = await getClassesByIds(context.readonlyDatabase)(classIds)
+    return classes.some(c => c.hasEyoung);
+}
 
 export const userResolvers: GQLUserResolvers = {
     ...userEntityResolvers,
@@ -270,6 +292,8 @@ export const userResolvers: GQLUserResolvers = {
     studentLevel: studentLevelResolver,
     meeting: meetingResolver,
     event: eventResolver,
+    hasEcampus: hasEcampusResolver,
+    hasEyoung: hasEyoungResolver,
 }
 
 

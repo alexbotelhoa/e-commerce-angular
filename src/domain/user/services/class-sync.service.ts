@@ -21,32 +21,64 @@ import { RoleId } from "../../../resolvers-types";
 import { UserRoleEntity } from "../../../entities/user-role.entity";
 import { deleteTeacherClass, insertTeacherClass, selectTeacherClass } from "../../../shared/repositories/teacher-class.repository";
 import { consolidateEntities, ConsolidateFinder } from "../../../shared/utils/consolidate-entities";
-import { deleteMeeting, insertMeeting, selectMeeting, updateMeeting } from "../../../shared/repositories/meeting.repository";
+import { insertMeeting, selectMeeting, updateMeeting } from "../../../shared/repositories/meeting.repository";
 
 
 export const processClassSync =
     (db: DatabaseService, log: FastifyLoggerInstance) => async (event: ClassSyncEvent): Promise<WebhookResponse> => {
-        try {
-            // return await db.transaction(async trx => {
-            const data = event.data;
-            const classData = data.class;
-            const existingClass = await getClassById(db)(data.class.id);
-            const hasLevelCode = await getLevelCodeById(db)(classData.level.id)
-            let levelCodeId = hasLevelCode ? hasLevelCode.id : null
+        // return await db.transaction(async trx => {
+        const data = event.data;
+        const classData = data.class;
+        const existingClass = await getClassById(db)(data.class.id);
+        const hasLevelCode = await getLevelCodeById(db)(classData.level.id)
+        let levelCodeId = hasLevelCode ? hasLevelCode.id : null
 
-            if (!levelCodeId) {
-                levelCodeId = await insertLevelCode(db)({
-                    id: classData.level.id,
-                    active: true,
-                    code: classData.level.code,
-                    description: classData.level.code,
-                    levelId: null,
-                });
+        if (!levelCodeId) {
+            levelCodeId = await insertLevelCode(db)({
+                id: classData.level.id,
+                active: true,
+                code: classData.level.code,
+                description: classData.level.code,
+                levelId: null,
+            });
+        }
+        if (!existingClass) {
+            const hasRegional = getOneOrNull((await db.select<RegionalEntity[]>([`${REGIONAL_TABLE}.*`]).from(REGIONAL_TABLE).where(`${REGIONAL_TABLE}.name`, classData.regional)));
+            const hasCampus = getOneOrNull((await db.select<CampusEntity[]>([`${CAMPUS_TABLE}.*`]).from(CAMPUS_TABLE).where(`${CAMPUS_TABLE}.name`, classData.campus)));
+            const hasLocal = getOneOrNull((await db.select<LocalEntity[]>([`${LOCAL_TABLE}.*`]).from(LOCAL_TABLE).where(`${LOCAL_TABLE}.name`, classData.local)));
+            const {
+                campusId, localId, regionalId
+            } = await updateRegionCampusLocal(db, classData, hasRegional, hasCampus, hasLocal);
+            const times = {
+                startDate: format(new Date(classData.startDate), "yyyy-MM-dd"),
+                endDate: format(new Date(classData.endDate), "yyyy-MM-dd"),
             }
-            if (!existingClass) {
-                const hasRegional = getOneOrNull((await db.select<RegionalEntity[]>([`${REGIONAL_TABLE}.*`]).from(REGIONAL_TABLE).where(`${REGIONAL_TABLE}.name`, classData.regional)));
-                const hasCampus = getOneOrNull((await db.select<CampusEntity[]>([`${CAMPUS_TABLE}.*`]).from(CAMPUS_TABLE).where(`${CAMPUS_TABLE}.name`, classData.campus)));
-                const hasLocal = getOneOrNull((await db.select<LocalEntity[]>([`${LOCAL_TABLE}.*`]).from(LOCAL_TABLE).where(`${LOCAL_TABLE}.name`, classData.local)));
+            await insertClass(db)({
+                id: classData.id,
+                name: classData.name,
+                institutionId: classData.institutionId,
+                carrerId: classData.carrerId,
+                periodId: classData.periodId,
+                sessionId: classData.sessionId,
+                levelCodeId: levelCodeId,
+                campusId: campusId,
+                localId: localId,
+                regionalId: regionalId,
+                hasEcampus: classData.hasECampusAccess,
+                hasEyoung: classData.mnft,
+                ...times,
+            })
+            await processTeacherData(db, classData)
+            await processMeetingData(db, classData)
+            return {
+                success: true,
+            }
+        } else {
+            const hasRegional = getOneOrNull((await db.select<RegionalEntity[]>([`${REGIONAL_TABLE}.*`]).from(REGIONAL_TABLE).where(`${REGIONAL_TABLE}.name`, classData.regional)));
+            const hasCampus = getOneOrNull((await db.select<CampusEntity[]>([`${CAMPUS_TABLE}.*`]).from(CAMPUS_TABLE).where(`${CAMPUS_TABLE}.name`, classData.campus)));
+            const hasLocal = getOneOrNull((await db.select<LocalEntity[]>([`${LOCAL_TABLE}.*`]).from(LOCAL_TABLE).where(`${LOCAL_TABLE}.name`, classData.local)));
+            const fullClassDataDivergent = isFullClassDataDivergent(existingClass, classData)
+            if (fullClassDataDivergent || (!hasRegional || !hasCampus || !hasLocal)) {
                 const {
                     campusId, localId, regionalId
                 } = await updateRegionCampusLocal(db, classData, hasRegional, hasCampus, hasLocal);
@@ -54,85 +86,25 @@ export const processClassSync =
                     startDate: format(new Date(classData.startDate), "yyyy-MM-dd"),
                     endDate: format(new Date(classData.endDate), "yyyy-MM-dd"),
                 }
-                await insertClass(db)({
-                    id: classData.id,
+                await updateClass(db)({
                     name: classData.name,
-                    institutionId: classData.institutionId,
                     carrerId: classData.carrerId,
+                    institutionId: classData.institutionId,
                     periodId: classData.periodId,
                     sessionId: classData.sessionId,
                     levelCodeId: levelCodeId,
                     campusId: campusId,
                     localId: localId,
                     regionalId: regionalId,
+                    hasEcampus: classData.hasECampusAccess,
+                    hasEyoung: classData.mnft,
                     ...times,
-                })
-                // await db.raw("insert into class (campusId," +
-                //     "carrerId," +
-                //     "endDate," +
-                //     "id," +
-                //     "institutionId," +
-                //     "levelCodeId," +
-                //     "localId," +
-                //     "name," +
-                //     "periodId," +
-                //     "regionalId," +
-                //     "sessionId," +
-                //     "startDate)" + `  values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                //     [campusId!,
-                //     classData.carrerId,
-                //     times.endDate,
-                //     classData.id,
-                //     classData.institutionId,
-                //         levelCodeId,
-                //     localId!,
-                //     classData.name,
-                //     classData.periodId,
-                //     regionalId!,
-                //     classData.sessionId,
-                //     classData.startDate])
-                await processTeacherData(db, classData)
-                await processMeetingData(db, classData)
-                return {
-                    success: true,
-                }
-            } else {
-                const hasRegional = getOneOrNull((await db.select<RegionalEntity[]>([`${REGIONAL_TABLE}.*`]).from(REGIONAL_TABLE).where(`${REGIONAL_TABLE}.name`, classData.regional)));
-                const hasCampus = getOneOrNull((await db.select<CampusEntity[]>([`${CAMPUS_TABLE}.*`]).from(CAMPUS_TABLE).where(`${CAMPUS_TABLE}.name`, classData.campus)));
-                const hasLocal = getOneOrNull((await db.select<LocalEntity[]>([`${LOCAL_TABLE}.*`]).from(LOCAL_TABLE).where(`${LOCAL_TABLE}.name`, classData.local)));
-                const fullClassDataDivergent = isFullClassDataDivergent(existingClass, classData)
-                if (fullClassDataDivergent || (!hasRegional || !hasCampus || !hasLocal)) {
-                    const {
-                        campusId, localId, regionalId
-                    } = await updateRegionCampusLocal(db, classData, hasRegional, hasCampus, hasLocal);
-                    const times = {
-                        startDate: format(new Date(classData.startDate), "yyyy-MM-dd"),
-                        endDate: format(new Date(classData.endDate), "yyyy-MM-dd"),
-                    }
-                    await updateClass(db)({
-                        name: classData.name,
-                        carrerId: classData.carrerId,
-                        institutionId: classData.institutionId,
-                        periodId: classData.periodId,
-                        sessionId: classData.sessionId,
-                        levelCodeId: levelCodeId,
-                        campusId: campusId,
-                        localId: localId,
-                        regionalId: regionalId,
-                        ...times,
-                    })(where => where.andWhere('id', classData.id));
-                }
-                await processTeacherData(db, classData)
-                await processMeetingData(db, classData)
-                return {
-                    success: true,
-                }
+                })(where => where.andWhere('id', classData.id));
             }
-            // })
-        } catch (error) {
+            await processTeacherData(db, classData)
+            await processMeetingData(db, classData)
             return {
-                message: error.message,
-                success: false
+                success: true,
             }
         }
     }

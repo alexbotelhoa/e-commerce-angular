@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import * as t from "io-ts";
 import { API_KEYS } from "../../../shared/constants/api-keys.constant";
+import { insertLog, updateLog } from "../../../shared/repositories/log.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { processClassSync } from "../services/class-sync.service";
 import { processStudentClassTransfer } from "../services/student-class-transfer.service";
@@ -89,6 +90,10 @@ const WebhookEventType = t.union([
 
 export const webhookEventsController = (db: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
 
+    const loggerId = await insertLog(db)({
+        body: JSON.stringify(request.body),
+        status: "created",
+    })
     const apiKey = request.headers['lxp-api-key'];
     if (typeof apiKey !== 'string') {
         reply.status(400);
@@ -119,13 +124,24 @@ export const webhookEventsController = (db: DatabaseService) => async (request: 
                 message: `Invalid input: ${JSON.stringify(decodedBody.left)}`,
             };
             reply.send(response);
+            await updateLog(db)({
+                status: "error",
+                body: JSON.stringify(
+                    { body: decodedBody, error: response }
+                )
+            })(where => where.where("id", "=", loggerId))
             return;
         }
 
         const body = decodedBody.right;
 
         request.log.info(body, `Received webhook request of type ${body.type}`);
-
+        await updateLog(db)({
+            status: "valid-input",
+            body: JSON.stringify(
+                { body: body }
+            ), key: body.id,
+        })(where => where.where("id", "=", loggerId))
         let response: WebhookResponse;
 
         switch (body.type) {
@@ -156,6 +172,7 @@ export const webhookEventsController = (db: DatabaseService) => async (request: 
         const responseStatus = response.success ? 200 : 400;
         reply.status(responseStatus);
         reply.send(response);
+        request.log.info(body, `response generated to webhook request of id ${body.id} with response ${response} loggerid ${loggerId}`);
     }
     catch (error) {
         const webhookResponse: WebhookErrorResponse = {
@@ -164,8 +181,9 @@ export const webhookEventsController = (db: DatabaseService) => async (request: 
         };
         reply.status(400);
         reply.send(webhookResponse);
+        await updateLog(db)({
+            status: "error",
+        })(where => where.where("id", "=", loggerId))
+        request.log.info(webhookResponse as any, `Received webhookwith error, loggerId ${loggerId}`);
     }
-
-
-
 }

@@ -11,6 +11,8 @@ export interface ClassEntity {
     regionalId: string | null;
     startDate: string | Date | null;
     endDate: string | Date | null;
+    hasEcampus: boolean;
+    hasEyoung: boolean;
 }
 
 export const CLASS_TABLE = 'class';

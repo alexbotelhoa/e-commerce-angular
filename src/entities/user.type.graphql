@@ -19,6 +19,8 @@ type User {
   studentLevel: studentLevel!
   meeting: [Meeting]
   event: [Event]
+  hasEyoung: Boolean
+  hasEcampus: Boolean
 }
 
 type studentLevel {
