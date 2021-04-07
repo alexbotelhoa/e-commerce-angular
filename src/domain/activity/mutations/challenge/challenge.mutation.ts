@@ -18,11 +18,14 @@ export const updateChallengeMutationResolver: GQLMutationResolvers['updateChalle
         throw new Error(`Challenge with id ${data.id} was not found.`);
     }
 
+    const startFormated = new Date(data.startAt).toISOString().split('T')[0];
+    const endFormated = new Date(data.endAt).toISOString().split('T')[0];
+
     await context.database.transaction(async trx => {
         await updateChallenge(trx)({
             text: data.text,
-            startAt: data.startAt,
-            endAt: data.endAt,
+            startAt: startFormated,
+            endAt: endFormated,
         })(builder => builder.andWhere('id', data.id));
     })
 
