@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import * as t from "io-ts";
 import { API_KEYS } from "../../../shared/constants/api-keys.constant";
-import { insertLog, updateLog } from "../../../shared/repositories/log.repository";
+import { getLogById, insertLog, updateLog } from "../../../shared/repositories/log.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { processClassSync } from "../services/class-sync.service";
 import { processStudentClassTransfer } from "../services/student-class-transfer.service";
@@ -118,16 +118,20 @@ export const webhookEventsController = (db: DatabaseService) => async (request: 
     try {
         const decodedBody = WebhookEventType.decode(request.body);
         if (decodedBody._tag === 'Left') {
+            const error = decodedBody.left[0].context.filter(item => item.key !== "3" && item.key !== "" && item.key !== "data" && item.key !== "class");
             reply.status(400);
             const response: WebhookErrorResponse = {
                 success: false,
-                message: `Invalid input: ${JSON.stringify(decodedBody.left)}`,
+                message: {
+                    status: "Invalid input: ",
+                    error: error
+                }
             };
             reply.send(response);
             await updateLog(db)({
                 status: "error",
                 body: JSON.stringify(
-                    { body: decodedBody, error: response }
+                    { error: response, body: request.body }
                 )
             })(where => where.where("id", "=", loggerId))
             return;
@@ -181,8 +185,13 @@ export const webhookEventsController = (db: DatabaseService) => async (request: 
         };
         reply.status(400);
         reply.send(webhookResponse);
+        const log = await getLogById(db)(loggerId);
         await updateLog(db)({
             status: "error",
+            body: JSON.stringify({
+                body: JSON.parse(log?.body || ""),
+                error: error.message || "",
+            })
         })(where => where.where("id", "=", loggerId))
         request.log.info(webhookResponse as any, `Received webhookwith error, loggerId ${loggerId}`);
     }

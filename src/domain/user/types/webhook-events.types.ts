@@ -7,7 +7,7 @@ export interface WebhookSuccessResponse {
 
 export interface WebhookErrorResponse {
     success: false;
-    message: string;
+    message: string | Record<string, unknown>;
 }
 
 export type WebhookResponse = WebhookSuccessResponse | WebhookErrorResponse;
