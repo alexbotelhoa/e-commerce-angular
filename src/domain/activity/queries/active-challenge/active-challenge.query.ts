@@ -3,10 +3,7 @@ import { selectChallenge } from "../../../../shared/repositories/challenge.repos
 
 export const activeChallengeQueryResolver: GQLQueryResolvers['activeChallenge'] =
     async (obj, params, context) => {
-        let actualDate = new Date().toISOString();
-        actualDate = actualDate.split('T')[0];
-
-        console.log('actualDate ', actualDate);
+        const actualDate = new Date().toISOString().split('T')[0];
 
         const challenge = await selectChallenge(context.database)
             .where('startAt', '<=', actualDate)
