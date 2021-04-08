@@ -184,7 +184,11 @@ async function processTeacherData(db: DatabaseService, classData: t.TypeOf<typeo
             if (!hasTeacherRole) {
                 await insertUserRole(db)(professorUserRole);
             }
-            await consolidateTeacherClasses(db, teacher.id, [teacherClassData]);
+            const hasTeacherClasss = Boolean(await selectTeacherClass(db).where("classId", "=", teacherClassData.classId).andWhere("teacherId", "=", teacherEntity.id).first())
+            if (!hasTeacherClasss) {
+                await insertTeacherClass(db)(teacherClassData);
+            }
+            // await consolidateTeacherClasses(db, teacher.id, [teacherClassData]);
         }
     }
 }
