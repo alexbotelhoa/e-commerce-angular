@@ -1243,7 +1243,7 @@ export type GQLEvent = {
   readonly periodId: Maybe<Scalars['String']>;
   readonly sessionId: Maybe<Scalars['String']>;
   readonly startDate: Maybe<Scalars['String']>;
-  readonly endDate: Scalars['String'];
+  readonly endDate: Maybe<Scalars['String']>;
   readonly vacancies: Maybe<Scalars['String']>;
   readonly enrolled: Maybe<Scalars['String']>;
   readonly subject: Maybe<Scalars['String']>;
@@ -2289,7 +2289,7 @@ export type GQLEventResolvers<ContextType = GraphQLContext, ParentType extends G
   periodId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   sessionId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   startDate: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
-  endDate: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  endDate: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   vacancies: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   enrolled: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   subject: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
