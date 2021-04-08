@@ -188,7 +188,6 @@ async function processTeacherData(db: DatabaseService, classData: t.TypeOf<typeo
             if (!hasTeacherClasss) {
                 await insertTeacherClass(db)(teacherClassData);
             }
-            // await consolidateTeacherClasses(db, teacher.id, [teacherClassData]);
         }
     }
 }
