@@ -1,99 +1,97 @@
 import { FastifyLoggerInstance } from "fastify";
 import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
 import { insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
-import { getClassById, insertClass, updateClass } from "../../../shared/repositories/class.repository";
+import { getClassById } from "../../../shared/repositories/class.repository";
 import { deleteEnrollmentClass, insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 import { insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
-import { getLevelCodeById, insertLevelCode } from "../../../shared/repositories/level-code.repository";
+import { getLevelCodeById } from "../../../shared/repositories/level-code.repository";
+import { getUserById } from "../../../shared/repositories/user.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { StudentClassTransferEvent, WebhookResponse } from "../types/webhook-events.types";
-import { isClassDataDivergent } from "./class-utils";
 
 export const processStudentClassTransfer =
     (db: DatabaseService, log: FastifyLoggerInstance) => async (event: StudentClassTransferEvent): Promise<WebhookResponse> => {
         const data = event.data;
         const userId = data.userId;
-        if ("newClass" in data) {
-            const oldClassId = data.oldClassId;
-            const newClass = data.newClass;
-            const levelData = newClass.level;
-            const existingClass = await getClassById(db)(newClass.id);
-            const existingLevelCode = await getLevelCodeById(db)(newClass.level.id);
-            if (!existingLevelCode) {
-                await insertLevelCode(db)({
-                    id: levelData.id,
-                    active: true,
-                    code: levelData.code,
-                    description: levelData.code,
-                    levelId: null,
-                });
-            }
-            if (!existingClass) {
-                await insertClass(db)({
-                    id: newClass.id,
-                    name: newClass.name,
-                    institutionId: newClass.institutionId,
-                    carrerId: newClass.carrerId,
-                    periodId: newClass.periodId,
-                    sessionId: newClass.sessionId,
-                    levelCodeId: newClass.level.id,
-                    startDate: newClass.startDate,
-                    endDate: newClass.endDate,
-                })
-            } else {
-                if (isClassDataDivergent(existingClass, newClass)) {
-                    await updateClass(db)({
-                        name: newClass.name,
-                        carrerId: newClass.carrerId,
-                        institutionId: newClass.institutionId,
-                        periodId: newClass.periodId,
-                        sessionId: newClass.sessionId,
-                        levelCodeId: newClass.level.id,
-                        startDate: newClass.startDate,
-                        endDate: newClass.endDate,
-                    })(where => where.andWhere('id', newClass.id));
-                }
-            }
+        /*         this old pice of code, is the older version of student class transfer, when we used to be retrocompatible these two versions worked together
+                if ("newClass" in data) {
+                    const oldClassId = data.oldClassId;
+                    const newClass = data.newClass;
+                    const levelData = newClass.level;
+                    const existingClass = await getClassById(db)(newClass.id);
+                    const existingLevelCode = await getLevelCodeById(db)(newClass.level.id);
+                    if (!existingLevelCode) {
+                        await insertLevelCode(db)({
+                            id: levelData.id,
+                            active: true,
+                            code: levelData.code,
+                            description: levelData.code,
+                            levelId: null,
+                        });
+                    }
+                    if (!existingClass) {
+                        await insertClass(db)({
+                            id: newClass.id,
+                            name: newClass.name,
+                            institutionId: newClass.institutionId,
+                            carrerId: newClass.carrerId,
+                            periodId: newClass.periodId,
+                            sessionId: newClass.sessionId,
+                            levelCodeId: newClass.level.id,
+                            startDate: newClass.startDate,
+                            endDate: newClass.endDate,
+                        })
+                    } else {
+                        if (isClassDataDivergent(existingClass, newClass)) {
+                            await updateClass(db)({
+                                name: newClass.name,
+                                carrerId: newClass.carrerId,
+                                institutionId: newClass.institutionId,
+                                periodId: newClass.periodId,
+                                sessionId: newClass.sessionId,
+                                levelCodeId: newClass.level.id,
+                                startDate: newClass.startDate,
+                                endDate: newClass.endDate,
+                            })(where => where.andWhere('id', newClass.id));
+                        }
+                    }
+        
+                    await transferEnrollment(db, userId, levelData, oldClassId, newClass, log, event);
+                    return {
+                        success: true,
+                    };
+                } */
 
-            await transferEnrollment(db, userId, levelData, oldClassId, newClass, log, event);
+        const newClassId = data.newClassId;
+        const existingClass = await getClassById(db)(newClassId);
+        if (!existingClass) {
             return {
-                success: true,
+                message: "When passed newClassId, class must already be synced.",
+                success: false,
             };
         }
-
-        if ("newClassId" in data) {
-            const newClassId = data.newClassId;
-            const existingClass = await getClassById(db)(newClassId);
-            if (!existingClass) {
-                return {
-                    message: "When passed newClassId, class must already be synced.",
-                    success: false,
-                };
-            }
-            const existingLevelCode = await getLevelCodeById(db)(existingClass.levelCodeId);
-            if (!existingLevelCode) {
-                return {
-                    message: "When passed newClassId, class level must already be synced.",
-                    success: false,
-                };
-            }
-            await transferEnrollment(db, userId, existingLevelCode, data.oldClassId, {
-                ...existingClass,
-                endDate: existingClass.endDate instanceof Date ? existingClass.endDate?.toString() : existingClass.endDate,
-                startDate: existingClass.startDate instanceof Date ? existingClass.startDate?.toString() : existingClass.startDate
-            }, log, event);
+        const existingLevelCode = await getLevelCodeById(db)(existingClass.levelCodeId);
+        if (!existingLevelCode) {
             return {
-                success: true,
+                message: "When passed newClassId, class level must already be synced.",
+                success: false,
             };
         }
+        const user = await getUserById(db)(userId)
+        if (!user) {
+            return {
+                message: "User Don't found.",
+                success: false,
+            };
+        }
+        await transferEnrollment(db, userId, existingLevelCode, data.oldClassId, newClassId, log, event);
         return {
-            success: false,
-            message: "unknown error."
+            success: true,
         };
     }
 
-async function transferEnrollment(db: DatabaseService, userId: string, levelData: { id: number; code: string; }, oldClassId: string, newClass: { id: string; name: string; institutionId: string | null; periodId: string | null; sessionId: string | null; carrerId: string | null; startDate: string | null; endDate: string | null; }, log: FastifyLoggerInstance, event: StudentClassTransferEvent) {
-    const [enrollment] = await selectEnrollment(db).andWhere('userId', userId).andWhere('levelCodeId', levelData.id);
+async function transferEnrollment(db: DatabaseService, userId: string, levelData: { id: number; code: string; }, oldClassId: string, newClassId: string, log: FastifyLoggerInstance, event: StudentClassTransferEvent) {
+    const enrollment = await selectEnrollment(db).andWhere('userId', userId).andWhere('levelCodeId', levelData.id).first();
     let enrollmentId: number;
     if (enrollment) {
         enrollmentId = enrollment.id;
@@ -111,7 +109,7 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
     const hasToDeleteOldEnrollmentClass = Boolean(oldClassEnrollment);
 
     const [existingEnrollmentClass] = await selectEnrollmentClass(db)
-        .andWhere('classId', newClass.id)
+        .andWhere('classId', newClassId)
         .andWhere('enrollmentId', enrollmentId);
     const hasToInsertEnrollmentClass = !existingEnrollmentClass;
     if (hasToInsertEnrollmentClass) {
@@ -120,7 +118,7 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
             .andWhere('userId', userId);
         const activityTimerEntitiesToSave = activitiesToTransitionToNewClass
             .map<Omit<ActivityTimerEntity, 'id'>>(saved => ({
-                classId: newClass.id,
+                classId: newClassId,
                 completed: saved.completed,
                 completionTime: saved.completionTime,
                 cycleActivityId: saved.cycleActivityId,
@@ -134,20 +132,18 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
         if (hasToSaveActivityTimerEntities
             || hasToInsertEnrollmentClass
             || hasToDeleteOldEnrollmentClass) {
-            await db.transaction(async (trx) => {
-                if (hasToInsertEnrollmentClass) {
-                    await insertEnrollmentClass(trx)({
-                        classId: newClass.id,
-                        enrollmentId: enrollmentId,
-                    });
-                }
-                if (hasToSaveActivityTimerEntities) {
-                    await insertActivityTimer(trx)(activityTimerEntitiesToSave);
-                }
-                if (hasToDeleteOldEnrollmentClass) {
-                    await deleteEnrollmentClass(trx)(query => query.andWhere('id', oldClassEnrollment.id));
-                }
-            });
+            if (hasToInsertEnrollmentClass) {
+                await insertEnrollmentClass(db)({
+                    classId: newClassId,
+                    enrollmentId: enrollmentId,
+                });
+            }
+            if (hasToSaveActivityTimerEntities) {
+                await insertActivityTimer(db)(activityTimerEntitiesToSave);
+            }
+            if (hasToDeleteOldEnrollmentClass) {
+                await deleteEnrollmentClass(db)(query => query.andWhere('id', oldClassEnrollment.id));
+            }
         }
     } else {
         log.info(event as any, 'User is already enrolled in class.');

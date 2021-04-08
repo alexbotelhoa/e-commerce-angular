@@ -7,7 +7,7 @@ import { processClassSync } from "../services/class-sync.service";
 import { processStudentClassTransfer } from "../services/student-class-transfer.service";
 import { processStudentEnrollmentCancellation } from "../services/student-enrollment-cancellation.service";
 import { processStudentEnrollment } from "../services/student-enrollment.service";
-import { ClassDataType } from "../types/class-data.type";
+// import { ClassDataType } from "../types/class-data.type";
 import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
 import { WebhookErrorResponse, WebhookResponse } from "../types/webhook-events.types";
 
@@ -31,44 +31,44 @@ const ClassSyncEventType = t.type({
     data: classSyncEventData
 })
 
-const studantEnrollmentNewData = t.type({
+export const studantEnrollmentNewData = t.type({
     user: UserDataType,
     ClassId: t.string,
 })
 
-const studantEnrollmentOldData = t.type({
-    user: UserDataType,
-    class: ClassDataType,
-})
+// const studantEnrollmentOldData = t.type({
+//     user: UserDataType,
+//     class: ClassDataType,
+// })
 
 
-export const studantEnrollmentData = t.union([studantEnrollmentNewData, studantEnrollmentOldData])
+// export const studantEnrollmentData = t.union([studantEnrollmentNewData, studantEnrollmentOldData])
 
 
 const StudentEnrollmentEventType = t.type({
     id: t.string,
     type: t.literal('STUDENT_ENROLLMENT'),
-    data: studantEnrollmentData,
+    data: studantEnrollmentNewData,
 });
 
-const StudentClassTransferWithClassBodyType = t.type({
-    userId: t.string,
-    oldClassId: t.string,
-    newClass: ClassDataType,
-})
+// const StudentClassTransferWithClassBodyType = t.type({
+//     userId: t.string,
+//     oldClassId: t.string,
+//     newClass: ClassDataType,
+// })
 
-const StudentClassTransferClassByIdType = t.type({
+export const StudentClassTransferClassByIdType = t.type({
     userId: t.string,
     oldClassId: t.string,
     newClassId: t.string,
 })
 
-export const StudentClassTransferClassData = t.union([StudentClassTransferClassByIdType, StudentClassTransferWithClassBodyType])
+// export const StudentClassTransferClassData = t.union([StudentClassTransferClassByIdType, StudentClassTransferWithClassBodyType])
 
 const StudentClassTransferClassType = t.type({
     id: t.string,
     type: t.literal('STUDENT_CLASS_TRANSFER'),
-    data: StudentClassTransferClassData
+    data: StudentClassTransferClassByIdType
 })
 
 const StudentEnrollmentCancellationEventType = t.type({

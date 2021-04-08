@@ -20,13 +20,19 @@ export const meetingEntityResolvers: Pick<GQLMeetingResolvers, keyof MeetingEnti
 export const meetingResolvers: GQLMeetingResolvers = {
     ...meetingEntityResolvers,
     courseName: async (meet, b, context) => {
-        const teacherClass = (await selectTeacherClass(context.database).where(`classId`, "=", meet.classId))[0]
-        const classA = await getClassById(context.database)(teacherClass.classId)
-        return classA?.levelCodeId ? (await getLevelCodeById(context.database)(classA.levelCodeId))?.code || null : null
+        const teacherClass = (await selectTeacherClass(context.database).where(`classId`, "=", meet.classId).first())
+        if (teacherClass) {
+            const classA = await getClassById(context.database)(teacherClass.classId)
+            return classA?.levelCodeId ? (await getLevelCodeById(context.database)(classA.levelCodeId))?.code || "" : ""
+        }
+        return "";
     },
     teacherName: async (meet, b, context) => {
-        const teacherClass = (await selectTeacherClass(context.database).where(`classId`, "=", meet.classId))[0]
-        const teacher = await getUserById(context.database)(teacherClass.teacherId)
-        return teacher?.name || ""
+        const teacherClass = (await selectTeacherClass(context.database).where(`classId`, "=", meet.classId).first())
+        if (teacherClass) {
+            const teacher = await getUserById(context.database)(teacherClass.teacherId)
+            return teacher?.name || ""
+        }
+        return "";
     },
 }

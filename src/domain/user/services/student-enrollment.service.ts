@@ -25,13 +25,14 @@ interface UserData {
 export const processStudentEnrollment = (db: DatabaseService, log: FastifyLoggerInstance) => async (event: StudentEnrollmentEvent): Promise<WebhookResponse> => {
     const data = event.data;
     const userData = data.user;
-    if ("class" in data) {
-        // data.class
-        await studantEnrollmentWithClassBody(userData, db, data.class);
-        return {
-            success: true,
-        };
-    }
+    // old payload when class is passed in enrollment, deprecated
+    /*     if ("class" in data) {
+            // data.class
+            await studantEnrollmentWithClassBody(userData, db, data.class);
+            return {
+                success: true,
+            };
+        } */
     if ("ClassId" in data) {
 
         const classFound = await getClassById(db)(data.ClassId);
@@ -49,13 +50,7 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
             };
         }
         const existingUser = await getUserById(db)(userData.id);
-        await upsertUserAndMakeEnrollment(existingUser, db, userData, existingLevelCode, {
-            ...classFound,
-            endDate: classFound.endDate instanceof Date ? classFound.endDate?.toString() : classFound.endDate,
-            startDate: classFound.startDate instanceof Date ? classFound.startDate?.toString() : classFound.startDate, level: {
-                code: existingLevelCode.code, id: existingLevelCode.id
-            }
-        });
+        await upsertUserAndMakeEnrollment(existingUser, db, userData, existingLevelCode, data.ClassId);
         return {
             success: true,
         };
@@ -68,7 +63,7 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
 }
 
 
-async function studantEnrollmentWithClassBody(userData: {
+/* async function studantEnrollmentWithClassBody(userData: {
     id: string;
     name: string;
     macId: string | null;
@@ -114,7 +109,7 @@ async function studantEnrollmentWithClassBody(userData: {
         }
     }
     await upsertUserAndMakeEnrollment(existingUser, db, userData, levelData, classData);
-}
+} */
 
 async function upsertUserAndMakeEnrollment(existingUser: {
     id: string; name: string;
@@ -122,29 +117,27 @@ async function upsertUserAndMakeEnrollment(existingUser: {
     db: DatabaseService,
     userData: UserData,
     levelData: { id: number; code: string; },
-    classData: ClassData) {
+    classId: string) {
     if (!existingUser) {
-        await db.transaction(async (trx) => {
-            await insertUser(trx)({
-                id: userData.id,
-                name: userData.name,
-                avatarId: null,
-                onboarded: true,
-                macId: userData.macId,
-                macPass: userData.macPass,
-            });
+        await insertUser(db)({
+            id: userData.id,
+            name: userData.name,
+            avatarId: null,
+            onboarded: true,
+            macId: userData.macId,
+            macPass: userData.macPass,
+        });
 
-            await upsertRole(trx, userData);
+        await upsertRole(db, userData);
 
-            const enrollmentId = await insertEnrollment(trx)({
-                userId: userData.id,
-                levelCodeId: levelData.id,
-            });
+        const enrollmentId = await insertEnrollment(db)({
+            userId: userData.id,
+            levelCodeId: levelData.id,
+        });
 
-            await insertEnrollmentClass(trx)({
-                classId: classData.id,
-                enrollmentId: enrollmentId,
-            });
+        await insertEnrollmentClass(db)({
+            classId: classId,
+            enrollmentId: enrollmentId,
         });
     } else {
         // const existingStudentRoles = await selectUserRole(db).andWhere('roleId', RoleId.STUDENT).andWhere('userId', userData.id);
@@ -161,38 +154,36 @@ async function upsertUserAndMakeEnrollment(existingUser: {
 
         // no enrollments, we need to insert everything
         if (!existingEnrollment) {
-            await db.transaction(async (trx) => {
-                const enrollmentId = await insertEnrollment(trx)({
-                    userId: userData.id,
-                    levelCodeId: levelData.id,
-                });
-                await insertEnrollmentClass(trx)({
-                    classId: classData.id,
-                    enrollmentId: enrollmentId,
-                });
+            const enrollmentId = await insertEnrollment(db)({
+                userId: userData.id,
+                levelCodeId: levelData.id,
+            });
+            await insertEnrollmentClass(db)({
+                classId: classId,
+                enrollmentId: enrollmentId,
             });
         } else {
             const existingEnrollmentClasses = await selectEnrollmentClass(db)
                 .andWhere('enrollmentId', existingEnrollment.id);
             const isCurrentlyEnrolledInClass = Boolean(existingEnrollmentClasses
-                .find(enrollmentClass => enrollmentClass.classId === classData.id));
+                .find(enrollmentClass => enrollmentClass.classId === classId));
             // enrollment exists, so we should only insert enrollment class if not already exist
             if (!isCurrentlyEnrolledInClass) {
                 await insertEnrollmentClass(db)({
-                    classId: classData.id,
+                    classId: classId,
                     enrollmentId: existingEnrollment.id,
                 });
                 // we need to check if the student is enrolled in other classes of the same level, 
                 // to then replicate their activities to the new class
                 const oldClassIds = existingEnrollmentClasses
-                    .filter(enrollmentClass => enrollmentClass.classId !== classData.id)
+                    .filter(enrollmentClass => enrollmentClass.classId !== classId)
                     .map(enrollmentClass => enrollmentClass.classId);
                 const activitiesToTransitionToNewClass = await selectActivityTimer(db)
                     .whereIn('classId', oldClassIds)
                     .andWhere('userId', userData.id);
                 const activityTimerEntitiesToSave = activitiesToTransitionToNewClass
                     .map<Omit<ActivityTimerEntity, 'id'>>(saved => ({
-                        classId: classData.id,
+                        classId: classId,
                         completed: saved.completed,
                         completionTime: saved.completionTime,
                         cycleActivityId: saved.cycleActivityId,
@@ -209,15 +200,15 @@ async function upsertUserAndMakeEnrollment(existingUser: {
     }
 }
 
-async function upsertRole(trx: Knex.Transaction | DatabaseService, userData: UserData) {
-    await deleteUserRole(trx)(builder => builder.andWhere({ userId: userData.id }));
+async function upsertRole(db: DatabaseService, userData: UserData) {
+    await deleteUserRole(db)(builder => builder.andWhere({ userId: userData.id }));
 
-    await insertUserRole(trx)({
+    await insertUserRole(db)({
         roleId: RoleId.STUDENT,
         userId: userData.id,
     });
 
-    await insertUserRole(trx)({
+    await insertUserRole(db)({
         roleId: RoleId.HORIZON_ONE,
         userId: userData.id,
     });
