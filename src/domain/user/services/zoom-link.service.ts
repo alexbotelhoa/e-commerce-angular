@@ -18,7 +18,6 @@ export const getZoomLink = async (teacherId: string, database: DatabaseService<a
             },
             responseType: 'json',
         });
-        console.log(integrationRequest, "OOOOOOOOOOOIIIIIIIIIIIIII")
         return integrationRequest.data.zoom_personal_meeting_url;
     } catch (error) {
         logger.error({

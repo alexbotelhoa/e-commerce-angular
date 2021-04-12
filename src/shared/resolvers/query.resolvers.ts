@@ -45,6 +45,7 @@ import { getMeetQueryResolver } from "../../domain/meeting/get-meet.resolver";
 import { getZoomUrlQueryResolver } from "../../domain/user/query/get-zoom-url.resolver";
 import { logQueryResolver } from "../../domain/interest/log.resolver";
 import { countQueryResolver } from "../../domain/count/count.resolver";
+import { getServiceNowUrlQueryResolver } from "../../domain/user/query/get-service-now.resolver";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -93,5 +94,6 @@ export const queryResolvers: GQLResolvers['Query'] = {
     meet: getMeetQueryResolver,
     getZoom: getZoomUrlQueryResolver,
     logs: logQueryResolver,
-    count: countQueryResolver
+    count: countQueryResolver,
+    getServiceNow: getServiceNowUrlQueryResolver,
 }
