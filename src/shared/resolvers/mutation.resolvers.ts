@@ -43,6 +43,7 @@ import { createChallengeMutationResolver, toggleChallengeState, updateChallengeM
 import { cancelRegisterEventMutationResolver } from "../../domain/activity/mutations/event/cancel-event-registration.mutation";
 import { createNewsletterMutationResolver, toggleNewsletterState, updateNewsletterMutationResolver } from "../../domain/activity/mutations/newsletter/newsletter.mutation";
 import { upsertAnnotationResolver } from "../../domain/annotation/mutations/upsert-annotation.resolver";
+import { auditResolver } from "../../domain/log/mutation/call-audit.mutation.resolver";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,
@@ -113,4 +114,5 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     registerEventMutation: RegisterEventMutationResolver,
     cancelRegisterEventMutation: cancelRegisterEventMutationResolver,
     upsertAnnotation: upsertAnnotationResolver,
+    audit: auditResolver,
 }
