@@ -65,6 +65,7 @@ export type GQLMutation = {
   readonly activateTheme: Maybe<GQLTheme>;
   readonly addActivitiesToCycle: GQLCycle;
   readonly addThemesToLevel: GQLLevel;
+  readonly audit: Maybe<Scalars['Boolean']>;
   readonly cancelRegisterEventMutation: GQLCancelEventRegistrationResponseSuccess;
   readonly completeActivity: GQLCompleteActivityResult;
   readonly createChallenge: GQLChallenge;
@@ -141,6 +142,11 @@ export type GQLMutationaddActivitiesToCycleArgs = {
 
 export type GQLMutationaddThemesToLevelArgs = {
   data: GQLAddThemesToLevelInput;
+};
+
+
+export type GQLMutationauditArgs = {
+  data: GQLAuditInput;
 };
 
 
@@ -909,6 +915,12 @@ export type GQLViewerEnrollmenLevelCodestFilterInput = {
   readonly userId: Maybe<Scalars['ID']>;
 };
 
+export type GQLAuditInput = {
+  readonly id_plataforma: Scalars['Int'];
+  readonly id_recurso: Scalars['Int'];
+  readonly id_turma: Scalars['String'];
+};
+
 export type GQLLogsQueryInput = {
   readonly ids: Maybe<ReadonlyArray<Scalars['ID']>>;
   readonly search: Maybe<Scalars['String']>;
@@ -1505,9 +1517,9 @@ export type GQLResolversTypes = {
   LevelTypeId: LevelTypeId;
   Mutation: ResolverTypeWrapper<{}>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   String: ResolverTypeWrapper<Scalars['String']>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   CreateHtmlActivityInput: GQLCreateHtmlActivityInput;
   EmbeddedActivityDataInput: GQLEmbeddedActivityDataInput;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -1571,6 +1583,7 @@ export type GQLResolversTypes = {
   ViewerChangeAvatarMutationResult: GQLResolversTypes['User'] | GQLResolversTypes['ViewerChangeAvatarMutationError'];
   countQueryInput: GQLcountQueryInput;
   ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
+  AuditInput: GQLAuditInput;
   LogsQueryInput: GQLLogsQueryInput;
   Notification: ResolverTypeWrapper<GQLNotification>;
   Cycle: ResolverTypeWrapper<CycleEntity>;
@@ -1629,9 +1642,9 @@ export type GQLResolversTypes = {
 export type GQLResolversParentTypes = {
   Mutation: {};
   ID: Scalars['ID'];
+  Boolean: Scalars['Boolean'];
   CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   String: Scalars['String'];
-  Boolean: Scalars['Boolean'];
   CreateHtmlActivityInput: GQLCreateHtmlActivityInput;
   EmbeddedActivityDataInput: GQLEmbeddedActivityDataInput;
   Int: Scalars['Int'];
@@ -1693,6 +1706,7 @@ export type GQLResolversParentTypes = {
   ViewerChangeAvatarMutationResult: GQLResolversParentTypes['User'] | GQLResolversParentTypes['ViewerChangeAvatarMutationError'];
   countQueryInput: GQLcountQueryInput;
   ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
+  AuditInput: GQLAuditInput;
   LogsQueryInput: GQLLogsQueryInput;
   Notification: GQLNotification;
   Cycle: CycleEntity;
@@ -1762,6 +1776,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   activateTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationactivateThemeArgs, 'id'>>;
   addActivitiesToCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationaddActivitiesToCycleArgs, 'data'>>;
   addThemesToLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationaddThemesToLevelArgs, 'data'>>;
+  audit: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationauditArgs, 'data'>>;
   cancelRegisterEventMutation: Resolver<GQLResolversTypes['CancelEventRegistrationResponseSuccess'], ParentType, ContextType, RequireFields<GQLMutationcancelRegisterEventMutationArgs, 'data'>>;
   completeActivity: Resolver<GQLResolversTypes['CompleteActivityResult'], ParentType, ContextType, RequireFields<GQLMutationcompleteActivityArgs, 'data'>>;
   createChallenge: Resolver<GQLResolversTypes['Challenge'], ParentType, ContextType, RequireFields<GQLMutationcreateChallengeArgs, 'data'>>;

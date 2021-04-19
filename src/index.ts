@@ -1,4 +1,4 @@
-import fastify from 'fastify';
+import fastify, { FastifyLoggerInstance } from 'fastify';
 import mercurius from 'mercurius';
 import fastifyJwt from 'fastify-jwt';
 import fastifyCors from 'fastify-cors';
@@ -18,6 +18,9 @@ import { classStudentGradesController } from './domain/activity/controllers/clas
 import { webhookEventsController } from './domain/user/controllers/webhook-events.controller';
 
 import { studentReportController } from './domain/user/controllers/student-report.controller';
+import { selectLog } from './shared/repositories/log.repository';
+import { database } from 'faker';
+import { callBackAudit } from './domain/user/services/audit.service';
 
 
 
@@ -34,6 +37,15 @@ export const databaseService: DatabaseService = databaseServiceFactory(databaseC
 export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(readonlyDatabaseConfigurationFromEnvironment(environment), app.log);
 // Require the framework and instantiate it
 (async function () {
+
+  const executeJobs = async (databaseService: DatabaseService<any, any>, logger: FastifyLoggerInstance) => {
+    setInterval(async () => {
+      const auditErrors = await selectLog(databaseService).where("status", "=", "audit-error")
+      await callBackAudit(auditErrors, databaseService, logger)
+    }, 86400000)
+
+  }
+
   const typeDefsSources = await loadTypedefs('./src/**/*.graphql', {
     loaders: [new GraphQLFileLoader()]
   });
@@ -102,6 +114,9 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.get('/student-report.csv', {}, studentReportController(environment, databaseService, readonlyDatabaseService));
 
   app.post('/webhook-events', {}, webhookEventsController(databaseService));
+
+
+  // await executeJobs(databaseService, app.log);
 })();
 
 

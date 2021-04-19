@@ -1,0 +1,11 @@
+
+
+type Mutation {
+    audit(data: AuditInput!): Boolean
+}
+
+input AuditInput {
+    id_plataforma: Int!
+    id_recurso: Int!
+    id_turma: String!
+}

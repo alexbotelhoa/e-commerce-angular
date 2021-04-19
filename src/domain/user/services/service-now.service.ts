@@ -9,7 +9,6 @@ interface ServiceNowResponseLink {
 export const getServiceNowLink = async (userId: string, logger: FastifyLoggerInstance) => {
     const env = environmentFactory()
     const url = `${env.STUDENT_GRADE_INTEGRATION_URL.replace("lxp", "autoservices")}/users/${userId}/token`
-    "https://test.godigibee.io/pipeline/culturainglesa/v1/autoservices/users/USERID/token"
     console.log(url)
     try {
         const integrationRequest = await axios.get<ServiceNowResponseLink>(url, {

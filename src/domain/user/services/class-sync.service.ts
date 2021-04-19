@@ -51,8 +51,8 @@ export const processClassSync =
                 campusId, localId, regionalId
             } = await updateRegionCampusLocal(db, classData, hasRegional, hasCampus, hasLocal);
             const times = {
-                startDate: format(new Date(classData.startDate), "yyyy-MM-dd"),
-                endDate: format(new Date(classData.endDate), "yyyy-MM-dd"),
+                startDate: format((new Date(classData.startDate).setUTCHours(new Date(classData.startDate).getUTCHours() + 6)), "yyyy-MM-dd"),
+                endDate: format((new Date(classData.endDate).setUTCHours(new Date(classData.endDate).getUTCHours() + 6)), "yyyy-MM-dd"),
             }
             await insertClass(db)({
                 id: classData.id,
@@ -84,8 +84,8 @@ export const processClassSync =
                     campusId, localId, regionalId
                 } = await updateRegionCampusLocal(db, classData, hasRegional, hasCampus, hasLocal);
                 const times = {
-                    startDate: format(new Date(classData.startDate), "yyyy-MM-dd"),
-                    endDate: format(new Date(classData.endDate), "yyyy-MM-dd"),
+                    startDate: format((new Date(classData.startDate).setUTCHours(new Date(classData.startDate).getUTCHours() + 6)), "yyyy-MM-dd"),
+                    endDate: format((new Date(classData.endDate).setUTCHours(new Date(classData.endDate).getUTCHours() + 6)), "yyyy-MM-dd"),
                 }
                 await updateClass(db)({
                     name: classData.name,
@@ -171,14 +171,11 @@ async function processTeacherData(db: DatabaseService, classData: t.TypeOf<typeo
         } else {
             const userRoles = await selectUserRole(db).andWhere('userId', teacher.id);
 
-            if (teacherEntity.name !== teacher.name) {
-                // only update user if name is different
-                await updateUser(db)({
-                    name: teacher.name,
-                    macId: teacher.macID,
-                    macPass: teacher.macPass,
-                })(builder => builder.andWhere('id', teacher.id));
-            }
+            await updateUser(db)({
+                name: teacher.name,
+                macId: teacher.macID,
+                macPass: teacher.macPass,
+            })(builder => builder.andWhere('id', teacher.id));
             // insert teacher role if it is different
             const hasTeacherRole = Boolean(userRoles.find(userRole => userRole.roleId === RoleId.TEACHER));
             if (!hasTeacherRole) {
