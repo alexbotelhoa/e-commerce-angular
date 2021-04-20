@@ -230,14 +230,14 @@ export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, 
     const ids = enrollment.map(i => i.id)
     const classes = await selectEnrollmentClass(context.readonlyDatabase).whereIn("enrollmentId", ids)
     const classIds = classes.map(c => c.classId)
-    const meetings = await selectMeeting(context.readonlyDatabase).whereIn("classId", classIds)
+    const meetings = await selectMeeting(context.readonlyDatabase).whereIn("classId", classIds).andWhere("enabled", "=", true)
     const response: any = []
 
     for (const meet of meetings) {
-        const teacherClass = (await selectTeacherClass(context.database).where(`classId`, "=", meet.classId))[0]
-        const teacher = teacherClass?.teacherId ? await getUserById(context.database)(teacherClass.teacherId) : null;
-        const classA = teacherClass?.classId ? await getClassById(context.database)(teacherClass.classId) : null;
-        const courseName = classA?.levelCodeId ? (await getLevelCodeById(context.database)(classA.levelCodeId))?.code || null : null
+        const teacherClass = (await selectTeacherClass(context.readonlyDatabase).where(`classId`, "=", meet.classId))[0]
+        const teacher = teacherClass?.teacherId ? await getUserById(context.readonlyDatabase)(teacherClass.teacherId) : null;
+        const classA = teacherClass?.classId ? await getClassById(context.readonlyDatabase)(teacherClass.classId) : null;
+        const courseName = classA?.levelCodeId ? (await getLevelCodeById(context.readonlyDatabase)(classA.levelCodeId))?.code || null : null
         response.push({
             ...meet,
             teacherName: teacher && teacher.name || null,

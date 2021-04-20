@@ -13,7 +13,7 @@ export const activeChallengeQueryResolver: GQLQueryResolvers['activeChallenge'] 
             .first();
 
         if (!challenge) {
-            throw new Error('Unable to find an active challenge');
+            return null;
         }
 
         return challenge;

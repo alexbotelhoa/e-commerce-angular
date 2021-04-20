@@ -32,7 +32,9 @@ const meeting = t.type({
     date: t.string,
     objetive: t.string,
     startHour: t.string,
-    endHour: t.string
+    endHour: t.string,
+    attendTmpltNbr: t.string,
+    facilityId: t.string,
 })
 
 export const ClassWithLocationsFullDataType = t.type({

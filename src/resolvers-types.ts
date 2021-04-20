@@ -538,7 +538,7 @@ export type GQLQuery = {
   readonly __typename?: 'Query';
   readonly Annotation: Maybe<GQLAnnotation>;
   readonly Notification: Maybe<ReadonlyArray<Maybe<GQLNotification>>>;
-  readonly activeChallenge: GQLChallenge;
+  readonly activeChallenge: Maybe<GQLChallenge>;
   readonly activities: ReadonlyArray<GQLActivityUnion>;
   readonly activity: Maybe<GQLActivityUnion>;
   readonly activityComments: ReadonlyArray<GQLActivityComment>;
@@ -1356,6 +1356,9 @@ export type GQLMeeting = {
   readonly startHour: Maybe<Scalars['String']>;
   readonly endHour: Maybe<Scalars['String']>;
   readonly classId: Scalars['ID'];
+  readonly attendTmpltNbr: Maybe<Scalars['String']>;
+  readonly facilityId: Maybe<Scalars['String']>;
+  readonly enabled: Maybe<Scalars['Boolean']>;
   readonly teacherName: Maybe<Scalars['String']>;
   readonly courseName: Maybe<Scalars['String']>;
 };
@@ -1852,7 +1855,7 @@ export type GQLStartActivityResultResolvers<ContextType = GraphQLContext, Parent
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   Annotation: Resolver<Maybe<GQLResolversTypes['Annotation']>, ParentType, ContextType, RequireFields<GQLQueryAnnotationArgs, 'id'>>;
   Notification: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Notification']>>>, ParentType, ContextType>;
-  activeChallenge: Resolver<GQLResolversTypes['Challenge'], ParentType, ContextType>;
+  activeChallenge: Resolver<Maybe<GQLResolversTypes['Challenge']>, ParentType, ContextType>;
   activities: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType>;
   activity: Resolver<Maybe<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryactivityArgs, 'id'>>;
   activityComments: Resolver<ReadonlyArray<GQLResolversTypes['ActivityComment']>, ParentType, ContextType, RequireFields<GQLQueryactivityCommentsArgs, 'data'>>;
@@ -2386,6 +2389,9 @@ export type GQLMeetingResolvers<ContextType = GraphQLContext, ParentType extends
   startHour: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   endHour: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  attendTmpltNbr: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  facilityId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  enabled: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   teacherName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   courseName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

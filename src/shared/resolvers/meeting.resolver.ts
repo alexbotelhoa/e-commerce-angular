@@ -13,7 +13,9 @@ export const meetingEntityResolvers: Pick<GQLMeetingResolvers, keyof MeetingEnti
     endHour: obj => obj.endHour,
     objetive: obj => obj.objetive,
     startHour: obj => obj.startHour,
-
+    attendTmpltNbr: obj => obj.attendTmpltNbr,
+    enabled: obj => obj.enabled,
+    facilityId: obj => obj.facilityId,
 }
 
 

@@ -5,6 +5,9 @@ type Meeting {
     startHour: String
     endHour: String
     classId: ID!
+    attendTmpltNbr: String
+    facilityId: String
+    enabled: Boolean
     teacherName: String
     courseName: String
     

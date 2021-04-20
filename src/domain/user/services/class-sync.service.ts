@@ -89,8 +89,8 @@ export const processClassSync =
                 }
                 await updateClass(db)({
                     name: classData.name,
-                    carrerId: classData.carrerId,
                     institutionId: classData.institutionId,
+                    carrerId: classData.carrerId,
                     periodId: classData.periodId,
                     sessionId: classData.sessionId,
                     levelCodeId: levelCodeId,
@@ -195,25 +195,44 @@ async function processMeetingData(db: DatabaseService, classData: t.TypeOf<typeo
     const savedMeetings = await selectMeeting(db).where("classId", "=", classId)
     if (meetings && meetings.length > 0) {
         for (const meet of meetings) {
-            const date = meet.date
-            const hasMeet = savedMeetings.find(item => item.date === meet.date
-                && meet.endHour === item.endHour && item.startHour === meet.startHour);
+            const hasMeet = savedMeetings.find(item => item.attendTmpltNbr == meet.attendTmpltNbr);
             if (hasMeet) {
                 await updateMeeting(db)({
                     classId,
-                    ...meet,
-                    date
+                    attendTmpltNbr: meet.attendTmpltNbr,
+                    date: meet.date,
+                    enabled: true,
+                    endHour: meet.endHour,
+                    startHour: meet.startHour,
+                    facilityId: meet.facilityId,
+                    objetive: meet.objetive,
+
                 })(qb => qb.where("id", "=", hasMeet.id))
                 await upsertCountEntity("meet", db)
             } else {
                 await insertMeeting(db)({
                     classId,
-                    ...meet,
-                    date,
+                    attendTmpltNbr: meet.attendTmpltNbr,
+                    date: meet.date,
+                    enabled: true,
+                    endHour: meet.endHour,
+                    startHour: meet.startHour,
+                    facilityId: meet.facilityId,
+                    objetive: meet.objetive,
                 })
                 await upsertCountEntity("meet", db)
             }
         }
+        const ids = meetings.map(item => item.attendTmpltNbr)
+        await updateMeeting(db)({
+            enabled: false,
+        })(qb => qb.whereNotIn("attendTmpltNbr", ids)
+            .andWhere("classId", "=", classId)
+        )
+    } else {
+        await updateMeeting(db)({
+            enabled: false,
+        })(qb => qb.where("classId", "=", classId))
     }
 
 }
