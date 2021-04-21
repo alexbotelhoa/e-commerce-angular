@@ -4,6 +4,7 @@ import fastifyJwt from 'fastify-jwt';
 import fastifyCors from 'fastify-cors';
 
 
+
 import { makeExecutableSchema, loadTypedefs, GraphQLFileLoader, mergeTypeDefs } from 'graphql-tools';
 import { resolvers } from './resolvers';
 import { environmentFactory } from './shared/services/environment.service';
