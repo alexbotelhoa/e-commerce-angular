@@ -6,6 +6,7 @@ import { getNotificationsByUser } from "../../user/services/notification.service
 export const notificationQueryResolver: GQLQueryResolvers['Notification'] = async (obj, params, context) => {
     if (context.currentUser?.id) {
         const userId = context.currentUser?.id;
+        //console.log(userId);
         const notifications = await getNotificationsByUser(userId, context.logger);
         const notificationsResponse = "notifications" in notifications ? notifications.notifications.map<GQLNotification>(item => {
             return {
