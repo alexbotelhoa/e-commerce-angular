@@ -29,67 +29,81 @@ export const eventProcess = async (userId: string, database: DatabaseService<any
                 userId
             }
         });
-        const ActualEvents = await selectEvent(database).where("userId", "=", userId)
+        // const ActualEvents = await selectEvent(database).where("userId", "=", userId)
         const transformedData = await transformEventData(integrationRequest.data, userId)
         console.log(transformedData.length, "quanto eventos tem ?")
+        // return transformedData;
         const response = []
         for (const event of transformedData) {
-            const eventCp: any = { ...event }
-            delete eventCp.__typename;
-            delete eventCp.adress;
-            delete eventCp.instructor;
-            delete eventCp.eventInfo;
-
-            if (ActualEvents.some(e => e.classId === event.classId)) {
-                const actualEventToUpdate = ActualEvents.find(e => e.classId === event.classId)
-                // if (actualEventToUpdate?.lastUpdateTime && differenceInMinutes(new Date(actualEventToUpdate.lastUpdateTime), new Date()) > 4) {
-
-                // }
-                const eventId = await updateEvent(database)({ ...eventCp, lastUpdateTime: new Date().toJSON() })(builder => builder.andWhere("id", actualEventToUpdate?.id))
-
-                // if (event.adress) {
-                //     await updateEventAdress(database)({ ...event.adress, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
-                // }
-                // if (event.instructor && event.instructor?.length > 0) {
-                //     for (const teacher of event.instructor) {
-                //         await updateEventInstructor(database)({ ...teacher, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
-                //     }
-                // }
-
-                // if (event.eventInfo && event.eventInfo?.length > 0) {
-                //     for (const eventInfo of event.eventInfo) {
-                //         await updateEventInfo(database)({ ...eventInfo, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
-                //     }
-                // }
-            } else {
-                const eventId = await insertEvent(database)({ ...eventCp, lastUpdateTime: new Date().toJSON() })
-                if (event.adress) {
-                    await insertEventAdress(database)({ ...event.adress, eventId: eventId.toString() })
-                }
-                if (event.instructor && event.instructor?.length > 0) {
-                    for (const teacher of event.instructor) {
-                        await insertEventInstructor(database)({ ...teacher, eventId: eventId.toString() })
-                    }
-                }
-                if (event.eventInfo && event.eventInfo?.length > 0) {
-                    for (const eventInfo of event.eventInfo) {
-                        await insertEventInfo(database)({ ...eventInfo, eventId: eventId.toString() })
-                    }
-                }
-
-            }
-        }
-        const evententity = (await selectEvent(database).where("userId", "=", userId))
-        for (const event of evententity) {
             const eventData: GQLEvent = {
                 ...event || {},
-                adress: (await selectEventAdress(database).where("eventId", "=", event.id))[0] || {},
-                eventInfo: (await selectEventInfo(database).where("eventId", "=", event.id)) || [],
-                instructor: (await selectEventInstructor(database).where("eventId", "=", event.id)) || [],
+                id: "",
+                lastUpdateTime: "",
+                __typename: "Event",
+                adress: event.adress as any || {},
+                eventInfo: event.eventInfo as any || [],
+                instructor: event.instructor as any || [],
             }
             response.push(eventData)
         }
         return response;
+        // for (const event of transformedData) {
+        //     const eventCp: any = { ...event }
+        //     delete eventCp.__typename;
+        //     delete eventCp.adress;
+        //     delete eventCp.instructor;
+        //     delete eventCp.eventInfo;
+
+        //     if (ActualEvents.some(e => e.classId === event.classId)) {
+        //         const actualEventToUpdate = ActualEvents.find(e => e.classId === event.classId)
+        //         // if (actualEventToUpdate?.lastUpdateTime && differenceInMinutes(new Date(actualEventToUpdate.lastUpdateTime), new Date()) > 4) {
+
+        //         // }
+        //         const eventId = await updateEvent(database)({ ...eventCp, lastUpdateTime: new Date().toJSON() })(builder => builder.andWhere("id", actualEventToUpdate?.id))
+
+        //         // if (event.adress) {
+        //         //     await updateEventAdress(database)({ ...event.adress, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
+        //         // }
+        //         // if (event.instructor && event.instructor?.length > 0) {
+        //         //     for (const teacher of event.instructor) {
+        //         //         await updateEventInstructor(database)({ ...teacher, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
+        //         //     }
+        //         // }
+
+        //         // if (event.eventInfo && event.eventInfo?.length > 0) {
+        //         //     for (const eventInfo of event.eventInfo) {
+        //         //         await updateEventInfo(database)({ ...eventInfo, eventId: eventId.toString() })(builder => builder.andWhere("eventId", actualEventToUpdate?.id))
+        //         //     }
+        //         // }
+        //     } else {
+        //         // const eventId = await insertEvent(database)({ ...eventCp, lastUpdateTime: new Date().toJSON() })
+        //         // if (event.adress) {
+        //         //     await insertEventAdress(database)({ ...event.adress, eventId: eventId.toString() })
+        //         // }
+        //         // if (event.instructor && event.instructor?.length > 0) {
+        //         //     for (const teacher of event.instructor) {
+        //         //         await insertEventInstructor(database)({ ...teacher, eventId: eventId.toString() })
+        //         //     }
+        //         // }
+        //         // if (event.eventInfo && event.eventInfo?.length > 0) {
+        //         //     for (const eventInfo of event.eventInfo) {
+        //         //         await insertEventInfo(database)({ ...eventInfo, eventId: eventId.toString() })
+        //         //     }
+        //         // }
+
+        //     }
+        // }
+        // const evententity = (await selectEvent(database).where("userId", "=", userId))
+        // for (const event of evententity) {
+        //     const eventData: GQLEvent = {
+        //         ...event || {},
+        //         adress: (await selectEventAdress(database).where("eventId", "=", event.id))[0] || {},
+        //         eventInfo: (await selectEventInfo(database).where("eventId", "=", event.id)) || [],
+        //         instructor: (await selectEventInstructor(database).where("eventId", "=", event.id)) || [],
+        //     }
+        //     response.push(eventData)
+        // }
+        // return response;
     } catch (error) {
         logger.error({
             msg: 'event process request error',

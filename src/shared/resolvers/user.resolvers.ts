@@ -250,7 +250,7 @@ export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, 
 export const eventResolver: GQLUserResolvers['event'] = async (obj, params, context) => {
     const userId = obj.id;
     const event = await eventProcess(userId, context.database, context.logger)
-    return event || [];
+    return event as any || [];
 }
 
 export const hasEcampusResolver: GQLUserResolvers["hasEcampus"] = async (obj, params, context) => {
