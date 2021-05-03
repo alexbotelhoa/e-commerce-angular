@@ -231,6 +231,7 @@ export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, 
     const classes = await selectEnrollmentClass(context.readonlyDatabase).whereIn("enrollmentId", ids)
     const classIds = classes.map(c => c.classId)
     const meetings = await selectMeeting(context.readonlyDatabase).whereIn("classId", classIds).andWhere("enabled", "=", true)
+        .orderBy('date', 'asc')
     const response: any = []
 
     for (const meet of meetings) {
