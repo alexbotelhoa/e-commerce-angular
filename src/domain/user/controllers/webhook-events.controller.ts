@@ -4,6 +4,7 @@ import { API_KEYS } from "../../../shared/constants/api-keys.constant";
 import { getLogById, insertLog, updateLog } from "../../../shared/repositories/log.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { processClassSync } from "../services/class-sync.service";
+import { processStudentUpdateEvent } from "../services/student-update.service";
 import { processStudentClassTransfer } from "../services/student-class-transfer.service";
 import { processStudentEnrollmentCancellation } from "../services/student-enrollment-cancellation.service";
 import { processStudentEnrollment } from "../services/student-enrollment.service";
@@ -80,12 +81,25 @@ const StudentEnrollmentCancellationEventType = t.type({
     }),
 });
 
+const StudentUpdateEventType = t.type({
+    id: t.string,
+    type: t.literal('STUDENT_UPDATE'),
+    data: t.type({
+        userId: t.string,
+        name: t.union([t.string, t.null, t.undefined]),
+        macId: t.union([t.string, t.null, t.undefined]),
+        macPass: t.union([t.string, t.null, t.undefined]),
+        accountId: t.union([t.string, t.null, t.undefined]),
+    }),
+});
+
 
 const WebhookEventType = t.union([
     StudentEnrollmentEventType,
     StudentClassTransferClassType,
     StudentEnrollmentCancellationEventType,
-    ClassSyncEventType
+    ClassSyncEventType,
+    StudentUpdateEventType
 ]);
 
 export const webhookEventsController = (db: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
@@ -163,6 +177,10 @@ export const webhookEventsController = (db: DatabaseService) => async (request: 
             }
             case 'CLASS_SYNC': {
                 response = await processClassSync(db, request.log)(body)
+                break;
+            }
+            case 'STUDENT_UPDATE': {
+                response = await processStudentUpdateEvent(db, request.log)(body)
                 break;
             }
             default: {
