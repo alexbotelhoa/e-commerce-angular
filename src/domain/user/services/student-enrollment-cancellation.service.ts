@@ -18,7 +18,8 @@ export const processStudentEnrollmentCancellation = (db: DatabaseService, log: F
         if (!existingClass) {
             log.info(event as any, 'Class is not yet registered.')
             return {
-                success: true,
+                success: false,
+                message: 'Class is not yet registered.'
             };
         }
 
@@ -27,7 +28,8 @@ export const processStudentEnrollmentCancellation = (db: DatabaseService, log: F
         if (!enrollment) {
             log.info(event as any, 'User is not enrolled in this level code, so there is nothing to do, exiting.');
             return {
-                success: true,
+                success: false,
+                message: 'User is not enrolled in this level code, so there is nothing to do, exiting.'
             }
         }
 
