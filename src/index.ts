@@ -22,6 +22,7 @@ import { studentReportController } from './domain/user/controllers/student-repor
 import { selectLog } from './shared/repositories/log.repository';
 import { database } from 'faker';
 import { callBackAudit } from './domain/user/services/audit.service';
+import { studentInterestReportController } from './domain/user/controllers/student-interest-report.controller';
 
 
 
@@ -113,6 +114,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
 
   app.post('/student-grades', {}, classStudentGradesController(environment, databaseService, readonlyDatabaseService));
   app.get('/student-report.csv', {}, studentReportController(environment, databaseService, readonlyDatabaseService));
+  app.get('/student-interest-report.csv', {}, studentInterestReportController(environment, databaseService, readonlyDatabaseService));
 
   app.post('/webhook-events', {}, webhookEventsController(databaseService));
 
