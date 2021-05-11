@@ -8,7 +8,6 @@ import { processStudentUpdateEvent } from "../services/student-update.service";
 import { processStudentClassTransfer } from "../services/student-class-transfer.service";
 import { processStudentEnrollmentCancellation } from "../services/student-enrollment-cancellation.service";
 import { processStudentEnrollment } from "../services/student-enrollment.service";
-// import { ClassDataType } from "../types/class-data.type";
 import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
 import { WebhookErrorResponse, WebhookResponse } from "../types/webhook-events.types";
 

@@ -4,12 +4,13 @@ import { DatabaseService } from "../../../shared/services/database.service";
 import { Environment } from "../../../shared/types/environment.type";
 
 export const studentInterestReportController = (env: Environment, db: DatabaseService, readonlyDb: DatabaseService) => async (req: FastifyRequest, reply: FastifyReply) => {
-    const active: boolean | undefined = (req.query as any).active || undefined;
-    const sql = `
+	const active: boolean | undefined = (req.query as any).active || undefined;
+	const sql = `
     select
 	u.id as userId,
 	u.name as student,
 	teacher.name as Professor,
+	teacher.id as ProfessorId,
 	e.levelCodeId,
 	regional.name as Regional,
 	campus.name as Campus,
@@ -78,7 +79,7 @@ inner join regional on
 	regional.id = campus.regionalId
 left JOIN (
 	SELECT teacher_class.classId,
-		user.name
+		user.name, user.id
 	FROM
 		teacher_class,
 		user
@@ -86,7 +87,7 @@ left JOIN (
 		teacher_class.teacherId = user.id ) AS teacher ON
 	teacher.classId = classStudent.class
     `
-    const [result] = await readonlyDb.raw(sql)
-    reply.header("Content-Type", 'text/csv')
-    reply.send(parse(result))
+	const [result] = await readonlyDb.raw(sql)
+	reply.header("Content-Type", 'text/csv')
+	reply.send(parse(result))
 }

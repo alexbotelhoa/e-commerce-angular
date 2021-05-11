@@ -816,6 +816,11 @@ export type GQLUser = {
 };
 
 
+export type GQLUsertotalCompletedActivitiesArgs = {
+  classId: Maybe<Scalars['ID']>;
+};
+
+
 export type GQLUsertotalProgressChecksCompletedForClassArgs = {
   classId: Scalars['ID'];
 };
@@ -1943,7 +1948,7 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   studentLevel: Resolver<GQLResolversTypes['studentLevel'], ParentType, ContextType>;
   teacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType>;
   totalAvailableActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
-  totalCompletedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  totalCompletedActivities: Resolver<GQLResolversTypes['Int'], ParentType, ContextType, RequireFields<GQLUsertotalCompletedActivitiesArgs, never>>;
   totalProgressChecksCompletedForClass: Resolver<GQLResolversTypes['Int'], ParentType, ContextType, RequireFields<GQLUsertotalProgressChecksCompletedForClassArgs, 'classId'>>;
   userInterest: Resolver<ReadonlyArray<GQLResolversTypes['UserInterest']>, ParentType, ContextType>;
   userRoles: Resolver<ReadonlyArray<GQLResolversTypes['UserRole']>, ParentType, ContextType>;

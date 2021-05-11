@@ -9,7 +9,7 @@ type User {
   userRoles: [UserRole!]!
   isTeacher: Boolean!
   teacherClasses: [TeacherClass!]!
-  totalCompletedActivities: Int!
+  totalCompletedActivities(classId: ID): Int!
   totalAvailableActivities: Int!
   onboarded: Boolean!
   defaultLevelTypeId: LevelTypeId!

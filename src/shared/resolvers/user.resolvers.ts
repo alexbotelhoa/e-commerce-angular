@@ -114,9 +114,20 @@ export const totalAvailableActivitiesFieldResolver: GQLUserResolvers['totalAvail
 }
 
 
-export const userCompletedActivitiesByIdLoader: DatabaseLoaderFactory<string, number, number> = {
+export const userCompletedActivitiesByIdLoader: DatabaseLoaderFactory<string, number, number, { classId: string } | undefined | null> = {
     id: 'userCompletedActivitiesById',
-    batchFn: (db) => async ids => {
+    batchFn: (db, params) => async ids => {
+
+        if (params) {
+            const entities = await countActivityTimers(db)
+                .select<UserActivitiesCount[]>(['userId'])
+                .whereIn('userId', ids)
+                .andWhere('completed', true)
+                .andWhere("classId", params)
+                .groupBy('userId');
+            const sorted = userCountAtivitiesSorter(ids)(entities);
+            return sorted;
+        }
         const entities = await countActivityTimers(db)
             .select<UserActivitiesCount[]>(['userId'])
             .whereIn('userId', ids)
@@ -146,7 +157,7 @@ export const teacherClassesFieldResolver: GQLUserResolvers['teacherClasses'] = a
 }
 
 export const totalCompletedActivitiesFieldResolver: GQLUserResolvers['totalCompletedActivities'] = (obj, params, context) => {
-    return context.getDatabaseLoader(userCompletedActivitiesByIdLoader, undefined).load(obj.id);
+    return context.getDatabaseLoader(userCompletedActivitiesByIdLoader, params.classId as any).load(obj.id);
 }
 
 export const userDefaultLevelTypeIdFieldResolver: GQLUserResolvers['defaultLevelTypeId'] = async (obj, params, context) => {

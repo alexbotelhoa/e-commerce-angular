@@ -9,6 +9,7 @@ SELECT
 	user.id AS id,
 	user.name AS Nome,
 	teacher.name as Professor,
+    teacher.id as ProfessorId,
     enrollment_class.classId as ClasseId,
     class.name as Classe,
 	class.startDate as DataInicio,
@@ -39,8 +40,8 @@ inner join local on
 	 local.id = class.localId
 inner join campus on
 	campus.id = local.campusId
-inner join regional on 
-	regional.id = campus.regionalId	 
+inner join regional on
+	regional.id = campus.regionalId
 inner join level_code on level_code.id = class.levelCodeId
 inner join level on level.id = level_code.levelId
 LEFT JOIN
@@ -119,10 +120,10 @@ completedProgressChecksByUserAndClass.classId = enrollment_class.classId
 AND completedProgressChecksByUserAndClass.userId = user.id
 LEFT JOIN
     (
-        SELECT teacher_class.classId, user.name
+        SELECT teacher_class.classId, user.name, user.id
     FROM teacher_class, user
     WHERE teacher_class.teacherId = user.id
-    GROUP BY teacher_class.classId, user.name
+    GROUP BY teacher_class.classId, user.name, user.id
     -- ORDER BY teacher_class.classId, user.name
     ) AS teacher
 ON teacher.classId = enrollment_class.classId
