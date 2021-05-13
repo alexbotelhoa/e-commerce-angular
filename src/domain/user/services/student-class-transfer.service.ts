@@ -78,9 +78,9 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
     const oldClassEnrollment = await selectEnrollmentClass(db)
         .andWhere('classId', oldClassId)
         .andWhere('enrollmentId', enrollmentId).first();
-
-    const hasToDeleteOldEnrollmentClass = Boolean(oldClassEnrollment);
-
+    if (oldClassEnrollment) {
+        await deleteEnrollmentClass(db)(query => query.andWhere('id', oldClassEnrollment.id));
+    }
     const [existingEnrollmentClass] = await selectEnrollmentClass(db)
         .andWhere('classId', newClassId)
         .andWhere('enrollmentId', enrollmentId);
@@ -118,10 +118,6 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
     } else {
 
         log.info(event as any, 'User is already enrolled in class.');
-    }
-
-    if (hasToDeleteOldEnrollmentClass && oldClassEnrollment) {
-        await deleteEnrollmentClass(db)(query => query.andWhere('id', oldClassEnrollment.id));
     }
 }
 
