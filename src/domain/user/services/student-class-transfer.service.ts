@@ -1,9 +1,10 @@
 import { FastifyLoggerInstance } from "fastify";
 import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
+import { EnrollmentClassEntity } from "../../../entities/enrollment-class.entity";
 import { insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
 import { getClassById } from "../../../shared/repositories/class.repository";
 import { deleteEnrollmentClass, insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
-import { insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
+import { deleteEnrollment, insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
 import { getLevelCodeById } from "../../../shared/repositories/level-code.repository";
 import { getUserById } from "../../../shared/repositories/user.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
@@ -42,20 +43,41 @@ export const processStudentClassTransfer =
     }
 
 async function transferEnrollment(db: DatabaseService, userId: string, levelData: { id: number; code: string; }, oldClassId: string, newClassId: string, log: FastifyLoggerInstance, event: StudentClassTransferEvent) {
-    const enrollment = await selectEnrollment(db).andWhere('userId', userId).andWhere('levelCodeId', levelData.id).first();
+    const enrollments = await selectEnrollment(db).andWhere('userId', userId).andWhere('levelCodeId', levelData.id);
     let enrollmentId: number;
-    if (enrollment) {
-        enrollmentId = enrollment.id;
+
+    if (enrollments.length == 1) {
+        enrollmentId = enrollments[0].id;
     } else {
-        enrollmentId = await insertEnrollment(db)({
-            levelCodeId: levelData.id,
-            userId: userId,
-        });
+        if (enrollments.length > 1) {
+            const ids = enrollments.map(i => i.id)
+            const enrollmentsClasses = await selectEnrollmentClass(db).whereIn("enrollmentId", ids)
+            const enrollmentClassesId = enrollmentsClasses.map(item => item.id)
+            await deleteEnrollment(db)(qb => qb.whereIn("id", ids))
+            await deleteEnrollmentClass(db)(qb => qb.whereIn("id", enrollmentClassesId))
+            enrollmentId = await insertEnrollment(db)({
+                levelCodeId: levelData.id,
+                userId: userId,
+            });
+            const enrollmentClassToCreate: Partial<EnrollmentClassEntity>[] = enrollmentsClasses.map(i => {
+                return {
+                    classId: i.classId,
+                    enrollmentId: enrollmentId
+                }
+            });
+
+            await insertEnrollmentClass(db)(enrollmentClassToCreate)
+        } else {
+            enrollmentId = await insertEnrollment(db)({
+                levelCodeId: levelData.id,
+                userId: userId,
+            });
+        }
     }
 
-    const [oldClassEnrollment] = await selectEnrollmentClass(db)
+    const oldClassEnrollment = await selectEnrollmentClass(db)
         .andWhere('classId', oldClassId)
-        .andWhere('enrollmentId', enrollmentId);
+        .andWhere('enrollmentId', enrollmentId).first();
 
     const hasToDeleteOldEnrollmentClass = Boolean(oldClassEnrollment);
 
@@ -82,7 +104,7 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
         // checking if we need to do anything at all
         if (hasToSaveActivityTimerEntities
             || hasToInsertEnrollmentClass
-            || hasToDeleteOldEnrollmentClass) {
+        ) {
             if (hasToInsertEnrollmentClass) {
                 await insertEnrollmentClass(db)({
                     classId: newClassId,
@@ -98,7 +120,7 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
         log.info(event as any, 'User is already enrolled in class.');
     }
 
-    if (hasToDeleteOldEnrollmentClass) {
+    if (hasToDeleteOldEnrollmentClass && oldClassEnrollment) {
         await deleteEnrollmentClass(db)(query => query.andWhere('id', oldClassEnrollment.id));
     }
 }
