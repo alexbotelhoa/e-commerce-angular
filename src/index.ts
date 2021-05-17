@@ -17,12 +17,13 @@ import { filterHTML } from './shared/utils/filter-html'
 import { makeRequest } from './shared/utils/make-http-request'
 import { classStudentGradesController } from './domain/activity/controllers/class-student-grades.controller';
 import { webhookEventsController } from './domain/user/controllers/webhook-events.controller';
-
 import { studentReportController } from './domain/user/controllers/student-report.controller';
 import { selectLog } from './shared/repositories/log.repository';
 import { database } from 'faker';
 import { callBackAudit } from './domain/user/services/audit.service';
 import { studentInterestReportController } from './domain/user/controllers/student-interest-report.controller';
+
+import xRay from 'fastify-xray';
 
 
 
@@ -66,6 +67,9 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     secret: environment.JWT_SECRET,
   });
 
+  app.register(xRay, {
+    defaultName: "LXP BackEnd Horizon One",
+  });
 
   // register GraphQL endpoint
   app.register(mercurius, {
