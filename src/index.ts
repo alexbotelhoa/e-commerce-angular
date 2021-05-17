@@ -19,11 +19,9 @@ import { classStudentGradesController } from './domain/activity/controllers/clas
 import { webhookEventsController } from './domain/user/controllers/webhook-events.controller';
 import { studentReportController } from './domain/user/controllers/student-report.controller';
 import { selectLog } from './shared/repositories/log.repository';
-import { database } from 'faker';
 import { callBackAudit } from './domain/user/services/audit.service';
 import { studentInterestReportController } from './domain/user/controllers/student-interest-report.controller';
-
-import xRay from 'fastify-xray';
+import fastifyXray from 'fastify-xray';
 
 
 
@@ -67,7 +65,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     secret: environment.JWT_SECRET,
   });
 
-  app.register(xRay, {
+  app.register(fastifyXray, {
     defaultName: "LXP BackEnd Horizon One",
   });
 
