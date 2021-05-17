@@ -59,6 +59,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     resolvers: resolvers,
   });
   await app.register(fastifyExpress)
+  app.use(AWSXRay.express.openSegment('LXP BackEnd Horizon One'));
 
   app.register(fastifyCors, {
     origin: '*',
@@ -68,7 +69,6 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.register(fastifyJwt, {
     secret: environment.JWT_SECRET,
   });
-  app.use(AWSXRay.express.openSegment('LXP BackEnd Horizon One'));
 
   // register GraphQL endpoint
   app.register(mercurius, {
