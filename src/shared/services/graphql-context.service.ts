@@ -6,6 +6,9 @@ import { DatabaseService } from "./database.service";
 
 export const graphQLContextFactory = (databaseService: DatabaseService, readonlyDatabaseService: DatabaseService) =>
     async (request: FastifyRequest): Promise<GraphQLContext> => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const segment = (request as any).raw.segment;
+        console.log(segment, "AQUIIIII >>>>>>>>>>>>>>>>>>>>>")
         const context: GraphQLContext = {
             logger: request.log,
             database: databaseService,

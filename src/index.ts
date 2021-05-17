@@ -21,7 +21,10 @@ import { studentReportController } from './domain/user/controllers/student-repor
 import { selectLog } from './shared/repositories/log.repository';
 import { callBackAudit } from './domain/user/services/audit.service';
 import { studentInterestReportController } from './domain/user/controllers/student-interest-report.controller';
-import fastifyXray from 'fastify-xray';
+import * as AWSXRay from 'aws-xray-sdk';
+import {
+  fastifyExpress
+} from "fastify-express"
 
 
 
@@ -55,6 +58,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     typeDefs: mergeTypeDefs(typeDefsSources.map(source => source.rawSDL!)),
     resolvers: resolvers,
   });
+  await app.register(fastifyExpress)
 
   app.register(fastifyCors, {
     origin: '*',
@@ -64,10 +68,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.register(fastifyJwt, {
     secret: environment.JWT_SECRET,
   });
-
-  app.register(fastifyXray, {
-    defaultName: "LXP BackEnd Horizon One",
-  });
+  app.use(AWSXRay.express.openSegment('LXP BackEnd Horizon One'));
 
   // register GraphQL endpoint
   app.register(mercurius, {
@@ -120,6 +121,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
 
   app.post('/webhook-events', {}, webhookEventsController(databaseService));
 
+  app.use(AWSXRay.express.closeSegment());
 
   // await executeJobs(databaseService, app.log);
 })();
