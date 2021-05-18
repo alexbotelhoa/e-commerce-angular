@@ -22,12 +22,20 @@ import { selectLog } from './shared/repositories/log.repository';
 import { callBackAudit } from './domain/user/services/audit.service';
 import { studentInterestReportController } from './domain/user/controllers/student-interest-report.controller';
 import * as AWSXRay from 'aws-xray-sdk';
+import AWSSdk from "aws-sdk";
+import https from "https"
+import mysql2 from "mysql2"
 import {
   fastifyExpress
 } from "fastify-express"
 
 
 
+AWSXRay.captureMySQL(mysql2 as any);
+const AWS = AWSXRay.captureAWS(AWSSdk);
+AWS.config.update({ region: 'us-east-1' });
+AWSXRay.captureHTTPsGlobal(https);
+AWSXRay.setContextMissingStrategy("LOG_ERROR");
 const environment = environmentFactory();
 const app = fastify({
   logger: {
@@ -36,7 +44,6 @@ const app = fastify({
   connectionTimeout: 120000,
   bodyLimit: 4 * 1024 * 1024 // 4MiB
 });
-
 export const databaseService: DatabaseService = databaseServiceFactory(databaseConfigurationFromEnvironment(environment), app.log);
 export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(readonlyDatabaseConfigurationFromEnvironment(environment), app.log);
 // Require the framework and instantiate it
