@@ -24,6 +24,8 @@ export const environmentFactory = (): Environment => {
         PRODUCTION: DB_HOST !== 'localhost',
         STUDENT_GRADE_INTEGRATION_URL: getEnvironmentVariable('STUDENT_GRADE_INTEGRATION_URL'),
         STUDENT_GRADE_INTEGRATION_API_KEY: getEnvironmentVariable('STUDENT_GRADE_INTEGRATION_API_KEY'),
+        REDIS_HOST: getEnvironmentVariable('REDIS_HOST'),
+        REDIS_PORT: getEnvironmentVariable('REDIS_PORT'),
     };
 
     console.log(environment);

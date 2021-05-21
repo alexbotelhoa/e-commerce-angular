@@ -28,7 +28,7 @@ import mysql2 from "mysql2"
 import {
   fastifyExpress
 } from "fastify-express"
-
+import fastifyRedis from 'fastify-redis';
 
 
 AWSXRay.captureMySQL(mysql2 as any);
@@ -37,6 +37,8 @@ AWS.config.update({ region: 'us-east-1', });
 AWSXRay.captureHTTPsGlobal(https);
 AWSXRay.setContextMissingStrategy("LOG_ERROR");
 AWSXRay.setDaemonAddress('172.30.0.148:2000');
+
+
 const environment = environmentFactory();
 const app = fastify({
   logger: {
@@ -49,15 +51,19 @@ export const databaseService: DatabaseService = databaseServiceFactory(databaseC
 export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(readonlyDatabaseConfigurationFromEnvironment(environment), app.log);
 // Require the framework and instantiate it
 (async function () {
+  // TODO Change to Cron Job or endpoint
 
-  const executeJobs = async (databaseService: DatabaseService<any, any>, logger: FastifyLoggerInstance) => {
-    setInterval(async () => {
-      const auditErrors = await selectLog(databaseService).where("status", "=", "audit-error")
-      await callBackAudit(auditErrors, databaseService, logger)
-    }, 86400000)
+  // const executeJobs = async (databaseService: DatabaseService<any, any>, logger: FastifyLoggerInstance) => {
+  //   setInterval(async () => {
+  //     const auditErrors = await selectLog(databaseService).where("status", "=", "audit-error")
+  //     await callBackAudit(auditErrors, databaseService, logger)
+  //   }, 86400000)
 
-  }
-
+  // }
+  app.register(fastifyRedis, {
+    host: environment.REDIS_HOST,
+    port: Number(environment.REDIS_PORT),
+  })
   const typeDefsSources = await loadTypedefs('./src/**/*.graphql', {
     loaders: [new GraphQLFileLoader()]
   });
@@ -82,7 +88,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.register(mercurius, {
     schema: executableSchema,
     resolvers: {},
-    context: graphQLContextFactory(databaseService, readonlyDatabaseService),
+    context: graphQLContextFactory(databaseService, readonlyDatabaseService, app.redis),
     jit: 5,
     queryDepth: 20,
     allowBatchedQueries: true,

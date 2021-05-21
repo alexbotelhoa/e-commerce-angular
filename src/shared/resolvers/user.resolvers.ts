@@ -233,7 +233,15 @@ export const studentLevelResolver: GQLUserResolvers['studentLevel'] = async (obj
 
 export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, context) => {
     const userId = obj.id;
+    if (context.redisClient) {
+        const response = await context.redisClient.get("meeting-" + userId)
 
+        if (response && (JSON.parse(response).length > 0)) {
+            context.logger.info(" meeting cache used for user, id: " + userId + "meeting-" + userId)
+
+            return JSON.parse(response);
+        }
+    }
     const enrollment = await selectEnrollment(context.readonlyDatabase).where(`userId`, "=", userId)
     if (enrollment.length === 0) {
         return []
@@ -243,7 +251,7 @@ export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, 
     const classIds = classes.map(c => c.classId)
     const meetings = await selectMeeting(context.readonlyDatabase).whereIn("classId", classIds).andWhere("enabled", "=", true)
         .orderBy('date', 'asc')
-    const response: any = []
+    const response: any[] = []
 
     for (const meet of meetings) {
         const teacherClass = (await selectTeacherClass(context.readonlyDatabase).where(`classId`, "=", meet.classId))[0]
@@ -256,12 +264,35 @@ export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, 
             courseName: courseName
         })
     }
+    if (context.redisClient) {
+        if (response.length === 0) {
+            await context.redisClient.del("meeting-" + userId)
+        } else {
+            await context.redisClient.set("meeting-" + userId, JSON.stringify(response), 'ex', 21600)
+        }
+    }
     return response
 }
 
 export const eventResolver: GQLUserResolvers['event'] = async (obj, params, context) => {
     const userId = obj.id;
+    if (context.redisClient) {
+        const response = await context.redisClient.get("event-" + userId)
+
+        if (response && (JSON.parse(response).length > 0)) {
+            context.logger.info(" event cache used for user, id: " + userId + "event-" + userId)
+            return JSON.parse(response);
+        }
+    }
     const event = await eventProcess(userId, context.database, context.logger)
+
+    if (context.redisClient) {
+        if (event.length === 0) {
+            await context.redisClient.del("event-" + userId)
+        } else {
+            await context.redisClient.set("event-" + userId, JSON.stringify(event), 'ex', 120)
+        }
+    }
     return event as any || [];
 }
 

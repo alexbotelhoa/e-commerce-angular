@@ -12,4 +12,6 @@ export interface Environment {
     PRODUCTION: boolean;
     STUDENT_GRADE_INTEGRATION_URL: string,
     STUDENT_GRADE_INTEGRATION_API_KEY: string,
+    REDIS_HOST: string,
+    REDIS_PORT: string
 }
