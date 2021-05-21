@@ -1,4 +1,4 @@
-import fastify, { FastifyLoggerInstance } from 'fastify';
+import fastify, { FastifyLoggerInstance, FastifyReply, FastifyRequest } from 'fastify';
 import mercurius from 'mercurius';
 import fastifyJwt from 'fastify-jwt';
 import fastifyCors from 'fastify-cors';
@@ -134,6 +134,21 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.get('/student-interest-report.csv', {}, studentInterestReportController(environment, databaseService, readonlyDatabaseService));
 
   app.post('/webhook-events', {}, webhookEventsController(databaseService));
+  app.get("/redis/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
+    const { '*': key } = req.params;
+    if (key) {
+      try {
+        return app.redis.get(key)
+      } catch (error) {
+        return {
+          error: error.message,
+          stack: error.stack,
+        }
+      }
+    } else {
+      return { message: "empty key" }
+    }
+  })
 
   app.use(AWSXRay.express.closeSegment());
 
