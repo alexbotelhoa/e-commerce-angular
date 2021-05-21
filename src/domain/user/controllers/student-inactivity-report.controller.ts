@@ -21,25 +21,28 @@ select
 	c.endDate as classEndDate,
 	l.id as nivelId,
 	l.name as nivelName,
-	c.regionalId,
-	c.campusId,
-	c.localId
-	
+	r.name as Regional,
+	r.description as RegionalDesc,
+	cam.name as Campus,
+	cam.description as CampusDesc,	
+	loc.name as Local,
+	loc.description as LocalDesc	
 from user u
 inner join enrollment e on e.userId = u.id 
 inner join enrollment_class ec on ec.enrollmentId = e.id 
 inner join class c on c.id = ec.classId
+left join local loc on loc.id = c.localId
+left join regional r on r.id = c.regionalId
+left join campus cam on cam.id = c.campusId
 inner join level_code lc on lc.id = c.levelCodeId
 inner join level l on l.id = lc.levelId 
 left join teacher_class tc on tc.classId = c.id
 left join user t on t.id = tc.teacherId
-
 left join (
 	select at.userId, at.classId, max(at.startTime) as lastActivityDate
 	from activity_timer at
 	group by at.userId, at.classId
 ) ua on ua.userId = u.id and ua.classId = c.id
-
 where (c.endDate is null or c.endDate >= DATE_ADD(CURDATE(), INTERVAL -1 MONTH) )
     `
     const [result] = await readonlyDb.raw(sql)
