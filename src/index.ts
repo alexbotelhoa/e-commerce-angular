@@ -29,6 +29,7 @@ import {
   fastifyExpress
 } from "fastify-express"
 import fastifyRedis from 'fastify-redis';
+import { studentInactivtyReportController } from './domain/user/controllers/student-inactivity-report.controller';
 
 
 AWSXRay.captureMySQL(mysql2 as any);
@@ -132,6 +133,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.post('/student-grades', {}, classStudentGradesController(environment, databaseService, readonlyDatabaseService));
   app.get('/student-report.csv', {}, studentReportController(environment, databaseService, readonlyDatabaseService));
   app.get('/student-interest-report.csv', {}, studentInterestReportController(environment, databaseService, readonlyDatabaseService));
+  app.get('/student-inactivity-report.csv', {}, studentInactivtyReportController(environment, databaseService, readonlyDatabaseService));
 
   app.post('/webhook-events', {}, webhookEventsController(databaseService));
   app.get("/redis/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
