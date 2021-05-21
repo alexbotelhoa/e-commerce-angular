@@ -145,6 +145,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
           stack: error.stack,
         }
       }
+
     } else {
       return { message: "empty key" }
     }
