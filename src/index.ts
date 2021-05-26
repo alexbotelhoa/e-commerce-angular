@@ -1,9 +1,9 @@
-import fastify, { FastifyReply } from 'fastify';
-import * as os from "os"
-import cluster from "cluster"
+import fastify, { FastifyLoggerInstance, FastifyReply, FastifyRequest } from 'fastify';
 import mercurius from 'mercurius';
 import fastifyJwt from 'fastify-jwt';
 import fastifyCors from 'fastify-cors';
+
+
 
 import { makeExecutableSchema, loadTypedefs, GraphQLFileLoader, mergeTypeDefs } from 'graphql-tools';
 import { resolvers } from './resolvers';
@@ -18,6 +18,8 @@ import { makeRequest } from './shared/utils/make-http-request'
 import { classStudentGradesController } from './domain/activity/controllers/class-student-grades.controller';
 import { webhookEventsController } from './domain/user/controllers/webhook-events.controller';
 import { studentReportController } from './domain/user/controllers/student-report.controller';
+import { selectLog } from './shared/repositories/log.repository';
+import { callBackAudit } from './domain/user/services/audit.service';
 import { studentInterestReportController } from './domain/user/controllers/student-interest-report.controller';
 import * as AWSXRay from 'aws-xray-sdk';
 import AWSSdk from "aws-sdk";
@@ -49,7 +51,7 @@ const app = fastify({
 export const databaseService: DatabaseService = databaseServiceFactory(databaseConfigurationFromEnvironment(environment), app.log);
 export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(readonlyDatabaseConfigurationFromEnvironment(environment), app.log);
 // Require the framework and instantiate it
-const run = async function () {
+(async function () {
   // TODO Change to Cron Job or endpoint
 
   // const executeJobs = async (databaseService: DatabaseService<any, any>, logger: FastifyLoggerInstance) => {
@@ -154,56 +156,9 @@ const run = async function () {
   app.use(AWSXRay.express.closeSegment());
 
   // await executeJobs(databaseService, app.log);
-};
-
-const CPUS = 2
+})();
 
 
-function start() {
-  if (cluster.isMaster) {
-    master()
-  } else {
-    worker()
-  }
-}
-
-function master() {
-  console.log("Total Number of Cores: %o", CPUS)
-  console.log("Master %o is running", process.pid)
-
-  // Fork workers
-  for (let i = 0; i < CPUS; i++) {
-    const fork = cluster.fork()
-    // fork.on('message', (index: number) => {
-    //   console.log('Thread index: %s', index)
-    // })
-    fork.send(i)
-  }
-
-  // process is clustered on a core and process id is assigned
-  cluster.on("online", (worker) => {
-    console.log("Worker %o is listening", worker.process.pid)
-  })
-
-  cluster.on("exit", (worker) => {
-    console.log("Worker %o died", worker.process.pid)
-  })
-}
-
-function worker() {
-  const cb = (index: number) => {
-    // Unregister immediately current listener for message
-    process.off("message", cb)
-
-    // Run application
-    console.log("Worker %o started", process.pid)
-    run()
-  }
-
-  process.on("message", cb)
-}
-
-start()
 
 
 
