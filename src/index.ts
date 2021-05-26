@@ -156,7 +156,7 @@ const run = async function () {
   // await executeJobs(databaseService, app.log);
 };
 
-const CPUS = os.cpus().length
+const CPUS = 2
 
 
 function start() {
