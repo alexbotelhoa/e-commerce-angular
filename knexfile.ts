@@ -18,7 +18,7 @@ const connection: Knex.Config = {
   },
   pool: {
     min: 2,
-    max: 10
+    max: 500
   },
   migrations: {
     tableName: 'migrations',

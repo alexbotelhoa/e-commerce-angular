@@ -16,13 +16,14 @@ async function calculateOrderUserInterest(db: DatabaseService<any, any>, userId:
 export const upsertOrRemoteUserInterestMutationResolver: GQLMutationResolvers['upsertOrRemoveUserInterest'] = async (obj, params, context) => {
 
     const db = context.database;
+    const readonlydb = context.readonlyDatabase;
     const user = context.currentUser;
 
     if (!user) {
         return null;
     }
 
-    const hasUserInterest = getOneOrNull(await selectUserInterest(db).where("userId", "=", user.id)
+    const hasUserInterest = getOneOrNull(await selectUserInterest(readonlydb).where("userId", "=", user.id)
         .andWhere("interestId", "=", params.data.interestId))
     if (hasUserInterest) {
         await deleteUserInterest(db)(builder => builder.andWhere("userId", "=", user.id)
@@ -34,7 +35,7 @@ export const upsertOrRemoteUserInterestMutationResolver: GQLMutationResolvers['u
             userId: user.id,
             order
         })
-        return getInterestById(db)(params.data.interestId.toString())
+        return getInterestById(readonlydb)(params.data.interestId.toString())
     }
     return null;
 }

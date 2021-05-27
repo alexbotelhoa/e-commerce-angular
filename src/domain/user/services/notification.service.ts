@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { FastifyLoggerInstance } from 'fastify';
-import { DatabaseService } from '../../../shared/services/database.service';
 import { environmentFactory } from '../../../shared/services/environment.service';
 import { NotificationResponse } from '../types/notification.type';
 
