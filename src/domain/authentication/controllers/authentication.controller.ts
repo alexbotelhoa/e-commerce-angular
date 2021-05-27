@@ -48,7 +48,7 @@ type EnrollmentWithClasses = Omit<EnrollmentEntity, 'id'> & {
 }
 
 
-export const authenticationController = (redirectUrl: string, db: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+export const authenticationController = (redirectUrl: string, db: DatabaseService, readonlyDb: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
 
     const decodedBody = exactAuthenticationInput.decode(request.body);
     if (decodedBody._tag === 'Left') {
@@ -60,12 +60,8 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
     request.log.info(body, 'Received authentication request');
 
     const userId = body.Id.toString();
-    const userEntity = await getUserById(db)(userId);
-    console.log(userId, userEntity, ">>>>>>>>>>>>>>>>>>>")
-
-    // const turmasProfessor = body["Turmas-Professor"];
-
-    const userRoles = await selectUserRole(db).andWhere('userId', userId);
+    const userEntity = await getUserById(readonlyDb)(userId);
+    const userRoles = await selectUserRole(readonlyDb).andWhere('userId', userId);
 
     // we're using an array of roles here for shorter JWT payload
     const roles: RoleId[] = userRoles.map(userRole => userRole.roleId);
@@ -77,12 +73,10 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
             })(where => where.andWhere('id', userEntity.id));
         }
         if (!hasHorizonOneRole) {
-            await db.transaction(async (trx) => {
-                await insertUserRole(trx)({
-                    roleId: RoleId.HORIZON_ONE,
-                    userId: userId,
-                });
-            })
+            await insertUserRole(db)({
+                roleId: RoleId.HORIZON_ONE,
+                userId: userId,
+            });
         }
         const jwtPayload: JWTPayload = {
             userId: userId.toString(),
