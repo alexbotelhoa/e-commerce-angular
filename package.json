@@ -24,7 +24,7 @@
     "@graphql-codegen/cli": "^1.17.0",
     "@graphql-codegen/typescript": "^1.17.0",
     "@graphql-codegen/typescript-resolvers": "^1.17.0",
-    "@types/cheerio": "^0.22.21",
+    "@types/cheerio": "^0.22.29",
     "@types/faker": "^4.1.12",
     "@types/json2csv": "^5.0.1",
     "@types/lodash": "^4.14.158",
