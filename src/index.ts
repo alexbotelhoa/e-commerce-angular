@@ -1,4 +1,4 @@
-import fastify, { FastifyLoggerInstance, FastifyReply, FastifyRequest } from 'fastify';
+import fastify, { FastifyReply } from 'fastify';
 import mercurius from 'mercurius';
 import fastifyJwt from 'fastify-jwt';
 import fastifyCors from 'fastify-cors';
