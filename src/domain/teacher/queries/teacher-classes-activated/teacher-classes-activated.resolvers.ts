@@ -1,6 +1,5 @@
 import { format } from "date-fns";
-import { objOf } from "ramda";
-import { GQLClassItemResolvers, GQLLevelCodeItem, GQLLevelCodeItemResolvers, GQLQueryResolvers, GQLTeacherClassesActivatedResolvers } from "../../../../resolvers-types";
+import { GQLClassItemResolvers, GQLLevelCodeItemResolvers, GQLQueryResolvers, GQLTeacherClassesActivatedResolvers } from "../../../../resolvers-types";
 
 export const teacherClassesActivatedQueryResolver: GQLQueryResolvers["teacherClassesActivated"] = async (obj, args, context) => {
     const user = context.currentUser;
