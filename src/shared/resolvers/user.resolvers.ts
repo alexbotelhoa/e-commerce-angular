@@ -242,36 +242,65 @@ export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, 
             return JSON.parse(response);
         }
     }
-    const enrollment = await selectEnrollment(context.readonlyDatabase).where(`userId`, "=", userId)
-    if (enrollment.length === 0) {
-        return []
-    }
-    const ids = enrollment.map(i => i.id)
-    const classes = await selectEnrollmentClass(context.readonlyDatabase).whereIn("enrollmentId", ids)
-    const classIds = classes.map(c => c.classId)
-    const meetings = await selectMeeting(context.readonlyDatabase).whereIn("classId", classIds).andWhere("enabled", "=", true)
-        .orderBy('date', 'asc')
-    const response: any[] = []
+    // const enrollment = await selectEnrollment(context.readonlyDatabase).where(`userId`, "=", userId)
+    // if (enrollment.length === 0) {
+    //     return []
+    // }
+    // const ids = enrollment.map(i => i.id)
+    // const classes = await selectEnrollmentClass(context.readonlyDatabase).whereIn("enrollmentId", ids)
+    // const classIds = classes.map(c => c.classId)
+    // const meetings = await selectMeeting(context.readonlyDatabase).whereIn("classId", classIds).andWhere("enabled", "=", true)
+    //     .orderBy('date', 'asc')
+    // const response: any[] = []
 
-    for (const meet of meetings) {
-        const teacherClass = (await selectTeacherClass(context.readonlyDatabase).where(`classId`, "=", meet.classId))[0]
-        const teacher = teacherClass?.teacherId ? await getUserById(context.readonlyDatabase)(teacherClass.teacherId) : null;
-        const classA = teacherClass?.classId ? await getClassById(context.readonlyDatabase)(teacherClass.classId) : null;
-        const courseName = classA?.levelCodeId ? (await getLevelCodeById(context.readonlyDatabase)(classA.levelCodeId))?.code || null : null
-        response.push({
-            ...meet,
-            teacherName: teacher && teacher.name || null,
-            courseName: courseName
-        })
-    }
+    // for (const meet of meetings) {
+    //     const teacherClass = (await selectTeacherClass(context.readonlyDatabase).where(`classId`, "=", meet.classId))[0]
+    //     const teacher = teacherClass?.teacherId ? await getUserById(context.readonlyDatabase)(teacherClass.teacherId) : null;
+    //     const classA = teacherClass?.classId ? await getClassById(context.readonlyDatabase)(teacherClass.classId) : null;
+    //     const courseName = classA?.levelCodeId ? (await getLevelCodeById(context.readonlyDatabase)(classA.levelCodeId))?.code || null : null
+    //     response.push({
+    //         ...meet,
+    //         teacherName: teacher && teacher.name || null,
+    //         courseName: courseName
+    //     })
+    // }
+    const [result] = await context.readonlyDatabase.raw(`
+    select 
+	m.*, 
+	teacher.name as teacherName,
+    teacher.id as ProfessorId,
+    lc.code as courseName,
+    u.id
+    from user u
+    inner join enrollment e
+    on e.userId = u.id
+    inner join enrollment_class ec
+    on ec.enrollmentId = e.id
+    inner join class c
+    on c.id = ec.classId
+    inner join level_code lc
+    on lc.id = c.levelCodeId
+    inner join meeting m 
+    on m.classId = c.id
+    LEFT JOIN
+    (
+        SELECT teacher_class.classId, user.name, user.id
+    FROM teacher_class, user
+    WHERE teacher_class.teacherId = user.id
+    GROUP BY teacher_class.classId, user.name, user.id
+    -- ORDER BY teacher_class.classId, user.name
+    ) AS teacher
+    ON teacher.classId = ec.classId
+    where u.id = ${userId}
+    `)
     if (context.redisClient) {
-        if (response.length === 0) {
+        if (result.length === 0) {
             await context.redisClient.del("meeting-" + userId)
         } else {
-            await context.redisClient.set("meeting-" + userId, JSON.stringify(response), 'ex', 21600)
+            await context.redisClient.set("meeting-" + userId, JSON.stringify(result), 'ex', 21600)
         }
     }
-    return response
+    return result
 }
 
 export const eventResolver: GQLUserResolvers['event'] = async (obj, params, context) => {
