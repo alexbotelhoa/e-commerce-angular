@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run migrate && npm run build && pm2 start --no-daemon dist/src/index.js -i max",
     "start:dev": "ts-node src/index.ts",
-    "build": "tsc",
+    "build": "tsc --skipLibCheck",
     "watch": "ts-node-dev src/index.ts --debug --inspect=4321",
     "codegen": "graphql-codegen --config ./codegen.yml",
     "codegen:watch": "npm run codegen -- --watch",
