@@ -9,21 +9,30 @@ networks:
 
 services:
   service:
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: ci-node-server
-    image: alanjhonnes/ci-node-server:latest
     restart: always
     environment:
-      DB_HOST: localhost
+      DB_READONLY_HOST: mysql
+      DB_PASSWORD: '{"password": "culturainglesa"}'
+      DB_HOST: mysql
       DB_PORT: 3306
       DB_USER: root
-      DB_PASSWORD: culturainglesa
       DB_CLIENT: mysql2
-      DB_NAME: CulturaInglesa
+      DB_NAME: c22
       JWT_SECRET: 883e105e-64bb-4614-b392-83a4c3d8a7a3
-      CI_PORTAL_URL: http://localhost:4200
-      HORIZON_ONE_URL: http://localhost:4200/horizon-one
+      CI_PORTAL_URL: http://localhost:4200/v1
+      HORIZON_ONE_URL: http://localhost:4200/students
+      NODE_ENV: production
+      STUDENT_GRADE_INTEGRATION_URL: https://test.godigibee.io/pipeline/culturainglesa/v1/lxp
+      STUDENT_GRADE_INTEGRATION_API_KEY: Af9lMDeGfD9lZqn4aBfutv9ShC0h9K4O
+      REDIS_HOST: http://localhost
+      REDIS_PORT: 6379   
 
     ports:
       - "3000:3000"
+    command: npm run start
     networks:
       - default-network2

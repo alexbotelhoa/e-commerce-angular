@@ -7,7 +7,6 @@
     "experimentalDecorators": true,
     "target": "es2017",
     "sourceMap": true,
-    "noEmit": true,
     "outDir": "./dist",
     "incremental": false,
     "strict": true,

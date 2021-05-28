@@ -16,7 +16,7 @@ export const basicClass1Seed: ClassEntity = {
     campusId: null,
     localId: null,
     regionalId: null
-}
+} as any
 
 export const intermediaryClass2Seed: ClassEntity = {
     id: '2',
@@ -31,7 +31,7 @@ export const intermediaryClass2Seed: ClassEntity = {
     campusId: null,
     localId: null,
     regionalId: null
-}
+} as any
 
 export const advancedClass3Seed: ClassEntity = {
     id: '3',
@@ -46,7 +46,7 @@ export const advancedClass3Seed: ClassEntity = {
     campusId: null,
     localId: null,
     regionalId: null
-}
+} as any
 
 export const allClassSeeds = [
     basicClass1Seed,
