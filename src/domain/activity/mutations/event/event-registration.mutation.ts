@@ -26,6 +26,9 @@ export const RegisterEventMutationResolver: GQLMutationResolvers['registerEventM
                 },
                 responseType: 'json',
             });
+            if (context.redisClient) {
+                await context.redisClient.del("event-" + user.id)
+            }
             return {
                 message: integrationRequest.data.Result,
                 success: true,
@@ -37,5 +40,4 @@ export const RegisterEventMutationResolver: GQLMutationResolvers['registerEventM
             }
             return simpleError
         }
-
     };
