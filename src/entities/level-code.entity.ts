@@ -1,7 +1,7 @@
 export interface LevelCodeEntity {
     id: number;
     code: string;
-    description: string;
+    description: string | null;
     active: boolean;
     createdAt: string;
     levelId: number | null;

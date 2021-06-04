@@ -1,6 +1,6 @@
 import * as t from "io-ts";
 import { StudentEnrollmentCancellationData } from "../services/student-enrollment-cancellation.service";
-import { classSyncEventData, studantEnrollmentNewData, StudentClassTransferClassByIdType } from "../controllers/webhook-events.controller"
+import { classSyncEventData, studantEnrollmentNewData, StudentClassTransferClassByIdType, LevelCodeSyncDataType } from "../controllers/webhook-events.controller"
 export interface WebhookSuccessResponse {
     success: true;
 }
@@ -36,5 +36,11 @@ export interface ClassSyncEvent {
     data: t.TypeOf<typeof classSyncEventData>
 }
 
-export type WebhookEvent = StudentEnrollmentEvent | StudentEnrollmentCancellationEvent | StudentClassTransferEvent;
+export interface LevelCodeSyncEvent {
+    id: string;
+    type: 'LEVEL_CODE_SYNC',
+    data: t.TypeOf<typeof LevelCodeSyncDataType>
+}
+
+export type WebhookEvent = StudentEnrollmentEvent | StudentEnrollmentCancellationEvent | StudentClassTransferEvent | LevelCodeSyncEvent;
 

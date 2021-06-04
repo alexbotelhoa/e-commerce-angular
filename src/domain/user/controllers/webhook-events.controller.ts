@@ -10,6 +10,8 @@ import { processStudentEnrollmentCancellation } from "../services/student-enroll
 import { processStudentEnrollment } from "../services/student-enrollment.service";
 import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
 import { WebhookErrorResponse, WebhookResponse } from "../types/webhook-events.types";
+import { processLevelCodeSync } from "../services/level-code-sync.service";
+
 
 const UserDataType = t.type({
     id: t.string,
@@ -50,6 +52,13 @@ const StudentEnrollmentEventType = t.type({
     type: t.literal('STUDENT_ENROLLMENT'),
     data: studantEnrollmentNewData,
 });
+
+export const LevelCodeSyncDataType = t.type({
+    levelCodeId: t.number,
+    code: t.string,
+    description: t.union([t.string, t.null, t.undefined]),
+    active: t.union([t.boolean, t.undefined]),
+})
 
 // const StudentClassTransferWithClassBodyType = t.type({
 //     userId: t.string,
@@ -93,12 +102,20 @@ const StudentUpdateEventType = t.type({
 });
 
 
+export const ProcessLevelCodeSyncType = t.type({
+    id: t.string,
+    type: t.literal('LEVEL_CODE_SYNC'),
+    data: LevelCodeSyncDataType
+});
+
+
 const WebhookEventType = t.union([
     StudentEnrollmentEventType,
     StudentClassTransferClassType,
     StudentEnrollmentCancellationEventType,
     ClassSyncEventType,
-    StudentUpdateEventType
+    StudentUpdateEventType,
+    ProcessLevelCodeSyncType
 ]);
 
 export const webhookEventsController = (db: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
@@ -180,6 +197,10 @@ export const webhookEventsController = (db: DatabaseService) => async (request: 
             }
             case 'STUDENT_UPDATE': {
                 response = await processStudentUpdateEvent(db, request.log)(body)
+                break;
+            }
+            case 'LEVEL_CODE_SYNC': {
+                response = await processLevelCodeSync(db, request.log)(body)
                 break;
             }
             default: {
