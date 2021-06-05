@@ -214,6 +214,7 @@ export const userInterestResolver: GQLUserResolvers['userInterest'] = async (obj
 
 
     return response;
+
 }
 
 export const studentLevelResolver: GQLUserResolvers['studentLevel'] = async (obj, params, context) => {
