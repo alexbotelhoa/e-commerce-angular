@@ -153,6 +153,17 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     }
   })
 
+  app.delete("/redis/delete", {}, async (req: Record<string, any>, reply: FastifyReply) => {
+    try {
+      return app.redis.flushall()
+    } catch (error) {
+      return {
+        error: error.message,
+        stack: error.stack,
+      }
+    }
+  })
+
   app.use(AWSXRay.express.closeSegment());
 
   // await executeJobs(databaseService, app.log);
