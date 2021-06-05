@@ -269,11 +269,11 @@ export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, 
     // }
     const [result] = await context.readonlyDatabase.raw(`
     select 
-	m.*, 
+	m.*,
+	m.id as id,
 	teacher.name as teacherName,
     teacher.id as ProfessorId,
-    lc.code as courseName,
-    u.id
+    lc.code as courseName
     from user u
     inner join enrollment e
     on e.userId = u.id
