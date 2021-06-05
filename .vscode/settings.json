@@ -1,27 +1,23 @@
 {
-    "[javascript, typescript]": {
-      "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
-      },
-      "eslint.alwaysShowStatus": true,
-      "eslint.validate": [
-        "javascript",
-        "typescript"
-      ]
+  "[javascript, typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
     },
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true,
-    "files.exclude": {
-      "coverage/": true,
-    },
-    "search.exclude": {
-      "**/dist": true
-    },
-    "files.watcherExclude": {
-      "**/.git/objects/**": true,
-      "**/.git/subtree-cache/**": true,
-      "**/node_modules/*/**": true,
-      "**/dist": true
-    }
+    "eslint.alwaysShowStatus": true,
+    "eslint.validate": [
+      "javascript",
+      "typescript"
+    ]
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "files.exclude": {
+    "coverage/": true,
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/dist": true
   }
-  
+}
