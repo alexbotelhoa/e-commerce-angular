@@ -292,6 +292,7 @@ export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, 
     ) AS teacher
     ON teacher.classId = ec.classId
     where u.id = ${userId}
+    order by m.date ASC
     `)
     if (context.redisClient) {
         if (result.length === 0) {
