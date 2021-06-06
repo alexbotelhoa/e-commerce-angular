@@ -12,7 +12,7 @@ export const getNotificationsByUser = async (userId: string, logger: FastifyLogg
     try {
         const integrationRequest = await axios.get<NotificationResponse>(url, {
             headers: {
-                'apikey': "Af9lMDeGfD9lZqn4aBfutv9ShC0h9K4O" || env.STUDENT_GRADE_INTEGRATION_API_KEY,
+                'apikey': env.STUDENT_GRADE_INTEGRATION_API_KEY,
             },
             responseType: 'json',
         });
