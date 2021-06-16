@@ -6,6 +6,7 @@ import { getClassById } from "../../../shared/repositories/class.repository";
 import { deleteEnrollmentClass, insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 import { deleteEnrollment, insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
 import { getLevelCodeById } from "../../../shared/repositories/level-code.repository";
+import { getLevelById } from "../../../shared/repositories/level.repository";
 import { getUserById } from "../../../shared/repositories/user.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { StudentClassTransferEvent, WebhookResponse } from "../types/webhook-events.types";
@@ -86,37 +87,41 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
         .andWhere('enrollmentId', enrollmentId);
     const hasToInsertEnrollmentClass = !existingEnrollmentClass;
     if (hasToInsertEnrollmentClass) {
-        const activitiesToTransitionToNewClass = await selectActivityTimer(db)
-            .where('classId', oldClassId)
-            .andWhere('userId', userId);
-        const activityTimerEntitiesToSave = activitiesToTransitionToNewClass
-            .map<Omit<ActivityTimerEntity, 'id'>>(saved => ({
-                classId: newClassId,
-                completed: saved.completed,
-                completionTime: saved.completionTime,
-                cycleActivityId: saved.cycleActivityId,
-                startTime: saved.startTime,
-                userId: saved.userId,
-            }));
-
-        const hasToSaveActivityTimerEntities = activityTimerEntitiesToSave.length > 0;
-
-        // checking if we need to do anything at all
-        if (hasToSaveActivityTimerEntities
-            || hasToInsertEnrollmentClass
-        ) {
-            if (hasToInsertEnrollmentClass) {
-                await insertEnrollmentClass(db)({
-                    classId: newClassId,
-                    enrollmentId: enrollmentId,
-                });
-            }
-            if (hasToSaveActivityTimerEntities) {
-                await insertActivityTimer(db)(activityTimerEntitiesToSave);
+        const oldClass = await getClassById(db)(oldClassId);
+        if (oldClass?.levelCodeId) {
+            const oldLevelCode = await getLevelCodeById(db)(oldClass?.levelCodeId);
+            const newLevelCode = await getLevelCodeById(db)(levelData.id)
+            if (oldLevelCode && oldLevelCode.levelId && newLevelCode?.levelId) {
+                const levelOldClass = await getLevelById(db)(oldLevelCode.levelId)
+                const levelNewClass = await getLevelCodeById(db)(newLevelCode?.levelId);
+                if (levelOldClass?.id === levelNewClass?.id) {
+                    const activitiesToTransitionToNewClass = await selectActivityTimer(db)
+                        .where('classId', oldClassId)
+                        .andWhere('userId', userId);
+                    const activityTimerEntitiesToSave = activitiesToTransitionToNewClass
+                        .map<Omit<ActivityTimerEntity, 'id'>>(saved => ({
+                            classId: newClassId,
+                            completed: saved.completed,
+                            completionTime: saved.completionTime,
+                            cycleActivityId: saved.cycleActivityId,
+                            startTime: saved.startTime,
+                            userId: saved.userId,
+                        }));
+                    const hasToSaveActivityTimerEntities = activityTimerEntitiesToSave.length > 0;
+                    if (hasToSaveActivityTimerEntities) {
+                        await insertActivityTimer(db)(activityTimerEntitiesToSave);
+                    }
+                }
             }
         }
+        // checking if we need to do anything at all
+        if (hasToInsertEnrollmentClass) {
+            await insertEnrollmentClass(db)({
+                classId: newClassId,
+                enrollmentId: enrollmentId,
+            });
+        }
     } else {
-
         log.info(event as any, 'User is already enrolled in class.');
     }
 }
