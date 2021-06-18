@@ -7,7 +7,7 @@ import { selectLevelTheme } from "../repositories/level-theme.repository"
 
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
 
-import { LevelEntity, LEVEL_TABLE } from "../../entities/level.entity";
+import { LevelEntity } from "../../entities/level.entity";
 import { LevelCodeEntity, LEVEL_CODE_TABLE } from "../../entities/level-code.entity";
 import { selectLevelCode } from "../repositories/level-code.repository";
 import { CountObj } from "../types/count-obj.type";
@@ -16,7 +16,6 @@ import { CYCLE_TABLE } from "../../entities/cycle.entity";
 import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
 import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
 import { getOneOrNull } from "../utils/get-one-or-null.util";
-import { selectEnrollmentClass } from "../repositories/enrollment-class.repository";
 import { ENROLLMENT_CLASS_TABLE, EnrollmentClassEntity } from "../../entities/enrollment-class.entity";
 import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
 
@@ -59,29 +58,19 @@ const levelCodesResolver: GQLLevelResolvers['codes'] = async (obj, params, conte
     return await context.getDatabaseLoader(levelCodesByLevelIdLoader, undefined).load(obj.id)
 }
 
-
-const levelViewerEnrollmentClassesSorter = createDataloaderMultiSort<EnrollmentClassEntity & { levelId: number }, number>('levelId');
-
-const levelViewerEnrollmentClassesLoader: DatabaseLoaderFactory<number, EnrollmentClassEntity[], EnrollmentClassEntity[], string> = {
-    id: 'levelViewerEnrollmentClasses',
-    batchFn: (db, userId) => async (ids) => {
-        const entities = await db.select([`${ENROLLMENT_CLASS_TABLE}.*`, `${LEVEL_CODE_TABLE}.levelId`])
-            .from(ENROLLMENT_CLASS_TABLE)
-            .innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.id`, `${ENROLLMENT_CLASS_TABLE}.enrollmentId`)
-            .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.id`, `${ENROLLMENT_TABLE}.levelCodeId`)
-            .whereIn(`${LEVEL_CODE_TABLE}.levelId`, ids)
-            .andWhere(`${ENROLLMENT_TABLE}.userId`, userId);
-        const sortedEntities = levelViewerEnrollmentClassesSorter(ids)(entities);
-        return sortedEntities;
-    }
-}
-
 const levelViewerEnrollmentClassesFieldResolver: GQLLevelResolvers['viewerClasses'] = async (obj, params, context) => {
     const user = context.currentUser;
     if (!user) {
         return [];
     }
-    return context.getDatabaseLoader(levelViewerEnrollmentClassesLoader, user.id).load(obj.id);
+
+    const entities = await context.database.select([`${ENROLLMENT_CLASS_TABLE}.*`, `${LEVEL_CODE_TABLE}.levelId`])
+    .from(ENROLLMENT_CLASS_TABLE)
+    .innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.id`, `${ENROLLMENT_CLASS_TABLE}.enrollmentId`)
+    .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.id`, `${ENROLLMENT_TABLE}.levelCodeId`)
+    .where(`${LEVEL_CODE_TABLE}.levelId`, "=" ,obj.id)
+    .andWhere(`${ENROLLMENT_TABLE}.userId`, user.id);
+    return entities;
 }
 
 type TotalCycleActivitiesQueryResult = CountObj & Pick<LevelThemeEntity, 'levelId'>;
