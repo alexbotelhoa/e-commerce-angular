@@ -86,7 +86,7 @@ export const queryResolvers: GQLResolvers['Query'] = {
     viewerEnrollmentLevelCodes: viewerEnrollmentLevelCodesQueryResolver,
     progressStudents: progressStudentsQueryResolver,
     interest: interestQueryResolver,
-    Notification: notificationQueryResolver,
+    // Notification: notificationQueryResolver,
     Annotation: annotationQueryResolver,
     newsletter: newsletterQueryResolver,
     newsletters: newslettersQueryResolver,

@@ -111,8 +111,8 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     viewerChangeAvatar: viewerChangeAvatarMutationResolver,
     finishOnboard: finishOnboardMutationResolver,
     upsertOrRemoveUserInterest: upsertOrRemoteUserInterestMutationResolver,
-    registerEventMutation: RegisterEventMutationResolver,
-    cancelRegisterEventMutation: cancelRegisterEventMutationResolver,
+    // registerEventMutation: RegisterEventMutationResolver,
+    // cancelRegisterEventMutation: cancelRegisterEventMutationResolver,
     upsertAnnotation: upsertAnnotationResolver,
     audit: auditResolver,
 }

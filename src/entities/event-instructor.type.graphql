@@ -1,7 +1,7 @@
-type EventInstructor {
-  id: ID!
-  name: String!
-  eventId: String!
-  macPass: String
-  macId: String
-}
+# type EventInstructor {
+#   id: ID!
+#   name: String!
+#   eventId: String!
+#   macPass: String
+#   macId: String
+# }

@@ -1,12 +1,12 @@
-type Mutation {
-    registerEventMutation(data: eventParameters!): EventRegistrationResponseSuccess!
-}
+# type Mutation {
+#     registerEventMutation(data: eventParameters!): EventRegistrationResponseSuccess!
+# }
 
-input eventParameters {
-    classId: ID!
-}
+# input eventParameters {
+#     classId: ID!
+# }
 
-type EventRegistrationResponseSuccess {
-    success: Boolean!
-    message: String!
-}
+# type EventRegistrationResponseSuccess {
+#     success: Boolean!
+#     message: String!
+# }

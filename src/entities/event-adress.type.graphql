@@ -1,11 +1,11 @@
-type EventAdress {
-    id: String!
-    eventId: String!
-    street: String
-    number: String
-    complement: String
-    district: String
-    postalCode: String
-    city: String
-    state: String
-}
+# type EventAdress {
+#     id: String!
+#     eventId: String!
+#     street: String
+#     number: String
+#     complement: String
+#     district: String
+#     postalCode: String
+#     city: String
+#     state: String
+# }
