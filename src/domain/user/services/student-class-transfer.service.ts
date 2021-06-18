@@ -1,7 +1,7 @@
 import { FastifyLoggerInstance } from "fastify";
 import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
 import { EnrollmentClassEntity } from "../../../entities/enrollment-class.entity";
-import { insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
+import { deleteActivityTimer, insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
 import { getClassById } from "../../../shared/repositories/class.repository";
 import { deleteEnrollmentClass, insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 import { deleteEnrollment, insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
@@ -110,6 +110,7 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
                     const hasToSaveActivityTimerEntities = activityTimerEntitiesToSave.length > 0;
                     if (hasToSaveActivityTimerEntities) {
                         await insertActivityTimer(db)(activityTimerEntitiesToSave);
+                        await deleteActivityTimer(db)(qb => qb.where('classId', oldClassId).andWhere('userId', userId))
                     }
                 }
             }

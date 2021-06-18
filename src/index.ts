@@ -1,4 +1,4 @@
-import fastify, { FastifyReply } from 'fastify';
+import fastify, { FastifyLoggerInstance, FastifyReply } from 'fastify';
 import mercurius from 'mercurius';
 import fastifyJwt from 'fastify-jwt';
 import fastifyCors from 'fastify-cors';
@@ -54,13 +54,13 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
 (async function () {
   // TODO Change to Cron Job or endpoint
 
-  // const executeJobs = async (databaseService: DatabaseService<any, any>, logger: FastifyLoggerInstance) => {
-  //   setInterval(async () => {
-  //     const auditErrors = await selectLog(databaseService).where("status", "=", "audit-error")
-  //     await callBackAudit(auditErrors, databaseService, logger)
-  //   }, 86400000)
+  const executeJobs = async (databaseService: DatabaseService<any, any>, logger: FastifyLoggerInstance) => {
+    setInterval(async () => {
+      const auditErrors = await selectLog(databaseService).where("status", "=", "audit-error")
+      await callBackAudit(auditErrors, databaseService, logger)
+    }, 3600000)
 
-  // }
+  }
   app.register(fastifyRedis, {
     host: environment.REDIS_HOST,
     port: Number(environment.REDIS_PORT),
@@ -166,7 +166,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
 
   app.use(AWSXRay.express.closeSegment());
 
-  // await executeJobs(databaseService, app.log);
+  await executeJobs(databaseService, app.log);
 })();
 console.log("PROJETO RODANDO COM CODIGO MAIS RESCENTE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
