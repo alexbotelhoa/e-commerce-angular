@@ -28,12 +28,8 @@ import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.e
 import { ACTIVITY_TABLE } from "../../entities/activity.entity";
 import { selectEnrollmentClass } from "../repositories/enrollment-class.repository";
 import { selectEnrollment } from "../repositories/enrollment.repository";
-import { selectMeeting } from "../repositories/meeting.repository";
-import { eventProcess } from "../../domain/user/services/event-process.service";
-import { getUserById } from "../repositories/user.repository";
-import { selectTeacherClass } from "../repositories/teacher-class.repository";
-import { getClassById, getClassesByIds } from "../repositories/class.repository";
-import { getLevelCodeById } from "../repositories/level-code.repository";
+// import { eventProcess } from "../../domain/user/services/event-process.service";
+import { getClassesByIds } from "../repositories/class.repository";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),

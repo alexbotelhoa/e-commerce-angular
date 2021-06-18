@@ -38,9 +38,7 @@ import { completeActivityMutationResolver } from "../../domain/activity/mutation
 import { viewerChangeAvatarMutationResolver } from "../../domain/avatar/mutations/viewer-change-avatar/viewer-change-avatar.mutation";
 import { finishOnboardMutationResolver } from "../../domain/activity/mutations/finish-onboard/finish-onboard.mutation";
 import { upsertOrRemoteUserInterestMutationResolver } from "../../domain/activity/mutations/user-interest/upsert-or-remove-user-interest.mutation";
-import { RegisterEventMutationResolver } from "../../domain/activity/mutations/event/event-registration.mutation";
 import { createChallengeMutationResolver, toggleChallengeState, updateChallengeMutationResolver } from "../../domain/activity/mutations/challenge/challenge.mutation";
-import { cancelRegisterEventMutationResolver } from "../../domain/activity/mutations/event/cancel-event-registration.mutation";
 import { createNewsletterMutationResolver, toggleNewsletterState, updateNewsletterMutationResolver } from "../../domain/activity/mutations/newsletter/newsletter.mutation";
 import { upsertAnnotationResolver } from "../../domain/annotation/mutations/upsert-annotation.resolver";
 import { auditResolver } from "../../domain/log/mutation/call-audit.mutation.resolver";
