@@ -131,9 +131,9 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.post('/horizon-one-authentication', {}, authenticationController(environment.HORIZON_ONE_URL, databaseService, readonlyDatabaseService));
 
   app.post('/student-grades', {}, classStudentGradesController(environment, databaseService, readonlyDatabaseService));
-  app.get('/student-report.csv', {}, studentReportController(environment, databaseService, readonlyDatabaseService));
-  app.get('/student-interest-report.csv', {}, studentInterestReportController(environment, databaseService, readonlyDatabaseService));
-  app.get('/student-inactivity-report.csv', {}, studentInactivtyReportController(environment, databaseService, readonlyDatabaseService));
+  app.get('/student-report.csv', {}, studentReportController(environment, databaseService, readonlyDatabaseService, app.redis));
+  app.get('/student-interest-report.csv', {}, studentInterestReportController(environment, databaseService, readonlyDatabaseService, app.redis));
+  app.get('/student-inactivity-report.csv', {}, studentInactivtyReportController(environment, databaseService, readonlyDatabaseService, app.redis));
 
   app.post('/webhook-events', {}, webhookEventsController(databaseService));
   app.get("/redis/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {

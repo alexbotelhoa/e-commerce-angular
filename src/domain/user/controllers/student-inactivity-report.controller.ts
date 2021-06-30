@@ -1,10 +1,20 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { parse } from "json2csv";
 import { DatabaseService } from "../../../shared/services/database.service";
+import { Redis } from 'ioredis';
 import { Environment } from "../../../shared/types/environment.type";
 
-export const studentInactivtyReportController = (env: Environment, db: DatabaseService, readonlyDb: DatabaseService) => async (req: FastifyRequest, reply: FastifyReply) => {
-    const sql = `
+export const studentInactivtyReportController = (env: Environment, db: DatabaseService, readonlyDb: DatabaseService, redis?: Redis) => async (req: FastifyRequest, reply: FastifyReply) => {
+	if (redis) {
+		const response = await redis.get("studentInactivty")
+		const responseParsed = response && JSON.parse(response)
+		if (responseParsed && (responseParsed.length > 0)) {
+			reply.header("Content-Type", 'text/csv')
+			return reply.send(parse(responseParsed))
+		}
+		reply.send({ loading: "loading report" })
+
+		const sql = `
 select 
 	u.id as userId,
 	u.name as userName,
@@ -45,7 +55,15 @@ left join (
 ) ua on ua.userId = u.id and ua.classId = c.id
 where (c.endDate is null or c.endDate >= DATE_ADD(CURDATE(), INTERVAL -1 MONTH) )
     `
-    const [result] = await readonlyDb.raw(sql)
-    reply.header("Content-Type", 'text/csv')
-    reply.send(parse(result))
+
+		const [result] = await readonlyDb.raw(sql)
+		if (result.length === 0) {
+			await redis.del("studentInactivty")
+			reply.header("Content-Type", 'text/csv')
+			reply.send(parse(result))
+		} else {
+			// reply.header("Content-Type", 'text/csv')
+			await redis.set("studentInactivty", JSON.stringify(result), 'ex', 43200)
+		}
+	}
 }
