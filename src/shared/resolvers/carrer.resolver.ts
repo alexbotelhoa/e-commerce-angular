@@ -16,5 +16,5 @@ export const CarrerEntityResolvers: Pick<GQLCarrerResolvers, keyof CarrerEntity>
 
 export const carrerResolver: GQLCarrerResolvers = {
     ...CarrerEntityResolvers,
-    permissions: async (obj, params, context) => await selectPermission(context.database).where("carrerId", obj.carrerId),
+    permissions: async (obj, params, context) => await selectPermission(context.database).where("carrerId", obj.carrerId).andWhere("active", "=", true),
 }
