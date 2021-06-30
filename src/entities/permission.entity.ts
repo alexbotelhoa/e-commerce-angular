@@ -1,8 +1,8 @@
 export interface PermissionEntity {
     id: string;
     carrerId: string;
-    carrerName: string;
-    name: boolean;
+    carrer: string;
+    name: string;
     createdAt: string;
     updatedAt: string;
     active: boolean;

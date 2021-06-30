@@ -1,0 +1,9 @@
+type CarrerPermission {
+    id: ID!
+    carrerId: String!
+    carrer: String!
+    name: String
+    createdAt: String
+    updatedAt: String
+    active: Boolean
+}

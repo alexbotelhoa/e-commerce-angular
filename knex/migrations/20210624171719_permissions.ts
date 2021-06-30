@@ -1,5 +1,6 @@
 import * as Knex from "knex";
 import { CARRER_TABLE } from "../../src/entities/carrer.entity";
+import { ENROLLMENT_CLASS_TABLE } from "../../src/entities/enrollment-class.entity";
 import { PERMISSION_TABLE } from "../../src/entities/permission.entity";
 import { setUTF8Table } from "../utils/set-utf8-table.migration";
 
@@ -21,7 +22,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string('carrerId');
         table.string('name');
         table.boolean('active').defaultTo(true);
-        table.string('carrer').unsigned().references(`${CARRER_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');
+        table.integer('carrer').unsigned().references(`${CARRER_TABLE}.id`).onDelete('CASCADE');
         table.timestamp('createdAt').notNullable().defaultTo(knex.fn.now());
         table.timestamp('updatedAt').notNullable().defaultTo(knex.fn.now());
 

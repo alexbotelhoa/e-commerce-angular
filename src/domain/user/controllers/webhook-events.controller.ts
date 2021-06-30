@@ -11,6 +11,7 @@ import { processStudentEnrollment } from "../services/student-enrollment.service
 import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
 import { WebhookErrorResponse, WebhookResponse } from "../types/webhook-events.types";
 import { processLevelCodeSync } from "../services/level-code-sync.service";
+import { processCarrerSync } from "../services/carrer-sync.service";
 
 
 const UserDataType = t.type({
@@ -60,19 +61,16 @@ export const LevelCodeSyncDataType = t.type({
     active: t.union([t.boolean, t.undefined]),
 })
 
-// const StudentClassTransferWithClassBodyType = t.type({
-//     userId: t.string,
-//     oldClassId: t.string,
-//     newClass: ClassDataType,
-// })
+export const CarrerSyncDataType = t.array(t.type({
+    carrer: t.string,
+    roles: t.array(t.string),
+}))
 
 export const StudentClassTransferClassByIdType = t.type({
     userId: t.string,
     oldClassId: t.string,
     newClassId: t.string,
 })
-
-// export const StudentClassTransferClassData = t.union([StudentClassTransferClassByIdType, StudentClassTransferWithClassBodyType])
 
 const StudentClassTransferClassType = t.type({
     id: t.string,
@@ -108,6 +106,12 @@ export const ProcessLevelCodeSyncType = t.type({
     data: LevelCodeSyncDataType
 });
 
+export const ProcessCarrerSyncType = t.type({
+    id: t.string,
+    type: t.literal('CARRER_SYNC'),
+    data: CarrerSyncDataType
+});
+
 
 const WebhookEventType = t.union([
     StudentEnrollmentEventType,
@@ -115,7 +119,8 @@ const WebhookEventType = t.union([
     StudentEnrollmentCancellationEventType,
     ClassSyncEventType,
     StudentUpdateEventType,
-    ProcessLevelCodeSyncType
+    ProcessLevelCodeSyncType,
+    ProcessCarrerSyncType
 ]);
 
 export const webhookEventsController = (db: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
@@ -201,6 +206,10 @@ export const webhookEventsController = (db: DatabaseService) => async (request: 
             }
             case 'LEVEL_CODE_SYNC': {
                 response = await processLevelCodeSync(db, request.log)(body)
+                break;
+            }
+            case 'CARRER_SYNC': {
+                response = await processCarrerSync(db, request.log)(body)
                 break;
             }
             default: {

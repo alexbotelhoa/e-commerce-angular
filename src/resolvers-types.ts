@@ -1088,6 +1088,15 @@ export type GQLCampus = {
   readonly regionalId: Maybe<Scalars['ID']>;
 };
 
+export type GQLCarrer = {
+  readonly __typename?: 'Carrer';
+  readonly id: Scalars['ID'];
+  readonly carrerId: Scalars['String'];
+  readonly active: Scalars['Boolean'];
+  readonly createdAt: Maybe<Scalars['String']>;
+  readonly updatedAt: Maybe<Scalars['String']>;
+};
+
 export type GQLChallenge = {
   readonly __typename?: 'Challenge';
   readonly id: Scalars['ID'];
@@ -1257,6 +1266,17 @@ export type GQLNewsletter = {
   readonly imgSrc: Scalars['String'];
   readonly linkUrl: Scalars['String'];
   readonly active: Scalars['Boolean'];
+};
+
+export type GQLCarrerPermission = {
+  readonly __typename?: 'CarrerPermission';
+  readonly id: Scalars['ID'];
+  readonly carrerId: Scalars['String'];
+  readonly carrer: Scalars['String'];
+  readonly name: Maybe<Scalars['String']>;
+  readonly createdAt: Maybe<Scalars['String']>;
+  readonly updatedAt: Maybe<Scalars['String']>;
+  readonly active: Maybe<Scalars['Boolean']>;
 };
 
 export type GQLRegional = {
@@ -1492,6 +1512,7 @@ export type GQLResolversTypes = {
   Annotation: ResolverTypeWrapper<GQLAnnotation>;
   Avatar: ResolverTypeWrapper<AvatarEntity>;
   Campus: ResolverTypeWrapper<GQLCampus>;
+  Carrer: ResolverTypeWrapper<GQLCarrer>;
   Challenge: ResolverTypeWrapper<ChallengeEntity>;
   ActivityComment: ResolverTypeWrapper<ActivityCommentEntity>;
   Comment: GQLResolversTypes['ActivityComment'];
@@ -1508,6 +1529,7 @@ export type GQLResolversTypes = {
   Log: ResolverTypeWrapper<GQLLog>;
   Meeting: ResolverTypeWrapper<GQLMeeting>;
   Newsletter: ResolverTypeWrapper<GQLNewsletter>;
+  CarrerPermission: ResolverTypeWrapper<GQLCarrerPermission>;
   Regional: ResolverTypeWrapper<GQLRegional>;
   TeacherClass: ResolverTypeWrapper<TeacherClassEntity>;
   Theme: ResolverTypeWrapper<ThemeEntity>;
@@ -1607,6 +1629,7 @@ export type GQLResolversParentTypes = {
   Annotation: GQLAnnotation;
   Avatar: AvatarEntity;
   Campus: GQLCampus;
+  Carrer: GQLCarrer;
   Challenge: ChallengeEntity;
   ActivityComment: ActivityCommentEntity;
   Comment: GQLResolversParentTypes['ActivityComment'];
@@ -1623,6 +1646,7 @@ export type GQLResolversParentTypes = {
   Log: GQLLog;
   Meeting: GQLMeeting;
   Newsletter: GQLNewsletter;
+  CarrerPermission: GQLCarrerPermission;
   Regional: GQLRegional;
   TeacherClass: TeacherClassEntity;
   Theme: ThemeEntity;
@@ -2026,6 +2050,15 @@ export type GQLCampusResolvers<ContextType = GraphQLContext, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GQLCarrerResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Carrer'] = GQLResolversParentTypes['Carrer']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  carrerId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  createdAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GQLChallengeResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Challenge'] = GQLResolversParentTypes['Challenge']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   text: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
@@ -2173,6 +2206,17 @@ export type GQLNewsletterResolvers<ContextType = GraphQLContext, ParentType exte
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GQLCarrerPermissionResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['CarrerPermission'] = GQLResolversParentTypes['CarrerPermission']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  carrerId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  carrer: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  name: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  createdAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  active: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GQLRegionalResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Regional'] = GQLResolversParentTypes['Regional']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
@@ -2283,6 +2327,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Annotation: GQLAnnotationResolvers<ContextType>;
   Avatar: GQLAvatarResolvers<ContextType>;
   Campus: GQLCampusResolvers<ContextType>;
+  Carrer: GQLCarrerResolvers<ContextType>;
   Challenge: GQLChallengeResolvers<ContextType>;
   ActivityComment: GQLActivityCommentResolvers<ContextType>;
   Comment: GQLCommentResolvers<ContextType>;
@@ -2297,6 +2342,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Log: GQLLogResolvers<ContextType>;
   Meeting: GQLMeetingResolvers<ContextType>;
   Newsletter: GQLNewsletterResolvers<ContextType>;
+  CarrerPermission: GQLCarrerPermissionResolvers<ContextType>;
   Regional: GQLRegionalResolvers<ContextType>;
   TeacherClass: GQLTeacherClassResolvers<ContextType>;
   Theme: GQLThemeResolvers<ContextType>;
