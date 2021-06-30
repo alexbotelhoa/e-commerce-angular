@@ -7,8 +7,8 @@ export const CarrerPermissionEntityResolvers: Pick<GQLCarrerPermissionResolvers,
     id: obj => obj.id,
     active: obj => obj.active,
     carrerId: obj => obj.carrerId,
-    createdAt: obj => obj.createdAt,
-    updatedAt: obj => obj.updatedAt,
+    createdAt: obj => obj.createdAt && new Date(obj.createdAt).toISOString(),
+    updatedAt: obj => obj.updatedAt && new Date(obj.updatedAt).toISOString(),
     carrer: obj => obj.carrer,
     name: obj => obj.name
 }

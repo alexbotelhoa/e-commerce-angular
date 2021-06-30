@@ -509,6 +509,7 @@ export type GQLUpsertUserInterestInput = {
 export type GQLQuery = {
   readonly __typename?: 'Query';
   readonly Annotation: Maybe<GQLAnnotation>;
+  readonly Carrer: Maybe<ReadonlyArray<Maybe<GQLCarrer>>>;
   readonly activeChallenge: Maybe<GQLChallenge>;
   readonly activities: ReadonlyArray<GQLActivityUnion>;
   readonly activity: Maybe<GQLActivityUnion>;
@@ -1095,6 +1096,7 @@ export type GQLCarrer = {
   readonly active: Scalars['Boolean'];
   readonly createdAt: Maybe<Scalars['String']>;
   readonly updatedAt: Maybe<Scalars['String']>;
+  readonly permissions: Maybe<ReadonlyArray<Maybe<GQLCarrerPermission>>>;
 };
 
 export type GQLChallenge = {
@@ -1735,6 +1737,7 @@ export type GQLStartActivityResultResolvers<ContextType = GraphQLContext, Parent
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   Annotation: Resolver<Maybe<GQLResolversTypes['Annotation']>, ParentType, ContextType, RequireFields<GQLQueryAnnotationArgs, 'id'>>;
+  Carrer: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Carrer']>>>, ParentType, ContextType>;
   activeChallenge: Resolver<Maybe<GQLResolversTypes['Challenge']>, ParentType, ContextType>;
   activities: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType>;
   activity: Resolver<Maybe<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryactivityArgs, 'id'>>;
@@ -2056,6 +2059,7 @@ export type GQLCarrerResolvers<ContextType = GraphQLContext, ParentType extends 
   active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   createdAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   updatedAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  permissions: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['CarrerPermission']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

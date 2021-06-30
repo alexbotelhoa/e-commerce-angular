@@ -57,7 +57,7 @@ import { annotationResolvers } from "./shared/resolvers/annotation.resolver";
 import { newsletterResolvers } from "./shared/resolvers/newsletter.resolver";
 import { logResolver } from "./shared/resolvers/log.resolver";
 import { countResolver } from "./shared/resolvers/count.resolver";
-import { CarrerEntityResolvers } from "./shared/resolvers/carrer.resolver";
+import { carrerResolver } from "./shared/resolvers/carrer.resolver";
 import { carrerPermissionResolver } from "./shared/resolvers/carrer-permission.resolvers";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
@@ -124,7 +124,8 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Newsletter: newsletterResolvers,
     Log: logResolver,
     Count: countResolver,
-    Carrer: CarrerEntityResolvers,
+    Carrer: carrerResolver,
     CarrerPermission: carrerPermissionResolver,
+
 };
 

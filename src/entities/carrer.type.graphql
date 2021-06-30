@@ -4,4 +4,5 @@ type Carrer {
     active: Boolean!
     createdAt: String
     updatedAt: String
+    permissions: [CarrerPermission]
 }

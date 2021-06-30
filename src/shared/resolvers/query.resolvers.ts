@@ -45,6 +45,7 @@ import { getZoomUrlQueryResolver } from "../../domain/user/query/get-zoom-url.re
 import { logQueryResolver } from "../../domain/interest/log.resolver";
 import { countQueryResolver } from "../../domain/count/count.resolver";
 import { getServiceNowUrlQueryResolver } from "../../domain/user/query/get-service-now.resolver";
+import { getCarrersResolver } from "../../domain/carrer/carrer-permissions.resolver";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -95,4 +96,5 @@ export const queryResolvers: GQLResolvers['Query'] = {
     logs: logQueryResolver,
     count: countQueryResolver,
     getServiceNow: getServiceNowUrlQueryResolver,
+    Carrer: getCarrersResolver,
 }
