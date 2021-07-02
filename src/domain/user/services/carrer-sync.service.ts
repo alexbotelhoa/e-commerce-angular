@@ -26,6 +26,7 @@ export const processCarrerSync =
                     await updatePermission(db)({ active: false, updatedAt: db.fn.now() as any })(qb => qb.whereNotIn("name", rolesToActivate).andWhere("carrerId", carrer.carrer))
 
                 } else {
+                    await updateCarrer(db)({ active: true, updatedAt: db.fn.now() as any })(qb => qb.where("carrerId", carrer.carrer))
                     const permissions: Partial<PermissionEntity>[] = mapPermissionsByRoles(carrer.roles, parseFloat(dbCarrer.id), carrer.carrer)
                     // const rolesToActivate = carrer.roles;
                     for (const permission of permissions) {
@@ -35,6 +36,7 @@ export const processCarrerSync =
                         }
                     }
                     const rolesToDisable = carrer.roles;
+                    await updatePermission(db)({ active: true, updatedAt: db.fn.now() as any })(qb => qb.whereIn("name", rolesToDisable).andWhere("carrerId", carrer.carrer))
                     await updatePermission(db)({ active: false, updatedAt: db.fn.now() as any })(qb => qb.whereNotIn("name", rolesToDisable).andWhere("carrerId", carrer.carrer))
                 }
             }
