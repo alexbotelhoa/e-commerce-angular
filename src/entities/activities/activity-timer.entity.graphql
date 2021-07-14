@@ -7,4 +7,5 @@ type ActivityTimer {
     completed: Boolean!
     classId: ID!
     cycleActivity: CycleActivity!
+    currentUser: User!
 }

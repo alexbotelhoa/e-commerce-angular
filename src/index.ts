@@ -135,7 +135,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.get('/student-interest-report.csv', {}, studentInterestReportController(environment, databaseService, readonlyDatabaseService, app.redis));
   app.get('/student-inactivity-report.csv', {}, studentInactivtyReportController(environment, databaseService, readonlyDatabaseService, app.redis));
 
-  app.post('/webhook-events', {}, webhookEventsController(databaseService));
+  app.post('/webhook-events', {}, webhookEventsController(databaseService, readonlyDatabaseService, app.redis));
   app.get("/redis/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
     const { '*': key } = req.params;
     if (key) {

@@ -1037,6 +1037,7 @@ export type GQLActivityTimer = {
   readonly completed: Scalars['Boolean'];
   readonly classId: Scalars['ID'];
   readonly cycleActivity: GQLCycleActivity;
+  readonly currentUser: GQLUser;
 };
 
 export type GQLEmbeddedActivityData = GQLActivityData & {
@@ -1999,6 +2000,7 @@ export type GQLActivityTimerResolvers<ContextType = GraphQLContext, ParentType e
   completed: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   cycleActivity: Resolver<GQLResolversTypes['CycleActivity'], ParentType, ContextType>;
+  currentUser: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

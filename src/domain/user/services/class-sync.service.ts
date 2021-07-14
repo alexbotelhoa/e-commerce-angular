@@ -23,15 +23,16 @@ import { deleteTeacherClass, insertTeacherClass, selectTeacherClass } from "../.
 import { consolidateEntities, ConsolidateFinder } from "../../../shared/utils/consolidate-entities";
 import { insertMeeting, selectMeeting, updateMeeting } from "../../../shared/repositories/meeting.repository";
 import { upsertCountEntity } from "../../../shared/repositories/count.repository";
+import { Redis } from "ioredis";
 
 
 export const processClassSync =
-    (db: DatabaseService, log: FastifyLoggerInstance) => async (event: ClassSyncEvent): Promise<WebhookResponse> => {
+    (db: DatabaseService, readonlyDatabase: DatabaseService, log: FastifyLoggerInstance, redis?: Redis) => async (event: ClassSyncEvent): Promise<WebhookResponse> => {
         // return await db.transaction(async trx => {
         const data = event.data;
         const classData = data.class;
-        const existingClass = await getClassById(db)(data.class.id);
-        const hasLevelCode = await getLevelCodeById(db)(classData.level.id)
+        const existingClass = await getClassById(readonlyDatabase)(data.class.id);
+        const hasLevelCode = await getLevelCodeById(readonlyDatabase)(classData.level.id)
         let levelCodeId = hasLevelCode ? hasLevelCode.id : null
 
         if (!levelCodeId) {
@@ -44,9 +45,9 @@ export const processClassSync =
             });
         }
         if (!existingClass) {
-            const hasRegional = getOneOrNull((await db.select<RegionalEntity[]>([`${REGIONAL_TABLE}.*`]).from(REGIONAL_TABLE).where(`${REGIONAL_TABLE}.name`, classData.regional)));
-            const hasCampus = getOneOrNull((await db.select<CampusEntity[]>([`${CAMPUS_TABLE}.*`]).from(CAMPUS_TABLE).where(`${CAMPUS_TABLE}.name`, classData.campus)));
-            const hasLocal = getOneOrNull((await db.select<LocalEntity[]>([`${LOCAL_TABLE}.*`]).from(LOCAL_TABLE).where(`${LOCAL_TABLE}.name`, classData.local)));
+            const hasRegional = getOneOrNull((await readonlyDatabase.select<RegionalEntity[]>([`${REGIONAL_TABLE}.*`]).from(REGIONAL_TABLE).where(`${REGIONAL_TABLE}.name`, classData.regional)));
+            const hasCampus = getOneOrNull((await readonlyDatabase.select<CampusEntity[]>([`${CAMPUS_TABLE}.*`]).from(CAMPUS_TABLE).where(`${CAMPUS_TABLE}.name`, classData.campus)));
+            const hasLocal = getOneOrNull((await readonlyDatabase.select<LocalEntity[]>([`${LOCAL_TABLE}.*`]).from(LOCAL_TABLE).where(`${LOCAL_TABLE}.name`, classData.local)));
             const {
                 campusId, localId, regionalId
             } = await updateRegionCampusLocal(db, classData, hasRegional, hasCampus, hasLocal);
@@ -70,14 +71,14 @@ export const processClassSync =
                 ...times,
             })
             await processTeacherData(db, classData)
-            await processMeetingData(db, classData)
+            await processMeetingData(db, readonlyDatabase, classData, redis)
             return {
                 success: true,
             }
         } else {
-            const hasRegional = getOneOrNull((await db.select<RegionalEntity[]>([`${REGIONAL_TABLE}.*`]).from(REGIONAL_TABLE).where(`${REGIONAL_TABLE}.name`, classData.regional)));
-            const hasCampus = getOneOrNull((await db.select<CampusEntity[]>([`${CAMPUS_TABLE}.*`]).from(CAMPUS_TABLE).where(`${CAMPUS_TABLE}.name`, classData.campus)));
-            const hasLocal = getOneOrNull((await db.select<LocalEntity[]>([`${LOCAL_TABLE}.*`]).from(LOCAL_TABLE).where(`${LOCAL_TABLE}.name`, classData.local)));
+            const hasRegional = getOneOrNull((await readonlyDatabase.select<RegionalEntity[]>([`${REGIONAL_TABLE}.*`]).from(REGIONAL_TABLE).where(`${REGIONAL_TABLE}.name`, classData.regional)));
+            const hasCampus = getOneOrNull((await readonlyDatabase.select<CampusEntity[]>([`${CAMPUS_TABLE}.*`]).from(CAMPUS_TABLE).where(`${CAMPUS_TABLE}.name`, classData.campus)));
+            const hasLocal = getOneOrNull((await readonlyDatabase.select<LocalEntity[]>([`${LOCAL_TABLE}.*`]).from(LOCAL_TABLE).where(`${LOCAL_TABLE}.name`, classData.local)));
             const fullClassDataDivergent = isFullClassDataDivergent(existingClass, classData)
             if (fullClassDataDivergent || (!hasRegional || !hasCampus || !hasLocal)) {
                 const {
@@ -103,7 +104,7 @@ export const processClassSync =
                 })(where => where.andWhere('id', classData.id));
             }
             await processTeacherData(db, classData)
-            await processMeetingData(db, classData)
+            await processMeetingData(db, readonlyDatabase, classData, redis)
             return {
                 success: true,
             }
@@ -186,13 +187,16 @@ async function processTeacherData(db: DatabaseService, classData: t.TypeOf<typeo
                 await insertTeacherClass(db)(teacherClassData);
             }
         }
+        await deleteTeacherClass(db)(qb => qb.whereNot("teacherId", teacher.id).andWhere("classId", classData.id))
     }
+    //  when we need more than 1 teacher, delete all others execept what we received
+    // await deleteTeacherClass(db)(qb => qb.whereNotIn("teacherId", teachers.map((item) => item.id)).andWhere("classId", classData.id))
 }
 
-async function processMeetingData(db: DatabaseService, classData: t.TypeOf<typeof ClassWithLocationsFullDataType>) {
+async function processMeetingData(db: DatabaseService, readonlyDatabase: DatabaseService, classData: t.TypeOf<typeof ClassWithLocationsFullDataType>, redis?: Redis) {
     const meetings = classData.meetings
     const classId = classData.id;
-    const savedMeetings = await selectMeeting(db).where("classId", "=", classId)
+    const savedMeetings = await selectMeeting(readonlyDatabase).where("classId", "=", classId)
     if (meetings && meetings.length > 0) {
         for (const meet of meetings) {
             const hasMeet = savedMeetings.find(item => item.attendTmpltNbr == meet.attendTmpltNbr);
@@ -234,26 +238,48 @@ async function processMeetingData(db: DatabaseService, classData: t.TypeOf<typeo
             enabled: false,
         })(qb => qb.where("classId", "=", classId))
     }
-
-}
-
-async function consolidateTeacherClasses(
-    db: DatabaseService,
-    userId: string,
-    teacherClasses: Pick<TeacherClassEntity, "classId" | "teacherId">[],
-) {
-    const existingClasses = await selectTeacherClass(db).andWhere('teacherId', userId);
-    const teacherClassesFinder: ConsolidateFinder<Pick<TeacherClassEntity, "classId" | "teacherId">> =
-        (teacherClasses, teacherClassToFind) => Boolean(teacherClasses.find(teacherClass => teacherClass.classId === teacherClassToFind.classId));
-    const consolidation = consolidateEntities(teacherClassesFinder)(existingClasses, teacherClasses);
-    const idsToDelete = consolidation.toDelete.map(enrollment => enrollment.classId);
-    const entitiesToInsert = consolidation.toInsert;
-
-    if (idsToDelete.length > 0) {
-        await deleteTeacherClass(db)(builder => builder.andWhere('teacherId', userId).whereIn('classId', idsToDelete));
+    if (redis && classData.status !== "c") {
+        const [result] = await readonlyDatabase.raw(`
+        select
+        m.*,
+        m.id as id,
+        lc.code as courseName,
+        teacher.name as teacherName,
+        teacher.id as ProfessorId
+    from
+        meeting m
+    inner join class c 
+            on
+        c.id = m.classId
+    inner join level_code lc
+            on
+        lc.id = c.levelCodeId
+    LEFT JOIN
+            (
+        SELECT
+            teacher_class.classId,
+            user.name,
+            user.id
+        FROM
+            teacher_class,
+            user
+        WHERE
+            teacher_class.teacherId = user.id
+        GROUP BY
+            teacher_class.classId,
+            user.name,
+            user.id
+            ORDER BY user.name
+            ) AS teacher
+            ON
+        teacher.classId = m.classId
+    where
+        c.id = ${classId}
+        order by m.date ASC
+    
+        `)
+        if (result) {
+            await redis.set("meetingClass-" + classId, JSON.stringify(result))
+        }
     }
-    if (entitiesToInsert.length > 0) {
-        await insertTeacherClass(db)(entitiesToInsert);
-    }
 }
-

@@ -12,6 +12,7 @@ import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
 import { WebhookErrorResponse, WebhookResponse } from "../types/webhook-events.types";
 import { processLevelCodeSync } from "../services/level-code-sync.service";
 import { processCarrerSync } from "../services/carrer-sync.service";
+import { Redis } from "ioredis";
 
 
 const UserDataType = t.type({
@@ -123,7 +124,7 @@ const WebhookEventType = t.union([
     ProcessCarrerSyncType
 ]);
 
-export const webhookEventsController = (db: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+export const webhookEventsController = (db: DatabaseService, readonlyDatabase: DatabaseService, redis?: Redis) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
 
     const loggerId = await insertLog(db)({
         body: JSON.stringify(request.body),
@@ -197,7 +198,7 @@ export const webhookEventsController = (db: DatabaseService) => async (request: 
                 break;
             }
             case 'CLASS_SYNC': {
-                response = await processClassSync(db, request.log)(body)
+                response = await processClassSync(db, readonlyDatabase, request.log, redis)(body)
                 break;
             }
             case 'STUDENT_UPDATE': {
