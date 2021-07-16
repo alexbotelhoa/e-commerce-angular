@@ -186,7 +186,7 @@ export const webhookEventsController = (db: DatabaseService, readonlyDatabase: D
 
         switch (body.type) {
             case 'STUDENT_CLASS_TRANSFER': {
-                response = await processStudentClassTransfer(db, request.log)(body);
+                response = await processStudentClassTransfer(db, request.log, redis)(body);
                 break;
             }
             case 'STUDENT_ENROLLMENT': {
