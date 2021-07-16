@@ -1,4 +1,5 @@
 import { FastifyLoggerInstance } from "fastify";
+import { Redis } from "ioredis";
 import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
 import { EnrollmentClassEntity } from "../../../entities/enrollment-class.entity";
 import { deleteActivityTimer, insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
@@ -12,7 +13,7 @@ import { DatabaseService } from "../../../shared/services/database.service";
 import { StudentClassTransferEvent, WebhookResponse } from "../types/webhook-events.types";
 
 export const processStudentClassTransfer =
-    (db: DatabaseService, log: FastifyLoggerInstance) => async (event: StudentClassTransferEvent): Promise<WebhookResponse> => {
+    (db: DatabaseService, log: FastifyLoggerInstance, redisClient?: Redis) => async (event: StudentClassTransferEvent): Promise<WebhookResponse> => {
         const data = event.data;
         const userId = data.userId;
         const newClassId = data.newClassId;
@@ -38,6 +39,9 @@ export const processStudentClassTransfer =
             };
         }
         await transferEnrollment(db, userId, existingLevelCode, data.oldClassId, newClassId, log, event);
+        if (redisClient) {
+            await redisClient.del("meeting-" + userId)
+        }
         return {
             success: true,
         };
