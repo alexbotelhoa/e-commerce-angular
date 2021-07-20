@@ -6,6 +6,7 @@ type LevelCode {
   createdAt: DateTime!
   levelId: ID
   level: Level
+  learningMore: String
   viewerTeacherClasses(
     filters: LevelCodeViewTeacherClassFilterInput
   ): [TeacherClass!]!

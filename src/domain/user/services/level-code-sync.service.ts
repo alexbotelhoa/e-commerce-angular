@@ -14,6 +14,7 @@ export const processLevelCodeSync =
                 code: event.data.code,
                 description: event.data.description,
                 levelId: null,
+                learningMore: event.data.learningMore,
             });
         }
         else{
@@ -21,6 +22,7 @@ export const processLevelCodeSync =
                 active: event.data.active,
                 code: event.data.code,
                 description: event.data.description,
+                learningMore: event.data.learningMore,
             })(qb => qb.andWhere('id', event.data.levelCodeId));
         }
         return {

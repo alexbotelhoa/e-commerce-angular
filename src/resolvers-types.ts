@@ -1190,6 +1190,7 @@ export type GQLLevelCode = {
   readonly createdAt: Scalars['DateTime'];
   readonly levelId: Maybe<Scalars['ID']>;
   readonly level: Maybe<GQLLevel>;
+  readonly learningMore: Maybe<Scalars['String']>;
   readonly viewerTeacherClasses: ReadonlyArray<GQLTeacherClass>;
   readonly viewerClasses: ReadonlyArray<GQLClass>;
 };
@@ -2150,6 +2151,7 @@ export type GQLLevelCodeResolvers<ContextType = GraphQLContext, ParentType exten
   createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   levelId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
   level: Resolver<Maybe<GQLResolversTypes['Level']>, ParentType, ContextType>;
+  learningMore: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   viewerTeacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType, RequireFields<GQLLevelCodeviewerTeacherClassesArgs, never>>;
   viewerClasses: Resolver<ReadonlyArray<GQLResolversTypes['Class']>, ParentType, ContextType, RequireFields<GQLLevelCodeviewerClassesArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

@@ -17,8 +17,9 @@ const levelCodeEntityResolvers: Pick<GQLLevelCodeResolvers, keyof LevelCodeEntit
     code: obj => obj.code,
     description: obj => obj.description,
     levelId: obj => obj.levelId
-        ? obj.levelId.toString(10)
-        : null,
+    ? obj.levelId.toString(10)
+    : null,
+    learningMore: obj => obj.learningMore,
 }
 
 const levelCodeLevelByIdSorter = createDataloaderSingleSort<LevelEntity, number, LevelEntity>('id');

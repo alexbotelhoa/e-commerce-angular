@@ -126,6 +126,5 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Count: countResolver,
     Carrer: carrerResolver,
     CarrerPermission: carrerPermissionResolver,
-
 };
 

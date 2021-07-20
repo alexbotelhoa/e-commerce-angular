@@ -5,6 +5,7 @@ export interface LevelCodeEntity {
     active: boolean;
     createdAt: string;
     levelId: number | null;
+    learningMore: string | null;
 }
 
 export const LEVEL_CODE_TABLE = 'level_code';
