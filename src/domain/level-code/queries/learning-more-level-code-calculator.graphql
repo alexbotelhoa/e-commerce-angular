@@ -1,0 +1,8 @@
+
+type Query {
+    learningMoreOption(filters: learningMoreOptionsInput!): String
+}
+
+input learningMoreOptionsInput {
+  levelId: ID
+}

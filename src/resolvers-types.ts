@@ -534,6 +534,7 @@ export type GQLQuery = {
   readonly getZoom: Maybe<Scalars['String']>;
   readonly icons: ReadonlyArray<GQLThemeIcon>;
   readonly interest: ReadonlyArray<GQLInterest>;
+  readonly learningMoreOption: Maybe<Scalars['String']>;
   readonly level: Maybe<GQLLevel>;
   readonly levelCodes: ReadonlyArray<GQLLevelCode>;
   readonly levelTheme: Maybe<GQLLevelTheme>;
@@ -636,6 +637,11 @@ export type GQLQuerygetZoomArgs = {
 
 export type GQLQueryinterestArgs = {
   filters: GQLInterestPaginationData;
+};
+
+
+export type GQLQuerylearningMoreOptionArgs = {
+  filters: GQLlearningMoreOptionsInput;
 };
 
 
@@ -888,6 +894,10 @@ export type GQLcountQueryInput = {
 export type GQLViewerEnrollmenLevelCodestFilterInput = {
   readonly last30days: Maybe<Scalars['Boolean']>;
   readonly userId: Maybe<Scalars['ID']>;
+};
+
+export type GQLlearningMoreOptionsInput = {
+  readonly levelId: Maybe<Scalars['ID']>;
 };
 
 export type GQLAuditInput = {
@@ -1494,6 +1504,7 @@ export type GQLResolversTypes = {
   ViewerChangeAvatarMutationResult: GQLResolversTypes['User'] | GQLResolversTypes['ViewerChangeAvatarMutationError'];
   countQueryInput: GQLcountQueryInput;
   ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
+  learningMoreOptionsInput: GQLlearningMoreOptionsInput;
   AuditInput: GQLAuditInput;
   LogsQueryInput: GQLLogsQueryInput;
   Cycle: ResolverTypeWrapper<CycleEntity>;
@@ -1611,6 +1622,7 @@ export type GQLResolversParentTypes = {
   ViewerChangeAvatarMutationResult: GQLResolversParentTypes['User'] | GQLResolversParentTypes['ViewerChangeAvatarMutationError'];
   countQueryInput: GQLcountQueryInput;
   ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
+  learningMoreOptionsInput: GQLlearningMoreOptionsInput;
   AuditInput: GQLAuditInput;
   LogsQueryInput: GQLLogsQueryInput;
   Cycle: CycleEntity;
@@ -1764,6 +1776,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   getZoom: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType, RequireFields<GQLQuerygetZoomArgs, 'classId'>>;
   icons: Resolver<ReadonlyArray<GQLResolversTypes['ThemeIcon']>, ParentType, ContextType>;
   interest: Resolver<ReadonlyArray<GQLResolversTypes['Interest']>, ParentType, ContextType, RequireFields<GQLQueryinterestArgs, 'filters'>>;
+  learningMoreOption: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType, RequireFields<GQLQuerylearningMoreOptionArgs, 'filters'>>;
   level: Resolver<Maybe<GQLResolversTypes['Level']>, ParentType, ContextType, RequireFields<GQLQuerylevelArgs, 'id'>>;
   levelCodes: Resolver<ReadonlyArray<GQLResolversTypes['LevelCode']>, ParentType, ContextType>;
   levelTheme: Resolver<Maybe<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQuerylevelThemeArgs, 'id'>>;
