@@ -1,6 +1,6 @@
 import { LevelCodeEntity } from "../../../src/entities/level-code.entity";
 
-export const levelCodesData: Omit<LevelCodeEntity, 'createdAt'>[] = [
+export const levelCodesData: Omit<LevelCodeEntity, 'createdAt' | "learningMore">[] = [
     {
         id: 100314,
         code: '1_ANO',
