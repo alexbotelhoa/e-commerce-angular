@@ -33,10 +33,10 @@ export const getLearningMoreLevelCodeCalculatorResolver: GQLQueryResolvers['lear
     }
 }
 
-function determinateLearningMorePriorityReduce(levelCode: LevelCodeEntity[]): "paginab2c" | "eyoung" | "spboost" | "podcast" | null {
-    const result: ReduceLearningMore = levelCode.reduce((acc, item) => {
+function determinateLearningMorePriorityReduce(levelCode: LevelCodeEntity[]): LevelCodeEntity {
+    const result = levelCode.reduce((acc, item) => {
         if (item.learningMore) {
-            acc[item.learningMore]  = item.learningMore;
+            acc[item.learningMore]  = item;
         }
         return acc;
     }, {paginab2c: null, eyoung: null, spboost: null, podcast: null} as any);

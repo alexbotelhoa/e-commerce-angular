@@ -534,7 +534,7 @@ export type GQLQuery = {
   readonly getZoom: Maybe<Scalars['String']>;
   readonly icons: ReadonlyArray<GQLThemeIcon>;
   readonly interest: ReadonlyArray<GQLInterest>;
-  readonly learningMoreOption: Maybe<Scalars['String']>;
+  readonly learningMoreOption: Maybe<GQLLevelCode>;
   readonly level: Maybe<GQLLevel>;
   readonly levelCodes: ReadonlyArray<GQLLevelCode>;
   readonly levelTheme: Maybe<GQLLevelTheme>;
@@ -1776,7 +1776,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   getZoom: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType, RequireFields<GQLQuerygetZoomArgs, 'classId'>>;
   icons: Resolver<ReadonlyArray<GQLResolversTypes['ThemeIcon']>, ParentType, ContextType>;
   interest: Resolver<ReadonlyArray<GQLResolversTypes['Interest']>, ParentType, ContextType, RequireFields<GQLQueryinterestArgs, 'filters'>>;
-  learningMoreOption: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType, RequireFields<GQLQuerylearningMoreOptionArgs, 'filters'>>;
+  learningMoreOption: Resolver<Maybe<GQLResolversTypes['LevelCode']>, ParentType, ContextType, RequireFields<GQLQuerylearningMoreOptionArgs, 'filters'>>;
   level: Resolver<Maybe<GQLResolversTypes['Level']>, ParentType, ContextType, RequireFields<GQLQuerylevelArgs, 'id'>>;
   levelCodes: Resolver<ReadonlyArray<GQLResolversTypes['LevelCode']>, ParentType, ContextType>;
   levelTheme: Resolver<Maybe<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQuerylevelThemeArgs, 'id'>>;

@@ -1,6 +1,6 @@
 
 type Query {
-    learningMoreOption(filters: learningMoreOptionsInput!): String
+    learningMoreOption(filters: learningMoreOptionsInput!): LevelCode
 }
 
 input learningMoreOptionsInput {
