@@ -1,26 +1,20 @@
 import { NgModule } from '@angular/core';
+import { AppComponent } from './app.component';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { HeaderComponent } from './shared/components/header/header.component';
-import { FooterComponent } from './shared/components/footer/footer.component';
-import { HomePageComponent } from './feature/pages/home-page/home-page.component';
-import { CategoriesPageComponent } from './feature/pages/categories-page/categories-page.component';
-import { ProductsPageComponent } from './feature/pages/products-page/products-page.component';
+import { GraphQLModule } from './graphql.module';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
-    FooterComponent,
-    HomePageComponent,
-    CategoriesPageComponent,
-    ProductsPageComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    SharedModule,
+    GraphQLModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

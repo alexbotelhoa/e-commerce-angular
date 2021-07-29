@@ -1,0 +1,38 @@
+schema: 
+  - http://localhost:3000/graphql
+generates:
+  ./src/app/shared/graphql/generated/types.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+  ./src/app/shared/graphql/generated/instrospection-result.ts:
+    plugins:
+      - fragment-matcher
+  ./src:
+    documents: 'src/app/**/*.graphql.ts'
+    preset: near-operation-file
+    presetConfig:
+      extension: .generated.ts
+      folder: __generated__
+      baseTypesPath: app/shared/graphql/generated/types
+    plugins:
+      - typescript-operations
+      - typescript-apollo-angular
+config:
+  scalars:
+    DateTime: string
+    JSON: '{ [key: string]: any }'
+  # documentMode: 'documentNode'
+  nonOptionalTypename: true
+  exportFragmentSpreadSubTypes: false
+  namingConvention:
+    typeNames: keep
+    enumValues: keep
+  immutableTypes: true
+  preResolveTypes: false
+  flattenGeneratedTypes: false
+  avoidOptionals:
+    inputValue: false
+    object: true
+    field: true
+
