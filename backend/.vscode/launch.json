@@ -1,0 +1,38 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "args": [
+                "${workspaceRoot}/src/index.ts"
+            ],
+            "outputCapture": "std",
+            "runtimeArgs": [
+                "-r",
+                "ts-node/register"
+            ],
+            "skipFiles": [
+                "<node_internals>/**",
+                "helpers.js",
+                "fsevents.js",
+                "loaders.js",
+                "async_hooks.js",
+                "sql-wasm.js"
+            ],
+            "env": {
+                "TS_NODE_IGNORE": "false"
+            }
+        },
+        {
+            "name": "Attach",
+            "type": "node",
+            "request": "attach",
+            "port": 4321
+        }
+    ]
+}
