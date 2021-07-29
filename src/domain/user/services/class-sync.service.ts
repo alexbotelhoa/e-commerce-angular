@@ -275,6 +275,7 @@ async function processMeetingData(db: DatabaseService, readonlyDatabase: Databas
         teacher.classId = m.classId
     where
         c.id = ${classId}
+        and m.enabled = true
         order by m.date ASC
     
         `)
