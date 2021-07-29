@@ -1,24 +1,35 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { HomePageComponent } from './features/pages/home-page/home-page.component';
-import { CategoriesPageComponent } from './features/pages/categories-page/categories-page.component';
-import { ProductsPageComponent } from './features/pages/products-page/products-page.component';
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    component: HomePageComponent
+    loadChildren: () =>
+      import('./modules/home/home.module').then((m) => m.HomeModule),
+  },
+  {
+    path: 'user',
+    loadChildren: () =>
+      import('./modules/user/user.module').then(
+        (m) => m.UserModule
+      ),
   },
   {
     path: 'category',
-    component: CategoriesPageComponent
+    loadChildren: () =>
+      import('./modules/category/category.module').then(
+        (m) => m.CategoryModule
+      ),
   },
   {
     path: 'product',
-    component: ProductsPageComponent
-  }
+    loadChildren: () =>
+      import('./modules/product/product.module').then(
+        (m) => m.ProductModule
+      ),
+  },
 ];
 
 @NgModule({
