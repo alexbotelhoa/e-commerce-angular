@@ -1,27 +1,40 @@
-# Backend
+# portal-server
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.1.1.
+Backend for Cultura Inglesa's activity portal
 
-## Development server
+## Stack and libs
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- NodeJS
+- Typescript
+- Knex
+- fastify
+- fastify-gql
 
-## Code scaffolding
+## Starting the project
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- copy file `.env.local` to `.env` to setup the local environment variables
+- npm install / yarn install
+- npm run watch
 
-## Build
+## GraphQL Codegen
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+This project uses GraphQL CodeGenerator to automatically generate types for all resolvers needed. The generated file is located in ./src/resolvers-types.ts and shouldn't be edited manually.
 
-## Running unit tests
+- `npm run codegen` to run the utility once
+- `npm run codegen:watch` to run the utility whenever config or files change
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Migrations
 
-## Running end-to-end tests
+Migrations are located in the /knex/migrations folder
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- Use `npm run migration:make {migrationName}` to create a new database migration
+- Use `npm run migrate` to run all migrations up to latest
+- Install the knex cli for more commands: `npm i -g knex`
 
-## Further help
+## Seeding the database
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Seeds are located in the /knex/seeds folder
+
+- Use `npm run seed:make {seedName}` to create a new database seed
+- Use `npm run seed:run` to seed the database with all seeds (**WARNING**: this will probably delete all existing data and replace with seed)
+- Install the knex cli for more commands: `npm i -g knex`

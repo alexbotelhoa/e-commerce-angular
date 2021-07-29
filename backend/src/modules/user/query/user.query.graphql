@@ -1,0 +1,7 @@
+type Query {
+    user(filters: userQueryInput!): User
+}
+
+input userQueryInput {
+  id: ID
+}
