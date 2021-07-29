@@ -1,0 +1,7 @@
+type Query {
+    category(filters: categoryQueryInput!): Category
+}
+
+input categoryQueryInput {
+  id: ID
+}
