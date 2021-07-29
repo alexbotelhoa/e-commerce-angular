@@ -1,0 +1,7 @@
+type Log {
+    id: ID!
+    body: String
+    key: String
+    status: String
+    createdAt: String
+}

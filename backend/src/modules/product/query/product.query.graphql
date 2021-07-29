@@ -1,0 +1,7 @@
+type Query {
+    product(filters: productQueryInput!): Product
+}
+
+input productQueryInput {
+  id: ID
+}
