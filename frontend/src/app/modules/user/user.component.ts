@@ -11,28 +11,6 @@ import { UserFieldsFragment } from './graphql/fragments/__generated__/user.fragm
   styleUrls: ['./user.component.css'],
 })
 export class UserComponent implements OnInit, OnDestroy {
-  userId: string = '4';
-  fetch!: UserFieldsFragment | null;
-  watch!: UserFieldsFragment | null;
-
-  arrayComponent = [
-    {
-      id: 1,
-      name: 'Teste Botelho 1',
-      email: 'E-mail Botelho 1',
-    },
-    {
-      id: 2,
-      name: 'Alex Botelho 2',
-      email: 'E-mail Botelho 2',
-    },
-    {
-      id: 3,
-      name: 'Alex Botelho 3',
-      email: 'E-mail Botelho 3',
-    },
-  ];
-
   userAll: ReadonlyArray<UserFieldsFragment> = [];
 
   destroy$ = new Subject();
