@@ -1,35 +1,6 @@
-<p>user works!</p>
-
-<div>
-    <h3>Fetch - Usuário com o ID {{userId}}</h3>
-    <div>Id: {{fetch?.id}}</div>
-    <div>Nome: {{fetch?.name}}</div>
-    <div>E-mail: {{fetch?.email}}</div>
-</div>
-<div>&nbsp;</div>
-<div>
-    <h3>Watch - Usuário com o ID {{userId}}</h3>
-    <div>Id: {{watch?.id}}</div>
-    <div>Nome: {{watch?.name}}</div>
-    <div>E-mail: {{watch?.email}}</div>
-</div>
-
-<div>&nbsp;</div>
-
-<h3>Array de Usuários no Component</h3>
-<div *ngFor="let item of arrayComponent">
-    <div>ID: {{item.id}}</div>
-    <div>Nome: {{item.name}}</div>
-    <div>E-mail: {{item.email}}</div>
-    <div>&nbsp;</div>
-</div>
-
-<div>&nbsp;</div>
-
 <h3>Array de Usuários do banco</h3>
 <div *ngFor="let item of userAll">
-    <div>ID: {{item.id}}</div>
-    <div>Nome: {{item.name}}</div>
-    <div>E-mail: {{item.email}}</div>
-    <div>&nbsp;</div>
+    <app-user-item [user]="item"></app-user-item>
 </div>
+<div>&nbsp;</div>
+
