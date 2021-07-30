@@ -5,10 +5,10 @@ export const categoryAllQueryResolver: GQLQueryResolvers['categoryAll'] = (obj, 
     return selectCategory(context.database);
 }
 
-export const categoryIdQueryResolver: GQLQueryResolvers['categoryId'] = (obj, params, context) => {
+export const categoryByIdQueryResolver: GQLQueryResolvers['categoryById'] = (obj, params, context) => {
     return getCategoryById(context.database)(params.id);
 }
 
-export const categoryQueryResolver: GQLQueryResolvers['category'] = (obj, { filters }: { filters: { id: any } }, context) => {
-    return getCategoryById(context.database)(filters.id);
+export const categoryByFieldQueryResolver: GQLQueryResolvers['categoryByField'] = (obj, { fields }: { fields: { id: any } }, context) => {
+    return getCategoryById(context.database)(fields.id);
 }

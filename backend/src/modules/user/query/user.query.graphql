@@ -1,7 +1,7 @@
 type Query {
   userAll: [User!]!
-  userId (id: ID!): User
-  user (filters: userQueryInput!): User
+  userById (id: ID!): User
+  userByField (fields: userQueryInput!): User
 }
 
 input userQueryInput {

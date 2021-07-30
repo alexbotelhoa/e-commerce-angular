@@ -17,9 +17,9 @@ export type Category = {
   readonly __typename: 'Category';
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
+  readonly products: Maybe<ReadonlyArray<Maybe<Product>>>;
   readonly createdAt: Maybe<Scalars['String']>;
   readonly updatedAt: Maybe<Scalars['String']>;
-  readonly products: Maybe<ReadonlyArray<Maybe<Product>>>;
 };
 
 export type CreateCategoryInput = {
@@ -107,8 +107,10 @@ export type Query = {
   readonly __typename: 'Query';
   readonly categoryAll: ReadonlyArray<Category>;
   readonly categoryId: Maybe<Category>;
+  readonly category: Maybe<Category>;
   readonly productAll: ReadonlyArray<Product>;
   readonly productId: Maybe<Product>;
+  readonly product: Maybe<Product>;
   readonly userAll: ReadonlyArray<User>;
   readonly userId: Maybe<User>;
   readonly user: Maybe<User>;
@@ -116,11 +118,21 @@ export type Query = {
 
 
 export type QuerycategoryIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QuerycategoryArgs = {
   filters: categoryQueryInput;
 };
 
 
 export type QueryproductIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryproductArgs = {
   filters: productQueryInput;
 };
 
