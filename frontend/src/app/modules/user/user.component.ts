@@ -1,8 +1,9 @@
+import { UserAllGQL } from './graphql/queries/__generated__/user-all.query.graphql.generated';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { UserGQL } from './../../shared/graphql/queries/__generated__/user.query.graphql.generated';
-import { UserFieldsFragment } from '../../../../src/app/shared/graphql/fragments/__generated__/user.fragment.graphql.generated';
+import { UserIdGQL } from './graphql/queries/__generated__/user-id.query.graphql.generated';
+import { UserFieldsFragment } from './graphql/fragments/__generated__/user.fragment.graphql.generated';
 
 @Component({
   selector: 'app-user',
@@ -32,17 +33,23 @@ export class UserComponent implements OnInit, OnDestroy {
     },
   ];
 
-  arrayBanco = [];
+  userAll: ReadonlyArray<UserFieldsFragment> = [];
 
   destroy$ = new Subject();
 
-  constructor(private userGQL: UserGQL) {}
+  constructor(private userIdGQL: UserIdGQL, private userAllGQL: UserAllGQL) {}
 
   ngOnInit(): void {
-    this.userGQL
+    this.fetchUserId();
+    this.watchUserId();
+    this.fetchUserAll();
+  }
+
+  fetchUserId() {
+    this.userIdGQL
       .fetch(
         {
-          filter: { id: this.userId },
+          id: this.userId,
         },
         {
           fetchPolicy: 'network-only',
@@ -50,14 +57,16 @@ export class UserComponent implements OnInit, OnDestroy {
       )
       .subscribe((result) => {
         if (result.data) {
-          this.fetch = result.data.user;
+          this.fetch = result.data.userId;
         }
       });
+  }
 
-    this.userGQL
+  watchUserId() {
+    this.userIdGQL
       .watch(
         {
-          filter: { id: this.userId },
+          id: this.userId,
         },
         {
           fetchPolicy: 'cache-and-network',
@@ -67,7 +76,19 @@ export class UserComponent implements OnInit, OnDestroy {
       .valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         if (result.data) {
-          this.watch = result.data.user;
+          this.watch = result.data.userId;
+        }
+      });
+  }
+
+  fetchUserAll() {
+    this.userAllGQL
+      .fetch(undefined, {
+        fetchPolicy: 'network-only',
+      })
+      .subscribe((result) => {
+        if (result.data) {
+          this.userAll = result.data.userAll;
         }
       });
   }

@@ -20,44 +20,6 @@ export type Scalars = {
   DateTime: any;
 };
 
-export type GQLCategory = {
-  readonly __typename?: 'Category';
-  readonly id: Scalars['ID'];
-  readonly name: Scalars['String'];
-  readonly createdAt: Maybe<Scalars['String']>;
-  readonly updatedAt: Maybe<Scalars['String']>;
-  readonly products: Maybe<ReadonlyArray<Maybe<GQLProduct>>>;
-};
-
-export type GQLLog = {
-  readonly __typename?: 'Log';
-  readonly id: Scalars['ID'];
-  readonly body: Maybe<Scalars['String']>;
-  readonly key: Maybe<Scalars['String']>;
-  readonly status: Maybe<Scalars['String']>;
-  readonly createdAt: Maybe<Scalars['String']>;
-};
-
-export type GQLProduct = {
-  readonly __typename?: 'Product';
-  readonly id: Scalars['ID'];
-  readonly name: Scalars['String'];
-  readonly price: Scalars['Int'];
-  readonly categoryId: Scalars['ID'];
-  readonly category: Maybe<ReadonlyArray<Maybe<GQLCategory>>>;
-  readonly createdAt: Maybe<Scalars['String']>;
-  readonly updatedAt: Maybe<Scalars['String']>;
-};
-
-export type GQLUser = {
-  readonly __typename?: 'User';
-  readonly id: Scalars['ID'];
-  readonly name: Scalars['String'];
-  readonly email: Scalars['String'];
-  readonly createdAt: Maybe<Scalars['String']>;
-  readonly updatedAt: Maybe<Scalars['String']>;
-};
-
 export type GQLMutation = {
   readonly __typename?: 'Mutation';
   readonly createCategory: GQLCategory;
@@ -111,31 +73,58 @@ export type GQLUpdateCategoryInput = {
 
 export type GQLQuery = {
   readonly __typename?: 'Query';
+  readonly category: Maybe<GQLCategory>;
   readonly categoryAll: ReadonlyArray<GQLCategory>;
   readonly categoryId: Maybe<GQLCategory>;
+  readonly product: Maybe<GQLProduct>;
   readonly productAll: ReadonlyArray<GQLProduct>;
   readonly productId: Maybe<GQLProduct>;
+  readonly user: Maybe<GQLUser>;
   readonly userAll: ReadonlyArray<GQLUser>;
   readonly userId: Maybe<GQLUser>;
 };
 
 
-export type GQLQuerycategoryIdArgs = {
+export type GQLQuerycategoryArgs = {
   filters: GQLcategoryQueryInput;
 };
 
 
-export type GQLQueryproductIdArgs = {
+export type GQLQuerycategoryIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type GQLQueryproductArgs = {
   filters: GQLproductQueryInput;
 };
 
 
-export type GQLQueryuserIdArgs = {
+export type GQLQueryproductIdArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type GQLQueryuserArgs = {
   filters: GQLuserQueryInput;
+};
+
+
+export type GQLQueryuserIdArgs = {
+  id: Scalars['ID'];
 };
 
 export type GQLcategoryQueryInput = {
   readonly id: Maybe<Scalars['ID']>;
+};
+
+export type GQLCategory = {
+  readonly __typename?: 'Category';
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['String'];
+  readonly createdAt: Maybe<Scalars['String']>;
+  readonly updatedAt: Maybe<Scalars['String']>;
+  readonly products: Maybe<ReadonlyArray<Maybe<GQLProduct>>>;
 };
 
 export type GQLCreateProductInput = {
@@ -155,6 +144,17 @@ export type GQLproductQueryInput = {
   readonly id: Maybe<Scalars['ID']>;
 };
 
+export type GQLProduct = {
+  readonly __typename?: 'Product';
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['String'];
+  readonly price: Scalars['Int'];
+  readonly categoryId: Scalars['ID'];
+  readonly category: Maybe<ReadonlyArray<Maybe<GQLCategory>>>;
+  readonly createdAt: Maybe<Scalars['String']>;
+  readonly updatedAt: Maybe<Scalars['String']>;
+};
+
 export type GQLCreateUserInput = {
   readonly name: Scalars['String'];
   readonly email: Scalars['String'];
@@ -168,6 +168,24 @@ export type GQLUpdateUserInput = {
 
 export type GQLuserQueryInput = {
   readonly id: Maybe<Scalars['ID']>;
+};
+
+export type GQLUser = {
+  readonly __typename?: 'User';
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['String'];
+  readonly email: Scalars['String'];
+  readonly createdAt: Maybe<Scalars['String']>;
+  readonly updatedAt: Maybe<Scalars['String']>;
+};
+
+export type GQLLog = {
+  readonly __typename?: 'Log';
+  readonly id: Scalars['ID'];
+  readonly body: Maybe<Scalars['String']>;
+  readonly key: Maybe<Scalars['String']>;
+  readonly status: Maybe<Scalars['String']>;
+  readonly createdAt: Maybe<Scalars['String']>;
 };
 
 
@@ -258,24 +276,24 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type GQLResolversTypes = {
-  Category: ResolverTypeWrapper<CategoryEntity>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
-  String: ResolverTypeWrapper<Scalars['String']>;
-  Log: ResolverTypeWrapper<GQLLog>;
-  Product: ResolverTypeWrapper<ProductEntity>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
-  User: ResolverTypeWrapper<UserEntity>;
   Mutation: ResolverTypeWrapper<{}>;
   CreateCategoryInput: GQLCreateCategoryInput;
+  String: ResolverTypeWrapper<Scalars['String']>;
   UpdateCategoryInput: GQLUpdateCategoryInput;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   Query: ResolverTypeWrapper<{}>;
   categoryQueryInput: GQLcategoryQueryInput;
+  Category: ResolverTypeWrapper<CategoryEntity>;
   CreateProductInput: GQLCreateProductInput;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   UpdateProductInput: GQLUpdateProductInput;
   productQueryInput: GQLproductQueryInput;
+  Product: ResolverTypeWrapper<ProductEntity>;
   CreateUserInput: GQLCreateUserInput;
   UpdateUserInput: GQLUpdateUserInput;
   userQueryInput: GQLuserQueryInput;
+  User: ResolverTypeWrapper<UserEntity>;
+  Log: ResolverTypeWrapper<GQLLog>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   GenericError: ResolverTypeWrapper<GenericError>;
   SimpleError: ResolverTypeWrapper<SimpleError>;
@@ -284,28 +302,49 @@ export type GQLResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type GQLResolversParentTypes = {
-  Category: CategoryEntity;
-  ID: Scalars['ID'];
-  String: Scalars['String'];
-  Log: GQLLog;
-  Product: ProductEntity;
-  Int: Scalars['Int'];
-  User: UserEntity;
   Mutation: {};
   CreateCategoryInput: GQLCreateCategoryInput;
+  String: Scalars['String'];
   UpdateCategoryInput: GQLUpdateCategoryInput;
+  ID: Scalars['ID'];
   Query: {};
   categoryQueryInput: GQLcategoryQueryInput;
+  Category: CategoryEntity;
   CreateProductInput: GQLCreateProductInput;
+  Int: Scalars['Int'];
   UpdateProductInput: GQLUpdateProductInput;
   productQueryInput: GQLproductQueryInput;
+  Product: ProductEntity;
   CreateUserInput: GQLCreateUserInput;
   UpdateUserInput: GQLUpdateUserInput;
   userQueryInput: GQLuserQueryInput;
+  User: UserEntity;
+  Log: GQLLog;
   DateTime: Scalars['DateTime'];
   GenericError: GenericError;
   SimpleError: SimpleError;
   Boolean: Scalars['Boolean'];
+};
+
+export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
+  createCategory: Resolver<GQLResolversTypes['Category'], ParentType, ContextType, RequireFields<GQLMutationcreateCategoryArgs, 'data'>>;
+  createProduct: Resolver<GQLResolversTypes['Product'], ParentType, ContextType, RequireFields<GQLMutationcreateProductArgs, 'data'>>;
+  createUser: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationcreateUserArgs, 'data'>>;
+  updateCategory: Resolver<GQLResolversTypes['Category'], ParentType, ContextType, RequireFields<GQLMutationupdateCategoryArgs, 'data'>>;
+  updateProduct: Resolver<GQLResolversTypes['Product'], ParentType, ContextType, RequireFields<GQLMutationupdateProductArgs, 'data'>>;
+  updateUser: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationupdateUserArgs, 'data'>>;
+};
+
+export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
+  category: Resolver<Maybe<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQuerycategoryArgs, 'filters'>>;
+  categoryAll: Resolver<ReadonlyArray<GQLResolversTypes['Category']>, ParentType, ContextType>;
+  categoryId: Resolver<Maybe<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQuerycategoryIdArgs, 'id'>>;
+  product: Resolver<Maybe<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryproductArgs, 'filters'>>;
+  productAll: Resolver<ReadonlyArray<GQLResolversTypes['Product']>, ParentType, ContextType>;
+  productId: Resolver<Maybe<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryproductIdArgs, 'id'>>;
+  user: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryuserArgs, 'filters'>>;
+  userAll: Resolver<ReadonlyArray<GQLResolversTypes['User']>, ParentType, ContextType>;
+  userId: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryuserIdArgs, 'id'>>;
 };
 
 export type GQLCategoryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Category'] = GQLResolversParentTypes['Category']> = {
@@ -314,15 +353,6 @@ export type GQLCategoryResolvers<ContextType = GraphQLContext, ParentType extend
   createdAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   updatedAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   products: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Product']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type GQLLogResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Log'] = GQLResolversParentTypes['Log']> = {
-  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
-  body: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
-  key: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
-  status: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
-  createdAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -346,22 +376,13 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
-  createCategory: Resolver<GQLResolversTypes['Category'], ParentType, ContextType, RequireFields<GQLMutationcreateCategoryArgs, 'data'>>;
-  createProduct: Resolver<GQLResolversTypes['Product'], ParentType, ContextType, RequireFields<GQLMutationcreateProductArgs, 'data'>>;
-  createUser: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationcreateUserArgs, 'data'>>;
-  updateCategory: Resolver<GQLResolversTypes['Category'], ParentType, ContextType, RequireFields<GQLMutationupdateCategoryArgs, 'data'>>;
-  updateProduct: Resolver<GQLResolversTypes['Product'], ParentType, ContextType, RequireFields<GQLMutationupdateProductArgs, 'data'>>;
-  updateUser: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationupdateUserArgs, 'data'>>;
-};
-
-export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
-  categoryAll: Resolver<ReadonlyArray<GQLResolversTypes['Category']>, ParentType, ContextType>;
-  categoryId: Resolver<Maybe<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQuerycategoryIdArgs, 'filters'>>;
-  productAll: Resolver<ReadonlyArray<GQLResolversTypes['Product']>, ParentType, ContextType>;
-  productId: Resolver<Maybe<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryproductIdArgs, 'filters'>>;
-  userAll: Resolver<ReadonlyArray<GQLResolversTypes['User']>, ParentType, ContextType>;
-  userId: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryuserIdArgs, 'filters'>>;
+export type GQLLogResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Log'] = GQLResolversParentTypes['Log']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  body: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  key: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  status: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  createdAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export interface GQLDateTimeScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['DateTime'], any> {
@@ -379,12 +400,12 @@ export type GQLSimpleErrorResolvers<ContextType = GraphQLContext, ParentType ext
 };
 
 export type GQLResolvers<ContextType = GraphQLContext> = {
-  Category: GQLCategoryResolvers<ContextType>;
-  Log: GQLLogResolvers<ContextType>;
-  Product: GQLProductResolvers<ContextType>;
-  User: GQLUserResolvers<ContextType>;
   Mutation: GQLMutationResolvers<ContextType>;
   Query: GQLQueryResolvers<ContextType>;
+  Category: GQLCategoryResolvers<ContextType>;
+  Product: GQLProductResolvers<ContextType>;
+  User: GQLUserResolvers<ContextType>;
+  Log: GQLLogResolvers<ContextType>;
   DateTime: GraphQLScalarType;
   GenericError: GQLGenericErrorResolvers<ContextType>;
   SimpleError: GQLSimpleErrorResolvers<ContextType>;
