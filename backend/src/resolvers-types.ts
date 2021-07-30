@@ -111,23 +111,26 @@ export type GQLUpdateCategoryInput = {
 
 export type GQLQuery = {
   readonly __typename?: 'Query';
-  readonly category: Maybe<GQLCategory>;
-  readonly product: Maybe<GQLProduct>;
-  readonly user: Maybe<GQLUser>;
+  readonly categoryAll: ReadonlyArray<GQLCategory>;
+  readonly categoryId: Maybe<GQLCategory>;
+  readonly productAll: ReadonlyArray<GQLProduct>;
+  readonly productId: Maybe<GQLProduct>;
+  readonly userAll: ReadonlyArray<GQLUser>;
+  readonly userId: Maybe<GQLUser>;
 };
 
 
-export type GQLQuerycategoryArgs = {
+export type GQLQuerycategoryIdArgs = {
   filters: GQLcategoryQueryInput;
 };
 
 
-export type GQLQueryproductArgs = {
+export type GQLQueryproductIdArgs = {
   filters: GQLproductQueryInput;
 };
 
 
-export type GQLQueryuserArgs = {
+export type GQLQueryuserIdArgs = {
   filters: GQLuserQueryInput;
 };
 
@@ -353,9 +356,12 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
 };
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
-  category: Resolver<Maybe<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQuerycategoryArgs, 'filters'>>;
-  product: Resolver<Maybe<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryproductArgs, 'filters'>>;
-  user: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryuserArgs, 'filters'>>;
+  categoryAll: Resolver<ReadonlyArray<GQLResolversTypes['Category']>, ParentType, ContextType>;
+  categoryId: Resolver<Maybe<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQuerycategoryIdArgs, 'filters'>>;
+  productAll: Resolver<ReadonlyArray<GQLResolversTypes['Product']>, ParentType, ContextType>;
+  productId: Resolver<Maybe<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryproductIdArgs, 'filters'>>;
+  userAll: Resolver<ReadonlyArray<GQLResolversTypes['User']>, ParentType, ContextType>;
+  userId: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryuserIdArgs, 'filters'>>;
 };
 
 export interface GQLDateTimeScalarConfig extends GraphQLScalarTypeConfig<GQLResolversTypes['DateTime'], any> {
