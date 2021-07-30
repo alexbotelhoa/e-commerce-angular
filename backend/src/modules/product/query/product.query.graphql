@@ -1,5 +1,6 @@
 type Query {
-    product(filters: productQueryInput!): Product
+  productAll: [Product!]!
+  productId (filters: productQueryInput!): Product
 }
 
 input productQueryInput {
