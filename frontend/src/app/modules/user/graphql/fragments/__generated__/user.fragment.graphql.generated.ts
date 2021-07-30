@@ -1,4 +1,4 @@
-import * as Types from '../../generated/types';
+import * as Types from '../../../../../shared/graphql/generated/types';
 
 import gql from 'graphql-tag';
 export type UserFieldsFragment = (

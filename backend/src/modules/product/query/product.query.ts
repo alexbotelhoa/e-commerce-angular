@@ -5,6 +5,10 @@ export const productAllQueryResolver: GQLQueryResolvers['productAll'] = (obj, pa
     return selectProduct(context.database);
 }
 
-export const productIdQueryResolver: GQLQueryResolvers['productId'] = (obj, { filters }: { filters: { id: any }}, context) => {
+export const productIdQueryResolver: GQLQueryResolvers['productId'] = (obj, params, context) => {
+    return getProductById(context.database)(params.id);
+}
+
+export const productQueryResolver: GQLQueryResolvers['product'] = (obj, { filters }: { filters: { id: any }}, context) => {
     return getProductById(context.database)(filters.id);
 }
