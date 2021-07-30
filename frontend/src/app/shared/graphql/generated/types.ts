@@ -105,19 +105,28 @@ export type Product = {
 
 export type Query = {
   readonly __typename: 'Query';
-  readonly category: Maybe<Category>;
-  readonly product: Maybe<Product>;
+  readonly categoryAll: ReadonlyArray<Category>;
+  readonly categoryId: Maybe<Category>;
+  readonly productAll: ReadonlyArray<Product>;
+  readonly productId: Maybe<Product>;
+  readonly userAll: ReadonlyArray<User>;
+  readonly userId: Maybe<User>;
   readonly user: Maybe<User>;
 };
 
 
-export type QuerycategoryArgs = {
+export type QuerycategoryIdArgs = {
   filters: categoryQueryInput;
 };
 
 
-export type QueryproductArgs = {
+export type QueryproductIdArgs = {
   filters: productQueryInput;
+};
+
+
+export type QueryuserIdArgs = {
+  id: Scalars['ID'];
 };
 
 

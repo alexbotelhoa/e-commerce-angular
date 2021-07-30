@@ -1,10 +1,10 @@
 import {NgModule} from '@angular/core';
 import { ApolloClientOptions } from 'apollo-client';
 import {ApolloModule, APOLLO_OPTIONS} from 'apollo-angular';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../environments/environment';
 import {HttpLinkModule, HttpLink} from 'apollo-angular-link-http';
+import introspectionResult from './generated/instrospection-result';
 import {InMemoryCache, IntrospectionFragmentMatcher} from 'apollo-cache-inmemory';
-import introspectionResult from './shared/graphql/generated/instrospection-result';
 
 const uri = environment.graphqlUrl;
 

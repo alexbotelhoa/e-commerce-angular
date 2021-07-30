@@ -1,26 +1,24 @@
-import * as Types from '../../generated/types';
+import * as Types from '../../../../../shared/graphql/generated/types';
 
 import { UserFieldsFragment } from '../../fragments/__generated__/user.fragment.graphql.generated';
 import gql from 'graphql-tag';
 import { UserFieldsFragmentDoc } from '../../fragments/__generated__/user.fragment.graphql.generated';
 import { Injectable } from '@angular/core';
 import * as Apollo from 'apollo-angular';
-export type UserQueryVariables = Types.Exact<{
-  filter: Types.userQueryInput;
-}>;
+export type UserAllQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type UserQuery = (
+export type UserAllQuery = (
   { readonly __typename: 'Query' }
-  & { readonly user: Types.Maybe<(
+  & { readonly userAll: ReadonlyArray<(
     { readonly __typename: 'User' }
     & UserFieldsFragment
   )> }
 );
 
-export const UserDocument = gql`
-    query User($filter: userQueryInput!) {
-  user(filters: $filter) {
+export const UserAllDocument = gql`
+    query UserAll {
+  userAll {
     ...UserFields
   }
 }
@@ -29,7 +27,7 @@ export const UserDocument = gql`
   @Injectable({
     providedIn: 'root'
   })
-  export class UserGQL extends Apollo.Query<UserQuery, UserQueryVariables> {
-    document = UserDocument;
+  export class UserAllGQL extends Apollo.Query<UserAllQuery, UserAllQueryVariables> {
+    document = UserAllDocument;
     
   }
