@@ -1,28 +1,28 @@
 import { GQLResolvers } from "../../resolvers-types";
 import {
   userAllQueryResolver,
-  userIdQueryResolver,
-  userQueryResolver,
+  userByIdQueryResolver,
+  userByFieldQueryResolver,
 } from "../../modules/user/query/user.query";
 import {
-  productAllQueryResolver,
-  productIdQueryResolver,
-  productQueryResolver,
-} from "./../../modules/product/query/product.query";
-import {
   categoryAllQueryResolver,
-  categoryIdQueryResolver,
-  categoryQueryResolver,
+  categoryByIdQueryResolver,
+  categoryByFieldQueryResolver,
 } from "./../../modules/category/query/category.query";
+import {
+  productAllQueryResolver,
+  productByIdQueryResolver,
+  productByFieldQueryResolver,
+} from "./../../modules/product/query/product.query";
 
 export const queryResolvers: GQLResolvers["Query"] = {
   userAll: userAllQueryResolver,
-  userId: userIdQueryResolver,
-  user: userQueryResolver,
+  userById: userByIdQueryResolver,
+  userByField: userByFieldQueryResolver,
   categoryAll: categoryAllQueryResolver,
-  categoryId: categoryIdQueryResolver,
-  category: categoryQueryResolver,
+  categoryById: categoryByIdQueryResolver,
+  categoryByField: categoryByFieldQueryResolver,
   productAll: productAllQueryResolver,
-  productId: productIdQueryResolver,
-  product: productQueryResolver,
+  productById: productByIdQueryResolver,
+  productByField: productByFieldQueryResolver,
 };

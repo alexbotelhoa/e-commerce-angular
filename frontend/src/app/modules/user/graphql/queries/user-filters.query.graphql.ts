@@ -1,11 +1,11 @@
 import gql from 'graphql-tag';
 import { UserFieldsFragment } from '../fragments/user.fragment.graphql';
 
-export const UserByIdQuery = gql`
+export const UserFiltersQuery = gql`
   ${UserFieldsFragment}
 
-  query UserById($id: ID!) {
-    userById(id: $id) {
+  query UserByField($filter: userQueryInput!) {
+    userByField(fields: $filter) {
       ...UserFields
     }
   }

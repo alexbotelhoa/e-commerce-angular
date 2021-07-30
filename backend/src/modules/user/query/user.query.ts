@@ -5,10 +5,10 @@ export const userAllQueryResolver: GQLQueryResolvers['userAll'] = (obj, params, 
     return selectUser(context.database);
 }
 
-export const userIdQueryResolver: GQLQueryResolvers['userId'] = (obj, params, context) => {
+export const userByIdQueryResolver: GQLQueryResolvers['userById'] = (obj, params, context) => {
     return getUserById(context.database)(params.id);
 }
 
-export const userQueryResolver: GQLQueryResolvers['user'] = (obj, { filters }: { filters: { id: any } }, context) => {
-    return getUserById(context.database)(filters.id);
+export const userByFieldQueryResolver: GQLQueryResolvers['userByField'] = (obj, { fields }: { fields: { id: any } }, context) => {
+    return getUserById(context.database)(fields.id);
 }
