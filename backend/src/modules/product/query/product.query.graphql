@@ -1,7 +1,7 @@
 type Query {
   productAll: [Product!]!
-  productId (id: ID!): Product
-  product (filters: productQueryInput!): Product
+  productById (id: ID!): Product
+  productByField (fields: productQueryInput!): Product
 }
 
 input productQueryInput {

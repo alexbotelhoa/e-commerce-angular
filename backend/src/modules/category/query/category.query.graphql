@@ -1,7 +1,7 @@
 type Query {
   categoryAll: [Category!]!
-  categoryId (id: ID!): Category
-  category (filters: categoryQueryInput!): Category
+  categoryById (id: ID!): Category
+  categoryByField (fields: categoryQueryInput!): Category
 }
 
 input categoryQueryInput {
