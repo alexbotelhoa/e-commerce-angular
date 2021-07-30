@@ -1,8 +1,8 @@
-import { UserAllGQL } from './graphql/queries/__generated__/user-all.query.graphql.generated';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { UserIdGQL } from './graphql/queries/__generated__/user-id.query.graphql.generated';
+import { UserAllGQL } from './graphql/queries/__generated__/user-all.query.graphql.generated';
 import { UserFieldsFragment } from './graphql/fragments/__generated__/user.fragment.graphql.generated';
 
 @Component({
@@ -40,52 +40,32 @@ export class UserComponent implements OnInit, OnDestroy {
   constructor(private userIdGQL: UserIdGQL, private userAllGQL: UserAllGQL) {}
 
   ngOnInit(): void {
-    this.fetchUserId();
-    this.watchUserId();
     this.fetchUserAll();
   }
 
-  fetchUserId() {
-    this.userIdGQL
-      .fetch(
-        {
-          id: this.userId,
-        },
-        {
-          fetchPolicy: 'network-only',
-        }
-      )
-      .subscribe((result) => {
-        if (result.data) {
-          this.fetch = result.data.userId;
-        }
-      });
-  }
-
-  watchUserId() {
-    this.userIdGQL
-      .watch(
-        {
-          id: this.userId,
-        },
-        {
-          fetchPolicy: 'cache-and-network',
-          notifyOnNetworkStatusChange: true,
-        }
-      )
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        if (result.data) {
-          this.watch = result.data.userId;
-        }
-      });
-  }
+  // watchUserId() {
+  //   this.userIdGQL
+  //     .watch({
+  //       id: this.userId,
+  //     },
+  //     {
+  //       fetchPolicy: 'cache-and-network',
+  //       notifyOnNetworkStatusChange: true,
+  //     })
+  //     .valueChanges.pipe(takeUntil(this.destroy$))
+  //     .subscribe((result) => {
+  //       if (result.data) {
+  //         this.watch = result.data.userId;
+  //       }
+  //     });
+  // }
 
   fetchUserAll() {
     this.userAllGQL
       .fetch(undefined, {
         fetchPolicy: 'network-only',
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         if (result.data) {
           this.userAll = result.data.userAll;
