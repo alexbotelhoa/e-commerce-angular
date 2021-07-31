@@ -1,6 +1,0 @@
-type Log {
-    id: ID!
-    body: String!
-    key: String!
-    createdAt: String!
-}
