@@ -9,7 +9,8 @@ import { UserFieldsFragment } from '../../graphql/fragments/__generated__/user.f
 })
 export class UserItemComponent implements OnInit {
   @Input()
-  user: UserFieldsFragment | null = null;
+  // userAll: UserFieldsFragment | null = null;
+  userAll: ReadonlyArray<UserFieldsFragment> = [];
 
   constructor() {}
 
