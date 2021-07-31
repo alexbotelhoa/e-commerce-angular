@@ -1,3 +1,7 @@
+.table-user-list {
+    width: 70vw;
+}
+
 .user {
     display: flex;    
     background-color: burlywood;
