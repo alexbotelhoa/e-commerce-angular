@@ -1,35 +1,25 @@
-<!-- <tr> -->
-    <!-- <td>{{user?.id}}</td>
-    <td>{{user?.name}}</td>
-    <td>{{user?.email}}</td> -->
-<!-- </tr> -->
-
 <h6>Lista de Usuários</h6>
-<table class="table-user-list">
+<table class="table table-striped table-bordered table-hover">
     <thead>
         <tr>
-            <th>ID</th>
+            <th class="text-center">ID</th>
             <th>Nome</th>
             <th>E-mail</th>
+            <th class="container-buttons">
+                <app-button-add></app-button-add>
+            </th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let item of userAll">
-            <td>{{item.id}}</td>
+            <td class="text-center">{{item.id}}</td>
             <td>{{item.name}}</td>
             <td>{{item.email}}</td>
-            <td class="text-center" style="width: 200px">
-                <a [routerLink]="['/user/edit/' + item.id]"
-                    title="Editar" alt="Editar"
-                    class="btn btn-primary btn-sm">
-                    <span class="glyphicon glyphicon-pencil" 
-                    aria-hidden="true"></span> Editar
-                </a>
-                <a href="#" title="Remover" alt="Remover" 
-                    class="btn btn-danger btn-sm">
-                    <span class="glyphicon glyphicon-remove" 
-                    aria-hidden="true"></span> Remover
-                </a>
+            <td class="container-buttons">
+                <div class="buttons">
+                    <app-button-edit [itemId]="item.id"></app-button-edit>
+                    <app-button-delete (click)="buttonDelete($event, item)"></app-button-delete>
+                </div>
             </td>
         </tr>
     </tbody>

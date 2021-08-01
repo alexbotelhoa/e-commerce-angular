@@ -1,8 +1,13 @@
-.table-user-list {
-    width: 70vw;
+.table {
+    width: 80vw;
 }
 
-.user {
-    display: flex;    
-    background-color: burlywood;
+.container-buttons {
+    text-align: center;
+    max-width: 100px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-evenly;
 } 

@@ -15,7 +15,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject();
 
-  constructor(private userIdGQL: UserIdGQL, private userAllGQL: UserAllGQL) {}
+  constructor(private userAllGQL: UserAllGQL) {}
 
   ngOnInit(): void {
     this.fetchUserAll();
