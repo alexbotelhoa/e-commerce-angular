@@ -1,1 +1,7 @@
-<p>product works!</p>
+<app-product-item 
+    *ngIf="productAll.length > 0 else empty"
+    [productAll]="productAll"></app-product-item>
+
+<ng-template #empty>
+    <p>Nenhum Produto cadastrado.</p>
+</ng-template>

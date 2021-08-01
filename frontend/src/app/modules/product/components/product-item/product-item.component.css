@@ -1,0 +1,13 @@
+.table {
+    width: 80vw;
+}
+
+.container-buttons {
+    text-align: center;
+    max-width: 100px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-evenly;
+} 
