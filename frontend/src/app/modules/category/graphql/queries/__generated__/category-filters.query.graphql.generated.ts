@@ -5,22 +5,22 @@ import gql from 'graphql-tag';
 import { CategoryFieldsFragmentDoc } from '../../fragments/__generated__/category.fragment.graphql.generated';
 import { Injectable } from '@angular/core';
 import * as Apollo from 'apollo-angular';
-export type CategoryByIdQueryVariables = Types.Exact<{
-  id: Types.Scalars['ID'];
+export type CategoryByFieldQueryVariables = Types.Exact<{
+  filter: Types.categoryQueryInput;
 }>;
 
 
-export type CategoryByIdQuery = (
+export type CategoryByFieldQuery = (
   { readonly __typename: 'Query' }
-  & { readonly categoryById: Types.Maybe<(
+  & { readonly categoryByField: Types.Maybe<(
     { readonly __typename: 'Category' }
     & CategoryFieldsFragment
   )> }
 );
 
-export const CategoryByIdDocument = gql`
-    query CategoryById($id: ID!) {
-  categoryById(id: $id) {
+export const CategoryByFieldDocument = gql`
+    query CategoryByField($filter: categoryQueryInput!) {
+  categoryByField(fields: $filter) {
     ...CategoryFields
   }
 }
@@ -29,7 +29,7 @@ export const CategoryByIdDocument = gql`
   @Injectable({
     providedIn: 'root'
   })
-  export class CategoryByIdGQL extends Apollo.Query<CategoryByIdQuery, CategoryByIdQueryVariables> {
-    document = CategoryByIdDocument;
+  export class CategoryByFieldGQL extends Apollo.Query<CategoryByFieldQuery, CategoryByFieldQueryVariables> {
+    document = CategoryByFieldDocument;
     
   }

@@ -1,10 +1,20 @@
 .table {
-    width: 80vw;
+    width: 60vw;
 }
 
-.container-buttons {
+.column-id {
+    width: 80px;
     text-align: center;
-    max-width: 100px;
+}
+
+.column-price {
+    width: 80px;
+    text-align: center;
+}
+
+.column-buttons {
+    width: 300px;
+    text-align: center;
 }
 
 .buttons {

@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { UserIdGQL } from './graphql/queries/__generated__/user-id.query.graphql.generated';
 import { UserAllGQL } from './graphql/queries/__generated__/user-all.query.graphql.generated';
 import { UserFieldsFragment } from './graphql/fragments/__generated__/user.fragment.graphql.generated';
 

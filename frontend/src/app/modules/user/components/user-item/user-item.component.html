@@ -2,20 +2,20 @@
 <table class="table table-striped table-bordered table-hover">
     <thead>
         <tr>
-            <th class="text-center">ID</th>
+            <th class="column-id">ID</th>
             <th>Nome</th>
             <th>E-mail</th>
-            <th class="container-buttons">
+            <th class="column-buttons">
                 <app-button-add></app-button-add>
             </th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let item of userAll">
-            <td class="text-center">{{item.id}}</td>
+            <td class="column-id">{{item.id}}</td>
             <td>{{item.name}}</td>
             <td>{{item.email}}</td>
-            <td class="container-buttons">
+            <td class="column-buttons">
                 <div class="buttons">
                     <app-button-edit [itemId]="item.id"></app-button-edit>
                     <app-button-delete (click)="buttonDelete($event, item)"></app-button-delete>

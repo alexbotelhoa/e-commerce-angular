@@ -5,22 +5,22 @@ import gql from 'graphql-tag';
 import { ProductFieldsFragmentDoc } from '../../fragments/__generated__/product.fragment.graphql.generated';
 import { Injectable } from '@angular/core';
 import * as Apollo from 'apollo-angular';
-export type ProductByIdQueryVariables = Types.Exact<{
-  id: Types.Scalars['ID'];
+export type ProductByFieldQueryVariables = Types.Exact<{
+  filter: Types.productQueryInput;
 }>;
 
 
-export type ProductByIdQuery = (
+export type ProductByFieldQuery = (
   { readonly __typename: 'Query' }
-  & { readonly productById: Types.Maybe<(
+  & { readonly productByField: Types.Maybe<(
     { readonly __typename: 'Product' }
     & ProductFieldsFragment
   )> }
 );
 
-export const ProductByIdDocument = gql`
-    query ProductById($id: ID!) {
-  productById(id: $id) {
+export const ProductByFieldDocument = gql`
+    query ProductByField($filter: productQueryInput!) {
+  productByField(fields: $filter) {
     ...ProductFields
   }
 }
@@ -29,7 +29,7 @@ export const ProductByIdDocument = gql`
   @Injectable({
     providedIn: 'root'
   })
-  export class ProductByIdGQL extends Apollo.Query<ProductByIdQuery, ProductByIdQueryVariables> {
-    document = ProductByIdDocument;
+  export class ProductByFieldGQL extends Apollo.Query<ProductByFieldQuery, ProductByFieldQueryVariables> {
+    document = ProductByFieldDocument;
     
   }

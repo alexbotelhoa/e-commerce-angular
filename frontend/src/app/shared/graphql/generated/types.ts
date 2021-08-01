@@ -106,44 +106,44 @@ export type Product = {
 export type Query = {
   readonly __typename: 'Query';
   readonly categoryAll: ReadonlyArray<Category>;
-  readonly categoryId: Maybe<Category>;
-  readonly category: Maybe<Category>;
+  readonly categoryById: Maybe<Category>;
+  readonly categoryByField: Maybe<Category>;
   readonly productAll: ReadonlyArray<Product>;
-  readonly productId: Maybe<Product>;
-  readonly product: Maybe<Product>;
+  readonly productById: Maybe<Product>;
+  readonly productByField: Maybe<Product>;
   readonly userAll: ReadonlyArray<User>;
-  readonly userId: Maybe<User>;
-  readonly user: Maybe<User>;
+  readonly userById: Maybe<User>;
+  readonly userByField: Maybe<User>;
 };
 
 
-export type QuerycategoryIdArgs = {
+export type QuerycategoryByIdArgs = {
   id: Scalars['ID'];
 };
 
 
-export type QuerycategoryArgs = {
-  filters: categoryQueryInput;
+export type QuerycategoryByFieldArgs = {
+  fields: categoryQueryInput;
 };
 
 
-export type QueryproductIdArgs = {
+export type QueryproductByIdArgs = {
   id: Scalars['ID'];
 };
 
 
-export type QueryproductArgs = {
-  filters: productQueryInput;
+export type QueryproductByFieldArgs = {
+  fields: productQueryInput;
 };
 
 
-export type QueryuserIdArgs = {
+export type QueryuserByIdArgs = {
   id: Scalars['ID'];
 };
 
 
-export type QueryuserArgs = {
-  filters: userQueryInput;
+export type QueryuserByFieldArgs = {
+  fields: userQueryInput;
 };
 
 export type SimpleError = GenericError & {

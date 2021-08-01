@@ -5,7 +5,7 @@ export const ProductByIdQuery = gql`
   ${ProductFieldsFragment}
 
   query ProductById($id: ID!) {
-    ProductById(id: $id) {
+    productById(id: $id) {
       ...ProductFields
     }
   }
