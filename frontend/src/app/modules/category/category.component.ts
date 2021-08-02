@@ -1,7 +1,5 @@
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CategoryAllGQL } from './graphql/queries/__generated__/category-all.query.graphql.generated';
+import { CategoryService } from './category.service';
+import { Component, OnInit } from '@angular/core';
 import { CategoryFieldsFragment } from './graphql/fragments/__generated__/category.fragment.graphql.generated';
 
 @Component({
@@ -9,32 +7,18 @@ import { CategoryFieldsFragment } from './graphql/fragments/__generated__/catego
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.css'],
 })
-export class CategoryComponent implements OnInit, OnDestroy {
+export class CategoryComponent implements OnInit {
   categoryAll: ReadonlyArray<CategoryFieldsFragment> = [];
+  categoryAll$ = this.categoryService.categoryAll.asObservable();
 
-  destroy$ = new Subject();
-
-  constructor(private categoryAllGQL: CategoryAllGQL) {}
+  constructor(private categoryService: CategoryService) {}
 
   ngOnInit(): void {
-    this.fetchCategoryAll();
+    this.getCategoryAll();
+    this.categoryAll$.subscribe((res) => (this.categoryAll = res));
   }
 
-  fetchCategoryAll() {
-    this.categoryAllGQL
-      .fetch(undefined, {
-        fetchPolicy: 'network-only',
-      })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        if (result.data) {
-          this.categoryAll = result.data.categoryAll;
-        }
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  getCategoryAll() {
+    this.categoryService.getCategoryAll();
   }
 }

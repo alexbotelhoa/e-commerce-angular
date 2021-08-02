@@ -1,7 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { UserAllGQL } from './graphql/queries/__generated__/user-all.query.graphql.generated';
+import { UserService } from './user.service';
+import { Component, OnInit } from '@angular/core';
 import { UserFieldsFragment } from './graphql/fragments/__generated__/user.fragment.graphql.generated';
 
 @Component({
@@ -9,15 +7,15 @@ import { UserFieldsFragment } from './graphql/fragments/__generated__/user.fragm
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css'],
 })
-export class UserComponent implements OnInit, OnDestroy {
+export class UserComponent implements OnInit {
   userAll: ReadonlyArray<UserFieldsFragment> = [];
+  userAll$ = this.userService.userAll.asObservable();
 
-  destroy$ = new Subject();
-
-  constructor(private userAllGQL: UserAllGQL) {}
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    this.fetchUserAll();
+    this.getUserAll();
+    this.userAll$.subscribe((res) => (this.userAll = res));
   }
 
   // watchUserId() {
@@ -37,21 +35,20 @@ export class UserComponent implements OnInit, OnDestroy {
   //     });
   // }
 
-  fetchUserAll() {
-    this.userAllGQL
-      .fetch(undefined, {
-        fetchPolicy: 'network-only',
-      })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        if (result.data) {
-          this.userAll = result.data.userAll;
-        }
-      });
-  }
+  // fetchUserAll() {
+  //   this.userAllGQL
+  //     .fetch(undefined, {
+  //       fetchPolicy: 'network-only',
+  //     })
+  //     .pipe(takeUntil(this.destroy$))
+  //     .subscribe((result) => {
+  //       if (result.data) {
+  //         this.userAll = result.data.userAll;
+  //       }
+  //     });
+  // }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  getUserAll() {
+    this.userService.getUserAll();
   }
 }
