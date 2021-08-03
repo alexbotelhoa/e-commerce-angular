@@ -7,7 +7,9 @@ const routes: Routes = [
     path: '',
     pathMatch: 'full',
     loadChildren: () =>
-      import('./modules/home/home.module').then((m) => m.HomeModule),
+      import('./modules/home/home.module').then(
+        (m) => m.HomeModule
+      ),
   },
   {
     path: 'user',
