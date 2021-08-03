@@ -1,9 +1,9 @@
 type Query {
   categoryAll: [Category!]!
   categoryById (id: ID!): Category
-  categoryByField (fields: categoryQueryInput!): Category
+  categoryByField (fields: categoryQueryInput!): [Category!]!
 }
 
 input categoryQueryInput {
-  id: ID
+  name: String
 }

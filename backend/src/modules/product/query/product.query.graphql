@@ -1,9 +1,10 @@
 type Query {
   productAll: [Product!]!
   productById (id: ID!): Product
-  productByField (fields: productQueryInput!): Product
+  productByField (fields: productQueryInput!): [Product!]!
 }
 
 input productQueryInput {
-  id: ID
+  name: String
+  price: Int
 }

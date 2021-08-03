@@ -1,9 +1,10 @@
 type Query {
   userAll: [User!]!
   userById (id: ID!): User
-  userByField (fields: userQueryInput!): User
+  userByField (fields: userQueryInput!): [User!]!
 }
 
 input userQueryInput {
-  id: ID
+  name: String
+  email: String
 }

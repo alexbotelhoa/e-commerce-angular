@@ -74,13 +74,13 @@ export type GQLUpdateCategoryInput = {
 export type GQLQuery = {
   readonly __typename?: 'Query';
   readonly categoryAll: ReadonlyArray<GQLCategory>;
-  readonly categoryByField: Maybe<GQLCategory>;
+  readonly categoryByField: ReadonlyArray<GQLCategory>;
   readonly categoryById: Maybe<GQLCategory>;
   readonly productAll: ReadonlyArray<GQLProduct>;
-  readonly productByField: Maybe<GQLProduct>;
+  readonly productByField: ReadonlyArray<GQLProduct>;
   readonly productById: Maybe<GQLProduct>;
   readonly userAll: ReadonlyArray<GQLUser>;
-  readonly userByField: Maybe<GQLUser>;
+  readonly userByField: ReadonlyArray<GQLUser>;
   readonly userById: Maybe<GQLUser>;
 };
 
@@ -115,7 +115,7 @@ export type GQLQueryuserByIdArgs = {
 };
 
 export type GQLcategoryQueryInput = {
-  readonly id: Maybe<Scalars['ID']>;
+  readonly name: Maybe<Scalars['String']>;
 };
 
 export type GQLCategory = {
@@ -141,7 +141,8 @@ export type GQLUpdateProductInput = {
 };
 
 export type GQLproductQueryInput = {
-  readonly id: Maybe<Scalars['ID']>;
+  readonly name: Maybe<Scalars['String']>;
+  readonly price: Maybe<Scalars['Int']>;
 };
 
 export type GQLProduct = {
@@ -167,7 +168,8 @@ export type GQLUpdateUserInput = {
 };
 
 export type GQLuserQueryInput = {
-  readonly id: Maybe<Scalars['ID']>;
+  readonly name: Maybe<Scalars['String']>;
+  readonly email: Maybe<Scalars['String']>;
 };
 
 export type GQLUser = {
@@ -337,13 +339,13 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   categoryAll: Resolver<ReadonlyArray<GQLResolversTypes['Category']>, ParentType, ContextType>;
-  categoryByField: Resolver<Maybe<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQuerycategoryByFieldArgs, 'fields'>>;
+  categoryByField: Resolver<ReadonlyArray<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQuerycategoryByFieldArgs, 'fields'>>;
   categoryById: Resolver<Maybe<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQuerycategoryByIdArgs, 'id'>>;
   productAll: Resolver<ReadonlyArray<GQLResolversTypes['Product']>, ParentType, ContextType>;
-  productByField: Resolver<Maybe<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryproductByFieldArgs, 'fields'>>;
+  productByField: Resolver<ReadonlyArray<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryproductByFieldArgs, 'fields'>>;
   productById: Resolver<Maybe<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryproductByIdArgs, 'id'>>;
   userAll: Resolver<ReadonlyArray<GQLResolversTypes['User']>, ParentType, ContextType>;
-  userByField: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryuserByFieldArgs, 'fields'>>;
+  userByField: Resolver<ReadonlyArray<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryuserByFieldArgs, 'fields'>>;
   userById: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryuserByIdArgs, 'id'>>;
 };
 

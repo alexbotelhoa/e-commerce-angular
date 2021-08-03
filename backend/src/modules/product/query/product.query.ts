@@ -1,14 +1,25 @@
 import { GQLQueryResolvers } from "../../../resolvers-types";
 import { getProductById, selectProduct } from "../../../shared/repositories/product.repository";
 
-export const productAllQueryResolver: GQLQueryResolvers['productAll'] = (obj, params, context) => {
-    return selectProduct(context.database);
+export const productAllQueryResolver: GQLQueryResolvers['productAll'] = async (obj, params, context) => {
+    return await selectProduct(context.readonlyDatabase);
 }
 
-export const productByIdQueryResolver: GQLQueryResolvers['productById'] = (obj, params, context) => {
-    return getProductById(context.database)(params.id);
+export const productByIdQueryResolver: GQLQueryResolvers['productById'] = async (obj, params, context) => {
+    return await getProductById(context.readonlyDatabase)(params.id);
 }
 
-export const productByFieldQueryResolver: GQLQueryResolvers['productByField'] = (obj, { fields }: { fields: { id: any }}, context) => {
-    return getProductById(context.database)(fields.id);
+export const productByFieldQueryResolver: GQLQueryResolvers['productByField'] = async (obj, { fields }, context) => {
+    const query = selectProduct(context.readonlyDatabase);
+
+    if (fields) {
+        if (fields.name && fields.name.length > 0) {
+            query.where("name", "like", `%${fields.name}%`);
+        };
+        if (fields.price && fields.price > 0) {
+            query.where("price", "like", `%${fields.price}%`);
+        };
+    }
+
+    return await query;
 }
