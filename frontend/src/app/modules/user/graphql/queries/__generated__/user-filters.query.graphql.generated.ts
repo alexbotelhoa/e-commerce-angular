@@ -12,7 +12,7 @@ export type UserByFieldQueryVariables = Types.Exact<{
 
 export type UserByFieldQuery = (
   { readonly __typename: 'Query' }
-  & { readonly userByField: Types.Maybe<(
+  & { readonly userByField: ReadonlyArray<(
     { readonly __typename: 'User' }
     & UserFieldsFragment
   )> }

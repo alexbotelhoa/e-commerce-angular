@@ -56,10 +56,13 @@ export type Mutation = {
   readonly __typename: 'Mutation';
   readonly createCategory: Category;
   readonly updateCategory: Category;
+  readonly deleteCategory: Scalars['Boolean'];
   readonly createProduct: Product;
   readonly updateProduct: Product;
+  readonly deleteProduct: Scalars['Boolean'];
   readonly createUser: User;
   readonly updateUser: User;
+  readonly deleteUser: Scalars['Boolean'];
 };
 
 
@@ -73,6 +76,11 @@ export type MutationupdateCategoryArgs = {
 };
 
 
+export type MutationdeleteCategoryArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationcreateProductArgs = {
   data: CreateProductInput;
 };
@@ -83,6 +91,11 @@ export type MutationupdateProductArgs = {
 };
 
 
+export type MutationdeleteProductArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationcreateUserArgs = {
   data: CreateUserInput;
 };
@@ -90,6 +103,11 @@ export type MutationcreateUserArgs = {
 
 export type MutationupdateUserArgs = {
   data: UpdateUserInput;
+};
+
+
+export type MutationdeleteUserArgs = {
+  id: Scalars['ID'];
 };
 
 export type Product = {
@@ -107,13 +125,13 @@ export type Query = {
   readonly __typename: 'Query';
   readonly categoryAll: ReadonlyArray<Category>;
   readonly categoryById: Maybe<Category>;
-  readonly categoryByField: Maybe<Category>;
+  readonly categoryByField: ReadonlyArray<Category>;
   readonly productAll: ReadonlyArray<Product>;
   readonly productById: Maybe<Product>;
-  readonly productByField: Maybe<Product>;
+  readonly productByField: ReadonlyArray<Product>;
   readonly userAll: ReadonlyArray<User>;
   readonly userById: Maybe<User>;
-  readonly userByField: Maybe<User>;
+  readonly userByField: ReadonlyArray<User>;
 };
 
 
@@ -180,13 +198,15 @@ export type User = {
 };
 
 export type categoryQueryInput = {
-  readonly id?: Maybe<Scalars['ID']>;
+  readonly name?: Maybe<Scalars['String']>;
 };
 
 export type productQueryInput = {
-  readonly id?: Maybe<Scalars['ID']>;
+  readonly name?: Maybe<Scalars['String']>;
+  readonly price?: Maybe<Scalars['Int']>;
 };
 
 export type userQueryInput = {
-  readonly id?: Maybe<Scalars['ID']>;
+  readonly name?: Maybe<Scalars['String']>;
+  readonly email?: Maybe<Scalars['String']>;
 };

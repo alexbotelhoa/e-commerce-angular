@@ -12,7 +12,7 @@ export type ProductByFieldQueryVariables = Types.Exact<{
 
 export type ProductByFieldQuery = (
   { readonly __typename: 'Query' }
-  & { readonly productByField: Types.Maybe<(
+  & { readonly productByField: ReadonlyArray<(
     { readonly __typename: 'Product' }
     & ProductFieldsFragment
   )> }

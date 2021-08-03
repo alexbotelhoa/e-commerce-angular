@@ -12,7 +12,7 @@ export type CategoryByFieldQueryVariables = Types.Exact<{
 
 export type CategoryByFieldQuery = (
   { readonly __typename: 'Query' }
-  & { readonly categoryByField: Types.Maybe<(
+  & { readonly categoryByField: ReadonlyArray<(
     { readonly __typename: 'Category' }
     & CategoryFieldsFragment
   )> }
