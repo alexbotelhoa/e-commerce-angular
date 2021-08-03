@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { CategoryService } from './category.service';
 import { CategoryComponent } from './category.component';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
 import { CategoryRoutingModule } from './category-routing.module';
 import { CategoryAddComponent } from './components/category-add/category-add.component';
 import { CategoryItemComponent } from './components/category-item/category-item.component';
