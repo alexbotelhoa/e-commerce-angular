@@ -25,6 +25,9 @@ export type GQLMutation = {
   readonly createCategory: GQLCategory;
   readonly createProduct: GQLProduct;
   readonly createUser: GQLUser;
+  readonly deleteCategory: Scalars['Boolean'];
+  readonly deleteProduct: Scalars['Boolean'];
+  readonly deleteUser: Scalars['Boolean'];
   readonly updateCategory: GQLCategory;
   readonly updateProduct: GQLProduct;
   readonly updateUser: GQLUser;
@@ -43,6 +46,21 @@ export type GQLMutationcreateProductArgs = {
 
 export type GQLMutationcreateUserArgs = {
   data: GQLCreateUserInput;
+};
+
+
+export type GQLMutationdeleteCategoryArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type GQLMutationdeleteProductArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type GQLMutationdeleteUserArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -279,10 +297,11 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type GQLResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
   CreateCategoryInput: GQLCreateCategoryInput;
   String: ResolverTypeWrapper<Scalars['String']>;
   UpdateCategoryInput: GQLUpdateCategoryInput;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
   Query: ResolverTypeWrapper<{}>;
   categoryQueryInput: GQLcategoryQueryInput;
   Category: ResolverTypeWrapper<CategoryEntity>;
@@ -299,16 +318,16 @@ export type GQLResolversTypes = {
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   GenericError: ResolverTypeWrapper<GenericError>;
   SimpleError: ResolverTypeWrapper<SimpleError>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type GQLResolversParentTypes = {
   Mutation: {};
+  Boolean: Scalars['Boolean'];
+  ID: Scalars['ID'];
   CreateCategoryInput: GQLCreateCategoryInput;
   String: Scalars['String'];
   UpdateCategoryInput: GQLUpdateCategoryInput;
-  ID: Scalars['ID'];
   Query: {};
   categoryQueryInput: GQLcategoryQueryInput;
   Category: CategoryEntity;
@@ -325,13 +344,15 @@ export type GQLResolversParentTypes = {
   DateTime: Scalars['DateTime'];
   GenericError: GenericError;
   SimpleError: SimpleError;
-  Boolean: Scalars['Boolean'];
 };
 
 export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
   createCategory: Resolver<GQLResolversTypes['Category'], ParentType, ContextType, RequireFields<GQLMutationcreateCategoryArgs, 'data'>>;
   createProduct: Resolver<GQLResolversTypes['Product'], ParentType, ContextType, RequireFields<GQLMutationcreateProductArgs, 'data'>>;
   createUser: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationcreateUserArgs, 'data'>>;
+  deleteCategory: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<GQLMutationdeleteCategoryArgs, 'id'>>;
+  deleteProduct: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<GQLMutationdeleteProductArgs, 'id'>>;
+  deleteUser: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<GQLMutationdeleteUserArgs, 'id'>>;
   updateCategory: Resolver<GQLResolversTypes['Category'], ParentType, ContextType, RequireFields<GQLMutationupdateCategoryArgs, 'data'>>;
   updateProduct: Resolver<GQLResolversTypes['Product'], ParentType, ContextType, RequireFields<GQLMutationupdateProductArgs, 'data'>>;
   updateUser: Resolver<GQLResolversTypes['User'], ParentType, ContextType, RequireFields<GQLMutationupdateUserArgs, 'data'>>;

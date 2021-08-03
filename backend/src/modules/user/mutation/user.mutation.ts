@@ -1,7 +1,17 @@
 import { GQLMutationResolvers } from "../../../resolvers-types";
-import { getUserById, insertUser, updateUser } from "../../../shared/repositories/user.repository";
+import {
+    getUserById,
+    insertUser,
+    updateUser,
+    deleteUser,
+} from "../../../shared/repositories/user.repository";
 
-export const createUserMutationResolver: GQLMutationResolvers['createUser'] = async (obj, { data }: { data: { name: string, email: string } }, { database: db }) => {
+export type User = {
+    name: string
+    email: string
+}
+
+export const createUserMutationResolver: GQLMutationResolvers['createUser'] = async (obj, { data }: { data: User }, { database: db }) => {
     const { name, email } = data;
 
     const insertedId = await db.transaction(async (trx) => {
@@ -12,8 +22,8 @@ export const createUserMutationResolver: GQLMutationResolvers['createUser'] = as
 }
 
 export const updateUserMutationResolver: GQLMutationResolvers['updateUser'] = async (obj, { data }, context) => {
-    const theme = await getUserById(context.database);
-    if (!theme) {
+    const query = await getUserById(context.database);
+    if (!query) {
         throw new Error(`User with id ${data.id} was not found.`);
     }
 
@@ -25,4 +35,17 @@ export const updateUserMutationResolver: GQLMutationResolvers['updateUser'] = as
     })
 
     return (await getUserById(context.database)(data.id))!;
+}
+
+export const deleteUserMutationResolver: GQLMutationResolvers['deleteUser'] = async (obj, data, context) => {
+    const query = await getUserById(context.database)(data.id);
+    if (!query) {
+        throw new Error(`User with id ${data.id} was not found.`);
+    }
+
+    await context.database.transaction(async (trx) => {
+        await deleteUser(trx)((builder) => builder.andWhere("id", data.id));
+    });
+
+    return true;
 }

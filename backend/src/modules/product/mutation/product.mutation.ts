@@ -1,7 +1,18 @@
 import { GQLMutationResolvers } from "../../../resolvers-types";
-import { getProductById, insertProduct, updateProduct } from "../../../shared/repositories/product.repository";
+import {
+    getProductById,
+    insertProduct,
+    updateProduct,
+    deleteProduct,
+} from "../../../shared/repositories/product.repository";
 
-export const createProductMutationResolver: GQLMutationResolvers['createProduct'] = async (obj, { data }: { data: { name: string, price: number, categoryId: number } }, { database: db }) => {
+export type Product = {
+    name: string;
+    price: number;
+    categoryId: number;
+};
+
+export const createProductMutationResolver: GQLMutationResolvers['createProduct'] = async (obj, { data }: { data: Product }, { database: db }) => {
     const { name, price, categoryId } = data;
 
     const insertedId = await db.transaction(async (trx) => {
@@ -26,4 +37,17 @@ export const updateProductMutationResolver: GQLMutationResolvers['updateProduct'
     })
 
     return (await getProductById(context.database)(data.id))!;
+}
+
+export const deleteProductMutationResolver: GQLMutationResolvers['deleteProduct'] = async (obj, data, context) => {
+    const query = await getProductById(context.database)(data.id);
+    if (!query) {
+        throw new Error(`Product with id ${data.id} was not found.`);
+    }
+
+    await context.database.transaction(async (trx) => {
+        await deleteProduct(trx)(builder => builder.andWhere('id', data.id));
+    })
+
+    return true;
 }

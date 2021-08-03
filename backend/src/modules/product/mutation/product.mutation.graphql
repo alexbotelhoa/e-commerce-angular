@@ -1,6 +1,7 @@
 type Mutation {
   createProduct(data: CreateProductInput!): Product!
   updateProduct(data: UpdateProductInput!): Product!
+  deleteProduct(id: ID!): Boolean!
 }
 
 input CreateProductInput {
