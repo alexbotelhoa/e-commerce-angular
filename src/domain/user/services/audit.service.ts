@@ -2,7 +2,7 @@ import { FastifyLoggerInstance } from 'fastify';
 import { environmentFactory } from '../../../shared/services/environment.service';
 import axios from 'axios';
 import { LogEntity } from '../../../entities/log.entity';
-import { updateLog } from '../../../shared/repositories/log.repository';
+import { deleteLog, updateLog } from '../../../shared/repositories/log.repository';
 import { DatabaseService } from '../../../shared/services/database.service';
 
 interface BodyAudit {
@@ -42,6 +42,10 @@ export const callAudit = async (body: BodyAudit, logger: FastifyLoggerInstance):
 export const callBackAudit = async (auditToSend: LogEntity[], databaseService: DatabaseService, logger: FastifyLoggerInstance): Promise<void> => {
     for (const audit of auditToSend) {
         const body: BodyAudit = JSON.parse(audit.body)
+        if (!body.userId) {
+            await deleteLog(databaseService)(qb => qb.where("id", "=", audit.id));
+            return;
+        }
         try {
             await callAudit(body, logger)
             await updateLog(databaseService)({ status: "audit-success" })(qb => qb.where("id", "=", audit.id));

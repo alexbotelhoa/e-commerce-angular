@@ -16,14 +16,14 @@ export const auditResolver: GQLMutationResolvers['audit'] = async (obj, params, 
         await insertLog(context.database)({
             status: "audit-success",
             key: params.data.id_turma,
-            body: JSON.stringify({ ...params.data, tentativas: 1 })
+            body: JSON.stringify({ ...params.data, tentativas: 1, userId })
         })
         return true;
     } catch (error) {
         await insertLog(context.database)({
             status: "audit-error",
             key: params.data.id_turma,
-            body: JSON.stringify({ ...params.data, tentativas: 1 })
+            body: JSON.stringify({ ...params.data, tentativas: 1, userId })
         })
         return false;
     }

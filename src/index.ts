@@ -56,7 +56,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
 
   const executeJobs = async (databaseService: DatabaseService<any, any>, logger: FastifyLoggerInstance) => {
     setInterval(async () => {
-      const auditErrors = await selectLog(databaseService).where("status", "=", "audit-error")
+      const auditErrors = await selectLog(readonlyDatabaseService).where("status", "=", "audit-error")
       await callBackAudit(auditErrors, databaseService, logger)
     }, 3600000)
 
