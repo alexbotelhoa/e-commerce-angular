@@ -10,6 +10,7 @@ import { ButtonAddComponent } from './components/button/button-add/button-add.co
 import { ButtonEditComponent } from './components/button/button-edit/button-edit.component';
 import { ButtonCancelComponent } from './components/button/button-cancel/button-cancel.component';
 import { ButtonDeleteComponent } from './components/button/button-delete/button-delete.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 const materialModules = [
   MatProgressSpinnerModule
@@ -17,6 +18,7 @@ const materialModules = [
 const sharedComponents = [
   HeaderComponent,
   FooterComponent,
+  LoadingComponent,
   ButtonAddComponent,
   ButtonEditComponent,
   ButtonCancelComponent,
@@ -26,7 +28,7 @@ const sharedGraphql = [GraphQLModule]
 const sharedServices = [[]]
 
 @NgModule({
-  declarations: [...sharedComponents],
+  declarations: [...sharedComponents, LoadingComponent],
   imports: [
     ...materialModules,
     ...sharedGraphql,

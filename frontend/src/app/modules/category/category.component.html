@@ -1,7 +1,9 @@
-<app-category-item 
-    *ngIf="categoryAll.length > 0 else empty"
+<app-loading *ngIf="loading"></app-loading>
+
+<app-category-item
+    *ngIf="categoryAll.length > 0"
     [categoryAll]="categoryAll"></app-category-item>
 
-<ng-template #empty>
+<div *ngIf="!loading && categoryAll.length === 0">
     <p>Nenhuma Categoria cadastrada.</p>
-</ng-template>
+</div>

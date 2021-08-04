@@ -10,12 +10,16 @@ import { ProductFieldsFragment } from './graphql/fragments/__generated__/product
 export class ProductComponent implements OnInit {
   productAll: ReadonlyArray<ProductFieldsFragment> = [];
   productAll$ = this.productService.productAll.asObservable();
+  loading = true;
 
   constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
     this.getProductAll();
-    this.productAll$.subscribe((res) => (this.productAll = res));
+    this.productAll$.subscribe((res) => {
+      this.productAll = res;
+      if (res.length > 0) this.loading = false;
+    });
   }
 
   getProductAll() {

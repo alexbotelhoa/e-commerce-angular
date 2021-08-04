@@ -1,6 +1,6 @@
-import { takeUntil } from 'rxjs/operators';
-import { BehaviorSubject, Subject } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { delay, takeUntil } from 'rxjs/operators';
 import { CategoryFieldsFragment } from './graphql/fragments/__generated__/category.fragment.graphql.generated';
 import { CategoryAllGQL } from './graphql/queries/__generated__/category-all.query.graphql.generated';
 
@@ -21,7 +21,7 @@ export class CategoryService implements OnDestroy {
       .fetch(undefined, {
         fetchPolicy: 'network-only',
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(delay(1000), takeUntil(this.destroy$))
       .subscribe((result) => {
         const category: any =
           result.data && result.data.categoryAll
