@@ -79,25 +79,34 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
             });
         }
     }
-
-    const oldClassEnrollment = await selectEnrollmentClass(db)
-        .andWhere('classId', oldClassId)
-        .andWhere('enrollmentId', enrollmentId).first();
-    if (oldClassEnrollment) {
-        await deleteEnrollmentClass(db)(query => query.andWhere('id', oldClassEnrollment.id));
+    
+    const oldClass = await getClassById(db)(oldClassId);
+    if (oldClass?.levelCodeId) {
+        const oldLevelCode = await getLevelCodeById(db)(oldClass?.levelCodeId);
+        if (oldLevelCode?.id) {
+            const enrollmentsOfOldClass = await selectEnrollment(db).andWhere('userId', userId).andWhere('levelCodeId', oldLevelCode.id);
+            const enrollmentsIdsOfOldClasses = enrollmentsOfOldClass.map(item => item.id)
+            const oldClassEnrollment = await selectEnrollmentClass(db)
+                .whereIn('enrollmentId', enrollmentsIdsOfOldClasses)
+                .andWhere('classId', oldClassId);
+            if (oldClassEnrollment.length > 0) {
+                await deleteEnrollmentClass(db)(query => query.andWhere('id', oldClassEnrollment.map(item => item.id)));
+            }
+        }
     }
+
     const [existingEnrollmentClass] = await selectEnrollmentClass(db)
         .andWhere('classId', newClassId)
         .andWhere('enrollmentId', enrollmentId);
     const hasToInsertEnrollmentClass = !existingEnrollmentClass;
     if (hasToInsertEnrollmentClass) {
-        const oldClass = await getClassById(db)(oldClassId);
         if (oldClass?.levelCodeId) {
+            const newLevelCode = await getLevelCodeById(db)(levelData.id);
             const oldLevelCode = await getLevelCodeById(db)(oldClass?.levelCodeId);
-            const newLevelCode = await getLevelCodeById(db)(levelData.id)
             if (oldLevelCode && oldLevelCode.levelId && newLevelCode?.levelId) {
                 const levelOldClass = await getLevelById(db)(oldLevelCode.levelId)
                 const levelNewClass = await getLevelCodeById(db)(newLevelCode?.levelId);
+
                 if (levelOldClass?.id === levelNewClass?.id) {
                     const activitiesToTransitionToNewClass = await selectActivityTimer(db)
                         .where('classId', oldClassId)

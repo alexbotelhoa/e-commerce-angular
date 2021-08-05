@@ -238,7 +238,7 @@ async function processMeetingData(db: DatabaseService, readonlyDatabase: Databas
             enabled: false,
         })(qb => qb.where("classId", "=", classId))
     }
-    if (redis && classData.status !== "c") {
+    if (redis && classData.status !== "C") {
         const [result] = await readonlyDatabase.raw(`
         select
         m.*,
