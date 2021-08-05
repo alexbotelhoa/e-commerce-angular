@@ -17,7 +17,7 @@ export class UserService implements OnDestroy {
   constructor(
     private toastr: ToastrService,
     private userAllGQL: UserAllGQL,
-    private userDeleteGQL: DeleteUserGQL
+    private deleteUserGQL: DeleteUserGQL
   ) {}
 
   getUserAll() {
@@ -39,19 +39,19 @@ export class UserService implements OnDestroy {
   }
 
   deleteUser(item: string) {
-    this.userDeleteGQL
+    this.deleteUserGQL
       .mutate({
         id: item,
       })
       .pipe(delay(1000), takeUntil(this.destroy$))
       .subscribe(
         (result) => {
-          this.toastr.success('Atividade removida.', 'Sucesso', {
+          this.toastr.success('Usuário removido com sucesso!', 'Sucesso', {
             timeOut: 3000,
           });
         },
         (error) => {
-          this.toastr.error('Erro removendo atividade', 'Erro');
+          this.toastr.error('Falha ao tentar remover usuário.', 'Falha');
         }
       );
   }

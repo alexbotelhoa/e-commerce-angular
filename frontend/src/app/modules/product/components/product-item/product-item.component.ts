@@ -1,5 +1,6 @@
-import { ProductFieldsFragment } from './../../graphql/fragments/__generated__/product.fragment.graphql.generated';
+import { ProductService } from '../../product.service';
 import { Component, Input, OnInit, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import { ProductFieldsFragment } from './../../graphql/fragments/__generated__/product.fragment.graphql.generated';
 
 @Component({
   selector: 'app-product-item',
@@ -12,16 +13,16 @@ export class ProductItemComponent implements OnInit {
   @Input()
   productAll: ReadonlyArray<ProductFieldsFragment> = [];
 
-  constructor() {}
+  constructor(private productService: ProductService) {}
 
   ngOnInit(): void {}
 
-  buttonDelete($event: any, item: any) {
+  buttonDelete($event: any, product: any) {
     $event.preventDefault();
-    if (confirm('Deseja remover o usuário "' + item.name + '"?')) {
-      // this.productService.remover(product.id);
+    if (confirm('Deseja realmente remover o Produto "' + product.name + '"?')) {
+      this.productService.deleteProduct(product.id);
       this.productAll = this.productAll.filter(
-        (product) => product.id !== item.id
+        (product) => product.id !== product.id
       );
     }
   }

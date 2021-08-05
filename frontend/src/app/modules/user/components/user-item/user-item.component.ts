@@ -1,5 +1,5 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { UserService } from './../../user.service';
+import { Component, Input, OnInit, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { UserFieldsFragment } from '../../graphql/fragments/__generated__/user.fragment.graphql.generated';
 
 @Component({
@@ -17,12 +17,12 @@ export class UserItemComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  buttonDelete($event: any, item: any) {
+  buttonDelete($event: any, user: any) {
     $event.preventDefault();
-    if (confirm('Deseja remover o usuário "' + item.name + '"?')) {
-      this.userService.deleteUser(item.id);
+    if (confirm('Deseja realmente remover o Usuário "' + user.name + '"?')) {
+      this.userService.deleteUser(user.id);
       this.userAll = this.userAll.filter(
-        (user) => user.id !== item.id
+        (user) => user.id !== user.id
       );
     }
   }
