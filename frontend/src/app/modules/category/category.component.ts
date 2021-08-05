@@ -18,7 +18,7 @@ export class CategoryComponent implements OnInit {
     this.getCategoryAll();
     this.categoryAll$.subscribe((res) => {
       this.categoryAll = res;
-      if (res.length > 0) this.loading = false;
+      if (res.length === 0 || res.length > 0) this.loading = false;
     });
   }
 

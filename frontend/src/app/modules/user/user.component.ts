@@ -18,7 +18,7 @@ export class UserComponent implements OnInit {
     this.getUserAll();
     this.userAll$.subscribe((res) => {
       this.userAll = res;
-      if (res.length > 0) this.loading = false;
+      if (res.length === 0 || res.length > 0) this.loading = false;
     });    
   }
 

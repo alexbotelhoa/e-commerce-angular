@@ -18,7 +18,7 @@ export class ProductComponent implements OnInit {
     this.getProductAll();
     this.productAll$.subscribe((res) => {
       this.productAll = res;
-      if (res.length > 0) this.loading = false;
+      if (res.length === 0 || res.length > 0) this.loading = false;
     });
   }
 
