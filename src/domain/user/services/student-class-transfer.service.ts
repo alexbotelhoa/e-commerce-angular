@@ -90,7 +90,7 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
                 .whereIn('enrollmentId', enrollmentsIdsOfOldClasses)
                 .andWhere('classId', oldClassId);
             if (oldClassEnrollment.length > 0) {
-                await deleteEnrollmentClass(db)(query => query.andWhere('id', oldClassEnrollment.map(item => item.id)));
+                await deleteEnrollmentClass(db)(query => query.whereIn('id', oldClassEnrollment.map(item => item.id)));
             }
         }
     }
