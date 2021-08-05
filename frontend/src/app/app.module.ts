@@ -6,21 +6,23 @@ import { SharedModule } from './shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    SharedModule,
     BrowserModule,
     AppRoutingModule,
-    SharedModule,
-    ToastrModule.forRoot({
-      preventDuplicates: true,
-      countDuplicates: true,
-      progressAnimation: 'increasing',
-      progressBar: true,
-      closeButton: true,
-    }),
     HttpClientModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      closeButton: true,
+      progressBar: true,
+      countDuplicates: true,
+      preventDuplicates: true,
+      progressAnimation: 'increasing',
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent],
