@@ -17,15 +17,17 @@ export class CategoryItemComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  buttonDelete($event: any, item: any) {
+   buttonDelete($event: any, item: any) {
     $event.preventDefault();
     if (confirm('Deseja realmente remover a Categoria "' + item.name + '"?')) {
       this.categoryService.deleteCategory(item.id);
-      this.categoryAll = this.categoryAll.filter((category) => category.id !== item.id);
+      this.categoryAll = this.categoryAll.filter(
+        (category) => category.id !== item.id
+      );
 
       if (this.categoryAll.length === 0) {
         this.categoryService.getCategoryAll();
-      }   
+      }
     }
   }
 }

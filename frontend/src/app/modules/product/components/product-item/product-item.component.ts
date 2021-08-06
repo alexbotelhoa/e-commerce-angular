@@ -21,11 +21,13 @@ export class ProductItemComponent implements OnInit {
     $event.preventDefault();
     if (confirm('Deseja realmente remover o Produto "' + item.name + '"?')) {
       this.productService.deleteProduct(item.id);
-      this.productAll = this.productAll.filter((product) => product.id !== item.id);
+      this.productAll = this.productAll.filter(
+        (product) => product.id !== item.id
+      );
 
       if (this.productAll.length === 0) {
         this.productService.getProductAll();
-      }      
+      }
     }
   }
 }

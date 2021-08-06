@@ -19,7 +19,7 @@ const routes: Routes = [
     component: CategoryCreateComponent,
   },
   {
-    path: 'edit/:id',
+    path: 'update/:id',
     component: CategoryUpdateComponent,
   },
 ];

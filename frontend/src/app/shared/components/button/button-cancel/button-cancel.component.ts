@@ -9,7 +9,6 @@ export class ButtonCancelComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
 }

@@ -19,7 +19,7 @@ const routes: Routes = [
     component: ProductCreateComponent,
   },
   {
-    path: 'edit/:id',
+    path: 'update/:id',
     component: ProductUpdateComponent,
   },
 ];

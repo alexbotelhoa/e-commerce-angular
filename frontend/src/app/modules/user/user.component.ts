@@ -11,7 +11,7 @@ import { UserFieldsFragment } from './graphql/fragments/__generated__/user.fragm
 export class UserComponent implements OnInit {
   userAll: ReadonlyArray<UserFieldsFragment> = [];
   loading: boolean = true;
-  
+
   userAll$ = this.userService.userAll.asObservable();
   loading$ = this.userService.loading.asObservable();
 
@@ -22,6 +22,10 @@ export class UserComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUserAll();
+  }
+
+  getUserAll() {
+    this.userService.getUserAll();
   }
 
   // watchUserId() {
@@ -53,8 +57,4 @@ export class UserComponent implements OnInit {
   //       }
   //     });
   // }
-
-  getUserAll() {
-    this.userService.getUserAll();
-  }
 }
