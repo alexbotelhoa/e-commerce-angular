@@ -15,7 +15,7 @@ const routes: Routes = [
     component: CategoryComponent,
   },
   {
-    path: 'add',
+    path: 'create',
     component: CategoryCreateComponent,
   },
   {
