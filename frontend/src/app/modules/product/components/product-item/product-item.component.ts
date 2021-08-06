@@ -1,5 +1,6 @@
-import { ProductService } from '../../product.service';
 import { Component, Input, OnInit, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+
+import { ProductService } from '../../product.service';
 import { ProductFieldsFragment } from './../../graphql/fragments/__generated__/product.fragment.graphql.generated';
 
 @Component({
