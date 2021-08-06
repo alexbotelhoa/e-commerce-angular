@@ -5,12 +5,20 @@ import { UserService } from './user.service';
 import { UserComponent } from './user.component';
 import { SharedModule } from '../../shared/shared.module';
 import { UserRoutingModule } from './user-routing.module';
-import { UserAddComponent } from './components/user-add/user-add.component';
 import { UserItemComponent } from './components/user-item/user-item.component';
+import { UserFormComponent } from './components/user-form/user-form.component';
+import { UserCreateComponent } from './components/user-create/user-create.component';
+import { UserUpdateComponent } from './components/user-update/user-update.component';
 
 
 @NgModule({
-  declarations: [UserComponent, UserAddComponent, UserItemComponent],
+  declarations: [
+    UserComponent,
+    UserItemComponent,
+    UserFormComponent,
+    UserCreateComponent,
+    UserUpdateComponent,
+  ],
   imports: [CommonModule, SharedModule, UserRoutingModule],
   providers: [UserService],
 })

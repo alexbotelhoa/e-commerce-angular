@@ -2,6 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { delay, takeUntil, finalize } from 'rxjs/operators';
+
 import { UserAllGQL } from './graphql/queries/__generated__/user-all.query.graphql.generated';
 import { UserFieldsFragment } from './graphql/fragments/__generated__/user.fragment.graphql.generated';
 import { DeleteUserGQL } from './graphql/mutations/__generated__/user-delete.mutation.graphql.generated';

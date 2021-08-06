@@ -1,5 +1,6 @@
 import { ProductService } from './product.service';
 import { Component, OnInit } from '@angular/core';
+
 import { ProductFieldsFragment } from './graphql/fragments/__generated__/product.fragment.graphql.generated';
 
 @Component({

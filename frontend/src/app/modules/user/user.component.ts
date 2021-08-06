@@ -1,5 +1,6 @@
-import { UserService } from './user.service';
 import { Component, OnInit } from '@angular/core';
+
+import { UserService } from './user.service';
 import { UserFieldsFragment } from './graphql/fragments/__generated__/user.fragment.graphql.generated';
 
 @Component({

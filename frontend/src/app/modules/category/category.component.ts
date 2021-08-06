@@ -1,5 +1,6 @@
 import { CategoryService } from './category.service';
 import { Component, OnInit } from '@angular/core';
+
 import { CategoryFieldsFragment } from './graphql/fragments/__generated__/category.fragment.graphql.generated';
 
 @Component({
