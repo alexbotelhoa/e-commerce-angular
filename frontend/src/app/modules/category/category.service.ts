@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { delay, takeUntil } from 'rxjs/operators';
+import { delay, takeUntil, finalize } from 'rxjs/operators';
 import { CategoryAllGQL } from './graphql/queries/__generated__/category-all.query.graphql.generated';
 import { CategoryFieldsFragment } from './graphql/fragments/__generated__/category.fragment.graphql.generated';
 import { DeleteCategoryGQL } from './graphql/mutations/__generated__/category-delete.mutation.graphql.generated';
@@ -11,6 +11,7 @@ import { DeleteCategoryGQL } from './graphql/mutations/__generated__/category-de
 })
 export class CategoryService implements OnDestroy {
   public categoryAll = new BehaviorSubject<CategoryFieldsFragment[]>([]);
+  public loading = new BehaviorSubject<boolean>(true);
 
   destroy$ = new Subject();
 
@@ -27,7 +28,11 @@ export class CategoryService implements OnDestroy {
       .fetch(undefined, {
         fetchPolicy: 'network-only',
       })
-      .pipe(delay(1000), takeUntil(this.destroy$))
+      .pipe(
+        delay(2000),
+        takeUntil(this.destroy$),
+        finalize(() => this.loading.next(false))
+      )
       .subscribe((result) => {
         const category: any =
           result.data && result.data.categoryAll
@@ -43,7 +48,7 @@ export class CategoryService implements OnDestroy {
       .mutate({
         id: item,
       })
-      .pipe(delay(1000), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (result) => {
           this.toastr.success('Categoria removida com sucesso!.', 'Sucesso', {
@@ -51,7 +56,7 @@ export class CategoryService implements OnDestroy {
           });
         },
         (error) => {
-          this.toastr.error('Falha ao tentar remover a categoria.', 'Falha');
+          this.toastr.error('Falha ao tentar remover a categoria.', 'Falhou');
         }
       );
   }

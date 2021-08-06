@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { takeUntil, delay } from 'rxjs/operators';
+import { delay, takeUntil, finalize } from 'rxjs/operators';
 import { UserAllGQL } from './graphql/queries/__generated__/user-all.query.graphql.generated';
 import { UserFieldsFragment } from './graphql/fragments/__generated__/user.fragment.graphql.generated';
 import { DeleteUserGQL } from './graphql/mutations/__generated__/user-delete.mutation.graphql.generated';
@@ -11,6 +11,7 @@ import { DeleteUserGQL } from './graphql/mutations/__generated__/user-delete.mut
 })
 export class UserService implements OnDestroy {
   public userAll = new BehaviorSubject<UserFieldsFragment[]>([]);
+  public loading = new BehaviorSubject<boolean>(true);
 
   destroy$ = new Subject();
 
@@ -27,7 +28,11 @@ export class UserService implements OnDestroy {
       .fetch(undefined, {
         fetchPolicy: 'network-only',
       })
-      .pipe(delay(1000), takeUntil(this.destroy$))
+      .pipe(
+        delay(2000),
+        takeUntil(this.destroy$),
+        finalize(() => this.loading.next(false))
+      )
       .subscribe((result) => {
         const user: any =
           result.data && result.data.userAll
@@ -43,7 +48,7 @@ export class UserService implements OnDestroy {
       .mutate({
         id: item,
       })
-      .pipe(delay(1000), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (result) => {
           this.toastr.success('Usuário removido com sucesso!', 'Sucesso', {
@@ -51,7 +56,7 @@ export class UserService implements OnDestroy {
           });
         },
         (error) => {
-          this.toastr.error('Falha ao tentar remover usuário.', 'Falha');
+          this.toastr.error('Falha ao tentar remover usuário.', 'Falhou');
         }
       );
   }

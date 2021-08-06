@@ -17,13 +17,15 @@ export class UserItemComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  buttonDelete($event: any, user: any) {
+  buttonDelete($event: any, item: any) {
     $event.preventDefault();
-    if (confirm('Deseja realmente remover o Usuário "' + user.name + '"?')) {
-      this.userService.deleteUser(user.id);
-      this.userAll = this.userAll.filter(
-        (user) => user.id !== user.id
-      );
+    if (confirm('Deseja realmente remover o Usuário "' + item.name + '"?')) {
+      const result = this.userService.deleteUser(item.id);
+      this.userAll = this.userAll.filter((user) => user.id !== item.id);
+      
+      if (this.userAll.length === 0) {
+        this.userService.getUserAll();
+      }
     }
   }
 }

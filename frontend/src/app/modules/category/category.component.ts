@@ -9,17 +9,18 @@ import { CategoryFieldsFragment } from './graphql/fragments/__generated__/catego
 })
 export class CategoryComponent implements OnInit {
   categoryAll: ReadonlyArray<CategoryFieldsFragment> = [];
-  categoryAll$ = this.categoryService.categoryAll.asObservable();
-  loading = true;
+  loading: boolean = true;
 
-  constructor(private categoryService: CategoryService) {}
+  categoryAll$ = this.categoryService.categoryAll.asObservable();
+  loading$ = this.categoryService.loading.asObservable();
+
+  constructor(private categoryService: CategoryService) {
+    this.categoryAll$.subscribe((res) => (this.categoryAll = res));
+    this.loading$.subscribe((res) => (this.loading = res));
+  }
 
   ngOnInit(): void {
     this.getCategoryAll();
-    this.categoryAll$.subscribe((res) => {
-      this.categoryAll = res;
-      if (res.length === 0 || res.length > 0) this.loading = false;
-    });
   }
 
   getCategoryAll() {

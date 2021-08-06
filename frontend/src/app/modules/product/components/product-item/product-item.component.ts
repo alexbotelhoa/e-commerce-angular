@@ -17,13 +17,15 @@ export class ProductItemComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  buttonDelete($event: any, product: any) {
+  buttonDelete($event: any, item: any) {
     $event.preventDefault();
-    if (confirm('Deseja realmente remover o Produto "' + product.name + '"?')) {
-      this.productService.deleteProduct(product.id);
-      this.productAll = this.productAll.filter(
-        (product) => product.id !== product.id
-      );
+    if (confirm('Deseja realmente remover o Produto "' + item.name + '"?')) {
+      this.productService.deleteProduct(item.id);
+      this.productAll = this.productAll.filter((product) => product.id !== item.id);
+
+      if (this.productAll.length === 0) {
+        this.productService.getProductAll();
+      }      
     }
   }
 }

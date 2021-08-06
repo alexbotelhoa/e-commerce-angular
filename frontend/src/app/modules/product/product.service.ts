@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { delay, takeUntil } from 'rxjs/operators';
+import { delay, takeUntil, finalize } from 'rxjs/operators';
 import { ProductAllGQL } from './graphql/queries/__generated__/product-all.query.graphql.generated';
 import { ProductFieldsFragment } from './graphql/fragments/__generated__/product.fragment.graphql.generated';
 import { DeleteProductGQL } from './graphql/mutations/__generated__/product-delete.mutation.graphql.generated';
@@ -11,6 +11,7 @@ import { DeleteProductGQL } from './graphql/mutations/__generated__/product-dele
 })
 export class ProductService implements OnDestroy {
   public productAll = new BehaviorSubject<ProductFieldsFragment[]>([]);
+  public loading = new BehaviorSubject<boolean>(true);
 
   destroy$ = new Subject();
 
@@ -27,7 +28,11 @@ export class ProductService implements OnDestroy {
       .fetch(undefined, {
         fetchPolicy: 'network-only',
       })
-      .pipe(delay(1000), takeUntil(this.destroy$))
+      .pipe(
+        delay(2000),
+        takeUntil(this.destroy$),
+        finalize(() => this.loading.next(false))
+      )
       .subscribe((result) => {
         const product: any =
           result.data && result.data.productAll
@@ -51,7 +56,7 @@ export class ProductService implements OnDestroy {
           });
         },
         (error) => {
-          this.toastr.error('Falha ao tentar remover produto.', 'Falha');
+          this.toastr.error('Falha ao tentar remover produto.', 'Falhou');
         }
       );
   }

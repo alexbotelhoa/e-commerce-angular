@@ -1,9 +1,11 @@
-<app-loading *ngIf="loading"></app-loading>
+<app-loading *ngIf="loading else ready"></app-loading>
 
-<app-user-item
-    *ngIf="userAll.length > 0"
-    [userAll]="userAll"></app-user-item>
+<ng-template #ready>
+    <app-user-item
+        *ngIf="userAll.length > 0 else empty"
+        [userAll]="userAll"></app-user-item>
+</ng-template>
 
-<div *ngIf="!loading && userAll.length === 0">
-    <p>Nenhum Usuário cadastrado.</p>
-</div>
+<ng-template #empty>
+    <p>Nenhum Usuário cadastrado!</p>
+</ng-template>
