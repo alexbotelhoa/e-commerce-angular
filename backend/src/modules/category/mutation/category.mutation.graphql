@@ -6,11 +6,9 @@ type Mutation {
 
 input CreateCategoryInput {
   name: String!
-  email: String!
 }
 
 input UpdateCategoryInput {
   id: ID!
   name: String!
-  email: String!
 }

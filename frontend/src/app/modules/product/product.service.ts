@@ -1,10 +1,14 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { delay, takeUntil, finalize } from 'rxjs/operators';
 
+import { ProductCreateModel, ProductUpdateModel } from './models/product.models';
 import { ProductAllGQL } from './graphql/queries/__generated__/product-all.query.graphql.generated';
 import { ProductFieldsFragment } from './graphql/fragments/__generated__/product.fragment.graphql.generated';
+import { CreateProductGQL } from './graphql/mutations/__generated__/product-create.mutation.graphql.generated';
+import { UpdateProductGQL } from './graphql/mutations/__generated__/product-update.mutation.graphql.generated';
 import { DeleteProductGQL } from './graphql/mutations/__generated__/product-delete.mutation.graphql.generated';
 
 @Injectable({
@@ -17,8 +21,11 @@ export class ProductService implements OnDestroy {
   destroy$ = new Subject();
 
   constructor(
+    public router: Router,
     private toastr: ToastrService,
     private productAllGQL: ProductAllGQL,
+    private createProductGQL: CreateProductGQL,
+    private updateProductGQL: UpdateProductGQL,
     private deleteProductGQL: DeleteProductGQL
   ) {}
 
@@ -44,12 +51,43 @@ export class ProductService implements OnDestroy {
       });
   }
 
+  createProduct(data: ProductCreateModel) {
+    this.createProductGQL
+      .mutate({
+        data: {
+          name: data.name,
+          price: data.price,
+          categoryId: data.categoryId,
+        },
+      })
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.loading.next(true))
+      )
+      .subscribe(
+        () => {
+          this.toastr.success('Produto cadastrado com sucesso!');
+          this.router.navigate(['user/list']);
+        },
+        (ob: any) => {
+          const obStringify = JSON.stringify(ob.networkError.error.errors);
+          const obParsed = JSON.parse(obStringify);
+          const obError = obParsed[0];
+          this.toastr.error(obError.message);
+        }
+      );
+  }
+
+  updateProduct(data: ProductUpdateModel) {
+    return;
+  }
+
   deleteProduct(item: string) {
     this.deleteProductGQL
       .mutate({
         id: item,
       })
-      .pipe(delay(1000), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (result) => {
           this.toastr.success('Produto removido com sucesso!.', 'Sucesso', {
@@ -57,7 +95,7 @@ export class ProductService implements OnDestroy {
           });
         },
         (error) => {
-          this.toastr.error('Falha ao tentar remover produto.', 'Falhou');
+          this.toastr.error('Falha ao remover Produto.', 'Falhou');
         }
       );
   }

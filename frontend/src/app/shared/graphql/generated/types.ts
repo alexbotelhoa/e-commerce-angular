@@ -24,7 +24,6 @@ export type Category = {
 
 export type CreateCategoryInput = {
   readonly name: Scalars['String'];
-  readonly email: Scalars['String'];
 };
 
 export type CreateProductInput = {
@@ -172,7 +171,6 @@ export type SimpleError = GenericError & {
 export type UpdateCategoryInput = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
-  readonly email: Scalars['String'];
 };
 
 export type UpdateProductInput = {

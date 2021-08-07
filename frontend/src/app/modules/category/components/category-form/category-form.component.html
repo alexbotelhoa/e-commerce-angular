@@ -1,1 +1,15 @@
-<p>category-form works!</p>
+<div [formGroup]="categoryFormGroup">
+  <div class="mb-3">
+    <mat-form-field class="w-100">
+      <mat-label>
+        Nome
+      </mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <div *ngIf="categoryFormGroup.controls.name.invalid && (categoryFormGroup.controls.name.dirty || categoryFormGroup.controls.name.touched)" class="error-messages">
+      <div class="error-messages__message" *ngIf="categoryFormGroup.controls.name.errors && categoryFormGroup.controls.name.errors.required">
+          É necessário o preenchimento desse campo.
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,1 +1,8 @@
-<p>product-create works!</p>
+<h3>Criar Produto</h3>
+<app-product-form></app-product-form>
+<div class="d-flex justify-content-center">    
+    <app-button-create
+        [disabled]="productForm && productForm.productFormGroup.invalid"
+        (click)="sendForm()"></app-button-create>
+    <app-button-cancel [routerLink]="['..']"></app-button-cancel>
+</div>

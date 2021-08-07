@@ -1,1 +1,41 @@
-<p>product-form works!</p>
+<div [formGroup]="productFormGroup">
+  <div class="mb-3">
+    <mat-form-field class="w-100">
+      <mat-label>
+        Nome
+      </mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <div *ngIf="productFormGroup.controls.name.invalid && (productFormGroup.controls.name.dirty || productFormGroup.controls.name.touched)" class="error-messages">
+      <div class="error-messages__message" *ngIf="productFormGroup.controls.name.errors && productFormGroup.controls.name.errors.required">
+          É necessário o preenchimento desse campo.
+      </div>
+    </div>
+  </div>
+  <div class="mb-3">
+    <mat-form-field class="w-100">
+      <mat-label>
+        Price
+      </mat-label>
+      <input matInput formControlName="price" />
+    </mat-form-field>
+    <div *ngIf="productFormGroup.controls.price.invalid && (productFormGroup.controls.price.dirty || productFormGroup.controls.price.touched)" class="error-messages">
+      <div class="error-messages__message" *ngIf="productFormGroup.controls.price.errors && productFormGroup.controls.price.errors.required">
+          É necessário o preenchimento desse campo.
+      </div>
+    </div>
+  </div>
+  <div class="mb-3">
+    <mat-form-field class="w-100">
+      <mat-label>
+        Categoria
+      </mat-label>
+      <input matInput formControlName="categoryId" />
+    </mat-form-field>
+    <div *ngIf="productFormGroup.controls.categoryId.invalid && (productFormGroup.controls.categoryId.dirty || productFormGroup.controls.categoryId.touched)" class="error-messages">
+      <div class="error-messages__message" *ngIf="productFormGroup.controls.categoryId.errors && productFormGroup.controls.categoryId.errors.required">
+          É necessário o preenchimento desse campo.
+      </div>
+    </div>
+  </div>
+</div>

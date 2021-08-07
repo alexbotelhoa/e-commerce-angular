@@ -80,13 +80,11 @@ export type GQLMutationupdateUserArgs = {
 
 export type GQLCreateCategoryInput = {
   readonly name: Scalars['String'];
-  readonly email: Scalars['String'];
 };
 
 export type GQLUpdateCategoryInput = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
-  readonly email: Scalars['String'];
 };
 
 export type GQLQuery = {

@@ -1,1 +1,8 @@
-<p>category-create works!</p>
+<h3>Criar Categoria</h3>
+<app-category-form></app-category-form>
+<div class="d-flex justify-content-center">    
+    <app-button-create
+        [disabled]="categoryForm && categoryForm.categoryFormGroup.invalid"
+        (click)="sendForm()"></app-button-create>
+    <app-button-cancel [routerLink]="['..']"></app-button-cancel>
+</div>

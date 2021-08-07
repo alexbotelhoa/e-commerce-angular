@@ -1,8 +1,13 @@
 import { NgModule } from '@angular/core';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 import { GraphQLModule } from './graphql/graphql.module';
+
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -13,9 +18,22 @@ import { ButtonCancelComponent } from './components/button/button-cancel/button-
 import { ButtonDeleteComponent } from './components/button/button-delete/button-delete.component';
 
 const materialModules = [
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatFormFieldModule,
+  MatInputModule,
 ];
-const sharedComponents = [
+
+const sharedGraphql = [GraphQLModule];
+
+const sharedModules = [
+  CommonModule,
+  FormsModule,
+  ReactiveFormsModule,
+];
+
+const sharedServices = [[]];
+
+const sharedComponents = [  
   HeaderComponent,
   FooterComponent,
   LoadingComponent,
@@ -24,21 +42,29 @@ const sharedComponents = [
   ButtonCancelComponent,
   ButtonDeleteComponent,
 ];
-const sharedGraphql = [GraphQLModule]
-const sharedServices = [[]]
 
 @NgModule({
   declarations: [...sharedComponents],
   imports: [
     ...materialModules,
     ...sharedGraphql,
-    ...sharedServices
+    ...sharedModules,
+    ...sharedServices,
   ],
   exports: [
     ...materialModules,
-    ...sharedComponents,
     ...sharedGraphql,
-    ...sharedServices
+    ...sharedModules,
+    ...sharedServices,
+    ...sharedComponents,
+  ],
+  providers: [
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        appearance: 'outline',
+      },
+    },
   ],
 })
 export class SharedModule {}

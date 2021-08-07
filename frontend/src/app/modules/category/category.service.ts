@@ -1,10 +1,14 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { delay, takeUntil, finalize } from 'rxjs/operators';
 
+import { CategoryCreateModel, CategoryUpdateModel } from './models/category.models';
 import { CategoryAllGQL } from './graphql/queries/__generated__/category-all.query.graphql.generated';
 import { CategoryFieldsFragment } from './graphql/fragments/__generated__/category.fragment.graphql.generated';
+import { CreateCategoryGQL } from './graphql/mutations/__generated__/category-create.mutation.graphql.generated';
+import { UpdateCategoryGQL } from './graphql/mutations/__generated__/category-update.mutation.graphql.generated';
 import { DeleteCategoryGQL } from './graphql/mutations/__generated__/category-delete.mutation.graphql.generated';
 
 @Injectable({
@@ -17,8 +21,11 @@ export class CategoryService implements OnDestroy {
   destroy$ = new Subject();
 
   constructor(
+    public router: Router,
     private toastr: ToastrService,
     private categoryAllGQL: CategoryAllGQL,
+    private createCategoryGQL: CreateCategoryGQL,
+    private updateCategoryGQL: UpdateCategoryGQL,
     private deleteCategoryGQL: DeleteCategoryGQL
   ) {}
 
@@ -44,6 +51,35 @@ export class CategoryService implements OnDestroy {
       });
   }
 
+  createCategory(data: CategoryCreateModel) {
+    this.createCategoryGQL
+      .mutate({
+        data: {
+          name: data.name,
+        },
+      })
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.loading.next(true))
+      )
+      .subscribe(
+        () => {
+          this.toastr.success('Categoria cadastrada com sucesso!');
+          this.router.navigate(['category/list']);
+        },
+        (ob: any) => {
+          const obStringify = JSON.stringify(ob.networkError.error.errors);
+          const obParsed = JSON.parse(obStringify);
+          const obError = obParsed[0];
+          this.toastr.error(obError.message);
+        }
+      );
+  }
+
+  updateCategory(data: CategoryUpdateModel) {
+    return;
+  }
+
   deleteCategory(item: string) {
     this.deleteCategoryGQL
       .mutate({
@@ -57,7 +93,7 @@ export class CategoryService implements OnDestroy {
           });
         },
         (error) => {
-          this.toastr.error('Falha ao tentar remover a categoria.', 'Falhou');
+          this.toastr.error('Falha ao remover a Categoria.', 'Falhou');
         }
       );
   }
