@@ -57,7 +57,7 @@ export class ProductService implements OnDestroy {
         data: {
           name: data.name,
           price: data.price,
-          categoryId: data.categoryId,
+          categoryId: Number(data.categoryId),
         },
       })
       .pipe(
@@ -67,7 +67,7 @@ export class ProductService implements OnDestroy {
       .subscribe(
         () => {
           this.toastr.success('Produto cadastrado com sucesso!');
-          this.router.navigate(['user/list']);
+          this.router.navigate(['product/list']);
         },
         (ob: any) => {
           const obStringify = JSON.stringify(ob.networkError.error.errors);

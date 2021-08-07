@@ -1,32 +1,38 @@
 <h3>Lista de Produtos</h3>
 <table class="table table-striped table-bordered table-hover">
-    <thead>
-        <tr>
-            <th class="column-id">ID</th>
-            <th>Nome</th>
-            <th class="column-price">Preço</th>
-            <th>Categoria</th>
-            <th class="column-buttons">
-                <app-button-create
-                    [disabled]="null" 
-                    [routerLink]="['../create']"></app-button-create>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let item of productAll">
-            <td class="column-id">{{item.id}}</td>
-            <td>{{item.name}}</td>
-            <td class="column-price">{{item.price}}</td>
-            <td>{{item.categoryId}}</td>
-            <td class="column-buttons">
-                <div class="buttons">
-                    <app-button-update
-                        [disabled]="null"
-                        [routerLink]="['../update/' + item.id]"></app-button-update>
-                    <app-button-delete (click)="buttonDelete($event, item)"></app-button-delete>
-                </div>
-            </td>
-        </tr>
-    </tbody>
+  <thead>
+    <tr>
+      <th class="column-id">ID</th>
+      <th>Nome</th>
+      <th class="column-price">Preço</th>
+      <th>Categoria</th>
+      <th class="column-buttons">
+        <app-button-create
+          [disabled]="true"
+          [routerLink]="['../create']"
+        ></app-button-create>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of productAll">
+      <td class="column-id">{{ item.id }}</td>
+      <td>{{ item.name }}</td>
+      <td class="column-price">{{ item.price }}</td>
+      <td *ngFor="let category of item.category">
+        {{ category?.name }}
+      </td>
+      <td class="column-buttons">
+        <div class="buttons">
+          <app-button-update
+            [disabled]="true"
+            [routerLink]="['../update/' + item.id]"
+          ></app-button-update>
+          <app-button-delete
+            (click)="buttonDelete($event, item)"
+          ></app-button-delete>
+        </div>
+      </td>
+    </tr>
+  </tbody>
 </table>

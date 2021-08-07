@@ -2,7 +2,7 @@
 <app-category-form></app-category-form>
 <div class="d-flex justify-content-center">    
     <app-button-create
-        [disabled]="categoryForm && categoryForm.categoryFormGroup.invalid"
+        [disabled]="categoryForm && categoryForm.categoryFormGroup.valid"
         (click)="sendForm()"></app-button-create>
     <app-button-cancel [routerLink]="['..']"></app-button-cancel>
 </div>

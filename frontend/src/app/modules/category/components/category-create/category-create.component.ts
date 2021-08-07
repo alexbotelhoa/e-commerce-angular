@@ -11,7 +11,7 @@ import { CategoryFormComponent } from '../category-form/category-form.component'
 })
 export class CategoryCreateComponent implements OnInit {
   @ViewChild(CategoryFormComponent)
-  categoryForm: CategoryFormComponent | null = null;
+  categoryForm: CategoryFormComponent | any = false;
 
   constructor(private categoryService: CategoryService) {}
 

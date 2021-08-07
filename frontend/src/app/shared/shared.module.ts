@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { GraphQLModule } from './graphql/graphql.module';
 
 import { CommonModule } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { HeaderComponent } from './components/header/header.component';
@@ -18,16 +19,17 @@ import { ButtonCancelComponent } from './components/button/button-cancel/button-
 import { ButtonDeleteComponent } from './components/button/button-delete/button-delete.component';
 
 const materialModules = [
-  MatProgressSpinnerModule,
-  MatFormFieldModule,
   MatInputModule,
+  MatSelectModule,
+  MatFormFieldModule,
+  MatProgressSpinnerModule,
 ];
 
 const sharedGraphql = [GraphQLModule];
 
 const sharedModules = [
-  CommonModule,
   FormsModule,
+  CommonModule,
   ReactiveFormsModule,
 ];
 

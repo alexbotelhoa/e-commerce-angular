@@ -16,7 +16,7 @@ export class ProductItemComponent implements OnInit {
 
   constructor(private productService: ProductService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   buttonDelete($event: any, item: any) {
     $event.preventDefault();

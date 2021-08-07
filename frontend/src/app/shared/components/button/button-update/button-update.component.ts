@@ -7,7 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class ButtonUpdateComponent implements OnInit {
   @Input()
-  disabled: boolean | null = true;
+  disabled: boolean = false;
 
   constructor() {}
 

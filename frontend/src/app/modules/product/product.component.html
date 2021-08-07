@@ -1,14 +1,18 @@
-<app-loading *ngIf="loading else ready"></app-loading>
+<app-loading *ngIf="loading; else ready"></app-loading>
 
 <ng-template #ready>
-    <app-product-item
-        *ngIf="productAll.length > 0 else empty"
-        [productAll]="productAll"></app-product-item>
+  <app-product-item
+    *ngIf="productAll.length > 0; else empty"
+    [productAll]="productAll"
+  ></app-product-item>
 </ng-template>
 
 <ng-template #empty>
-    <p>Nenhum Produto cadastrado!</p>
-    <div class="button-create">
-        <app-button-create [routerLink]="['../create']"></app-button-create>
-    </div>
+  <p>Nenhum Produto cadastrado!</p>
+  <div class="button-create">
+    <app-button-create
+      [disabled]="true"
+      [routerLink]="['../create']"
+    ></app-button-create>
+  </div>
 </ng-template>

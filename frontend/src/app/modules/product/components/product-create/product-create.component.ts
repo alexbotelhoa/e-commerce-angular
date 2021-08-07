@@ -11,7 +11,7 @@ import { ProductFormComponent } from '../product-form/product-form.component';
 })
 export class ProductCreateComponent implements OnInit {
   @ViewChild(ProductFormComponent)
-  productForm: ProductFormComponent | null = null;
+  productForm: ProductFormComponent | any = false;
 
   constructor(private productService: ProductService) {}
 

@@ -12,11 +12,11 @@ import { UserFormComponent } from '../user-form/user-form.component';
 })
 export class UserCreateComponent implements OnInit {
   @ViewChild(UserFormComponent)
-  userForm: UserFormComponent | null = null;
+  userForm: UserFormComponent | any = false;
 
   constructor(private userService: UserService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   sendForm() {
     const disabled = this.userForm?.userFormGroup.invalid;

@@ -1,14 +1,18 @@
-<app-loading *ngIf="loading else ready"></app-loading>
+<app-loading *ngIf="loading; else ready"></app-loading>
 
 <ng-template #ready>
-    <app-category-item
-        *ngIf="categoryAll.length > 0 else empty"
-        [categoryAll]="categoryAll"></app-category-item>
+  <app-category-item
+    *ngIf="categoryAll.length > 0; else empty"
+    [categoryAll]="categoryAll"
+  ></app-category-item>
 </ng-template>
 
 <ng-template #empty>
-    <p>Nenhuma Categoria cadastrada!</p>
-    <div class="button-create">
-        <app-button-create [routerLink]="['../create']"></app-button-create>
-    </div>
+  <p>Nenhuma Categoria cadastrada!</p>
+  <div class="button-create">
+    <app-button-create
+      [disabled]="true"
+      [routerLink]="['../create']"
+    ></app-button-create>
+  </div>
 </ng-template>
