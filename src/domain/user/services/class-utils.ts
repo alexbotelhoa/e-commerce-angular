@@ -6,6 +6,7 @@ import { ClassData } from "../types/class-data.type";
 import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
 
 export function isClassDataDivergent(existingClass: ClassEntity, receivedClass: ClassData): boolean {
+    const status = receivedClass.status.toUpperCase() === "C" ? false : true
     return (
         // make sure we are dealing with the same class
         existingClass.id === receivedClass.id &&
@@ -14,6 +15,7 @@ export function isClassDataDivergent(existingClass: ClassEntity, receivedClass: 
             existingClass.institutionId !== receivedClass.institutionId ||
             existingClass.carrerId !== receivedClass.carrerId ||
             existingClass.periodId !== receivedClass.periodId ||
+            (existingClass.hasActivated !== status) ||
             existingClass.sessionId !== receivedClass.sessionId ||
             existingClass.levelCodeId !== receivedClass.level.id ||
             (

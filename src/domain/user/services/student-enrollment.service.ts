@@ -62,55 +62,6 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
     };
 }
 
-
-/* async function studantEnrollmentWithClassBody(userData: {
-    id: string;
-    name: string;
-    macId: string | null;
-    macPass: string | null;
-}, db: DatabaseService, classData: ClassData) {
-    const levelData = classData.level;
-    const existingUser = await getUserById(db)(userData.id);
-    const existingClass = await getClassById(db)(classData.id);
-    const existingLevelCode = await getLevelCodeById(db)(classData.level.id);
-    if (!existingLevelCode) {
-        await insertLevelCode(db)({
-            id: levelData.id,
-            active: true,
-            code: levelData.code,
-            description: levelData.code,
-            levelId: null,
-        });
-    }
-    if (!existingClass) {
-        await insertClass(db)({
-            id: classData.id,
-            name: classData.name,
-            institutionId: classData.institutionId,
-            carrerId: classData.carrerId,
-            periodId: classData.periodId,
-            sessionId: classData.sessionId,
-            levelCodeId: classData.level.id,
-            startDate: classData.startDate,
-            endDate: classData.endDate,
-        });
-    } else {
-        if (isClassDataDivergent(existingClass, classData)) {
-            await updateClass(db)({
-                name: classData.name,
-                institutionId: classData.institutionId,
-                carrerId: classData.carrerId,
-                periodId: classData.periodId,
-                sessionId: classData.sessionId,
-                levelCodeId: classData.level.id,
-                startDate: classData.startDate,
-                endDate: classData.endDate,
-            })(where => where.andWhere('id', classData.id));
-        }
-    }
-    await upsertUserAndMakeEnrollment(existingUser, db, userData, levelData, classData);
-} */
-
 async function upsertUserAndMakeEnrollment(existingUser: {
     id: string; name: string;
 } | null,

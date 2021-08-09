@@ -742,6 +742,7 @@ export type GQLClass = {
   readonly campusId: Maybe<Scalars['ID']>;
   readonly carrerId: Maybe<Scalars['ID']>;
   readonly endDate: Maybe<Scalars['DateTime']>;
+  readonly hasActivated: Maybe<Scalars['Boolean']>;
   readonly hasEcampus: Maybe<Scalars['Boolean']>;
   readonly hasEyoung: Maybe<Scalars['Boolean']>;
   readonly id: Scalars['ID'];
@@ -1805,6 +1806,7 @@ export type GQLClassResolvers<ContextType = GraphQLContext, ParentType extends G
   campusId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
   carrerId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
   endDate: Resolver<Maybe<GQLResolversTypes['DateTime']>, ParentType, ContextType>;
+  hasActivated: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   hasEcampus: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   hasEyoung: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;

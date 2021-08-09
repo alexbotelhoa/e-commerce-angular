@@ -21,6 +21,7 @@ export const classEntityResolvers: Pick<GQLClassResolvers, keyof ClassEntity> = 
     regionalId: obj => obj.regionalId,
     hasEcampus: obj => obj.hasEcampus,
     hasEyoung: obj => obj.hasEyoung,
+    hasActivated: obj => obj.hasActivated,
 }
 
 const classLevelCodeSorter = createDataloaderSingleSort<LevelCodeEntity, number, LevelCodeEntity>('id');

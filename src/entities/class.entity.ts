@@ -13,6 +13,7 @@ export interface ClassEntity {
     endDate: string | Date | null;
     hasEcampus: boolean;
     hasEyoung: boolean;
+    hasActivated: boolean;
 }
 
 export const CLASS_TABLE = 'class';

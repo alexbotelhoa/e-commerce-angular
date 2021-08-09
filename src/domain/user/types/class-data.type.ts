@@ -16,6 +16,7 @@ export const ClassDataType = t.type({
     startDate: t.union([t.string, t.null]),
     endDate: t.union([t.string, t.null]),
     level: LevelDataType,
+    status: t.string,
 })
 
 export type ClassData = t.TypeOf<typeof ClassDataType>

@@ -20,7 +20,6 @@ import { insertUserRole, selectUserRole } from "../../../shared/repositories/use
 import { RoleId } from "../../../resolvers-types";
 import { UserRoleEntity } from "../../../entities/user-role.entity";
 import { deleteTeacherClass, insertTeacherClass, selectTeacherClass } from "../../../shared/repositories/teacher-class.repository";
-import { consolidateEntities, ConsolidateFinder } from "../../../shared/utils/consolidate-entities";
 import { insertMeeting, selectMeeting, updateMeeting } from "../../../shared/repositories/meeting.repository";
 import { upsertCountEntity } from "../../../shared/repositories/count.repository";
 import { Redis } from "ioredis";
@@ -65,6 +64,7 @@ export const processClassSync =
                 levelCodeId: levelCodeId,
                 campusId: campusId,
                 localId: localId,
+                hasActivated: classData.status.toUpperCase() === "C" ? false : true,
                 regionalId: regionalId,
                 hasEcampus: classData.hasECampusAccess,
                 hasEyoung: classData.mnft,
@@ -98,6 +98,7 @@ export const processClassSync =
                     campusId: campusId,
                     localId: localId,
                     regionalId: regionalId,
+                    hasActivated: classData.status.toUpperCase() === "C" ? false : true,
                     hasEcampus: classData.hasECampusAccess,
                     hasEyoung: classData.mnft,
                     ...times,
@@ -238,7 +239,7 @@ async function processMeetingData(db: DatabaseService, readonlyDatabase: Databas
             enabled: false,
         })(qb => qb.where("classId", "=", classId))
     }
-    if (redis && classData.status !== "C") {
+    if (redis && classData.status.toUpperCase() !== "C") {
         const [result] = await readonlyDatabase.raw(`
         select
         m.*,
@@ -275,9 +276,9 @@ async function processMeetingData(db: DatabaseService, readonlyDatabase: Databas
         teacher.classId = m.classId
     where
         c.id = '${classId}'
+        c.hasActivated = true
         and m.enabled = true
         order by m.date ASC
-    
         `)
         if (result) {
             await redis.set("meetingClass-" + classId, JSON.stringify(result))
