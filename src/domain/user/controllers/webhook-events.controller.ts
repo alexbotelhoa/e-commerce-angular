@@ -161,7 +161,7 @@ export const webhookEventsController = (db: DatabaseService, readonlyDatabase: D
                 success: false,
                 message: {
                     status: "Invalid input: ",
-                    error: error
+                    error: error.length > 0 ? error : decodedBody.left[0].context,
                 }
             };
             reply.send(response);
