@@ -6,9 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./button-delete.component.css'],
 })
 export class ButtonDeleteComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void { }
-
+  ngOnInit(): void {}
 }

@@ -1,22 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
     loadChildren: () =>
-      import('./modules/home/home.module').then(
-        (m) => m.HomeModule
-      ),
+      import('./modules/home/home.module').then((m) => m.HomeModule),
   },
   {
     path: 'user',
     loadChildren: () =>
-      import('./modules/user/user.module').then(
-        (m) => m.UserModule
-      ),
+      import('./modules/user/user.module').then((m) => m.UserModule),
   },
   {
     path: 'category',
@@ -28,14 +23,12 @@ const routes: Routes = [
   {
     path: 'product',
     loadChildren: () =>
-      import('./modules/product/product.module').then(
-        (m) => m.ProductModule
-      ),
+      import('./modules/product/product.module').then((m) => m.ProductModule),
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

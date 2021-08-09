@@ -9,8 +9,7 @@ export class ButtonCreateComponent implements OnInit {
   @Input()
   disabled: boolean = false;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void { }
-
+  ngOnInit(): void {}
 }

@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+} from '@angular/core';
 
 import { ProductService } from '../../product.service';
 import { ProductFieldsFragment } from './../../graphql/fragments/__generated__/product.fragment.graphql.generated';
@@ -16,7 +22,7 @@ export class ProductItemComponent implements OnInit {
 
   constructor(private productService: ProductService) {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   buttonDelete($event: any, item: any) {
     $event.preventDefault();
