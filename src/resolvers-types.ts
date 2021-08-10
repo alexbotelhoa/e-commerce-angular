@@ -512,6 +512,7 @@ export type GQLQuery = {
   readonly Carrer: Maybe<ReadonlyArray<Maybe<GQLCarrer>>>;
   readonly activeChallenge: Maybe<GQLChallenge>;
   readonly activities: ReadonlyArray<GQLActivityUnion>;
+  readonly activitiesListByProgressOrder: ReadonlyArray<GQLActivitiesListByProgressOrder>;
   readonly activity: Maybe<GQLActivityUnion>;
   readonly activityComments: ReadonlyArray<GQLActivityComment>;
   readonly availableActivitiesForCycle: ReadonlyArray<GQLActivityUnion>;
@@ -562,6 +563,11 @@ export type GQLQuery = {
 
 export type GQLQueryAnnotationArgs = {
   id: Scalars['ID'];
+};
+
+
+export type GQLQueryactivitiesListByProgressOrderArgs = {
+  courseId: Scalars['ID'];
 };
 
 
@@ -707,6 +713,13 @@ export type GQLQueryviewerEnrollmentLevelCodesArgs = {
 
 export type GQLQueryviewerTeacherLevelCodesArgs = {
   filters: Maybe<GQLViewerTeacherLevelCodesFilterInput>;
+};
+
+export type GQLActivitiesListByProgressOrder = {
+  readonly __typename?: 'ActivitiesListByProgressOrder';
+  readonly partId: Scalars['ID'];
+  readonly activityId: Scalars['ID'];
+  readonly cycleOrder: Scalars['ID'];
 };
 
 export type GQLActivityCommentsQueryInput = {
@@ -1480,6 +1493,7 @@ export type GQLResolversTypes = {
   UpdateThemeInput: GQLUpdateThemeInput;
   UpsertUserInterestInput: GQLUpsertUserInterestInput;
   Query: ResolverTypeWrapper<{}>;
+  ActivitiesListByProgressOrder: ResolverTypeWrapper<GQLActivitiesListByProgressOrder>;
   ActivityCommentsQueryInput: GQLActivityCommentsQueryInput;
   ClassesQueryInput: GQLClassesQueryInput;
   InterestPaginationData: GQLInterestPaginationData;
@@ -1600,6 +1614,7 @@ export type GQLResolversParentTypes = {
   UpdateThemeInput: GQLUpdateThemeInput;
   UpsertUserInterestInput: GQLUpsertUserInterestInput;
   Query: {};
+  ActivitiesListByProgressOrder: GQLActivitiesListByProgressOrder;
   ActivityCommentsQueryInput: GQLActivityCommentsQueryInput;
   ClassesQueryInput: GQLClassesQueryInput;
   InterestPaginationData: GQLInterestPaginationData;
@@ -1755,6 +1770,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   Carrer: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Carrer']>>>, ParentType, ContextType>;
   activeChallenge: Resolver<Maybe<GQLResolversTypes['Challenge']>, ParentType, ContextType>;
   activities: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType>;
+  activitiesListByProgressOrder: Resolver<ReadonlyArray<GQLResolversTypes['ActivitiesListByProgressOrder']>, ParentType, ContextType, RequireFields<GQLQueryactivitiesListByProgressOrderArgs, 'courseId'>>;
   activity: Resolver<Maybe<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryactivityArgs, 'id'>>;
   activityComments: Resolver<ReadonlyArray<GQLResolversTypes['ActivityComment']>, ParentType, ContextType, RequireFields<GQLQueryactivityCommentsArgs, 'data'>>;
   availableActivitiesForCycle: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryavailableActivitiesForCycleArgs, 'cycleId'>>;
@@ -1800,6 +1816,13 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   viewerEnrollmentLevelCodes: Resolver<ReadonlyArray<GQLResolversTypes['LevelCode']>, ParentType, ContextType, RequireFields<GQLQueryviewerEnrollmentLevelCodesArgs, never>>;
   viewerTeacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType>;
   viewerTeacherLevelCodes: Resolver<ReadonlyArray<GQLResolversTypes['LevelCode']>, ParentType, ContextType, RequireFields<GQLQueryviewerTeacherLevelCodesArgs, never>>;
+};
+
+export type GQLActivitiesListByProgressOrderResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ActivitiesListByProgressOrder'] = GQLResolversParentTypes['ActivitiesListByProgressOrder']> = {
+  partId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  activityId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  cycleOrder: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GQLClassResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Class'] = GQLResolversParentTypes['Class']> = {
@@ -2320,6 +2343,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   DeleteActivityCommentResult: GQLDeleteActivityCommentResultResolvers<ContextType>;
   StartActivityResult: GQLStartActivityResultResolvers<ContextType>;
   Query: GQLQueryResolvers<ContextType>;
+  ActivitiesListByProgressOrder: GQLActivitiesListByProgressOrderResolvers<ContextType>;
   Class: GQLClassResolvers<ContextType>;
   User: GQLUserResolvers<ContextType>;
   ActivityType: GQLActivityTypeResolvers<ContextType>;

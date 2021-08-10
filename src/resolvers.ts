@@ -59,6 +59,7 @@ import { logResolver } from "./shared/resolvers/log.resolver";
 import { countResolver } from "./shared/resolvers/count.resolver";
 import { carrerResolver } from "./shared/resolvers/carrer.resolver";
 import { carrerPermissionResolver } from "./shared/resolvers/carrer-permission.resolvers";
+import { activitiesListResolver } from "./shared/resolvers/activities-on-list-on-progress-order.resolvers";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -126,5 +127,6 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Count: countResolver,
     Carrer: carrerResolver,
     CarrerPermission: carrerPermissionResolver,
+    ActivitiesListByProgressOrder: activitiesListResolver,
 };
 

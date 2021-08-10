@@ -1,0 +1,10 @@
+type Query {
+    activitiesListByProgressOrder(courseId: ID!): [ActivitiesListByProgressOrder!]!
+}
+
+
+type ActivitiesListByProgressOrder {
+    partId: ID!
+    activityId: ID!
+    cycleOrder: ID!
+}
