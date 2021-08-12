@@ -14,9 +14,9 @@ export class UserCreateComponent implements OnInit {
   @ViewChild(UserFormComponent)
   userForm: UserFormComponent | any = false;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   sendForm() {
     const disabled = this.userForm?.userFormGroup.invalid;

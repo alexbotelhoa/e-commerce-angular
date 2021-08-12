@@ -1,3 +1,4 @@
+import { UserByIdGQL } from './graphql/queries/__generated__/user-id.query.graphql.generated';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -15,8 +16,9 @@ import { DeleteUserGQL } from './graphql/mutations/__generated__/user-delete.mut
   providedIn: 'root',
 })
 export class UserService implements OnDestroy {
-  public userAll = new BehaviorSubject<UserFieldsFragment[]>([]);
   public loading = new BehaviorSubject<boolean>(true);
+  public userAll = new BehaviorSubject<UserFieldsFragment[]>([]);
+  public userId = new BehaviorSubject<UserFieldsFragment[]>([]);
 
   destroy$ = new Subject();
 
@@ -24,6 +26,7 @@ export class UserService implements OnDestroy {
     public router: Router,
     private toastr: ToastrService,
     private userAllGQL: UserAllGQL,
+    private UserByIdGQL: UserByIdGQL,
     private createUserGQL: CreateUserGQL,
     private updateUserGQL: UpdateUserGQL,
     private deleteUserGQL: DeleteUserGQL
@@ -37,7 +40,7 @@ export class UserService implements OnDestroy {
         fetchPolicy: 'network-only',
       })
       .pipe(
-        delay(2000),
+        delay(1000),
         takeUntil(this.destroy$),
         finalize(() => this.loading.next(false))
       )
@@ -48,6 +51,33 @@ export class UserService implements OnDestroy {
             : ({} as any);
 
         this.userAll.next(user);
+      });
+  }
+
+  getUserId(item: string) {
+    this.userId.next([]);
+
+    this.UserByIdGQL
+      .fetch(
+        {
+          id: item,
+        },
+        {
+          fetchPolicy: 'network-only',
+        }
+      )
+      .pipe(
+        delay(1000),
+        takeUntil(this.destroy$),
+        finalize(() => this.loading.next(false))
+      )
+      .subscribe((result) => {
+        const user: any =
+          result.data && result.data.userById
+            ? result.data.userById
+            : ({} as any);
+
+        this.userId.next(user);
       });
   }
 
@@ -77,8 +107,31 @@ export class UserService implements OnDestroy {
       );
   }
 
-  updateUser(data: UserUpdateModel) {
-    return
+  updateUser(data: UserUpdateModel, id: string) {
+    this.updateUserGQL
+      .mutate({
+        data: {
+          id: id,
+          name: data.name,
+          email: data.email,
+        },
+      })
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.loading.next(true))
+      )
+      .subscribe(
+        () => {
+          this.toastr.success('Usuário atualizado com sucesso!');
+          this.router.navigate(['user/list']);
+        },
+        (ob: any) => {
+          const obStringify = JSON.stringify(ob.networkError.error.errors);
+          const obParsed = JSON.parse(obStringify);
+          const obError = obParsed[0];
+          this.toastr.error(obError.message);
+        }
+      );
   }
 
   deleteUser(item: string) {

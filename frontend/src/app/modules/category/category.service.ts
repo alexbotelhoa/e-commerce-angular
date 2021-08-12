@@ -4,7 +4,10 @@ import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { delay, takeUntil, finalize } from 'rxjs/operators';
 
-import { CategoryCreateModel, CategoryUpdateModel } from './models/category.models';
+import {
+  CategoryCreateModel,
+  CategoryUpdateModel,
+} from './models/category.models';
 import { CategoryAllGQL } from './graphql/queries/__generated__/category-all.query.graphql.generated';
 import { CategoryFieldsFragment } from './graphql/fragments/__generated__/category.fragment.graphql.generated';
 import { CreateCategoryGQL } from './graphql/mutations/__generated__/category-create.mutation.graphql.generated';
@@ -37,7 +40,7 @@ export class CategoryService implements OnDestroy {
         fetchPolicy: 'network-only',
       })
       .pipe(
-        delay(2000),
+        delay(1000),
         takeUntil(this.destroy$),
         finalize(() => this.loading.next(false))
       )

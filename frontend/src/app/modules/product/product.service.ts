@@ -4,7 +4,10 @@ import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { delay, takeUntil, finalize } from 'rxjs/operators';
 
-import { ProductCreateModel, ProductUpdateModel } from './models/product.models';
+import {
+  ProductCreateModel,
+  ProductUpdateModel,
+} from './models/product.models';
 import { ProductAllGQL } from './graphql/queries/__generated__/product-all.query.graphql.generated';
 import { ProductFieldsFragment } from './graphql/fragments/__generated__/product.fragment.graphql.generated';
 import { CreateProductGQL } from './graphql/mutations/__generated__/product-create.mutation.graphql.generated';
@@ -37,7 +40,7 @@ export class ProductService implements OnDestroy {
         fetchPolicy: 'network-only',
       })
       .pipe(
-        delay(2000),
+        delay(1000),
         takeUntil(this.destroy$),
         finalize(() => this.loading.next(false))
       )

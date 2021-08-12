@@ -1,11 +1,13 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { TypeToForm } from './../../../../shared/types/type-to-form.type';
+import { UserFieldsFragment } from './../../graphql/fragments/__generated__/user.fragment.graphql.generated';
 
 export type UserFormShape = {
-  name: string;
-  email: string;
+  // id: string;
+  name: string | null;
+  email: string | null;
 }
 
 @Component({
@@ -13,8 +15,11 @@ export type UserFormShape = {
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.css'],
 })
-export class UserFormComponent implements OnInit {
+export class UserFormComponent implements OnInit, OnChanges {
   readonly userFormGroup: FormGroup;
+
+  @Input()
+  userId: UserFieldsFragment[] | null = null;
 
   constructor() {
     const formConfig: TypeToForm<UserFormShape> = {
@@ -27,22 +32,24 @@ export class UserFormComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  // getFormValue(): UserFormShape {
-  //   return this.userFormGroup.value;
-  // }
+  ngOnChanges(changes: SimpleChanges): any {
+    if (changes.userId) {
+      if (this.userId) {
+        const result = Object.values(this.userId);
 
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   if (changes.user) {
-  //     if (this.user) {
-  //       this.setFormValue({
-  //         name: this.user.name,
-  //         email: this.user.description,
-  //       });
-  //     }
-  //   }
-  // }
+        this.setFormValue({
+          name: result[1].toString(),
+          email: result[2].toString(),
+        });
+      }
+    }
+  }
 
-  // setFormValue(value: Partial<UserFormShape>) {
-  //   this.userFormGroup.patchValue(value);
-  // }
+  getFormValue(): UserFormShape {
+    return this.userFormGroup.value;
+  }
+
+  setFormValue(value: Partial<UserFormShape>) {
+    this.userFormGroup.patchValue(value);
+  }
 }
