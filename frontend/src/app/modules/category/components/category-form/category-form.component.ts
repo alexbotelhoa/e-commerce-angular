@@ -20,10 +20,11 @@ export type CategoryFormShape = {
   styleUrls: ['./category-form.component.css'],
 })
 export class CategoryFormComponent implements OnInit, OnChanges {
-  readonly categoryFormGroup: FormGroup;
 
   @Input()
   categoryId: CategoryFieldsFragment[] | null = null;
+
+  readonly categoryFormGroup: FormGroup;
 
   constructor() {
     const formConfig: TypeToForm<CategoryFormShape> = {

@@ -11,6 +11,7 @@ import { CategoryFormComponent } from '../category-form/category-form.component'
   styleUrls: ['./category-create.component.css'],
 })
 export class CategoryCreateComponent implements OnInit {
+
   @ViewChild(CategoryFormComponent)
   categoryForm: CategoryFormComponent | any = false;
 

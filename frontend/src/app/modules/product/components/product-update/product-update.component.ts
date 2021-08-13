@@ -13,6 +13,7 @@ import { ProductFieldsFragment } from '../../graphql/fragments/__generated__/pro
   styleUrls: ['./product-update.component.css'],
 })
 export class ProductUpdateComponent implements OnInit {
+
   @ViewChild(ProductFormComponent)
   productForm: ProductFormComponent | any = false;
 

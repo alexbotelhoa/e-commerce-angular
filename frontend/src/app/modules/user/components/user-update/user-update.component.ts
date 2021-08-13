@@ -13,6 +13,7 @@ import { UserFieldsFragment } from '../../graphql/fragments/__generated__/user.f
   styleUrls: ['./user-update.component.css'],
 })
 export class UserUpdateComponent implements OnInit {
+
   @ViewChild(UserFormComponent)
   userForm: UserFormComponent | any = false;
 

@@ -17,6 +17,7 @@ import { CategoryFieldsFragment } from './../../graphql/fragments/__generated__/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryItemComponent implements OnInit {
+
   @Input()
   categoryAll: ReadonlyArray<CategoryFieldsFragment> = [];
 

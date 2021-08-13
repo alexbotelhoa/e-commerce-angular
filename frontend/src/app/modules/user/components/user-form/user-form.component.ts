@@ -21,10 +21,11 @@ export type UserFormShape = {
   styleUrls: ['./user-form.component.css'],
 })
 export class UserFormComponent implements OnInit, OnChanges {
-  readonly userFormGroup: FormGroup;
 
   @Input()
   userId: UserFieldsFragment[] | null = null;
+
+  readonly userFormGroup: FormGroup;
 
   constructor() {
     const formConfig: TypeToForm<UserFormShape> = {

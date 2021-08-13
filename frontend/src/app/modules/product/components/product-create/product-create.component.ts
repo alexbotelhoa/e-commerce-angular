@@ -11,6 +11,7 @@ import { ProductFormComponent } from '../product-form/product-form.component';
   styleUrls: ['./product-create.component.css'],
 })
 export class ProductCreateComponent implements OnInit {
+
   @ViewChild(ProductFormComponent)
   productForm: ProductFormComponent | any = false;
 
