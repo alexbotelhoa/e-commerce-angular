@@ -19,6 +19,12 @@ export const userByFieldQueryResolver: GQLQueryResolvers['userByField'] = async 
         if (fields.email && fields.email.length > 0) {
             query.where("email", "like", `%${fields.email}%`);
         };
+        if (fields.cpf && fields.cpf > 0) {
+            query.where("cpf", "like", `%${fields.cpf}%`);
+        };
+        if (fields.telephone && fields.telephone > 0) {
+            query.where("telephone", "like", `%${fields.telephone}%`);
+        };
     }
 
     return await query;

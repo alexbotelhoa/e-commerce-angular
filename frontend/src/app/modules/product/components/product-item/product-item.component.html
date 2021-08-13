@@ -17,7 +17,7 @@
     <tr *ngFor="let item of productAll">
       <td class="column-id">{{ item.id }}</td>
       <td>{{ item.name }}</td>
-      <td class="column-price">{{ item.price }}</td>
+      <td class="column-price">{{ item.price | currency:'BRL' }}</td>
       <td *ngFor="let category of item.category">
         {{ category?.name }}
       </td>

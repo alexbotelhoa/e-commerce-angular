@@ -7,4 +7,3 @@ export async function seed(knex: Knex): Promise<void> {
 
     await insertUser(knex)(usersData);
 }
-

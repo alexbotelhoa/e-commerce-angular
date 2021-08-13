@@ -9,13 +9,15 @@ import {
 export type User = {
     name: string
     email: string
+    cpf: number
+    telephone: number
 }
 
 export const createUserMutationResolver: GQLMutationResolvers['createUser'] = async (obj, { data }: { data: User }, { database: db }) => {
-    const { name, email } = data;
+    const { name, email, cpf, telephone } = data;
 
     const insertedId = await db.transaction(async (trx) => {
-        return await insertUser(trx)({ name, email });
+        return await insertUser(trx)({ name, email, cpf, telephone });
     });
 
     return (await getUserById(db)(insertedId))!;
@@ -29,9 +31,11 @@ export const updateUserMutationResolver: GQLMutationResolvers['updateUser'] = as
 
     await context.database.transaction(async (trx) => {
         await updateUser(trx)({
-            name: data.name,
-            email: data.email,
-        })(builder => builder.andWhere('id', data.id));
+          name: data.name,
+          email: data.email,
+          cpf: data.cpf,
+          telephone: data.telephone,
+        })((builder) => builder.andWhere("id", data.id));
     })
 
     return (await getUserById(context.database)(data.id))!;

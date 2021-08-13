@@ -7,4 +7,6 @@ type Query {
 input userQueryInput {
   name: String
   email: String
+  cpf: Int
+  telephone: Int
 }

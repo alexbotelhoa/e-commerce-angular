@@ -11,6 +11,8 @@ export async function up(knex: Knex): Promise<void> {
             table.increments('id').primary();
             table.string('name', 200).notNullable();
             table.string('email', 100).notNullable();
+            table.integer("cpf", 11).notNullable();
+            table.integer("telephone", 11).notNullable();
             table.timestamp('createdAt').notNullable().defaultTo(knex.fn.now());
             table.timestamp('updatedAt').notNullable().defaultTo(knex.fn.now());
         });
@@ -21,4 +23,3 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
     await knex.schema.dropTableIfExists(USER_TABLE);
 }
-

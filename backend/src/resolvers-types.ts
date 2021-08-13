@@ -175,17 +175,23 @@ export type GQLProduct = {
 export type GQLCreateUserInput = {
   readonly name: Scalars['String'];
   readonly email: Scalars['String'];
+  readonly cpf: Scalars['Int'];
+  readonly telephone: Scalars['Int'];
 };
 
 export type GQLUpdateUserInput = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
   readonly email: Scalars['String'];
+  readonly cpf: Scalars['Int'];
+  readonly telephone: Scalars['Int'];
 };
 
 export type GQLuserQueryInput = {
   readonly name: Maybe<Scalars['String']>;
   readonly email: Maybe<Scalars['String']>;
+  readonly cpf: Maybe<Scalars['Int']>;
+  readonly telephone: Maybe<Scalars['Int']>;
 };
 
 export type GQLUser = {
@@ -193,6 +199,8 @@ export type GQLUser = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
   readonly email: Scalars['String'];
+  readonly cpf: Scalars['Int'];
+  readonly telephone: Scalars['Int'];
   readonly createdAt: Maybe<Scalars['String']>;
   readonly updatedAt: Maybe<Scalars['String']>;
 };
@@ -392,6 +400,8 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   email: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  cpf: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  telephone: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   createdAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   updatedAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

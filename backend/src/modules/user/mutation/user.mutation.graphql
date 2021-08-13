@@ -7,10 +7,14 @@ type Mutation {
 input CreateUserInput {
   name: String!
   email: String!
+  cpf: Int!
+  telephone: Int!
 }
 
 input UpdateUserInput {
   id: ID!
   name: String!
   email: String!
+  cpf: Int!
+  telephone: Int!
 }

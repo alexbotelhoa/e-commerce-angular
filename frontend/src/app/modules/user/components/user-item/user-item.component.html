@@ -5,6 +5,7 @@
             <th class="column-id">ID</th>
             <th>Nome</th>
             <th>E-mail</th>
+            <th>Criado em</th>
             <th class="column-buttons">
                 <app-button-create
                     [disabled]="true" 
@@ -15,8 +16,9 @@
     <tbody>
         <tr *ngFor="let item of userAll">
             <td class="column-id">{{ item.id }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.email }}</td>
+            <td>{{ item.name | uppercase }}</td>
+            <td>{{ item.email | lowercase }}</td>
+            <td>{{ item.createdAt | date: 'EEE dd/mm/YYY HH:m:ss' }}</td>
             <td class="column-buttons">
                 <div class="buttons">
                     <app-button-update
