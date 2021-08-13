@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+} from '@angular/core';
 
 import { CategoryService } from '../../category.service';
 import { CategoryFieldsFragment } from './../../graphql/fragments/__generated__/category.fragment.graphql.generated';
@@ -18,7 +24,7 @@ export class CategoryItemComponent implements OnInit {
 
   ngOnInit(): void {}
 
-   buttonDelete($event: any, item: any) {
+  buttonDelete($event: any, item: any) {
     $event.preventDefault();
     if (confirm('Deseja realmente remover a Categoria "' + item.name + '"?')) {
       this.categoryService.deleteCategory(item.id);

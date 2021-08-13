@@ -1,14 +1,19 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { TypeToForm } from './../../../../shared/types/type-to-form.type';
 import { UserFieldsFragment } from './../../graphql/fragments/__generated__/user.fragment.graphql.generated';
 
 export type UserFormShape = {
-  // id: string;
   name: string | null;
   email: string | null;
-}
+};
 
 @Component({
   selector: 'app-user-form',

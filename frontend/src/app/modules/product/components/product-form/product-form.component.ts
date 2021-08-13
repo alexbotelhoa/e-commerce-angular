@@ -1,9 +1,15 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { CategoryService } from 'src/app/modules/category/category.service';
-import { getEnabledCategories } from 'trace_events';
 
 import { TypeToForm } from './../../../../shared/types/type-to-form.type';
+import { CategoryService } from 'src/app/modules/category/category.service';
+import { ProductFieldsFragment } from '../../graphql/fragments/__generated__/product.fragment.graphql.generated';
 
 export type ProductFormShape = {
   name: string;
@@ -14,15 +20,18 @@ export type ProductFormShape = {
 export type CategorySelect = {
   id: number;
   name: string;
-}
+};
 
 @Component({
   selector: 'app-product-form',
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.css'],
 })
-export class ProductFormComponent implements OnInit {
+export class ProductFormComponent implements OnInit, OnChanges {
   readonly productFormGroup: FormGroup;
+
+  @Input()
+  productId: ProductFieldsFragment[] | null = null;
 
   categoryAll$ = this.categoryService.categoryAll.asObservable();
   categoryAll: CategorySelect[] = [];
@@ -44,5 +53,27 @@ export class ProductFormComponent implements OnInit {
 
   getCategoryAll() {
     this.categoryService.getCategoryAll();
+  }
+
+  ngOnChanges(changes: SimpleChanges): any {
+    if (changes.productId) {
+      if (this.productId) {
+        const result = Object.values(this.productId);
+
+        this.setFormValue({
+          name: result[1].toString(),
+          price: Number(result[2]),
+          categoryId: Number(result[3]),
+        });
+      }
+    }
+  }
+
+  getFormValue(): ProductFormShape {
+    return this.productFormGroup.value;
+  }
+
+  setFormValue(value: Partial<ProductFormShape>) {
+    this.productFormGroup.patchValue(value);
   }
 }

@@ -1,1 +1,12 @@
-<p>product-update works!</p>
+<app-loading *ngIf="loading; else ready"></app-loading>
+
+<ng-template #ready>
+    <h3>Alterar Produto</h3>
+    <app-product-form [productId]="productId"></app-product-form>
+    <div class="d-flex justify-content-center">    
+        <app-button-create
+            [disabled]="productForm && productForm.productFormGroup.valid"
+            (click)="sendForm()"></app-button-create>
+        <app-button-cancel [routerLink]="['..']"></app-button-cancel>
+    </div>
+</ng-template>

@@ -7,8 +7,7 @@
       <th class="column-buttons">
         <app-button-create
           [disabled]="true"
-          [routerLink]="['../create']"
-        ></app-button-create>
+          [routerLink]="['../create']"></app-button-create>
       </th>
     </tr>
   </thead>
@@ -20,11 +19,9 @@
         <div class="buttons">
           <app-button-update
             [disabled]="true"
-            [routerLink]="['../update/' + item.id]"
-          ></app-button-update>
+            [routerLink]="['../update/' + item.id]"></app-button-update>
           <app-button-delete
-            (click)="buttonDelete($event, item)"
-          ></app-button-delete>
+            (click)="buttonDelete($event, item)"></app-button-delete>
         </div>
       </td>
     </tr>

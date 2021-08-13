@@ -16,22 +16,22 @@ export class UserUpdateComponent implements OnInit {
   @ViewChild(UserFormComponent)
   userForm: UserFormComponent | any = false;
 
-  userId: UserFieldsFragment[] | null = null;
-  loading: boolean = true;
-
-  userId$ = this.userService.userId.asObservable();
-  loading$ = this.userService.loading.asObservable();
+  public loading: boolean = true;
+  public loading$ = this.userService.loading.asObservable();
+  
+  public userId: UserFieldsFragment[] | null = null;
+  public userId$ = this.userService.userId.asObservable();
 
   public selectedUserId: string = '';
 
   constructor(
     private userService: UserService,
-    private activatedRoute: ActivatedRoute,
+    private activatedRoute: ActivatedRoute
   ) {
     this.userId$.subscribe((res) => (this.userId = res));
     this.loading$.subscribe((res) => (this.loading = res));
     this.activatedRoute.params.subscribe(
-      (params) => this.selectedUserId = params['id']
+      (params) => (this.selectedUserId = params['id'])
     );
   }
 

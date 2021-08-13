@@ -1,1 +1,12 @@
-<p>category-update works!</p>
+<app-loading *ngIf="loading; else ready"></app-loading>
+
+<ng-template #ready>
+    <h3>Alterar Categoria</h3>
+    <app-category-form [categoryId]="categoryId"></app-category-form>
+    <div class="d-flex justify-content-center">    
+        <app-button-create
+            [disabled]="categoryForm && categoryForm.categoryFormGroup.valid"
+            (click)="sendForm()"></app-button-create>
+        <app-button-cancel [routerLink]="['..']"></app-button-cancel>
+    </div>
+</ng-template>
