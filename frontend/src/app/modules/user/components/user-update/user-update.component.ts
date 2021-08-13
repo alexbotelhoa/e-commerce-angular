@@ -13,13 +13,12 @@ import { UserFieldsFragment } from '../../graphql/fragments/__generated__/user.f
   styleUrls: ['./user-update.component.css'],
 })
 export class UserUpdateComponent implements OnInit {
-
   @ViewChild(UserFormComponent)
   userForm: UserFormComponent | any = false;
 
   public loading: boolean = true;
   public loading$ = this.userService.loading.asObservable();
-  
+
   public userId: UserFieldsFragment[] | null = null;
   public userId$ = this.userService.userId.asObservable();
 

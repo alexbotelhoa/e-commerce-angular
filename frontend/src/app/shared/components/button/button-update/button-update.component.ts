@@ -6,7 +6,6 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./button-update.component.css'],
 })
 export class ButtonUpdateComponent implements OnInit {
-
   @Input()
   disabled: boolean = false;
 

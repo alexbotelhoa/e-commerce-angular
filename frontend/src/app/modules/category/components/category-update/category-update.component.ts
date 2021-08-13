@@ -13,7 +13,6 @@ import { CategoryFieldsFragment } from '../../graphql/fragments/__generated__/ca
   styleUrls: ['./category-update.component.css'],
 })
 export class CategoryUpdateComponent implements OnInit {
-
   @ViewChild(CategoryFormComponent)
   categoryForm: CategoryFormComponent | any = false;
 

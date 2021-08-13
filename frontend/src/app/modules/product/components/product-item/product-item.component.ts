@@ -17,7 +17,6 @@ import { ProductFieldsFragment } from './../../graphql/fragments/__generated__/p
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductItemComponent implements OnInit {
-
   @Input()
   productAll: ReadonlyArray<ProductFieldsFragment> = [];
 

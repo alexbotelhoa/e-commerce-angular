@@ -20,7 +20,6 @@ export type CategoryFormShape = {
   styleUrls: ['./category-form.component.css'],
 })
 export class CategoryFormComponent implements OnInit, OnChanges {
-
   @Input()
   categoryId: CategoryFieldsFragment[] | null = null;
 

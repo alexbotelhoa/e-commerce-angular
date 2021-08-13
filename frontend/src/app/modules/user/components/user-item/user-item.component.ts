@@ -17,7 +17,6 @@ import { UserFieldsFragment } from '../../graphql/fragments/__generated__/user.f
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserItemComponent implements OnInit {
-
   @Input()
   userAll: ReadonlyArray<UserFieldsFragment> = [];
 

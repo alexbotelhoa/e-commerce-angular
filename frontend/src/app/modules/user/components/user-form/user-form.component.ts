@@ -21,7 +21,6 @@ export type UserFormShape = {
   styleUrls: ['./user-form.component.css'],
 })
 export class UserFormComponent implements OnInit, OnChanges {
-
   @Input()
   userId: UserFieldsFragment[] | null = null;
 

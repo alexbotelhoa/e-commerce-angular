@@ -6,7 +6,6 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./button-create.component.css'],
 })
 export class ButtonCreateComponent implements OnInit {
-
   @Input()
   disabled: boolean = false;
 
