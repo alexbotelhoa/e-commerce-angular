@@ -1,8 +1,10 @@
 <h3>Criar Produto</h3>
 <app-product-form></app-product-form>
-<div class="d-flex justify-content-center">
-    <app-button-create
-        [disabled]="productForm && productForm.productFormGroup.valid"
-        (click)="sendForm()"></app-button-create>
-    <app-button-cancel [routerLink]="['..']"></app-button-cancel>
+<div class="column-buttons">
+    <div class="buttons">
+        <app-button-create
+            [disabled]="productForm && productForm.productFormGroup.valid"
+            (click)="sendForm()"></app-button-create>
+        <app-button-cancel [routerLink]="['..']"></app-button-cancel>
+    </div>
 </div>
