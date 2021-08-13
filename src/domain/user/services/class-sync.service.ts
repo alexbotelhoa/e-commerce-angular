@@ -239,6 +239,10 @@ async function processMeetingData(db: DatabaseService, readonlyDatabase: Databas
             enabled: false,
         })(qb => qb.where("classId", "=", classId))
     }
+    if (redis && classData.status.toUpperCase() === "C") {
+        await redis.del("meetingClass-" + classId)
+    }
+
     if (redis && classData.status.toUpperCase() !== "C") {
         const [result] = await readonlyDatabase.raw(`
         select
