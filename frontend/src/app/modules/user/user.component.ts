@@ -9,15 +9,15 @@ import { UserFieldsFragment } from './graphql/fragments/__generated__/user.fragm
   styleUrls: ['./user.component.css'],
 })
 export class UserComponent implements OnInit {
-  userAll: ReadonlyArray<UserFieldsFragment> = [];
-  loading: boolean = true;
+  public loading: boolean = true;
+  public loading$ = this.userService.loading.asObservable();
 
-  userAll$ = this.userService.userAll.asObservable();
-  loading$ = this.userService.loading.asObservable();
+  public userAll: ReadonlyArray<UserFieldsFragment> = [];
+  public userAll$ = this.userService.userAll.asObservable();
 
   constructor(private userService: UserService) {
-    this.userAll$.subscribe((res) => (this.userAll = res));
     this.loading$.subscribe((res) => (this.loading = res));
+    this.userAll$.subscribe((res) => (this.userAll = res));
   }
 
   ngOnInit(): void {

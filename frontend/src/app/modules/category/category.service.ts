@@ -4,11 +4,9 @@ import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { delay, takeUntil, finalize } from 'rxjs/operators';
 
-import {
-  CategoryCreateModel,
-  CategoryUpdateModel,
-} from './models/category.models';
+import { CategoryCreateModel, CategoryUpdateModel } from './models/category.models';
 import { CategoryAllGQL } from './graphql/queries/__generated__/category-all.query.graphql.generated';
+import { CategoryByIdGQL } from './graphql/queries/__generated__/category-id.query.graphql.generated';
 import { CategoryFieldsFragment } from './graphql/fragments/__generated__/category.fragment.graphql.generated';
 import { CreateCategoryGQL } from './graphql/mutations/__generated__/category-create.mutation.graphql.generated';
 import { UpdateCategoryGQL } from './graphql/mutations/__generated__/category-update.mutation.graphql.generated';
@@ -18,23 +16,23 @@ import { DeleteCategoryGQL } from './graphql/mutations/__generated__/category-de
   providedIn: 'root',
 })
 export class CategoryService implements OnDestroy {
-  public categoryAll = new BehaviorSubject<CategoryFieldsFragment[]>([]);
-  public loading = new BehaviorSubject<boolean>(true);
+  public destroy$ = new Subject();
 
-  destroy$ = new Subject();
+  public loading = new BehaviorSubject<boolean>(true);
+  public categoryAll = new BehaviorSubject<CategoryFieldsFragment[]>([]);
+  public categoryId = new BehaviorSubject<CategoryFieldsFragment[]>([]);
 
   constructor(
     public router: Router,
     private toastr: ToastrService,
     private categoryAllGQL: CategoryAllGQL,
+    private categoryByIdGQL: CategoryByIdGQL,
     private createCategoryGQL: CreateCategoryGQL,
     private updateCategoryGQL: UpdateCategoryGQL,
     private deleteCategoryGQL: DeleteCategoryGQL
   ) {}
 
   getCategoryAll() {
-    this.categoryAll.next([]);
-
     this.categoryAllGQL
       .fetch(undefined, {
         fetchPolicy: 'network-only',
@@ -51,6 +49,31 @@ export class CategoryService implements OnDestroy {
             : ({} as any);
 
         this.categoryAll.next(category);
+      });
+  }
+
+  getCategoryId(item: string) {
+    this.categoryByIdGQL
+      .fetch(
+        {
+          id: item,
+        },
+        {
+          fetchPolicy: 'network-only',
+        }
+      )
+      .pipe(
+        delay(1000),
+        takeUntil(this.destroy$),
+        finalize(() => this.loading.next(false))
+      )
+      .subscribe((result) => {
+        const category: any =
+          result.data && result.data.categoryById
+            ? result.data.categoryById
+            : ({} as any);
+
+        this.categoryId.next(category);
       });
   }
 
@@ -79,8 +102,30 @@ export class CategoryService implements OnDestroy {
       );
   }
 
-  updateCategory(data: CategoryUpdateModel) {
-    return;
+  updateCategory(data: CategoryUpdateModel, id: string) {
+    this.updateCategoryGQL
+      .mutate({
+        data: {
+          id: id,
+          name: data.name,
+        },
+      })
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.loading.next(true))
+      )
+      .subscribe(
+        () => {
+          this.toastr.success('Categoria atualizada com sucesso!');
+          this.router.navigate(['category/list']);
+        },
+        (ob: any) => {
+          const obStringify = JSON.stringify(ob.networkError.error.errors);
+          const obParsed = JSON.parse(obStringify);
+          const obError = obParsed[0];
+          this.toastr.error(obError.message);
+        }
+      );
   }
 
   deleteCategory(item: string) {

@@ -1,4 +1,3 @@
-import { UserByIdGQL } from './graphql/queries/__generated__/user-id.query.graphql.generated';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -7,6 +6,7 @@ import { delay, takeUntil, finalize } from 'rxjs/operators';
 
 import { UserCreateModel, UserUpdateModel } from './models/user.models';
 import { UserAllGQL } from './graphql/queries/__generated__/user-all.query.graphql.generated';
+import { UserByIdGQL } from './graphql/queries/__generated__/user-id.query.graphql.generated';
 import { UserFieldsFragment } from './graphql/fragments/__generated__/user.fragment.graphql.generated';
 import { CreateUserGQL } from './graphql/mutations/__generated__/user-create.mutation.graphql.generated';
 import { UpdateUserGQL } from './graphql/mutations/__generated__/user-update.mutation.graphql.generated';
@@ -16,25 +16,23 @@ import { DeleteUserGQL } from './graphql/mutations/__generated__/user-delete.mut
   providedIn: 'root',
 })
 export class UserService implements OnDestroy {
+  public destroy$ = new Subject();
+
   public loading = new BehaviorSubject<boolean>(true);
   public userAll = new BehaviorSubject<UserFieldsFragment[]>([]);
   public userId = new BehaviorSubject<UserFieldsFragment[]>([]);
-
-  destroy$ = new Subject();
 
   constructor(
     public router: Router,
     private toastr: ToastrService,
     private userAllGQL: UserAllGQL,
-    private UserByIdGQL: UserByIdGQL,
+    private userByIdGQL: UserByIdGQL,
     private createUserGQL: CreateUserGQL,
     private updateUserGQL: UpdateUserGQL,
     private deleteUserGQL: DeleteUserGQL
   ) {}
 
   getUserAll() {
-    this.userAll.next([]);
-
     this.userAllGQL
       .fetch(undefined, {
         fetchPolicy: 'network-only',
@@ -55,9 +53,7 @@ export class UserService implements OnDestroy {
   }
 
   getUserId(item: string) {
-    this.userId.next([]);
-
-    this.UserByIdGQL
+    this.userByIdGQL
       .fetch(
         {
           id: item,
@@ -75,7 +71,7 @@ export class UserService implements OnDestroy {
         const user: any =
           result.data && result.data.userById
             ? result.data.userById
-            : ({} as any);
+            : ([] as any);
 
         this.userId.next(user);
       });
