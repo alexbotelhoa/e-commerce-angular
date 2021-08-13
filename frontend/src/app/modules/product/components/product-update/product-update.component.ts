@@ -20,7 +20,7 @@ export class ProductUpdateComponent implements OnInit {
   public loading: boolean = true;
   public loading$ = this.productService.loading.asObservable();
 
-  public productId: ProductFieldsFragment[] | null = null;
+  public productId: ProductFieldsFragment[] = [];
   public productId$ = this.productService.productId.asObservable();
 
   public selectedProductId: string = '';

@@ -42,7 +42,7 @@ export class CategoryFormComponent implements OnInit, OnChanges {
         const result = Object.values(this.categoryId);
 
         this.setFormValue({
-          name: result[1].toString(),
+          name: String(result[1]),
         });
       }
     }

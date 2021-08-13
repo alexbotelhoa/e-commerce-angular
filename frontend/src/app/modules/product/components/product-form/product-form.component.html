@@ -8,7 +8,7 @@
     </mat-form-field>
     <div *ngIf="productFormGroup.controls.name.invalid && (productFormGroup.controls.name.dirty || productFormGroup.controls.name.touched)" class="error-messages">
       <div class="error-messages__message" *ngIf="productFormGroup.controls.name.errors && productFormGroup.controls.name.errors.required">
-          É necessário o preenchimento desse campo.
+        É necessário o preenchimento desse campo.
       </div>
     </div>
   </div>
@@ -21,7 +21,7 @@
     </mat-form-field>
     <div *ngIf="productFormGroup.controls.price.invalid && (productFormGroup.controls.price.dirty || productFormGroup.controls.price.touched)" class="error-messages">
       <div class="error-messages__message" *ngIf="productFormGroup.controls.price.errors && productFormGroup.controls.price.errors.required">
-          É necessário o preenchimento desse campo.
+        É necessário o preenchimento desse campo.
       </div>
     </div>
   </div>
@@ -30,7 +30,7 @@
       <mat-label>
         Categoria
       </mat-label>
-      <mat-select formControlName="categoryId">
+      <mat-select [(ngModel)]="fieldCategoryId" formControlName="categoryId">
         <mat-option *ngFor="let item of categoryAll" [value]="item.id">
           {{item.name}}
         </mat-option>
@@ -38,7 +38,7 @@
     </mat-form-field>
     <div *ngIf="productFormGroup.controls.categoryId.invalid && (productFormGroup.controls.categoryId.dirty || productFormGroup.controls.categoryId.touched)" class="error-messages">
       <div class="error-messages__message" *ngIf="productFormGroup.controls.categoryId.errors && productFormGroup.controls.categoryId.errors.required">
-          É necessário o preenchimento desse campo.
+        É necessário o preenchimento desse campo.
       </div>
     </div>
   </div>

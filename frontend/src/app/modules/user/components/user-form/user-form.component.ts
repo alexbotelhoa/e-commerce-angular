@@ -44,8 +44,8 @@ export class UserFormComponent implements OnInit, OnChanges {
         const result = Object.values(this.userId);
 
         this.setFormValue({
-          name: result[1].toString(),
-          email: result[2].toString(),
+          name: String(result[1]),
+          email: String(result[2]),
         });
       }
     }

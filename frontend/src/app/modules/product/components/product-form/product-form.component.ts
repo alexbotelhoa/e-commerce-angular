@@ -28,14 +28,14 @@ export type CategorySelect = {
   styleUrls: ['./product-form.component.css'],
 })
 export class ProductFormComponent implements OnInit, OnChanges {
-
   @Input()
-  productId: ProductFieldsFragment[] | null = null;
-
+  productId: ProductFieldsFragment[] = [];
   readonly productFormGroup: FormGroup;
 
   public categoryAll$ = this.categoryService.categoryAll.asObservable();
   public categoryAll: CategorySelect[] = [];
+
+  public fieldCategoryId: string = '';
 
   constructor(private categoryService: CategoryService) {
     const formConfig: TypeToForm<ProductFormShape> = {
@@ -59,14 +59,12 @@ export class ProductFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): any {
     if (changes.productId) {
       if (this.productId) {
-
-        console.log('teste: ', this.productId);
-
         const result = Object.values(this.productId);
+
+        this.fieldCategoryId = String(result[3]);
         this.setFormValue({
-          name: result[1].toString(),
+          name: String(result[1]),
           price: Number(result[2]),
-          categoryId: Number(result[3]),
         });
       }
     }
