@@ -3,6 +3,7 @@ import { CategoryFieldsFragment } from './../../../category/graphql/fragments/ca
 
 export const ProductFieldsFragment = gql`
   ${CategoryFieldsFragment}
+
   fragment ProductFields on Product {
     id
     name
