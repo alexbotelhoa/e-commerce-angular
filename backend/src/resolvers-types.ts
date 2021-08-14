@@ -196,6 +196,8 @@ export type GQLuserQueryInput = {
   readonly email: Maybe<Scalars['String']>;
   readonly cpf: Maybe<Scalars['Int']>;
   readonly phone: Maybe<Scalars['Int']>;
+  readonly level: Maybe<Scalars['Int']>;
+  readonly hasActive: Maybe<Scalars['Boolean']>;
 };
 
 export type GQLUser = {
@@ -205,6 +207,8 @@ export type GQLUser = {
   readonly email: Scalars['String'];
   readonly cpf: Scalars['Int'];
   readonly phone: Scalars['Int'];
+  readonly level: Scalars['Int'];
+  readonly hasActive: Scalars['Boolean'];
   readonly createdAt: Maybe<Scalars['String']>;
   readonly updatedAt: Maybe<Scalars['String']>;
 };
@@ -406,6 +410,8 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   email: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   cpf: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   phone: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  level: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  hasActive: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   createdAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   updatedAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

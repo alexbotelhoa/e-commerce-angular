@@ -9,4 +9,6 @@ input userQueryInput {
   email: String
   cpf: Int
   phone: Int
+  level: Int
+  hasActive: Boolean
 }

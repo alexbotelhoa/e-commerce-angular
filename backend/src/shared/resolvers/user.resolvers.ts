@@ -7,6 +7,8 @@ const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
   email: (obj) => obj.email,
   cpf: (obj) => obj.cpf,
   phone: (obj) => obj.phone,
+  level: (obj) => obj.level,
+  hasActive: (obj) => obj.hasActive,
   createdAt: (obj) => obj.createdAt,
   updatedAt: (obj) => obj.updatedAt,
 };

@@ -37,6 +37,12 @@ export const userByFieldQueryResolver: GQLQueryResolvers["userByField"] =
       if (fields.phone && fields.phone > 0) {
         query.where("phone", "=", `%${fields.phone}%`);
       }
+      if (fields.level && fields.level > 0) {
+        query.where("level", "=", `%${fields.level}%`);
+      }
+      if (fields.hasActive) {
+        query.where("hasActive", "=", `%${fields.hasActive}%`);
+      }
     }
 
     return await query;

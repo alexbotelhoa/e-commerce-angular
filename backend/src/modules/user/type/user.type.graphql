@@ -4,6 +4,8 @@ type User {
   email: String!
   cpf: Int!
   phone: Int!
+  level: Int!
+  hasActive: Boolean!
   createdAt: String
   updatedAt: String
 }
