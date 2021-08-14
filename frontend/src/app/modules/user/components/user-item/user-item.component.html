@@ -21,9 +21,9 @@
       <td class="column-id">{{ item.id }}</td>
       <td>{{ item.name | uppercase }}</td>
       <td>{{ item.email | lowercase }}</td>
-      <td>{{ item.cpf }}</td>
-      <td>{{ item.phone }}</td>
-      <td>{{ item.createdAt | date: "EEE dd/mm/YYY HH:m:ss" }}</td>
+      <td>{{ item.cpf | cpf }}</td>
+      <td>{{ item.phone | phone }}</td>
+      <td>{{ item.createdAt | date: "dd/mm/YYYY" }}</td>
       <td class="column-buttons">
         <div class="buttons">
           <app-button-update

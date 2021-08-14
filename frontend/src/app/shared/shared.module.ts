@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-
-import { GraphQLModule } from './graphql/graphql.module';
-
 import { CommonModule } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 
+import { CpfPipe } from './pipes/cpf.pipe';
+import { PhonePipe } from './pipes/phone.pipe';
+import { GraphQLModule } from './graphql/graphql.module';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { LoadingComponent } from './components/loading/loading.component';
@@ -45,8 +45,10 @@ const sharedComponents = [
   ButtonDeleteComponent,
 ];
 
+const sharedPipes = [CpfPipe, PhonePipe];
+
 @NgModule({
-  declarations: [...sharedComponents],
+  declarations: [...sharedComponents, sharedPipes],
   imports: [
     ...materialModules,
     ...sharedGraphql,
@@ -59,6 +61,7 @@ const sharedComponents = [
     ...sharedModules,
     ...sharedServices,
     ...sharedComponents,
+    ...sharedPipes,
   ],
   providers: [
     {
