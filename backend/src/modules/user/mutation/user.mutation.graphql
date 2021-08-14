@@ -9,6 +9,8 @@ input CreateUserInput {
   email: String!
   cpf: Int!
   phone: Int!
+  level: Int!
+  hasActive: Boolean!
 }
 
 input UpdateUserInput {
@@ -17,4 +19,6 @@ input UpdateUserInput {
   email: String!
   cpf: Int!
   phone: Int!
+  level: Int!
+  hasActive: Boolean!
 }

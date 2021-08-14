@@ -11,14 +11,23 @@ export type User = {
   email: string;
   cpf: number;
   phone: number;
+  level: number;
+  hasActive: boolean;
 };
 
 export const createUserMutationResolver: GQLMutationResolvers["createUser"] =
   async (obj, { data }: { data: User }, { database: db }) => {
-    const { name, email, cpf, phone } = data;
+    const { name, email, cpf, phone, level, hasActive } = data;
 
     const insertedId = await db.transaction(async (trx) => {
-      return await insertUser(trx)({ name, email, cpf, phone });
+      return await insertUser(trx)({
+        name,
+        email,
+        cpf,
+        phone,
+        level,
+        hasActive,
+      });
     });
 
     return (await getUserById(db)(insertedId))!;
@@ -37,6 +46,8 @@ export const updateUserMutationResolver: GQLMutationResolvers["updateUser"] =
         email: data.email,
         cpf: data.cpf,
         phone: data.phone,
+        level: data.level,
+        hasActive: data.hasActive,
       })((builder) => builder.andWhere("id", data.id));
     });
 

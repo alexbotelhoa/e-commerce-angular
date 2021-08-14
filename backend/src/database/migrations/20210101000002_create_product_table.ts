@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
             setUTF8Table(table);
             table.increments('id').primary();
             table.string('name', 200).notNullable();
-            table.integer('price', 100).notNullable();
+            table.integer("price").unsigned().notNullable();
 
             table.integer('categoryId').unsigned().notNullable();
             table.foreign('categoryId').references(`${CATEGORY_TABLE}.id`).onDelete('CASCADE').onUpdate('CASCADE');

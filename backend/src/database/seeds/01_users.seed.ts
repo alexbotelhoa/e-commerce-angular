@@ -9,6 +9,7 @@ interface UserEntity {
     email: string;
     cpf: number;
     phone: number;
+    level: number;
 }
 
 export const userSeeds: UserEntity[] = [];
@@ -21,8 +22,9 @@ function generateUser() {
     return {
         name: `${faker.name.firstName()} ${faker.name.lastName()} ${faker.name.lastName()}`,
         email: `${faker.internet.email()}`,
-        cpf: faker.random.number({ min: 111111111, max: 999999999, precision: 9 }),
-        phone: faker.random.number({ min: 111111111, max: 999999999, precision: 9, }),
+        cpf: faker.random.number({ min: 11111111111, max: 99999999999, precision: 11 }),
+        phone: faker.random.number({ min: 11111111111, max: 99999999999, precision: 11, }),
+        level: faker.random.number({ min: 2, max: 3, precision: 1, }),
     };
 }
 
@@ -36,6 +38,7 @@ export async function seed(knex: Knex): Promise<void> {
             email: user.email,
             cpf: user.cpf,
             phone: user.phone,
+            level: user.level,
         }))
     );
 }

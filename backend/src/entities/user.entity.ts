@@ -4,6 +4,8 @@ export interface UserEntity {
   email: string;
   cpf: number;
   phone: number;
+  level: number;
+  hasActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
