@@ -8,7 +8,7 @@ input CreateUserInput {
   name: String!
   email: String!
   cpf: Int!
-  telephone: Int!
+  phone: Int!
 }
 
 input UpdateUserInput {
@@ -16,5 +16,5 @@ input UpdateUserInput {
   name: String!
   email: String!
   cpf: Int!
-  telephone: Int!
+  phone: Int!
 }

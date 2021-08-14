@@ -10,6 +10,8 @@ export const UpdateUserMutation = gql`
         id
         name
         email
+        cpf
+        phone
       }
     }
   }

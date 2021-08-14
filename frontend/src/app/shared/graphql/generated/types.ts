@@ -35,6 +35,8 @@ export type CreateProductInput = {
 export type CreateUserInput = {
   readonly name: Scalars['String'];
   readonly email: Scalars['String'];
+  readonly cpf: Scalars['Int'];
+  readonly phone: Scalars['Int'];
 };
 
 
@@ -184,6 +186,8 @@ export type UpdateUserInput = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
   readonly email: Scalars['String'];
+  readonly cpf: Scalars['Int'];
+  readonly phone: Scalars['Int'];
 };
 
 export type User = {
@@ -191,6 +195,8 @@ export type User = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
   readonly email: Scalars['String'];
+  readonly cpf: Scalars['Int'];
+  readonly phone: Scalars['Int'];
   readonly createdAt: Maybe<Scalars['String']>;
   readonly updatedAt: Maybe<Scalars['String']>;
 };
@@ -207,4 +213,6 @@ export type productQueryInput = {
 export type userQueryInput = {
   readonly name?: Maybe<Scalars['String']>;
   readonly email?: Maybe<Scalars['String']>;
+  readonly cpf?: Maybe<Scalars['Int']>;
+  readonly phone?: Maybe<Scalars['Int']>;
 };

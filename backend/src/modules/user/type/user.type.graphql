@@ -3,7 +3,7 @@ type User {
   name: String!
   email: String!
   cpf: Int!
-  telephone: Int!
+  phone: Int!
   createdAt: String
   updatedAt: String
 }

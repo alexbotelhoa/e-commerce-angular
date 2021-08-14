@@ -83,6 +83,8 @@ export class UserService implements OnDestroy {
         data: {
           name: data.name,
           email: data.email,
+          cpf: data.cpf,
+          phone: data.phone,
         },
       })
       .pipe(
@@ -110,6 +112,8 @@ export class UserService implements OnDestroy {
           id: id,
           name: data.name,
           email: data.email,
+          cpf: data.cpf,
+          phone: data.phone,
         },
       })
       .pipe(

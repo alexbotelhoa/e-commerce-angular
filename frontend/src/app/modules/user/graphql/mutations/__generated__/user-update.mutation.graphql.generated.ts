@@ -12,7 +12,7 @@ export type UpdateUserMutation = (
   { readonly __typename: 'Mutation' }
   & { readonly updateUser: (
     { readonly __typename: 'User' }
-    & Pick<Types.User, 'id' | 'name' | 'email'>
+    & Pick<Types.User, 'id' | 'name' | 'email' | 'cpf' | 'phone'>
   ) }
 );
 
@@ -23,6 +23,8 @@ export const UpdateUserDocument = gql`
       id
       name
       email
+      cpf
+      phone
     }
   }
 }

@@ -9,6 +9,8 @@ export const CreateUserMutation = gql`
       id
       name
       email
+      cpf
+      phone
     }
   }
 `;

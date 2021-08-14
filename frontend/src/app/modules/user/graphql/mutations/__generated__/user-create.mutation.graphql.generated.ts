@@ -12,7 +12,7 @@ export type CreateUserMutation = (
   { readonly __typename: 'Mutation' }
   & { readonly createUser: (
     { readonly __typename: 'User' }
-    & Pick<Types.User, 'id' | 'name' | 'email'>
+    & Pick<Types.User, 'id' | 'name' | 'email' | 'cpf' | 'phone'>
   ) }
 );
 
@@ -22,6 +22,8 @@ export const CreateUserDocument = gql`
     id
     name
     email
+    cpf
+    phone
   }
 }
     `;

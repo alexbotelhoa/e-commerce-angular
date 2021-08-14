@@ -17,7 +17,7 @@ export const productByFieldQueryResolver: GQLQueryResolvers['productByField'] = 
             query.where("name", "like", `%${fields.name}%`);
         };
         if (fields.price && fields.price > 0) {
-            query.where("price", "like", `%${fields.price}%`);
+            query.where("price", "=", `%${fields.price}%`);
         };
     }
 

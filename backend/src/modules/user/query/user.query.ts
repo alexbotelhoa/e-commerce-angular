@@ -1,31 +1,43 @@
 import { GQLQueryResolvers } from "../../../resolvers-types";
-import { getUserById, selectUser } from "../../../shared/repositories/user.repository";
+import {
+  getUserById,
+  selectUser,
+} from "../../../shared/repositories/user.repository";
 
-export const userAllQueryResolver: GQLQueryResolvers['userAll'] = async (obj, params, context) => {
-    return await selectUser(context.readonlyDatabase);
-}
+export const userAllQueryResolver: GQLQueryResolvers["userAll"] = async (
+  obj,
+  params,
+  context
+) => {
+  return await selectUser(context.readonlyDatabase);
+};
 
-export const userByIdQueryResolver: GQLQueryResolvers['userById'] = async (obj, params, context) => {
-    return await getUserById(context.readonlyDatabase)(params.id);
-}
+export const userByIdQueryResolver: GQLQueryResolvers["userById"] = async (
+  obj,
+  params,
+  context
+) => {
+  return await getUserById(context.readonlyDatabase)(params.id);
+};
 
-export const userByFieldQueryResolver: GQLQueryResolvers['userByField'] = async (obj, { fields }, context) => {
+export const userByFieldQueryResolver: GQLQueryResolvers["userByField"] =
+  async (obj, { fields }, context) => {
     const query = selectUser(context.readonlyDatabase);
 
     if (fields) {
-        if (fields.name && fields.name.length > 0) {
-            query.where("name", "like", `%${fields.name}%`);
-        };
-        if (fields.email && fields.email.length > 0) {
-            query.where("email", "like", `%${fields.email}%`);
-        };
-        if (fields.cpf && fields.cpf > 0) {
-            query.where("cpf", "like", `%${fields.cpf}%`);
-        };
-        if (fields.telephone && fields.telephone > 0) {
-            query.where("telephone", "like", `%${fields.telephone}%`);
-        };
+      if (fields.name && fields.name.length > 0) {
+        query.where("name", "like", `%${fields.name}%`);
+      }
+      if (fields.email && fields.email.length > 0) {
+        query.where("email", "like", `%${fields.email}%`);
+      }
+      if (fields.cpf && fields.cpf > 0) {
+        query.where("cpf", "=", `%${fields.cpf}%`);
+      }
+      if (fields.phone && fields.phone > 0) {
+        query.where("phone", "=", `%${fields.phone}%`);
+      }
     }
 
     return await query;
-}
+  };
