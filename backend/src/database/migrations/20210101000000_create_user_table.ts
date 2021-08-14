@@ -10,8 +10,8 @@ export async function up(knex: Knex): Promise<void> {
       table.increments("id").primary();
       table.string("name", 200).notNullable();
       table.string("email", 100).notNullable();
-      table.bigInteger("cpf").unsigned().notNullable();
-      table.bigInteger("phone").unsigned().notNullable();
+      table.string("cpf", 11).notNullable();
+      table.string("phone", 11).notNullable();
       table.integer("level").unsigned().notNullable();
       table.boolean("hasActive").notNullable().defaultTo(true);
       table.timestamp("createdAt").notNullable().defaultTo(knex.fn.now());

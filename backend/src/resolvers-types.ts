@@ -175,8 +175,8 @@ export type GQLProduct = {
 export type GQLCreateUserInput = {
   readonly name: Scalars['String'];
   readonly email: Scalars['String'];
-  readonly cpf: Scalars['Int'];
-  readonly phone: Scalars['Int'];
+  readonly cpf: Scalars['String'];
+  readonly phone: Scalars['String'];
   readonly level: Scalars['Int'];
   readonly hasActive: Scalars['Boolean'];
 };
@@ -185,8 +185,8 @@ export type GQLUpdateUserInput = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
   readonly email: Scalars['String'];
-  readonly cpf: Scalars['Int'];
-  readonly phone: Scalars['Int'];
+  readonly cpf: Scalars['String'];
+  readonly phone: Scalars['String'];
   readonly level: Scalars['Int'];
   readonly hasActive: Scalars['Boolean'];
 };
@@ -194,8 +194,8 @@ export type GQLUpdateUserInput = {
 export type GQLuserQueryInput = {
   readonly name: Maybe<Scalars['String']>;
   readonly email: Maybe<Scalars['String']>;
-  readonly cpf: Maybe<Scalars['Int']>;
-  readonly phone: Maybe<Scalars['Int']>;
+  readonly cpf: Maybe<Scalars['String']>;
+  readonly phone: Maybe<Scalars['String']>;
   readonly level: Maybe<Scalars['Int']>;
   readonly hasActive: Maybe<Scalars['Boolean']>;
 };
@@ -205,8 +205,8 @@ export type GQLUser = {
   readonly id: Scalars['ID'];
   readonly name: Scalars['String'];
   readonly email: Scalars['String'];
-  readonly cpf: Scalars['Int'];
-  readonly phone: Scalars['Int'];
+  readonly cpf: Scalars['String'];
+  readonly phone: Scalars['String'];
   readonly level: Scalars['Int'];
   readonly hasActive: Scalars['Boolean'];
   readonly createdAt: Maybe<Scalars['String']>;
@@ -408,8 +408,8 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   email: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
-  cpf: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
-  phone: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  cpf: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  phone: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   level: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
   hasActive: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   createdAt: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;

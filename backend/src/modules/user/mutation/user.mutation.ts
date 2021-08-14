@@ -9,8 +9,8 @@ import {
 export type User = {
   name: string;
   email: string;
-  cpf: number;
-  phone: number;
+  cpf: string;
+  phone: string;
   level: number;
   hasActive: boolean;
 };

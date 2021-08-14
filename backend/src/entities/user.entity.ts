@@ -2,8 +2,8 @@ export interface UserEntity {
   id: number;
   name: string;
   email: string;
-  cpf: number;
-  phone: number;
+  cpf: string | number;
+  phone: string | number;
   level: number;
   hasActive: boolean;
   createdAt: string;

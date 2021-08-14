@@ -31,11 +31,11 @@ export const userByFieldQueryResolver: GQLQueryResolvers["userByField"] =
       if (fields.email && fields.email.length > 0) {
         query.where("email", "like", `%${fields.email}%`);
       }
-      if (fields.cpf && fields.cpf > 0) {
-        query.where("cpf", "=", `%${fields.cpf}%`);
+      if (fields.cpf && fields.cpf.length > 0) {
+        query.where("cpf", "like", `%${fields.cpf}%`);
       }
-      if (fields.phone && fields.phone > 0) {
-        query.where("phone", "=", `%${fields.phone}%`);
+      if (fields.phone && fields.phone.length > 0) {
+        query.where("phone", "like", `%${fields.phone}%`);
       }
       if (fields.level && fields.level > 0) {
         query.where("level", "=", `%${fields.level}%`);

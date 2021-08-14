@@ -7,8 +7,8 @@ type Mutation {
 input CreateUserInput {
   name: String!
   email: String!
-  cpf: Int!
-  phone: Int!
+  cpf: String!
+  phone: String!
   level: Int!
   hasActive: Boolean!
 }
@@ -17,8 +17,8 @@ input UpdateUserInput {
   id: ID!
   name: String!
   email: String!
-  cpf: Int!
-  phone: Int!
+  cpf: String!
+  phone: String!
   level: Int!
   hasActive: Boolean!
 }

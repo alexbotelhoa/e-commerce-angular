@@ -2,8 +2,8 @@ type User {
   id: ID!
   name: String!
   email: String!
-  cpf: Int!
-  phone: Int!
+  cpf: String!
+  phone: String!
   level: Int!
   hasActive: Boolean!
   createdAt: String

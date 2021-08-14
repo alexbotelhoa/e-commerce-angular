@@ -5,11 +5,11 @@ import { usersData } from "./data/user.data";
 import { deleteAllUsers, insertUser } from "../../shared/repositories/user.repository";
 
 interface UserEntity {
-    name: string;
-    email: string;
-    cpf: number;
-    phone: number;
-    level: number;
+  name: string;
+  email: string;
+  cpf: string | number;
+  phone: string | number;
+  level: number;
 }
 
 export const userSeeds: UserEntity[] = [];
