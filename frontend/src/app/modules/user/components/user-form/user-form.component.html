@@ -25,4 +25,60 @@
       </div>
     </div>
   </div>
+  <div class="mb-3">
+    <mat-form-field class="w-100">
+      <mat-label>
+        CPF
+      </mat-label>
+      <input matInput formControlName="cpf" />
+    </mat-form-field>
+    <div *ngIf="userFormGroup.controls.cpf.invalid && (userFormGroup.controls.cpf.dirty || userFormGroup.controls.cpf.touched)" class="error-messages">
+      <div class="error-messages__message" *ngIf="userFormGroup.controls.cpf.errors && userFormGroup.controls.cpf.errors.required">
+        É necessário o preenchimento desse campo.
+      </div>
+    </div>
+  </div>
+  <div class="mb-3">
+    <mat-form-field class="w-100">
+      <mat-label>
+        Telefone
+      </mat-label>
+      <input matInput formControlName="phone" />
+    </mat-form-field>
+    <div *ngIf="userFormGroup.controls.phone.invalid && (userFormGroup.controls.phone.dirty || userFormGroup.controls.phone.touched)" class="error-messages">
+      <div class="error-messages__message" *ngIf="userFormGroup.controls.phone.errors && userFormGroup.controls.phone.errors.required">
+        É necessário o preenchimento desse campo.
+      </div>
+    </div>
+  </div>
+  <div class="mb-3">
+    <mat-form-field class="w-100">
+      <mat-label>
+        Level
+      </mat-label>
+      <mat-select [(value)]="selectedLevel" formControlName="level">
+        <mat-option>None</mat-option>
+        <mat-option value="1">Super Usuário</mat-option>
+        <mat-option value="2">Administrador</mat-option>
+        <mat-option value="3">Usuário</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div *ngIf="userFormGroup.controls.level.invalid && (userFormGroup.controls.level.dirty || userFormGroup.controls.level.touched)" class="error-messages">
+      <div class="error-messages__message" *ngIf="userFormGroup.controls.level.errors && userFormGroup.controls.level.errors.required">
+        É necessário o preenchimento desse campo.
+      </div>
+    </div>
+  </div>
+  <div class="mb-3">
+    <section class="example-section">
+      <mat-checkbox [checked]="checkedHasActive" formControlName="hasActive">
+        <label>Usuário Ativado</label>
+      </mat-checkbox>
+    </section>
+    <div *ngIf="userFormGroup.controls.hasActive.invalid && (userFormGroup.controls.hasActive.dirty || userFormGroup.controls.hasActive.touched)" class="error-messages">
+      <div class="error-messages__message" *ngIf="userFormGroup.controls.hasActive.errors && userFormGroup.controls.hasActive.errors.required">
+        É necessário o preenchimento desse campo.
+      </div>
+    </div>
+  </div>
 </div>

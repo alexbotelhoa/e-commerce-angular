@@ -7,6 +7,8 @@ export const UserFieldsFragment = gql`
     email
     cpf
     phone
+    level
+    hasActive
     createdAt
     updatedAt
   }

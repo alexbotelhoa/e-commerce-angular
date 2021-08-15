@@ -11,6 +11,8 @@ export const CreateUserMutation = gql`
       email
       cpf
       phone
+      level
+      hasActive
     }
   }
 `;

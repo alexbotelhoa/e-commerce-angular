@@ -2,7 +2,9 @@ import { NgModule } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
@@ -20,7 +22,9 @@ import { ButtonDeleteComponent } from './components/button/button-delete/button-
 
 const materialModules = [
   MatInputModule,
+  MatRadioModule,
   MatSelectModule,
+  MatCheckboxModule,
   MatFormFieldModule,
   MatProgressSpinnerModule,
 ];

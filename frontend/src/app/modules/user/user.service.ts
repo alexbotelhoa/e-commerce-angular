@@ -85,6 +85,8 @@ export class UserService implements OnDestroy {
           email: data.email,
           cpf: data.cpf,
           phone: data.phone,
+          level: Number(data.level),
+          hasActive: data.hasActive,
         },
       })
       .pipe(
@@ -114,6 +116,8 @@ export class UserService implements OnDestroy {
           email: data.email,
           cpf: data.cpf,
           phone: data.phone,
+          level: Number(data.level),
+          hasActive: data.hasActive,
         },
       })
       .pipe(
