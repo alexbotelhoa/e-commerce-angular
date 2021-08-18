@@ -5,8 +5,8 @@ import { UserService } from './user.service';
 import { UserComponent } from './user.component';
 import { SharedModule } from '../../shared/shared.module';
 import { UserRoutingModule } from './user-routing.module';
-import { UserItemComponent } from './components/user-item/user-item.component';
 import { UserFormComponent } from './components/user-form/user-form.component';
+import { UserItemComponent } from './components/user-item/user-item.component';
 import { UserCreateComponent } from './components/user-create/user-create.component';
 import { UserUpdateComponent } from './components/user-update/user-update.component';
 
