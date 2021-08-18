@@ -9,6 +9,6 @@ export const avatarEntityResolvers: Pick<GQLAvatarResolvers, keyof AvatarEntity>
 
 export const avatarResolvers: GQLAvatarResolvers = {
     ...avatarEntityResolvers,
-    thumbnailUrl: obj => `assets/avatar/thumbnail/${obj.id}.${obj.extension}`,
+    thumbnailUrl: (obj) => `assets/avatar/thumbnail/${obj.id}.${obj.extension}`,
     listUrl: obj => `assets/avatar/list/${obj.id}.${obj.extension}`,
 }
