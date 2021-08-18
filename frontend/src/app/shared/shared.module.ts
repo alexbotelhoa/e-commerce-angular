@@ -11,9 +11,12 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/mat
 
 import { CpfPipe } from './pipes/cpf.pipe';
 import { PhonePipe } from './pipes/phone.pipe';
+import { LoginService } from './services/login.service';
+import { AlertService } from './services/alert.service';
 import { GraphQLModule } from './graphql/graphql.module';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { AuthenticationService } from './services/authentication.service';
 import { LoadingComponent } from './components/loading/loading.component';
 import { ButtonCreateComponent } from './components/button/button-create/button-create.component';
 import { ButtonUpdateComponent } from './components/button/button-update/button-update.component';
@@ -37,7 +40,11 @@ const sharedModules = [
   ReactiveFormsModule,
 ];
 
-const sharedServices = [[]];
+const sharedServices = [
+  LoginService,
+  AlertService,
+  AuthenticationService,
+];
 
 const sharedComponents = [  
   HeaderComponent,
@@ -57,17 +64,16 @@ const sharedPipes = [CpfPipe, PhonePipe];
     ...materialModules,
     ...sharedGraphql,
     ...sharedModules,
-    ...sharedServices,
   ],
   exports: [
     ...materialModules,
     ...sharedGraphql,
     ...sharedModules,
-    ...sharedServices,
     ...sharedComponents,
     ...sharedPipes,
   ],
   providers: [
+    ...sharedServices,
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: {

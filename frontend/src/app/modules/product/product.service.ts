@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { delay, takeUntil, finalize } from 'rxjs/operators';
 
-import { ProductCreateModel, ProductUpdateModel } from './models/product.models';
+import { ProductCreateModel, ProductUpdateModel } from './models/product.model';
 import { ProductAllGQL } from './graphql/queries/__generated__/product-all.query.graphql.generated';
 import { ProductByIdGQL } from './graphql/queries/__generated__/product-id.query.graphql.generated';
 import { ProductFieldsFragment } from './graphql/fragments/__generated__/product.fragment.graphql.generated';

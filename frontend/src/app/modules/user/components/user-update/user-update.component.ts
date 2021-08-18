@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserService } from '../../user.service';
-import { UserUpdateModel } from '../../models/user.models';
+import { UserUpdateModel } from '../../models/user.model';
 import { UserFormComponent } from '../user-form/user-form.component';
 import { UserFieldsFragment } from '../../graphql/fragments/__generated__/user.fragment.graphql.generated';
 

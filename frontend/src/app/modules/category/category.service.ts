@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { delay, takeUntil, finalize } from 'rxjs/operators';
 
-import { CategoryCreateModel, CategoryUpdateModel } from './models/category.models';
+import { CategoryCreateModel, CategoryUpdateModel } from './models/category.model';
 import { CategoryAllGQL } from './graphql/queries/__generated__/category-all.query.graphql.generated';
 import { CategoryByIdGQL } from './graphql/queries/__generated__/category-id.query.graphql.generated';
 import { CategoryFieldsFragment } from './graphql/fragments/__generated__/category.fragment.graphql.generated';

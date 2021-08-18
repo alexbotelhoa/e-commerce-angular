@@ -1,11 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
+
+import { LoginModel } from './../auth/models/login.model';
+import { LoginService } from '../../shared/services/login.service';
+import { AuthenticationService } from './../../shared/services/authentication.service';
+
 
 @Component({
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
-  constructor() {}
+export class HomeComponent implements OnInit, OnDestroy {
+  currentUser: LoginModel | null = null;
+  currentUserSubscription: Subscription;
+  users: LoginModel[] = [];
 
-  ngOnInit(): void {}
+  constructor(
+    private authenticationService: AuthenticationService,
+    private loginService: LoginService
+  ) {
+    this.currentUserSubscription =
+      this.authenticationService.currentUser.subscribe((user) => {
+        this.currentUser = user;
+      });
+  }
+
+  ngOnInit(): void {
+    this.loadLoginUsers();
+  }
+
+  ngOnDestroy() {
+    // unsubscribe to ensure no memory leaks
+    this.currentUserSubscription.unsubscribe();
+  }
+
+  deleteUser(id: number) {
+    this.loginService
+      .delete(id)
+      .pipe(first())
+      .subscribe(() => {
+        this.loadLoginUsers();
+      });
+  }
+
+  private loadLoginUsers() {
+    this.loginService
+      .getAll()
+      .pipe(first())
+      .subscribe((users) => {
+        this.users = users;
+      });
+  }
 }

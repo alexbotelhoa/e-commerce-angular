@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { ProductService } from '../../product.service';
-import { ProductUpdateModel } from '../../models/product.models';
+import { ProductUpdateModel } from '../../models/product.model';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { ProductFieldsFragment } from '../../graphql/fragments/__generated__/product.fragment.graphql.generated';
 

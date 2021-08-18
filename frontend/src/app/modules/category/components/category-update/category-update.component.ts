@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { CategoryService } from '../../category.service';
-import { CategoryUpdateModel } from '../../models/category.models';
+import { CategoryUpdateModel } from '../../models/category.model';
 import { CategoryFormComponent } from '../category-form/category-form.component';
 import { CategoryFieldsFragment } from '../../graphql/fragments/__generated__/category.fragment.graphql.generated';
 

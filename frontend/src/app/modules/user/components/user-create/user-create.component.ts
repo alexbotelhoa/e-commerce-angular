@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { UserService } from '../../user.service';
-import { UserCreateModel } from '../../models/user.models';
+import { UserCreateModel } from '../../models/user.model';
 import { UserFormComponent } from '../user-form/user-form.component';
 
 

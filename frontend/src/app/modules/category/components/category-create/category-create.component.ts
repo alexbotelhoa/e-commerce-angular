@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { CategoryService } from '../../category.service';
-import { CategoryCreateModel } from '../../models/category.models';
+import { CategoryCreateModel } from '../../models/category.model';
 import { CategoryFormComponent } from '../category-form/category-form.component';
 
 

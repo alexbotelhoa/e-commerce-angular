@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { ProductService } from '../../product.service';
-import { ProductCreateModel } from '../../models/product.models';
+import { ProductCreateModel } from '../../models/product.model';
 import { ProductFormComponent } from '../product-form/product-form.component';
 
 
