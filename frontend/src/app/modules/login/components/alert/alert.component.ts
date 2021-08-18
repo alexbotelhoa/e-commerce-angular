@@ -9,8 +9,8 @@ import { AlertService } from './../../../../shared/services/alert.service';
   styleUrls: ['./alert.component.css'],
 })
 export class AlertComponent implements OnInit, OnDestroy {
+  public message: any;
   private subscription: Subscription | any;
-  message: any;
 
   constructor(private alertService: AlertService) {}
 

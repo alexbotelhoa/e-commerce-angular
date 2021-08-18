@@ -7,10 +7,6 @@ import { RegisterComponent } from './pages/register/register.page';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
-  },
-  {
-    path: 'login',
     component: LoginComponent,
   },
   {
@@ -23,4 +19,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AuthRoutingModule {}
+export class LoginRoutingModule {}

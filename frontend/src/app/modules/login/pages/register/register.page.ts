@@ -30,7 +30,6 @@ export class RegisterComponent implements OnInit {
     private loginService: LoginService,
     private alertService: AlertService
   ) {
-    // redirect to home if already logged in
     if (this.authenticationService.currentUserValue) {
       this.router.navigate(['/']);
     }
@@ -50,7 +49,6 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  // convenience getter for easy access to form fields
   get f() {
     return this.registerFormGroup.controls;
   }
@@ -58,7 +56,6 @@ export class RegisterComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
 
-    // stop here if form is invalid
     if (this.registerFormGroup.invalid) {
       return;
     }

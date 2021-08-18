@@ -2,10 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
-import { LoginModel } from './../auth/models/login.model';
+import { LoginModel } from '../login/models/login.model';
 import { LoginService } from '../../shared/services/login.service';
 import { AuthenticationService } from './../../shared/services/authentication.service';
-
 
 @Component({
   templateUrl: './home.component.html',
@@ -31,7 +30,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // unsubscribe to ensure no memory leaks
     this.currentUserSubscription.unsubscribe();
   }
 

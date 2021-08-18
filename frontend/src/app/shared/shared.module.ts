@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
@@ -22,6 +23,10 @@ import { ButtonCreateComponent } from './components/button/button-create/button-
 import { ButtonUpdateComponent } from './components/button/button-update/button-update.component';
 import { ButtonCancelComponent } from './components/button/button-cancel/button-cancel.component';
 import { ButtonDeleteComponent } from './components/button/button-delete/button-delete.component';
+
+import { JwtInterceptor } from './helpers/jwt.interceptor';
+import { ErrorInterceptor } from './helpers/error.interceptor';
+import { fakeBackendProvider } from './helpers/fake-backend.interceptor';
 
 const materialModules = [
   MatInputModule,
@@ -60,11 +65,7 @@ const sharedPipes = [CpfPipe, PhonePipe];
 
 @NgModule({
   declarations: [...sharedComponents, sharedPipes],
-  imports: [
-    ...materialModules,
-    ...sharedGraphql,
-    ...sharedModules,
-  ],
+  imports: [...materialModules, ...sharedGraphql, ...sharedModules],
   exports: [
     ...materialModules,
     ...sharedGraphql,
@@ -74,12 +75,10 @@ const sharedPipes = [CpfPipe, PhonePipe];
   ],
   providers: [
     ...sharedServices,
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: {
-        appearance: 'outline',
-      },
-    },
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    fakeBackendProvider,
   ],
 })
 export class SharedModule {}
