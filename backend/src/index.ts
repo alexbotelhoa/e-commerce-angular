@@ -28,7 +28,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   const executeJobs = async (databaseService: DatabaseService<any, any>, logger: FastifyLoggerInstance) => {
     setInterval(async () => {
       const auditErrors = await selectLog(databaseService).where("status", "=", "audit-error")
-    }, 3600000)
+    }, 3600000);
   }
   
   const typeDefsSources = await loadTypedefs('./src/**/*.graphql', {
@@ -40,7 +40,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     resolvers: resolvers,
   });
   
-  await app.register(fastifyExpress)
+  await app.register(fastifyExpress);
 
   app.register(fastifyRedis, {
     host: environment.REDIS_HOST,
@@ -75,7 +75,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
 
   app.get('/', {}, (req, reply) => {
     reply.send({
-      health: 'ok'
+      health: 'ok',
     });
   })
 
@@ -83,7 +83,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     const { '*': key } = req.params;
     if (key) {
       try {
-        return app.redis.get(key)
+        return app.redis.get(key);
       } catch (error) {
         return {
           error: error.message,
@@ -98,7 +98,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
 
   app.delete("/redis/delete", {}, async (req: Record<string, any>, reply: FastifyReply) => {
     try {
-      return app.redis.flushall()
+      return app.redis.flushall();
     } catch (error) {
       return {
         error: error.message,
@@ -110,4 +110,4 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   await executeJobs(databaseService, app.log);
 })();
 
-console.log("BACKEND RODANDO")
+console.log("BACKEND RODANDO");

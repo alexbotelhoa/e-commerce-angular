@@ -5,8 +5,7 @@ dotenv.config({
     debug: true,
 });
 
-export const environmentFactory = (): Environment => {
-    
+export const environmentFactory = (): Environment => {    
     const DB_HOST = getEnvironmentVariable('DB_HOST');
     const DB_READONLY_HOST = getEnvironmentVariable('DB_READONLY_HOST');
 
@@ -24,16 +23,16 @@ export const environmentFactory = (): Environment => {
         REDIS_PORT: getEnvironmentVariable('REDIS_PORT'),
     };
 
-    console.log(environment);
-
     return environment;
 }
 
 export function getEnvironmentVariable(variable: string): string {
     const value = process.env[variable];
     console.log(`env - ${variable}:${value}`);
+
     if (!value) {
         throw new Error(`Environment variable '${variable}' not set.`);
     }
+
     return value;
 }
