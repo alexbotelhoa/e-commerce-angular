@@ -23,10 +23,10 @@ export class LoginComponent implements OnInit {
   returnUrl: string = '';
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
+    private route: ActivatedRoute,
+    private alertService: AlertService,
     private authenticationService: AuthenticationService,
-    private alertService: AlertService
   ) {
     if (this.authenticationService.currentUserValue) {
       this.router.navigate(['/']);
@@ -61,11 +61,9 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe(
         (data) => {
-          // this.router.navigate([this.returnUrl]);
-          this.router.navigate(['..']);
+          this.router.navigate([this.returnUrl]);
         },
         (error) => {
-          console.log('deu ruim');
           this.alertService.error(error);
           this.loading = false;
         }

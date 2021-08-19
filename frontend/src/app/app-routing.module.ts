@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
+import { AuthGuard } from './shared/guards/auth.guard';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
+    canActivate: [AuthGuard],
     loadChildren: () =>
       import('./modules/home/home.module').then((m) => m.HomeModule),
   },
@@ -15,11 +17,13 @@ const routes: Routes = [
   },
   {
     path: 'user',
+    canActivate: [AuthGuard],
     loadChildren: () =>
       import('./modules/user/user.module').then((m) => m.UserModule),
   },
   {
     path: 'category',
+    canActivate: [AuthGuard],
     loadChildren: () =>
       import('./modules/category/category.module').then(
         (m) => m.CategoryModule
@@ -27,6 +31,7 @@ const routes: Routes = [
   },
   {
     path: 'product',
+    canActivate: [AuthGuard],
     loadChildren: () =>
       import('./modules/product/product.module').then((m) => m.ProductModule),
   },
