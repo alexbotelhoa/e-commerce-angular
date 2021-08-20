@@ -164,6 +164,72 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     }
   })
 
+  app.delete("/redis/delete/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
+    let { '*': key } = req.params;
+    try {
+      const haveStar = (key as string).includes("*")
+      key = haveStar ? key : key + '*'
+      const keys =  await app.redis.scan(0, "MATCH", key)
+      if (keys && keys[1] && keys[1].length === 0) {
+        return {
+          totalDeleted: 0,
+          message: "No record to delete"
+        }
+      }
+      return {totalDeleted: await app.redis.unlink(...keys[1])}
+    } catch (error) {
+      return {
+        error: error.message,
+        stack: error.stack,
+      }
+    }
+  })
+
+  app.get("/redis/pattern-full/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
+    let { '*': key } = req.params;
+    if (key) {
+      try {
+        const haveStar = (key as string).includes("*")
+        key = haveStar ? key : key + '*'
+        const keys =  await app.redis.scan(0, "MATCH", key)
+        const keysFound = keys[1];
+        const result = await app.redis.mget(...keysFound);
+        return result.map(item => item && JSON.parse(item) || null)
+      } catch (error) {
+        return {
+          error: error.message,
+          stack: error.stack,
+        }
+      }
+
+    } else {
+      return { message: "empty key" }
+    }
+  })
+
+  app.get("/redis/pattern/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
+    let { '*': key } = req.params;
+    if (key) {
+      try {
+        const haveStar = (key as string).includes("*")
+        key = haveStar ? key : key + '*'
+        const keys =  await app.redis.scan(0, "MATCH", key)
+        return keys[1];
+      } catch (error) {
+        return {
+          error: error.message,
+          stack: error.stack,
+        }
+      }
+
+    } else {
+      return { message: "empty key" }
+    }
+  })
+
+
+
+
   app.use(AWSXRay.express.closeSegment());
 
   await executeJobs(databaseService, app.log);
