@@ -35,8 +35,6 @@ import { StudentGrade } from './domain/activity/types/student-grade.type';
 import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -1285,6 +1283,8 @@ export type GQLMeeting = {
   readonly enabled: Maybe<Scalars['Boolean']>;
   readonly teacherName: Maybe<Scalars['String']>;
   readonly courseName: Maybe<Scalars['String']>;
+  readonly teacherNotes: Maybe<Scalars['String']>;
+  readonly homework: Maybe<Scalars['String']>;
 };
 
 export type GQLNewsletter = {
@@ -2240,6 +2240,8 @@ export type GQLMeetingResolvers<ContextType = GraphQLContext, ParentType extends
   enabled: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   teacherName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   courseName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  teacherNotes: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  homework: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
