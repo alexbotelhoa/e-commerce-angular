@@ -1,6 +1,14 @@
 import * as t from "io-ts";
+import {
+    classSyncEventData,
+    CarrerSyncDataType,
+    LevelCodeSyncDataType,
+    studantEnrollmentNewData,
+    StudentClassTransferClassByIdType,
+} from "../controllers/webhook-events.controller";
 import { StudentEnrollmentCancellationData } from "../services/student-enrollment-cancellation.service";
-import { classSyncEventData, studantEnrollmentNewData, StudentClassTransferClassByIdType, LevelCodeSyncDataType, CarrerSyncDataType } from "../controllers/webhook-events.controller"
+import { StudentActivityTimerCancellationData } from "../services/student-activity-timer-cancellation.service";
+
 export interface WebhookSuccessResponse {
     success: true;
 }
@@ -22,6 +30,12 @@ export interface StudentEnrollmentCancellationEvent {
     id: string;
     type: 'STUDENT_ENROLLMENT_CANCELLATION';
     data: StudentEnrollmentCancellationData;
+}
+
+export interface StudentActivityTimerCancellationEvent {
+    id: string;
+    type: 'STUDENT_ACTIVITY_TIMER_CANCELLATION';
+    data: StudentActivityTimerCancellationData;
 }
 
 export interface StudentClassTransferEvent {
@@ -48,5 +62,10 @@ export interface CarrerSyncEvent {
     data: t.TypeOf<typeof CarrerSyncDataType>
 }
 
-export type WebhookEvent = StudentEnrollmentEvent | StudentEnrollmentCancellationEvent | StudentClassTransferEvent | LevelCodeSyncEvent | CarrerSyncEvent;
-
+export type WebhookEvent =
+    | StudentEnrollmentEvent
+    | StudentEnrollmentCancellationEvent
+    | StudentActivityTimerCancellationEvent
+    | StudentClassTransferEvent
+    | LevelCodeSyncEvent
+    | CarrerSyncEvent;
