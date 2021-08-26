@@ -923,6 +923,8 @@ export type GQLAuditInput = {
 export type GQLLogsQueryInput = {
   readonly ids: Maybe<ReadonlyArray<Scalars['ID']>>;
   readonly search: Maybe<Scalars['String']>;
+  readonly perPage: Maybe<Scalars['ID']>;
+  readonly page: Maybe<Scalars['ID']>;
 };
 
 export type GQLCycle = {

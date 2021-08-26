@@ -42,7 +42,7 @@ import { newslettersActiveQueryResolver, newsletterQueryResolver } from "../../d
 import { newslettersQueryResolver } from "../../domain/activity/queries/newsletters/newsletters.query";
 import { getMeetQueryResolver } from "../../domain/meeting/get-meet.resolver";
 import { getZoomUrlQueryResolver } from "../../domain/user/query/get-zoom-url.resolver";
-import { logQueryResolver } from "../../domain/interest/log.resolver";
+import { logQueryResolver } from "../../domain/log/queries/log.resolver";
 import { countQueryResolver } from "../../domain/count/count.resolver";
 import { getServiceNowUrlQueryResolver } from "../../domain/user/query/get-service-now.resolver";
 import { getCarrersResolver } from "../../domain/carrer/carrer-permissions.resolver";
