@@ -509,6 +509,7 @@ export type GQLUpsertUserInterestInput = {
 export type GQLQuery = {
   readonly __typename?: 'Query';
   readonly Annotation: Maybe<GQLAnnotation>;
+  readonly Annotations: ReadonlyArray<GQLAnnotation>;
   readonly Carrer: Maybe<ReadonlyArray<Maybe<GQLCarrer>>>;
   readonly activeChallenge: Maybe<GQLChallenge>;
   readonly activities: ReadonlyArray<GQLActivityUnion>;
@@ -563,6 +564,13 @@ export type GQLQuery = {
 
 export type GQLQueryAnnotationArgs = {
   id: Scalars['ID'];
+};
+
+
+export type GQLQueryAnnotationsArgs = {
+  search: Maybe<Scalars['String']>;
+  date: Maybe<Scalars['String']>;
+  annotationId: Maybe<Scalars['String']>;
 };
 
 
@@ -868,7 +876,8 @@ export type GQLStudentGrade = {
 
 export type GQLAnnotationUpsertInput = {
   readonly data: Scalars['String'];
-  readonly meetingId: Scalars['String'];
+  readonly meetingId: Maybe<Scalars['String']>;
+  readonly id: Maybe<Scalars['String']>;
 };
 
 export { PermissionId };
@@ -1093,7 +1102,7 @@ export type GQLAnnotation = {
   readonly __typename?: 'Annotation';
   readonly id: Scalars['ID'];
   readonly userId: Scalars['String'];
-  readonly meetingId: Scalars['String'];
+  readonly meetingId: Maybe<Scalars['String']>;
   readonly createdDate: Scalars['String'];
   readonly updatedDate: Scalars['String'];
   readonly data: Scalars['String'];
@@ -1769,6 +1778,7 @@ export type GQLStartActivityResultResolvers<ContextType = GraphQLContext, Parent
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   Annotation: Resolver<Maybe<GQLResolversTypes['Annotation']>, ParentType, ContextType, RequireFields<GQLQueryAnnotationArgs, 'id'>>;
+  Annotations: Resolver<ReadonlyArray<GQLResolversTypes['Annotation']>, ParentType, ContextType, RequireFields<GQLQueryAnnotationsArgs, never>>;
   Carrer: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Carrer']>>>, ParentType, ContextType>;
   activeChallenge: Resolver<Maybe<GQLResolversTypes['Challenge']>, ParentType, ContextType>;
   activities: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType>;
@@ -2072,7 +2082,7 @@ export type GQLActivityResolvers<ContextType = GraphQLContext, ParentType extend
 export type GQLAnnotationResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Annotation'] = GQLResolversParentTypes['Annotation']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   userId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
-  meetingId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  meetingId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   createdDate: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   updatedDate: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   data: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
