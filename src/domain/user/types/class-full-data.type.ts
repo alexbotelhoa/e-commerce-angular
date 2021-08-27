@@ -35,6 +35,8 @@ const meeting = t.type({
     endHour: t.string,
     attendTmpltNbr: t.string,
     facilityId: t.string,
+    teachernotes: t.string,
+    homework: t.string,
 })
 
 export const ClassWithLocationsFullDataType = t.type({

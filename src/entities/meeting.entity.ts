@@ -8,6 +8,8 @@ export interface MeetingEntity {
     attendTmpltNbr: string;
     facilityId: string;
     enabled: boolean;
+    teacherNotes: string | null;
+    homework: string | null;
 }
 
 export const MEETING_TABLE = 'meeting';

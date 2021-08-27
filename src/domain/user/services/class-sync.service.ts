@@ -211,6 +211,8 @@ async function processMeetingData(db: DatabaseService, readonlyDatabase: Databas
                     startHour: meet.startHour,
                     facilityId: meet.facilityId,
                     objetive: meet.objetive,
+                    teacherNotes: meet.teachernotes,
+                    homework: meet.homework
 
                 })(qb => qb.where("id", "=", hasMeet.id))
                 await upsertCountEntity("meet", db)
@@ -224,6 +226,8 @@ async function processMeetingData(db: DatabaseService, readonlyDatabase: Databas
                     startHour: meet.startHour,
                     facilityId: meet.facilityId,
                     objetive: meet.objetive,
+                    teacherNotes: meet.teachernotes,
+                    homework: meet.homework
                 })
                 await upsertCountEntity("meet", db)
             }
