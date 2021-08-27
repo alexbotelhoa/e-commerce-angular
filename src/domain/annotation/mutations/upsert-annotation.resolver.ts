@@ -32,9 +32,9 @@ export const upsertAnnotationResolver: GQLMutationResolvers['upsertAnnotation'] 
 async function createAnnotationFun(params: RequireFields<GQLMutationupsertAnnotationArgs, "annotation">, userId: string, context: GraphQLContext) {
     const partialData: Partial<AnnotationEntity> = {
         data: params.annotation.data,
-        createdDate: new Date().toISOString().replace('T', ' ').split('Z')[0],
+        createdDate: new Date().toLocaleString("pt-BR"),
         meetingId: params.annotation.meetingId || undefined,
-        updatedDate: new Date().toISOString().replace('T', ' ').split('Z')[0],
+        updatedDate: new Date().toLocaleString("pt-BR"),
         userId: userId,
     };
     const entityId = await insertAnnotation(context.database)(partialData);
@@ -43,7 +43,7 @@ async function createAnnotationFun(params: RequireFields<GQLMutationupsertAnnota
 
 async function updateAnnotationFun(context: GraphQLContext, params: RequireFields<GQLMutationupsertAnnotationArgs, "annotation">, annotation: AnnotationEntity) {
     await updateAnnotation(context.database)({
-        updatedDate: new Date().toISOString().replace('T', ' ').split('Z')[0],
+        updatedDate: new Date().toLocaleString("pt-BR"),
         data: params.annotation.data,
     })(builder => builder.where("id", '=', annotation.id));
     return getAnnotationById(context.database)(annotation.id);
