@@ -21,6 +21,7 @@ type User {
   # event: [Event]
   hasEyoung: Boolean
   hasEcampus: Boolean
+  isAdult: Boolean
 }
 
 type studentLevel {

@@ -38,7 +38,8 @@ const MatriculasAluno = t.type({
 
 const AuthenticationInput = t.type({
     Id: t.union([t.Int, t.string]),
-    accountId: t.union([t.undefined, t.string])
+    accountId: t.union([t.undefined, t.string]),
+    isAdult: t.boolean
 });
 
 const exactAuthenticationInput = t.exact(AuthenticationInput);
@@ -70,6 +71,11 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
         if (body.accountId) {
             await updateUser(db)({
                 accountId: body.accountId
+            })(where => where.andWhere('id', userEntity.id));
+        }
+        if (body.isAdult) {
+            await updateUser(db)({
+                isAdult: body.isAdult
             })(where => where.andWhere('id', userEntity.id));
         }
         if (!hasHorizonOneRole) {
