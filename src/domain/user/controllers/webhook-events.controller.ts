@@ -12,6 +12,7 @@ import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
 import { WebhookErrorResponse, WebhookResponse } from "../types/webhook-events.types";
 import { processLevelCodeSync } from "../services/level-code-sync.service";
 import { processCarrerSync } from "../services/carrer-sync.service";
+import { processStudentActivityTimerCancellation } from "../services/student-activity-timer-cancellation.service"
 import { Redis } from "ioredis";
 
 
@@ -114,15 +115,24 @@ export const ProcessCarrerSyncType = t.type({
     data: CarrerSyncDataType
 });
 
+const StudentActivityTimerCancellationEventType = t.type({
+    id: t.string,
+    type: t.literal("STUDENT_ACTIVITY_TIMER_CANCELLATION"),
+    data: t.type({
+        userId: t.string,
+        classId: t.string,
+    }),
+});
 
 const WebhookEventType = t.union([
+    ClassSyncEventType,
+    ProcessCarrerSyncType,
+    StudentUpdateEventType,
+    ProcessLevelCodeSyncType,
     StudentEnrollmentEventType,
     StudentClassTransferClassType,
     StudentEnrollmentCancellationEventType,
-    ClassSyncEventType,
-    StudentUpdateEventType,
-    ProcessLevelCodeSyncType,
-    ProcessCarrerSyncType
+    StudentActivityTimerCancellationEventType,
 ]);
 
 export const webhookEventsController = (db: DatabaseService, readonlyDatabase: DatabaseService, redis?: Redis) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
@@ -212,6 +222,10 @@ export const webhookEventsController = (db: DatabaseService, readonlyDatabase: D
             }
             case 'CARRER_SYNC': {
                 response = await processCarrerSync(db, request.log)(body)
+                break;
+            }
+            case 'STUDENT_ACTIVITY_TIMER_CANCELLATION': {
+                response = await processStudentActivityTimerCancellation(db, request.log)(body);
                 break;
             }
             default: {
