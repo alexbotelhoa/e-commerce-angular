@@ -6,9 +6,9 @@ interface ServiceNowResponseLink {
     url_access_service_now: string;
 }
 
-export const getServiceNowLink = async (userId: string, logger: FastifyLoggerInstance) => {
+export const getServiceNowLink = async (userId: string, userIsAdult: boolean, logger: FastifyLoggerInstance) => {
     const env = environmentFactory()
-    const url = `${env.STUDENT_GRADE_INTEGRATION_URL.replace("lxp", "autoservices")}/users/${userId}/token`
+    const url = `${env.STUDENT_GRADE_INTEGRATION_URL.replace("lxp", "autoservices")}/users/${userId}/token/adult/${userIsAdult}`
     console.log(url)
     try {
         const integrationRequest = await axios.get<ServiceNowResponseLink>(url, {

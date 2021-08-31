@@ -73,7 +73,7 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
                 accountId: body.accountId
             })(where => where.andWhere('id', userEntity.id));
         }
-        if (body.isAdult) {
+        if ("isAdult" in body) {
             await updateUser(db)({
                 isAdult: body.isAdult
             })(where => where.andWhere('id', userEntity.id));
