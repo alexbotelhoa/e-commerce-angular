@@ -796,6 +796,7 @@ export type GQLUser = {
   readonly hasEyoung: Maybe<Scalars['Boolean']>;
   readonly id: Scalars['ID'];
   readonly initials: Scalars['String'];
+  readonly isAdult: Maybe<Scalars['Boolean']>;
   readonly isTeacher: Scalars['Boolean'];
   readonly macId: Maybe<Scalars['String']>;
   readonly macPass: Maybe<Scalars['String']>;
@@ -1867,6 +1868,7 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   hasEyoung: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   initials: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  isAdult: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   isTeacher: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   macId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   macPass: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
