@@ -18,6 +18,7 @@ import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.e
 import { getOneOrNull } from "../utils/get-one-or-null.util";
 import { ENROLLMENT_CLASS_TABLE, EnrollmentClassEntity } from "../../entities/enrollment-class.entity";
 import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
+import { CLASS_TABLE } from "../../entities/class.entity";
 
 const levelEntityResolvers: Pick<GQLLevelResolvers, keyof LevelEntity> = {
     id: obj => obj.id.toString(),
@@ -106,10 +107,13 @@ const levelViewerTotalCompletedActivitiesByLevelIdLoader: DatabaseLoaderFactory<
             .innerJoin(CYCLE_ACTIVITY_TABLE, `${CYCLE_ACTIVITY_TABLE}.id`, `${ACTIVITY_TIMER_TABLE}.cycleActivityId`)
             .innerJoin(CYCLE_TABLE, `${CYCLE_TABLE}.id`, `${CYCLE_ACTIVITY_TABLE}.cycleId`)
             .innerJoin(LEVEL_THEME_TABLE, `${LEVEL_THEME_TABLE}.id`, `${CYCLE_TABLE}.levelThemeId`)
+            .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${ACTIVITY_TIMER_TABLE}.classId`)
             .whereIn(`${LEVEL_THEME_TABLE}.levelId`, ids)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.completed`, true)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.userId`, userId)
-            .groupBy(`${LEVEL_THEME_TABLE}.levelId`);
+            .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
+            .andWhereRaw(`${CLASS_TABLE}.startDate <= CURDATE()`)
+            .groupBy(`${LEVEL_THEME_TABLE}.levelId`, `${ACTIVITY_TIMER_TABLE}.classId`);
 
         const sorted = levelViewerTotalCompletedActivitiesSorter(ids)(entities);
         return sorted;
