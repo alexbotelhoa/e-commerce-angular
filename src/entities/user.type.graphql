@@ -22,6 +22,7 @@ type User {
   hasEyoung: Boolean
   hasEcampus: Boolean
   isAdult: Boolean
+  materials: [Material]
 }
 
 type studentLevel {

@@ -15,6 +15,7 @@ import { processStudentClassTransfer } from "../services/student-class-transfer.
 import { getLogById, insertLog, updateLog } from "../../../shared/repositories/log.repository";
 import { processStudentEnrollmentCancellation } from "../services/student-enrollment-cancellation.service";
 import { processStudentActivityTimerCancellation } from "../services/student-activity-timer-cancellation.service";
+import { processStudentMaterialEvent } from "../services/student-material.service";
 
 
 const UserDataType = t.type({
@@ -121,6 +122,28 @@ const StudentActivityTimerCancellationEventType = t.type({
     }),
 });
 
+const materialArray = t.type({
+    isbn: t.string,
+    author: t.string,
+    title: t.string,
+    publisher: t.string,
+    coverImg: t.string,
+})
+
+export const studentMaterialEventData = t.type({
+    userId: t.string,
+    classId: t.string,
+    isInternal: t.string,
+    acquiredLanguageBooster: t.union([ t.boolean, t.string]),
+    CourseMaterials: t.array(materialArray)
+})
+
+const StudentMaterialSyncEventType = t.type({
+    id: t.string,
+    type: t.literal("COURSE_MATERIALS"),
+    data: studentMaterialEventData,
+});
+
 const WebhookEventType = t.union([
     ClassSyncEventType,
     ProcessCarrerSyncType,
@@ -130,6 +153,7 @@ const WebhookEventType = t.union([
     StudentClassTransferClassType,
     StudentEnrollmentCancellationEventType,
     StudentActivityTimerCancellationEventType,
+    StudentMaterialSyncEventType,
 ]);
 
 export const webhookEventsController = (db: DatabaseService, readonlyDatabase: DatabaseService, redis?: Redis) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
@@ -221,6 +245,10 @@ export const webhookEventsController = (db: DatabaseService, readonlyDatabase: D
             }
             case 'CARRER_SYNC': {
                 response = await processCarrerSync(db, request.log)(body);
+                break;
+            }
+            case 'COURSE_MATERIALS': {
+                response = await processStudentMaterialEvent(db, readonlyDatabase, request.log)(body);
                 break;
             }
             default: {

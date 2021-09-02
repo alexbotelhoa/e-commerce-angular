@@ -35,6 +35,9 @@ import { StudentGrade } from './domain/activity/types/student-grade.type';
 import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -800,6 +803,7 @@ export type GQLUser = {
   readonly isTeacher: Scalars['Boolean'];
   readonly macId: Maybe<Scalars['String']>;
   readonly macPass: Maybe<Scalars['String']>;
+  readonly materials: Maybe<ReadonlyArray<Maybe<GQLMaterial>>>;
   readonly name: Scalars['String'];
   readonly onboarded: Scalars['Boolean'];
   readonly roles: ReadonlyArray<GQLRole>;
@@ -1282,6 +1286,24 @@ export type GQLLog = {
   readonly status: Maybe<Scalars['String']>;
 };
 
+export type GQLMaterial = {
+  readonly __typename?: 'Material';
+  readonly id: Scalars['String'];
+  readonly userId: Scalars['String'];
+  readonly classId: Scalars['String'];
+  readonly isbn: Scalars['String'];
+  readonly author: Scalars['String'];
+  readonly title: Scalars['String'];
+  readonly publisher: Scalars['String'];
+  readonly coverImg: Scalars['String'];
+  readonly isInternal: Scalars['String'];
+  readonly acquiredLanguageBooster: Scalars['Boolean'];
+  readonly createdAt: Scalars['String'];
+  readonly updatedAt: Scalars['String'];
+  readonly active: Scalars['Boolean'];
+  readonly materialClass: GQLClass;
+};
+
 export type GQLMeeting = {
   readonly __typename?: 'Meeting';
   readonly id: Scalars['ID'];
@@ -1569,6 +1591,7 @@ export type GQLResolversTypes = {
   Level: ResolverTypeWrapper<LevelEntity>;
   Local: ResolverTypeWrapper<GQLLocal>;
   Log: ResolverTypeWrapper<GQLLog>;
+  Material: ResolverTypeWrapper<Omit<GQLMaterial, 'materialClass'> & { materialClass: GQLResolversTypes['Class'] }>;
   Meeting: ResolverTypeWrapper<GQLMeeting>;
   Newsletter: ResolverTypeWrapper<GQLNewsletter>;
   CarrerPermission: ResolverTypeWrapper<GQLCarrerPermission>;
@@ -1688,6 +1711,7 @@ export type GQLResolversParentTypes = {
   Level: LevelEntity;
   Local: GQLLocal;
   Log: GQLLog;
+  Material: Omit<GQLMaterial, 'materialClass'> & { materialClass: GQLResolversParentTypes['Class'] };
   Meeting: GQLMeeting;
   Newsletter: GQLNewsletter;
   CarrerPermission: GQLCarrerPermission;
@@ -1872,6 +1896,7 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   isTeacher: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   macId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   macPass: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  materials: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Material']>>>, ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   onboarded: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   roles: Resolver<ReadonlyArray<GQLResolversTypes['Role']>, ParentType, ContextType>;
@@ -2242,6 +2267,24 @@ export type GQLLogResolvers<ContextType = GraphQLContext, ParentType extends GQL
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GQLMaterialResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Material'] = GQLResolversParentTypes['Material']> = {
+  id: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  userId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  classId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  isbn: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  author: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  title: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  publisher: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  coverImg: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  isInternal: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  acquiredLanguageBooster: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  createdAt: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  updatedAt: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  materialClass: Resolver<GQLResolversTypes['Class'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GQLMeetingResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Meeting'] = GQLResolversParentTypes['Meeting']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   date: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
@@ -2403,6 +2446,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Level: GQLLevelResolvers<ContextType>;
   Local: GQLLocalResolvers<ContextType>;
   Log: GQLLogResolvers<ContextType>;
+  Material: GQLMaterialResolvers<ContextType>;
   Meeting: GQLMeetingResolvers<ContextType>;
   Newsletter: GQLNewsletterResolvers<ContextType>;
   CarrerPermission: GQLCarrerPermissionResolvers<ContextType>;

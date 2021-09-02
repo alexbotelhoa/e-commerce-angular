@@ -1,0 +1,16 @@
+type Material {
+    id: String!
+    userId: String!
+    classId: String!
+    isbn: String!
+    author: String!
+    title: String!
+    publisher: String!
+    coverImg: String!
+    isInternal: String!
+    acquiredLanguageBooster: Boolean!
+    createdAt: String!
+    updatedAt: String!
+    active: Boolean!
+    materialClass: Class!
+}

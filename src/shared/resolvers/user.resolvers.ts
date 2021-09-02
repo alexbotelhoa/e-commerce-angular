@@ -30,6 +30,7 @@ import { selectEnrollmentClass } from "../repositories/enrollment-class.reposito
 import { selectEnrollment } from "../repositories/enrollment.repository";
 // import { eventProcess } from "../../domain/user/services/event-process.service";
 import { getClassesByIds } from "../repositories/class.repository";
+import { selectMaterial } from "../repositories/material.repository";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
@@ -231,101 +232,6 @@ export const studentLevelResolver: GQLUserResolvers['studentLevel'] = async (obj
     };
 }
 
-// export const meetingResolver: GQLUserResolvers['meeting'] = async (obj, params, context) => {
-//     const userId = obj.id;
-//     if (context.redisClient) {
-//         const response = await context.redisClient.get("meeting-" + userId)
-
-//         if (response && (JSON.parse(response).length > 0)) {
-//             context.logger.info(" meeting cache used for user, id: " + userId + "meeting-" + userId)
-
-//             return JSON.parse(response);
-//         }
-//     }
-//     // const enrollment = await selectEnrollment(context.readonlyDatabase).where(`userId`, "=", userId)
-//     // if (enrollment.length === 0) {
-//     //     return []
-//     // }
-//     // const ids = enrollment.map(i => i.id)
-//     // const classes = await selectEnrollmentClass(context.readonlyDatabase).whereIn("enrollmentId", ids)
-//     // const classIds = classes.map(c => c.classId)
-//     // const meetings = await selectMeeting(context.readonlyDatabase).whereIn("classId", classIds).andWhere("enabled", "=", true)
-//     //     .orderBy('date', 'asc')
-//     // const response: any[] = []
-
-//     // for (const meet of meetings) {
-//     //     const teacherClass = (await selectTeacherClass(context.readonlyDatabase).where(`classId`, "=", meet.classId))[0]
-//     //     const teacher = teacherClass?.teacherId ? await getUserById(context.readonlyDatabase)(teacherClass.teacherId) : null;
-//     //     const classA = teacherClass?.classId ? await getClassById(context.readonlyDatabase)(teacherClass.classId) : null;
-//     //     const courseName = classA?.levelCodeId ? (await getLevelCodeById(context.readonlyDatabase)(classA.levelCodeId))?.code || null : null
-//     //     response.push({
-//     //         ...meet,
-//     //         teacherName: teacher && teacher.name || null,
-//     //         courseName: courseName
-//     //     })
-//     // }
-//     const [result] = await context.readonlyDatabase.raw(`
-//     select 
-// 	m.*,
-// 	m.id as id,
-// 	teacher.name as teacherName,
-//     teacher.id as ProfessorId,
-//     lc.code as courseName
-//     from user u
-//     inner join enrollment e
-//     on e.userId = u.id
-//     inner join enrollment_class ec
-//     on ec.enrollmentId = e.id
-//     inner join class c
-//     on c.id = ec.classId
-//     inner join level_code lc
-//     on lc.id = c.levelCodeId
-//     inner join meeting m 
-//     on m.classId = c.id
-//     LEFT JOIN
-//     (
-//         SELECT teacher_class.classId, user.name, user.id
-//     FROM teacher_class, user
-//     WHERE teacher_class.teacherId = user.id
-//     GROUP BY teacher_class.classId, user.name, user.id
-//     -- ORDER BY teacher_class.classId, user.name
-//     ) AS teacher
-//     ON teacher.classId = ec.classId
-//     where u.id = ${userId}
-//     order by m.date ASC
-//     `)
-//     if (context.redisClient) {
-//         if (result.length === 0) {
-//             await context.redisClient.del("meeting-" + userId)
-//         } else {
-//             await context.redisClient.set("meeting-" + userId, JSON.stringify(result), 'ex', 21600)
-//         }
-//     }
-//     return result
-// }
-
-// export const eventResolver: GQLUserResolvers['event'] = async (obj, params, context) => {
-//     const userId = obj.id;
-//     if (context.redisClient) {
-//         const response = await context.redisClient.get("event-" + userId)
-
-//         if (response && (JSON.parse(response).length > 0)) {
-//             context.logger.info(" event cache used for user, id: " + userId + "event-" + userId)
-//             return JSON.parse(response);
-//         }
-//     }
-//     const event = await eventProcess(userId, context.database, context.logger)
-
-//     if (context.redisClient) {
-//         if (event.length === 0) {
-//             await context.redisClient.del("event-" + userId)
-//         } else {
-//             await context.redisClient.set("event-" + userId, JSON.stringify(event), 'ex', 120)
-//         }
-//     }
-//     return event as any || [];
-// }
-
 export const hasEcampusResolver: GQLUserResolvers["hasEcampus"] = async (obj, params, context) => {
     const userId = context.currentUser?.id;
     if (!userId) return false;
@@ -349,6 +255,12 @@ export const hasEyoungResolver: GQLUserResolvers["hasEyoung"] = async (obj, para
     return classes.some(c => c.hasEyoung);
 }
 
+export const materialsResolver: GQLUserResolvers["materials"] = async (obj, params, context) => {
+    const userId = context.currentUser?.id;
+    const materials = await selectMaterial(context.readonlyDatabase).where("userId", userId);
+    return materials as any;
+}
+
 export const userResolvers: GQLUserResolvers = {
     ...userEntityResolvers,
     initials: userInitialsResolver,
@@ -367,6 +279,7 @@ export const userResolvers: GQLUserResolvers = {
     // event: eventResolver,
     hasEcampus: hasEcampusResolver,
     hasEyoung: hasEyoungResolver,
+    materials: materialsResolver,
 }
 
 
