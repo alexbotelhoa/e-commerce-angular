@@ -61,7 +61,7 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
         }
         if ("isAdult" in body && body.isAdult !== undefined) {
             await updateUser(db)({
-                isAdult: body.isAdult
+                isAdult: body.isAdult === true ? 1 : 0 as any
             })(where => where.andWhere('id', userEntity.id));
         }
         if (!hasHorizonOneRole) {
