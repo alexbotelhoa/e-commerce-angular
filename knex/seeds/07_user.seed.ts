@@ -62,7 +62,7 @@ export const fullUserSeed: UserEntityWithRoles = {
     ],
 }
 
-interface UserEntityWithRoles extends Omit<UserEntity, "accountId"> {
+interface UserEntityWithRoles extends Omit<UserEntity, "accountId" | "isAdult"> {
     roles: RoleId[];
 }
 
@@ -92,6 +92,7 @@ export async function seed(knex: Knex): Promise<void> {
         macId: '',
         macPass: '',
         avatarId: null,
+        isAdult: false,
     })));
     const rolesToInsert = userSeeds.map(user => user.roles.map(role => ({
         roleId: role,
