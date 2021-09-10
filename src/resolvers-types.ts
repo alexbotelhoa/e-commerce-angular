@@ -88,6 +88,7 @@ export type GQLMutation = {
   readonly deleteCycleFromLevelTheme: GQLLevelTheme;
   readonly deleteThemeFromLevel: GQLLevel;
   readonly finishOnboard: GQLUser;
+  readonly presence: Maybe<Scalars['Boolean']>;
   readonly startActivity: GQLStartActivityResult;
   readonly updateBasicLevelInfo: GQLLevel;
   readonly updateChallenge: GQLChallenge;
@@ -246,6 +247,11 @@ export type GQLMutationdeleteCycleFromLevelThemeArgs = {
 
 export type GQLMutationdeleteThemeFromLevelArgs = {
   levelThemeId: Scalars['ID'];
+};
+
+
+export type GQLMutationpresenceArgs = {
+  turma: Scalars['String'];
 };
 
 
@@ -1490,8 +1496,8 @@ export type GQLResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   String: ResolverTypeWrapper<Scalars['String']>;
+  CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   CreateHtmlActivityInput: GQLCreateHtmlActivityInput;
   EmbeddedActivityDataInput: GQLEmbeddedActivityDataInput;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -1612,8 +1618,8 @@ export type GQLResolversParentTypes = {
   Mutation: {};
   ID: Scalars['ID'];
   Boolean: Scalars['Boolean'];
-  CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   String: Scalars['String'];
+  CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   CreateHtmlActivityInput: GQLCreateHtmlActivityInput;
   EmbeddedActivityDataInput: GQLEmbeddedActivityDataInput;
   Int: Scalars['Int'];
@@ -1764,6 +1770,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   deleteCycleFromLevelTheme: Resolver<GQLResolversTypes['LevelTheme'], ParentType, ContextType, RequireFields<GQLMutationdeleteCycleFromLevelThemeArgs, 'cycleId'>>;
   deleteThemeFromLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationdeleteThemeFromLevelArgs, 'levelThemeId'>>;
   finishOnboard: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
+  presence: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationpresenceArgs, 'turma'>>;
   startActivity: Resolver<GQLResolversTypes['StartActivityResult'], ParentType, ContextType, RequireFields<GQLMutationstartActivityArgs, 'data'>>;
   updateBasicLevelInfo: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationupdateBasicLevelInfoArgs, 'data'>>;
   updateChallenge: Resolver<GQLResolversTypes['Challenge'], ParentType, ContextType, RequireFields<GQLMutationupdateChallengeArgs, 'data'>>;
