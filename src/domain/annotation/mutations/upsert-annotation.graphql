@@ -4,5 +4,6 @@ type Mutation {
 
 input AnnotationUpsertInput {
     data: String!
-    meetingId: String!
+    meetingId: String
+    id: String
 }

@@ -48,6 +48,7 @@ import { getServiceNowUrlQueryResolver } from "../../domain/user/query/get-servi
 import { getCarrersResolver } from "../../domain/carrer/carrer-permissions.resolver";
 import { getLearningMoreLevelCodeCalculatorResolver } from "../../domain/level-code/queries/learning-more-level-code-calculator.resolver";
 import { activitiesListProgressQueryResolver } from "../../domain/activity/queries/activities-list-on-progress-order/activities-on-list-on-progress-order.resolver";
+import { annotationsQueryResolver } from "../../domain/annotation/queries/annotations.resolver";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -101,4 +102,6 @@ export const queryResolvers: GQLResolvers['Query'] = {
     Carrer: getCarrersResolver,
     learningMoreOption: getLearningMoreLevelCodeCalculatorResolver,
     activitiesListByProgressOrder: activitiesListProgressQueryResolver,
+    Annotations: annotationsQueryResolver,
+
 }

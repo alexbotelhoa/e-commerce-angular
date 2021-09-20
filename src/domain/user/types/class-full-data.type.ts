@@ -35,6 +35,8 @@ const meeting = t.type({
     endHour: t.string,
     attendTmpltNbr: t.string,
     facilityId: t.string,
+    teachernotes: t.union([t.string, t.null, t.undefined]),
+    homework: t.union([t.string, t.null, t.undefined]),
 })
 
 export const ClassWithLocationsFullDataType = t.type({

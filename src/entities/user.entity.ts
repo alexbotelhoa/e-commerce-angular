@@ -6,6 +6,7 @@ export interface UserEntity {
     macId: string | null;
     macPass: string | null;
     accountId: string | null;
+    isAdult: boolean;
 }
 
 export const USER_TABLE = 'user';

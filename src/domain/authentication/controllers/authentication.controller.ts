@@ -9,11 +9,6 @@ import { EnrollmentClassEntity } from "../../../entities/enrollment-class.entity
 import { getUserById, updateUser } from "../../../shared/repositories/user.repository";
 import { horizonOneRole } from "../../authorization/constants/roles.constants";
 
-const AlunosResponsavel = t.type({
-    Id: t.union([t.Int, t.string]),
-    Nome: t.string,
-});
-
 const TurmaType = t.type({
     Id: t.union([t.Int, t.string]),
     Nome: t.string,
@@ -25,20 +20,12 @@ const TurmaType = t.type({
     dataFim: t.union([t.string, t.undefined]),
 });
 
-const TurmaProfessorType = t.type({
-    Id: t.union([t.Int, t.string]),
-    Nome: t.string,
-});
 
-const MatriculasAluno = t.type({
-    Id: t.Int,
-    Nome: t.string,
-    Turmas: t.array(TurmaType),
-});
 
 const AuthenticationInput = t.type({
     Id: t.union([t.Int, t.string]),
-    accountId: t.union([t.undefined, t.string])
+    accountId: t.union([t.undefined, t.string]),
+    isAdult: t.union([t.undefined, t.boolean])
 });
 
 const exactAuthenticationInput = t.exact(AuthenticationInput);
@@ -70,6 +57,11 @@ export const authenticationController = (redirectUrl: string, db: DatabaseServic
         if (body.accountId) {
             await updateUser(db)({
                 accountId: body.accountId
+            })(where => where.andWhere('id', userEntity.id));
+        }
+        if ("isAdult" in body && body.isAdult !== undefined) {
+            await updateUser(db)({
+                isAdult: body.isAdult === true ? 1 : 0 as any
             })(where => where.andWhere('id', userEntity.id));
         }
         if (!hasHorizonOneRole) {

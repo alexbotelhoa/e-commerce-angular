@@ -1,7 +1,7 @@
 type Annotation {
     id: ID!
     userId: String!
-    meetingId: String!
+    meetingId: String
     createdDate: String!
     updatedDate: String!
     data: String!

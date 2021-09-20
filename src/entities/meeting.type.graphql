@@ -10,5 +10,6 @@ type Meeting {
     enabled: Boolean
     teacherName: String
     courseName: String
-    
+    teacherNotes: String
+    homework: String
 }

@@ -37,6 +37,7 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -87,6 +88,7 @@ export type GQLMutation = {
   readonly deleteCycleFromLevelTheme: GQLLevelTheme;
   readonly deleteThemeFromLevel: GQLLevel;
   readonly finishOnboard: GQLUser;
+  readonly presence: Maybe<Scalars['Boolean']>;
   readonly startActivity: GQLStartActivityResult;
   readonly updateBasicLevelInfo: GQLLevel;
   readonly updateChallenge: GQLChallenge;
@@ -245,6 +247,11 @@ export type GQLMutationdeleteCycleFromLevelThemeArgs = {
 
 export type GQLMutationdeleteThemeFromLevelArgs = {
   levelThemeId: Scalars['ID'];
+};
+
+
+export type GQLMutationpresenceArgs = {
+  turma: Scalars['String'];
 };
 
 
@@ -509,6 +516,7 @@ export type GQLUpsertUserInterestInput = {
 export type GQLQuery = {
   readonly __typename?: 'Query';
   readonly Annotation: Maybe<GQLAnnotation>;
+  readonly Annotations: ReadonlyArray<GQLAnnotation>;
   readonly Carrer: Maybe<ReadonlyArray<Maybe<GQLCarrer>>>;
   readonly activeChallenge: Maybe<GQLChallenge>;
   readonly activities: ReadonlyArray<GQLActivityUnion>;
@@ -563,6 +571,13 @@ export type GQLQuery = {
 
 export type GQLQueryAnnotationArgs = {
   id: Scalars['ID'];
+};
+
+
+export type GQLQueryAnnotationsArgs = {
+  search: Maybe<Scalars['String']>;
+  date: Maybe<Scalars['String']>;
+  annotationId: Maybe<Scalars['String']>;
 };
 
 
@@ -790,9 +805,11 @@ export type GQLUser = {
   readonly hasEyoung: Maybe<Scalars['Boolean']>;
   readonly id: Scalars['ID'];
   readonly initials: Scalars['String'];
+  readonly isAdult: Maybe<Scalars['Boolean']>;
   readonly isTeacher: Scalars['Boolean'];
   readonly macId: Maybe<Scalars['String']>;
   readonly macPass: Maybe<Scalars['String']>;
+  readonly materials: Maybe<ReadonlyArray<Maybe<GQLMaterial>>>;
   readonly name: Scalars['String'];
   readonly onboarded: Scalars['Boolean'];
   readonly roles: ReadonlyArray<GQLRole>;
@@ -868,7 +885,8 @@ export type GQLStudentGrade = {
 
 export type GQLAnnotationUpsertInput = {
   readonly data: Scalars['String'];
-  readonly meetingId: Scalars['String'];
+  readonly meetingId: Maybe<Scalars['String']>;
+  readonly id: Maybe<Scalars['String']>;
 };
 
 export { PermissionId };
@@ -1093,7 +1111,7 @@ export type GQLAnnotation = {
   readonly __typename?: 'Annotation';
   readonly id: Scalars['ID'];
   readonly userId: Scalars['String'];
-  readonly meetingId: Scalars['String'];
+  readonly meetingId: Maybe<Scalars['String']>;
   readonly createdDate: Scalars['String'];
   readonly updatedDate: Scalars['String'];
   readonly data: Scalars['String'];
@@ -1274,6 +1292,24 @@ export type GQLLog = {
   readonly status: Maybe<Scalars['String']>;
 };
 
+export type GQLMaterial = {
+  readonly __typename?: 'Material';
+  readonly id: Scalars['String'];
+  readonly userId: Scalars['String'];
+  readonly classId: Scalars['String'];
+  readonly isbn: Scalars['String'];
+  readonly author: Scalars['String'];
+  readonly title: Scalars['String'];
+  readonly publisher: Scalars['String'];
+  readonly coverImg: Scalars['String'];
+  readonly isInternal: Scalars['String'];
+  readonly acquiredLanguageBooster: Scalars['Boolean'];
+  readonly createdAt: Scalars['String'];
+  readonly updatedAt: Scalars['String'];
+  readonly active: Scalars['Boolean'];
+  readonly materialClass: GQLClass;
+};
+
 export type GQLMeeting = {
   readonly __typename?: 'Meeting';
   readonly id: Scalars['ID'];
@@ -1287,6 +1323,8 @@ export type GQLMeeting = {
   readonly enabled: Maybe<Scalars['Boolean']>;
   readonly teacherName: Maybe<Scalars['String']>;
   readonly courseName: Maybe<Scalars['String']>;
+  readonly teacherNotes: Maybe<Scalars['String']>;
+  readonly homework: Maybe<Scalars['String']>;
 };
 
 export type GQLNewsletter = {
@@ -1458,8 +1496,8 @@ export type GQLResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   String: ResolverTypeWrapper<Scalars['String']>;
+  CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   CreateHtmlActivityInput: GQLCreateHtmlActivityInput;
   EmbeddedActivityDataInput: GQLEmbeddedActivityDataInput;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -1559,6 +1597,7 @@ export type GQLResolversTypes = {
   Level: ResolverTypeWrapper<LevelEntity>;
   Local: ResolverTypeWrapper<GQLLocal>;
   Log: ResolverTypeWrapper<GQLLog>;
+  Material: ResolverTypeWrapper<Omit<GQLMaterial, 'materialClass'> & { materialClass: GQLResolversTypes['Class'] }>;
   Meeting: ResolverTypeWrapper<GQLMeeting>;
   Newsletter: ResolverTypeWrapper<GQLNewsletter>;
   CarrerPermission: ResolverTypeWrapper<GQLCarrerPermission>;
@@ -1579,8 +1618,8 @@ export type GQLResolversParentTypes = {
   Mutation: {};
   ID: Scalars['ID'];
   Boolean: Scalars['Boolean'];
-  CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   String: Scalars['String'];
+  CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   CreateHtmlActivityInput: GQLCreateHtmlActivityInput;
   EmbeddedActivityDataInput: GQLEmbeddedActivityDataInput;
   Int: Scalars['Int'];
@@ -1678,6 +1717,7 @@ export type GQLResolversParentTypes = {
   Level: LevelEntity;
   Local: GQLLocal;
   Log: GQLLog;
+  Material: Omit<GQLMaterial, 'materialClass'> & { materialClass: GQLResolversParentTypes['Class'] };
   Meeting: GQLMeeting;
   Newsletter: GQLNewsletter;
   CarrerPermission: GQLCarrerPermission;
@@ -1730,6 +1770,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   deleteCycleFromLevelTheme: Resolver<GQLResolversTypes['LevelTheme'], ParentType, ContextType, RequireFields<GQLMutationdeleteCycleFromLevelThemeArgs, 'cycleId'>>;
   deleteThemeFromLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationdeleteThemeFromLevelArgs, 'levelThemeId'>>;
   finishOnboard: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
+  presence: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationpresenceArgs, 'turma'>>;
   startActivity: Resolver<GQLResolversTypes['StartActivityResult'], ParentType, ContextType, RequireFields<GQLMutationstartActivityArgs, 'data'>>;
   updateBasicLevelInfo: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationupdateBasicLevelInfoArgs, 'data'>>;
   updateChallenge: Resolver<GQLResolversTypes['Challenge'], ParentType, ContextType, RequireFields<GQLMutationupdateChallengeArgs, 'data'>>;
@@ -1769,6 +1810,7 @@ export type GQLStartActivityResultResolvers<ContextType = GraphQLContext, Parent
 
 export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   Annotation: Resolver<Maybe<GQLResolversTypes['Annotation']>, ParentType, ContextType, RequireFields<GQLQueryAnnotationArgs, 'id'>>;
+  Annotations: Resolver<ReadonlyArray<GQLResolversTypes['Annotation']>, ParentType, ContextType, RequireFields<GQLQueryAnnotationsArgs, never>>;
   Carrer: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Carrer']>>>, ParentType, ContextType>;
   activeChallenge: Resolver<Maybe<GQLResolversTypes['Challenge']>, ParentType, ContextType>;
   activities: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType>;
@@ -1857,9 +1899,11 @@ export type GQLUserResolvers<ContextType = GraphQLContext, ParentType extends GQ
   hasEyoung: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   initials: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  isAdult: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   isTeacher: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   macId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   macPass: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  materials: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Material']>>>, ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   onboarded: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   roles: Resolver<ReadonlyArray<GQLResolversTypes['Role']>, ParentType, ContextType>;
@@ -2072,7 +2116,7 @@ export type GQLActivityResolvers<ContextType = GraphQLContext, ParentType extend
 export type GQLAnnotationResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Annotation'] = GQLResolversParentTypes['Annotation']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   userId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
-  meetingId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  meetingId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   createdDate: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   updatedDate: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   data: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
@@ -2230,6 +2274,24 @@ export type GQLLogResolvers<ContextType = GraphQLContext, ParentType extends GQL
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GQLMaterialResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Material'] = GQLResolversParentTypes['Material']> = {
+  id: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  userId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  classId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  isbn: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  author: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  title: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  publisher: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  coverImg: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  isInternal: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  acquiredLanguageBooster: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  createdAt: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  updatedAt: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  materialClass: Resolver<GQLResolversTypes['Class'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GQLMeetingResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Meeting'] = GQLResolversParentTypes['Meeting']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   date: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
@@ -2242,6 +2304,8 @@ export type GQLMeetingResolvers<ContextType = GraphQLContext, ParentType extends
   enabled: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   teacherName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   courseName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  teacherNotes: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  homework: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2389,6 +2453,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Level: GQLLevelResolvers<ContextType>;
   Local: GQLLocalResolvers<ContextType>;
   Log: GQLLogResolvers<ContextType>;
+  Material: GQLMaterialResolvers<ContextType>;
   Meeting: GQLMeetingResolvers<ContextType>;
   Newsletter: GQLNewsletterResolvers<ContextType>;
   CarrerPermission: GQLCarrerPermissionResolvers<ContextType>;

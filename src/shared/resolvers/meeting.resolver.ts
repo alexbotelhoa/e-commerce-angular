@@ -16,6 +16,8 @@ export const meetingEntityResolvers: Pick<GQLMeetingResolvers, keyof MeetingEnti
     attendTmpltNbr: obj => obj.attendTmpltNbr,
     enabled: obj => obj.enabled,
     facilityId: obj => obj.facilityId,
+    teacherNotes: obj => obj.teacherNotes,
+    homework: obj => obj.homework
 }
 
 
