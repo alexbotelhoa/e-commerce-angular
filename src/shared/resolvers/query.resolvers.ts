@@ -49,6 +49,7 @@ import { getCarrersResolver } from "../../domain/carrer/carrer-permissions.resol
 import { getLearningMoreLevelCodeCalculatorResolver } from "../../domain/level-code/queries/learning-more-level-code-calculator.resolver";
 import { activitiesListProgressQueryResolver } from "../../domain/activity/queries/activities-list-on-progress-order/activities-on-list-on-progress-order.resolver";
 import { annotationsQueryResolver } from "../../domain/annotation/queries/annotations.resolver";
+import { callOccLoginQueryResolver } from "../../domain/material/queries/material-integration.resolver";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -103,5 +104,5 @@ export const queryResolvers: GQLResolvers['Query'] = {
     learningMoreOption: getLearningMoreLevelCodeCalculatorResolver,
     activitiesListByProgressOrder: activitiesListProgressQueryResolver,
     Annotations: annotationsQueryResolver,
-
+    occLogin: callOccLoginQueryResolver,
 }
