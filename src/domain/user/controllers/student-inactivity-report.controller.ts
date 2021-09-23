@@ -4,9 +4,9 @@ import { DatabaseService } from "../../../shared/services/database.service";
 import { Redis } from 'ioredis';
 import { Environment } from "../../../shared/types/environment.type";
 
-export const studentInactivtyReportController = (env: Environment, db: DatabaseService, readonlyDb: DatabaseService, redis?: Redis) => async (req: FastifyRequest, reply: FastifyReply) => {
+export const studentInactivityReportController = (env: Environment, db: DatabaseService, readonlyDb: DatabaseService, redis?: Redis) => async (req: FastifyRequest, reply: FastifyReply) => {
 	if (redis) {
-		const response = await redis.get("studentInactivty")
+		const response = await redis.get("studentInactivity")
 		const responseParsed = response && JSON.parse(response)
 		if (responseParsed && (responseParsed.length > 0)) {
 			reply.header("Content-Type", 'text/csv')
@@ -58,12 +58,12 @@ where (c.endDate is null or c.endDate >= DATE_ADD(CURDATE(), INTERVAL -1 MONTH) 
 
 		const [result] = await readonlyDb.raw(sql)
 		if (result.length === 0) {
-			await redis.del("studentInactivty")
+			await redis.del("studentInactivity")
 			reply.header("Content-Type", 'text/csv')
 			reply.send(parse(result))
 		} else {
 			// reply.header("Content-Type", 'text/csv')
-			await redis.set("studentInactivty", JSON.stringify(result), 'ex', 43200)
+			await redis.set("studentInactivity", JSON.stringify(result), 'ex', 43200)
 		}
 	}
 }

@@ -29,8 +29,8 @@ import {
   fastifyExpress
 } from "fastify-express"
 import fastifyRedis from 'fastify-redis';
-import { studentInactivtyReportController } from './domain/user/controllers/student-inactivity-report.controller';
-
+import { studentInactivityReportController } from './domain/user/controllers/student-inactivity-report.controller';
+import { myNotesUsageReportController } from './domain/user/controllers/my-notes-usage-report.controller';
 
 AWSXRay.captureMySQL(mysql2 as any);
 const AWS = AWSXRay.captureAWS(AWSSdk);
@@ -133,8 +133,9 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.post('/student-grades', {}, classStudentGradesController(environment, databaseService, readonlyDatabaseService));
   app.get('/student-report.csv', {}, studentReportController(environment, databaseService, readonlyDatabaseService, app.redis));
   app.get('/student-interest-report.csv', {}, studentInterestReportController(environment, databaseService, readonlyDatabaseService, app.redis));
-  app.get('/student-inactivity-report.csv', {}, studentInactivtyReportController(environment, databaseService, readonlyDatabaseService, app.redis));
-
+  app.get('/student-inactivity-report.csv', {}, studentInactivityReportController(environment, databaseService, readonlyDatabaseService, app.redis));
+  app.get('/my-notes-usage-report.csv', {}, myNotesUsageReportController(environment, databaseService, readonlyDatabaseService, app.redis));
+  
   app.post('/webhook-events', {}, webhookEventsController(databaseService, readonlyDatabaseService, app.redis));
   app.get("/redis/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
     const { '*': key } = req.params;
