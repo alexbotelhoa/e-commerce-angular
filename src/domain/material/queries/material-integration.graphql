@@ -1,0 +1,9 @@
+
+type Query {
+  occLogin: OccResult!
+}
+
+type OccResult {
+tokenSaml: String!
+ urlSubmit: String!
+}

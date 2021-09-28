@@ -61,6 +61,8 @@ import { carrerResolver } from "./shared/resolvers/carrer.resolver";
 import { carrerPermissionResolver } from "./shared/resolvers/carrer-permission.resolvers";
 import { activitiesListResolver } from "./shared/resolvers/activities-on-list-on-progress-order.resolvers";
 import { studentMaterialResolver } from "./shared/resolvers/material.resolvers";
+import { callOccLoginQueryResolver } from "./domain/material/queries/material-integration.resolver";
+import { occLoginResolvers } from "./shared/resolvers/occ-call-to-login.resolver";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -130,5 +132,6 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     CarrerPermission: carrerPermissionResolver,
     ActivitiesListByProgressOrder: activitiesListResolver,
     Material: studentMaterialResolver,
+    OccResult: occLoginResolvers,
 };
 
