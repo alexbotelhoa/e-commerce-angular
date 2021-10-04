@@ -1309,7 +1309,7 @@ export type GQLMaterial = {
   readonly title: Scalars['String'];
   readonly publisher: Scalars['String'];
   readonly coverImg: Scalars['String'];
-  readonly isInternal: Scalars['String'];
+  readonly isInternal: Scalars['Boolean'];
   readonly acquiredLanguageBooster: Scalars['Boolean'];
   readonly createdAt: Scalars['String'];
   readonly updatedAt: Scalars['String'];
@@ -2299,7 +2299,7 @@ export type GQLMaterialResolvers<ContextType = GraphQLContext, ParentType extend
   title: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   publisher: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   coverImg: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
-  isInternal: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  isInternal: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   acquiredLanguageBooster: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   createdAt: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   updatedAt: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;

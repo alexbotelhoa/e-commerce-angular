@@ -7,7 +7,7 @@ type Material {
     title: String!
     publisher: String!
     coverImg: String!
-    isInternal: String!
+    isInternal: Boolean!
     acquiredLanguageBooster: Boolean!
     createdAt: String!
     updatedAt: String!
