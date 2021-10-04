@@ -7,7 +7,7 @@ export interface MaterialEntity {
     title: string;
     publisher: string;
     coverImg: string;
-    isInternal: string;
+    isInternal: boolean;
     acquiredLanguageBooster: boolean;
     createdAt: string;
     updatedAt: string;

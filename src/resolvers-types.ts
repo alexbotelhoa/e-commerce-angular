@@ -556,6 +556,7 @@ export type GQLQuery = {
   readonly newsletter: Maybe<GQLNewsletter>;
   readonly newsletters: ReadonlyArray<GQLNewsletter>;
   readonly newslettersActive: ReadonlyArray<GQLNewsletter>;
+  readonly occLogin: GQLOccResult;
   readonly overallClassCompletedActivities: Maybe<GQLOverallClassCompletedActivities>;
   readonly progressStudents: GQLProgressStudent;
   readonly teacherClasses: ReadonlyArray<GQLTeacherClass>;
@@ -943,6 +944,12 @@ export type GQLLogsQueryInput = {
   readonly search: Maybe<Scalars['String']>;
   readonly perPage: Maybe<Scalars['ID']>;
   readonly page: Maybe<Scalars['ID']>;
+};
+
+export type GQLOccResult = {
+  readonly __typename?: 'OccResult';
+  readonly tokenSaml: Scalars['String'];
+  readonly urlSubmit: Scalars['String'];
 };
 
 export type GQLCycle = {
@@ -1562,6 +1569,7 @@ export type GQLResolversTypes = {
   learningMoreOptionsInput: GQLlearningMoreOptionsInput;
   AuditInput: GQLAuditInput;
   LogsQueryInput: GQLLogsQueryInput;
+  OccResult: ResolverTypeWrapper<GQLOccResult>;
   Cycle: ResolverTypeWrapper<CycleEntity>;
   LevelTheme: ResolverTypeWrapper<LevelThemeEntity>;
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
@@ -1682,6 +1690,7 @@ export type GQLResolversParentTypes = {
   learningMoreOptionsInput: GQLlearningMoreOptionsInput;
   AuditInput: GQLAuditInput;
   LogsQueryInput: GQLLogsQueryInput;
+  OccResult: GQLOccResult;
   Cycle: CycleEntity;
   LevelTheme: LevelThemeEntity;
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
@@ -1850,6 +1859,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   newsletter: Resolver<Maybe<GQLResolversTypes['Newsletter']>, ParentType, ContextType, RequireFields<GQLQuerynewsletterArgs, 'id'>>;
   newsletters: Resolver<ReadonlyArray<GQLResolversTypes['Newsletter']>, ParentType, ContextType>;
   newslettersActive: Resolver<ReadonlyArray<GQLResolversTypes['Newsletter']>, ParentType, ContextType>;
+  occLogin: Resolver<GQLResolversTypes['OccResult'], ParentType, ContextType>;
   overallClassCompletedActivities: Resolver<Maybe<GQLResolversTypes['OverallClassCompletedActivities']>, ParentType, ContextType, RequireFields<GQLQueryoverallClassCompletedActivitiesArgs, 'classId'>>;
   progressStudents: Resolver<GQLResolversTypes['ProgressStudent'], ParentType, ContextType, RequireFields<GQLQueryprogressStudentsArgs, 'data'>>;
   teacherClasses: Resolver<ReadonlyArray<GQLResolversTypes['TeacherClass']>, ParentType, ContextType, RequireFields<GQLQueryteacherClassesArgs, 'data'>>;
@@ -1995,6 +2005,12 @@ export type GQLViewerChangeAvatarMutationErrorResolvers<ContextType = GraphQLCon
 
 export type GQLViewerChangeAvatarMutationResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ViewerChangeAvatarMutationResult'] = GQLResolversParentTypes['ViewerChangeAvatarMutationResult']> = {
   __resolveType: TypeResolveFn<'User' | 'ViewerChangeAvatarMutationError', ParentType, ContextType>;
+};
+
+export type GQLOccResultResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['OccResult'] = GQLResolversParentTypes['OccResult']> = {
+  tokenSaml: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  urlSubmit: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GQLCycleResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Cycle'] = GQLResolversParentTypes['Cycle']> = {
@@ -2424,6 +2440,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Role: GQLRoleResolvers<ContextType>;
   ViewerChangeAvatarMutationError: GQLViewerChangeAvatarMutationErrorResolvers<ContextType>;
   ViewerChangeAvatarMutationResult: GQLViewerChangeAvatarMutationResultResolvers<ContextType>;
+  OccResult: GQLOccResultResolvers<ContextType>;
   Cycle: GQLCycleResolvers<ContextType>;
   LevelTheme: GQLLevelThemeResolvers<ContextType>;
   OverallClassCompletedActivities: GQLOverallClassCompletedActivitiesResolvers<ContextType>;
