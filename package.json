@@ -4,7 +4,7 @@
   "description": "Server for Cultura Inglesa's Activity Portal",
   "main": "index.js",
   "scripts": {
-    "start": "npm run migrate && npm run build && pm2 start --no-daemon dist/src/index.js -i max",
+    "start": "npm run migrate && npm run build && pm2 start --no-daemon dist/src/index.js -i max -o '/dev/null' -e '/dev/null'",
     "start:dev": "ts-node src/index.ts",
     "build": "tsc --skipLibCheck",
     "watch": "ts-node-dev src/index.ts --debug --inspect=4321",
