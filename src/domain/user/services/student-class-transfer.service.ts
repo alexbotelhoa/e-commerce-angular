@@ -105,7 +105,7 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
             const oldLevelCode = await getLevelCodeById(db)(oldClass?.levelCodeId);
             if (oldLevelCode && oldLevelCode.levelId && newLevelCode?.levelId) {
                 const levelOldClass = await getLevelById(db)(oldLevelCode.levelId)
-                const levelNewClass = await getLevelCodeById(db)(newLevelCode?.levelId);
+                const levelNewClass = await getLevelById(db)(newLevelCode?.levelId);
 
                 if (levelOldClass?.id === levelNewClass?.id) {
                     const activitiesToTransitionToNewClass = await selectActivityTimer(db)
