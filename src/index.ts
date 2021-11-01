@@ -36,7 +36,7 @@ const AWS = AWSXRay.captureAWS(AWSSdk);
 AWS.config.update({ region: 'us-east-1', });
 AWSXRay.captureHTTPsGlobal(https);
 AWSXRay.setContextMissingStrategy("LOG_ERROR");
-AWSXRay.setDaemonAddress('172.30.0.148:2000');
+AWSXRay.setDaemonAddress('http://xrayprd.lxp.culturainglesa.com.br:2000');
 
 
 const environment = environmentFactory();
