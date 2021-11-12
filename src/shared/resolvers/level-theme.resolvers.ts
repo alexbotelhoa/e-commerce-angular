@@ -1,20 +1,16 @@
-import { GQLLevelThemeResolvers } from "../../resolvers-types"
-
-import { CycleEntity, CYCLE_TABLE } from "../../entities/cycle.entity"
-import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
-
-import { selectCycle, countCycles } from "../repositories/cycle.repository"
-
-import { DatabaseLoaderFactory } from "../types/database-loader.type";
+import { CountObj } from "../types/count-obj.type";
+import { CLASS_TABLE } from "../../entities/class.entity";
+import { GQLLevelThemeResolvers } from "../../resolvers-types";
 import { getLevelById } from "../repositories/level.repository";
 import { getThemeById } from "../repositories/theme.repository";
-
 import { LevelThemeEntity } from "../../entities/level-theme.entity";
-
-import { CountObj } from "../types/count-obj.type"
+import { DatabaseLoaderFactory } from "../types/database-loader.type";
+import { CycleEntity, CYCLE_TABLE } from "../../entities/cycle.entity";
 import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
-import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
+import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
+import { selectCycle, countCycles } from "../repositories/cycle.repository";
 import { CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-activity.entity";
+import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
 import { levelThemeClassOverallCompletionFieldResolver } from "../../domain/teacher/fields/level-theme.class-overall-completion.field";
 import { levelThemeClassOverallCompletionRatioFieldResolver } from "../../domain/teacher/fields/level-theme.class-overall-completion-ratio.field";
 
@@ -44,7 +40,6 @@ export const levelThemeCyclesResolver: GQLLevelThemeResolvers['cycles'] = async 
 
 export const levelResolver: GQLLevelThemeResolvers['level'] = async (obj, params, { database: db }) => {
     const level = await getLevelById(db)(obj.levelId);
-
     if (level) {
         return level;
     }
@@ -54,7 +49,6 @@ export const levelResolver: GQLLevelThemeResolvers['level'] = async (obj, params
 
 export const themeResolver: GQLLevelThemeResolvers['theme'] = async (obj, params, { database: db }) => {
     const theme = await getThemeById(db)(obj.themeId);
-
     if (theme) {
         return theme;
     }
@@ -63,7 +57,6 @@ export const themeResolver: GQLLevelThemeResolvers['theme'] = async (obj, params
 }
 
 type TotalCyclesQueryResult = CountObj & Pick<CycleEntity, 'levelThemeId'>;
-
 const totalCyclesSorter = createDataloaderCountSort<TotalCyclesQueryResult, number>('levelThemeId');
 
 const totalCyclesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number> = {
@@ -85,8 +78,6 @@ export const totalCyclesResolver: GQLLevelThemeResolvers['totalCycles'] = async 
 }
 
 type LevelThemeTotalActivitiesQueryResult = CountObj & Pick<CycleEntity, 'levelThemeId'>;
-
-
 const levelTotalActivitiesSorter = createDataloaderCountSort<LevelThemeTotalActivitiesQueryResult, number>('levelThemeId');
 
 export const levelThemeTotalResourcesByLevelThemeIdLoader: DatabaseLoaderFactory<number, number, number> = {
@@ -105,7 +96,6 @@ export const levelThemeTotalResourcesByLevelThemeIdLoader: DatabaseLoaderFactory
     }
 }
 
-
 export const totalActivitiesFieldResolver: GQLLevelThemeResolvers['totalActivities'] = async (obj, params, context) => {
     return context.getDatabaseLoader(levelThemeTotalResourcesByLevelThemeIdLoader, undefined).load(obj.id);
 }
@@ -121,16 +111,13 @@ const levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoader
             .from(ACTIVITY_TIMER_TABLE)
             .innerJoin(CYCLE_ACTIVITY_TABLE, `${CYCLE_ACTIVITY_TABLE}.id`, `${ACTIVITY_TIMER_TABLE}.cycleActivityId`)
             .innerJoin(CYCLE_TABLE, `${CYCLE_TABLE}.id`, `${CYCLE_ACTIVITY_TABLE}.cycleId`)
+            .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${ACTIVITY_TIMER_TABLE}.classId`)
             .whereIn(`${CYCLE_TABLE}.levelThemeId`, ids)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.completed`, true)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.userId`, userId)
-            // we have to group by classId as well otherwise we might get 
-            // duplicated counts for the same activity
+            .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
+            .andWhereRaw(`${CLASS_TABLE}.startDate <= CURDATE()`)
             .groupBy(`${CYCLE_TABLE}.levelThemeId`, `${ACTIVITY_TIMER_TABLE}.classId`)
-            // if user has activities completed in different classes for the same activity, 
-            // we need to get the class with the most count, so we order it here as asc, 
-            // because the last value found for the same id
-            // is the one that counts when sorted by the algorithm
             .orderBy('count(*)', 'asc');
 
         const sorted = levelThemeViewerTotalCompletedActivitiesSorter(ids)(entities);
@@ -143,6 +130,7 @@ export const levelThemeViewerTotalCompletedActivitiesFieldResolver: GQLLevelThem
     if (!user) {
         return 0;
     }
+
     const [
         totalActivities,
         totalStudentCompletedActivities
@@ -150,7 +138,7 @@ export const levelThemeViewerTotalCompletedActivitiesFieldResolver: GQLLevelThem
         context.getDatabaseLoader(levelThemeTotalResourcesByLevelThemeIdLoader, undefined).load(obj.id),
         context.getDatabaseLoader(levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, user.id).load(obj.id),
     ]);
-    // clamp here to max total activities
+
     if (totalStudentCompletedActivities > totalActivities) {
         return totalActivities;
     }
@@ -165,7 +153,6 @@ export const levelThemeStudentTotalCompletedActivitiesFieldResolver: GQLLevelThe
         context.getDatabaseLoader(levelThemeTotalResourcesByLevelThemeIdLoader, undefined).load(obj.id),
         context.getDatabaseLoader(levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, params.studentId).load(obj.id),
     ]);
-    // clamp here to max total activities
     if (totalStudentCompletedActivities > totalActivities) {
         return totalActivities;
     }

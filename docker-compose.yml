@@ -13,7 +13,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: ci-node-server
-    restart: always
+    restart: no
     environment:
       DB_READONLY_HOST: mysql
       DB_PASSWORD: '{"password": "culturainglesa"}'

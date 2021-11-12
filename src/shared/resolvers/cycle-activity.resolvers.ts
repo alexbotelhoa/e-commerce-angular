@@ -1,12 +1,13 @@
-import { GQLCycleActivityResolvers } from "../../resolvers-types"
-import { getCycleById } from "../repositories/cycle.repository"
+import { CLASS_TABLE } from "../../entities/class.entity";
+import { getCycleById } from "../repositories/cycle.repository";
+import { ActivityEntity } from "../../entities/activity.entity";
+import { GQLCycleActivityResolvers } from "../../resolvers-types";
 import { selectActivity } from "../repositories/activity.repository";
+import { DatabaseLoaderFactory } from "../types/database-loader.type";
 import { CycleActivityEntity } from "../../entities/cycle-activity.entity";
 import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
-import { ActivityEntity } from "../../entities/activity.entity";
-import { DatabaseLoaderFactory } from "../types/database-loader.type";
-import { selectCycleActivity } from "../repositories/cycle-activity.repository";
 import { selectActivityTimer } from "../repositories/activity-timer.repository";
+import { selectCycleActivity } from "../repositories/cycle-activity.repository";
 import { ActivityTimerEntity } from "../../entities/activities/activity-timer.entity";
 
 const cycleActivityEntityResolvers: Pick<GQLCycleActivityResolvers, keyof CycleActivityEntity> = {
@@ -18,7 +19,6 @@ const cycleActivityEntityResolvers: Pick<GQLCycleActivityResolvers, keyof CycleA
 
 export const cycleResolver: GQLCycleActivityResolvers['cycle'] = async (obj, params, context) => {
     const cycle = await getCycleById(context.database)(obj.cycleId);
-
     if (cycle) {
         return cycle;
     }
@@ -65,14 +65,16 @@ export const cycleActivityPreviousActivityFieldResolver: GQLCycleActivityResolve
 
 const cycleActivityUserHasCompletedSorter = createDataloaderSingleSort<ActivityTimerEntity, number, ActivityTimerEntity | undefined>('cycleActivityId');
 
-
 export const cycleActivityUserHasCompletedLoader: DatabaseLoaderFactory<number, boolean, boolean, string> = {
     id: 'cycleActivityUserHasCompleted',
     batchFn: (db, userId) => async (cycleActivityIds) => {
         const entities = await selectActivityTimer(db)
+            .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `classId`)
             .whereIn('cycleActivityId', cycleActivityIds)
             .andWhere('userId', userId)
-            .andWhere('completed', true);
+            .andWhere('completed', true)
+            .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
+            .andWhereRaw(`${CLASS_TABLE}.startDate <= CURDATE()`);
         const sorted = cycleActivityUserHasCompletedSorter(cycleActivityIds)(entities);
         return sorted.map(Boolean);
     }
@@ -89,8 +91,6 @@ const cycleActivityViewerHasCompletedFieldResolver: GQLCycleActivityResolvers['v
 const cycleActivityStudentHasCompletedFieldResolver: GQLCycleActivityResolvers['studentHasCompleted'] = async (obj, params, context) => {
     return context.getDatabaseLoader(cycleActivityUserHasCompletedLoader, params.studentId).load(obj.id);
 }
-
-
 
 export const cycleActivityResolvers: GQLCycleActivityResolvers = {
     ...cycleActivityEntityResolvers,
