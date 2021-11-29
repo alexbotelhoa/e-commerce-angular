@@ -4,5 +4,6 @@ import { selectLevelTheme } from "../../../../shared/repositories/level-theme.re
 export const levelThemesQueryResolver: GQLQueryResolvers['levelThemes'] = (obj, { data }, context) => {
     const db = context.database;
     return selectLevelTheme(context.database)
-        .andWhere('levelId', data.levelId);
+        .andWhere('levelId', data.levelId)
+        .orderBy('order', 'asc');
 }
