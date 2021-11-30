@@ -10,7 +10,6 @@ const data = [
   { userId: '10244986', roleId: RoleId.ADMIN }, // Alexandre
   { userId: '1146129', roleId: RoleId.ADMIN }, // Rafael Rodrigues
   { userId: '1146632', roleId: RoleId.ADMIN }, // Lucas Rigonato
-  { userId: '1086647', roleId: RoleId.ADMIN }, // Adriana Gouvêa
 ] as UserRoleEntity[];
 
 export async function up(knex: Knex): Promise<void> {
