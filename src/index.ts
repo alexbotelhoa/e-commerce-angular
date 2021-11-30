@@ -3,7 +3,7 @@ import mercurius from 'mercurius';
 import fastifyJwt from 'fastify-jwt';
 import fastifyCors from 'fastify-cors';
 
-
+import { backupLevelController } from './domain/user/controllers/backup-level.controller';
 import { makeExecutableSchema, loadTypedefs, GraphQLFileLoader, mergeTypeDefs } from 'graphql-tools';
 import { resolvers } from './resolvers';
 import { environmentFactory } from './shared/services/environment.service';
@@ -136,6 +136,9 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.get('/my-notes-usage-report.csv', {}, myNotesUsageReportController(environment, databaseService, readonlyDatabaseService, app.redis));
   
   app.post('/webhook-events', {}, webhookEventsController(databaseService, readonlyDatabaseService, app.redis));
+
+  app.get('/backup-level.csv', {}, backupLevelController(environment, databaseService, readonlyDatabaseService, app.redis));
+
   app.get("/redis/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
     const { '*': key } = req.params;
     if (key) {
