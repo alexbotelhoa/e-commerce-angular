@@ -1,4 +1,4 @@
-schema:
+schema: 
   "./src/**/*.graphql":
     noRequire: true
 generates:
