@@ -30,6 +30,7 @@ import {
 import fastifyRedis from 'fastify-redis';
 import { studentInactivityReportController } from './domain/user/controllers/student-inactivity-report.controller';
 import { myNotesUsageReportController } from './domain/user/controllers/my-notes-usage-report.controller';
+import { LtiController } from './domain/lti/controller/lti.controller';
 
 AWSXRay.captureMySQL(mysql2 as any);
 const AWS = AWSXRay.captureAWS(AWSSdk);
@@ -230,7 +231,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     }
   })
 
-
+  app.get('/lti/params/:userId/:levelId', {}, LtiController(environment, readonlyDatabaseService));
 
 
   app.use(AWSXRay.express.closeSegment());
