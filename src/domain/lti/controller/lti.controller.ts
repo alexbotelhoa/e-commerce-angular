@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 
 import { DatabaseService } from "../../../shared/services/database.service";
 import { Environment } from "../../../shared/types/environment.type";
+import { createCurrentUserFromRequest } from "../../authorization/services/authorization.service";
 import { ltiParamsFactory } from '../services/lti.services'
 
 interface IParams {
@@ -18,15 +19,15 @@ export const LtiController = (
   request: FastifyRequest<IParams>, 
   reply: FastifyReply
 ): Promise<void> => {
-  const userId = request.params?.userId;
+  const currentUser = await createCurrentUserFromRequest(request);
   const levelId = request.params?.levelId; 
 
-  if (!userId || !levelId) {
+  if (!currentUser || !levelId) {
     return reply.status(400).send({ message: 'Parametros ausentes' });
   }
 
   // colocar a key nas variaveis de ambiente;
-  const params = await ltiParamsFactory('DgcIJCkTQDTGhyMR', readonlyDb, userId, +levelId);
+  const params = await ltiParamsFactory('DgcIJCkTQDTGhyMR', readonlyDb, currentUser.id, +levelId);
   
   if (!params) {
     reply.status(400).send({ message: 'Erro ao montar assinatura' });

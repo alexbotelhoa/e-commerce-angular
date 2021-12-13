@@ -231,7 +231,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     }
   })
 
-  app.get('/lti/params/:userId/:levelId', {}, LtiController(environment, readonlyDatabaseService));
+  app.get('/lti/params/:levelId', {}, LtiController(environment, readonlyDatabaseService));
 
 
   app.use(AWSXRay.express.closeSegment());
