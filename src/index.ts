@@ -1,35 +1,33 @@
-import fastify, { FastifyLoggerInstance, FastifyReply } from 'fastify';
+import https from "https";
+import mysql2 from "mysql2";
+import AWSSdk from "aws-sdk";
 import mercurius from 'mercurius';
 import fastifyJwt from 'fastify-jwt';
 import fastifyCors from 'fastify-cors';
-
-import { backupLevelController } from './domain/user/controllers/backup-level.controller';
+import * as AWSXRay from 'aws-xray-sdk';
+import fastifyRedis from 'fastify-redis';
+import { fastifyExpress } from "fastify-express";
+import fastify, { FastifyLoggerInstance, FastifyReply } from 'fastify';
 import { makeExecutableSchema, loadTypedefs, GraphQLFileLoader, mergeTypeDefs } from 'graphql-tools';
+
 import { resolvers } from './resolvers';
-import { environmentFactory } from './shared/services/environment.service';
-import { DatabaseService, databaseServiceFactory } from './shared/services/database.service';
-import { databaseConfigurationFromEnvironment, readonlyDatabaseConfigurationFromEnvironment } from './shared/constants/configuration.constant';
-import { authenticationController } from './domain/authentication/controllers/authentication.controller';
-import { graphQLContextFactory } from './shared/services/graphql-context.service';
-import { validateURL } from './shared/utils/validate-url'
-import { filterHTML } from './shared/utils/filter-html'
-import { makeRequest } from './shared/utils/make-http-request'
-import { classStudentGradesController } from './domain/activity/controllers/class-student-grades.controller';
-import { webhookEventsController } from './domain/user/controllers/webhook-events.controller';
-import { studentReportController } from './domain/user/controllers/student-report.controller';
+import { filterHTML } from './shared/utils/filter-html';
+import { validateURL } from './shared/utils/validate-url';
+import { makeRequest } from './shared/utils/make-http-request';
 import { selectLog } from './shared/repositories/log.repository';
 import { callBackAudit } from './domain/user/services/audit.service';
-import { studentInterestReportController } from './domain/user/controllers/student-interest-report.controller';
-import * as AWSXRay from 'aws-xray-sdk';
-import AWSSdk from "aws-sdk";
-import https from "https"
-import mysql2 from "mysql2"
-import {
-  fastifyExpress
-} from "fastify-express"
-import fastifyRedis from 'fastify-redis';
-import { studentInactivityReportController } from './domain/user/controllers/student-inactivity-report.controller';
+import { environmentFactory } from './shared/services/environment.service';
+import { graphQLContextFactory } from './shared/services/graphql-context.service';
+import { DatabaseService, databaseServiceFactory } from './shared/services/database.service';
+import { webhookEventsController } from './domain/user/controllers/webhook-events.controller';
+import { studentReportController } from './domain/user/controllers/student-report.controller';
+import { authenticationController } from './domain/authentication/controllers/authentication.controller';
 import { myNotesUsageReportController } from './domain/user/controllers/my-notes-usage-report.controller';
+import { classStudentGradesController } from './domain/activity/controllers/class-student-grades.controller';
+import { studentInterestReportController } from './domain/user/controllers/student-interest-report.controller';
+import { backupLevelController, restoreLevelController } from './domain/user/controllers/backup-level.controller';
+import { studentInactivityReportController } from './domain/user/controllers/student-inactivity-report.controller';
+import { databaseConfigurationFromEnvironment, readonlyDatabaseConfigurationFromEnvironment } from './shared/constants/configuration.constant';
 
 AWSXRay.captureMySQL(mysql2 as any);
 const AWS = AWSXRay.captureAWS(AWSSdk);
@@ -37,7 +35,6 @@ AWS.config.update({ region: 'us-east-1', });
 AWSXRay.captureHTTPsGlobal(https);
 AWSXRay.setContextMissingStrategy("LOG_ERROR");
 AWSXRay.setDaemonAddress('xrayprd.lxp.culturainglesa.com.br:2000');
-
 
 const environment = environmentFactory();
 const app = fastify({
@@ -47,6 +44,7 @@ const app = fastify({
   connectionTimeout: 120000,
   bodyLimit: 4 * 1024 * 1024 // 4MiB
 });
+
 export const databaseService: DatabaseService = databaseServiceFactory(databaseConfigurationFromEnvironment(environment), app.log);
 export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(readonlyDatabaseConfigurationFromEnvironment(environment), app.log);
 // Require the framework and instantiate it
@@ -117,26 +115,24 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
       reply
         .code(400)
         .send({ error: 'Invalid url parameter!' })
-      return
+      return;
     }
 
     reply
       .type('text/html')
       .send(await filterHTML(await makeRequest(url), url))
   })
-
+  app.post('/webhook-events', {}, webhookEventsController(databaseService, readonlyDatabaseService, app.redis));
   app.post('/authentication', {}, authenticationController(environment.CI_PORTAL_URL, databaseService, readonlyDatabaseService));
-
   app.post('/horizon-one-authentication', {}, authenticationController(environment.HORIZON_ONE_URL, databaseService, readonlyDatabaseService));
 
   app.post('/student-grades', {}, classStudentGradesController(environment, databaseService, readonlyDatabaseService));
   app.get('/student-report.csv', {}, studentReportController(environment, databaseService, readonlyDatabaseService, app.redis));
+  app.get('/my-notes-usage-report.csv', {}, myNotesUsageReportController(environment, databaseService, readonlyDatabaseService, app.redis));
   app.get('/student-interest-report.csv', {}, studentInterestReportController(environment, databaseService, readonlyDatabaseService, app.redis));
   app.get('/student-inactivity-report.csv', {}, studentInactivityReportController(environment, databaseService, readonlyDatabaseService, app.redis));
-  app.get('/my-notes-usage-report.csv', {}, myNotesUsageReportController(environment, databaseService, readonlyDatabaseService, app.redis));
   
-  app.post('/webhook-events', {}, webhookEventsController(databaseService, readonlyDatabaseService, app.redis));
-
+  app.get('/restore-level', {}, restoreLevelController(environment, databaseService, readonlyDatabaseService));
   app.get('/backup-level.csv', {}, backupLevelController(environment, databaseService, readonlyDatabaseService, app.redis));
 
   app.get("/redis/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
@@ -206,7 +202,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
       }
 
     } else {
-      return { message: "empty key" }
+      return { message: "empty key" };
     }
   })
 
@@ -230,18 +226,9 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     }
   })
 
-
-
-
   app.use(AWSXRay.express.closeSegment());
 
   await executeJobs(databaseService, app.log);
 })();
-console.log("PROJETO RODANDO COM CODIGO MAIS RESCENTE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
-
-
-
-
-
-
+console.log("PROJETO RODANDO COM CODIGO MAIS RECENTE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
