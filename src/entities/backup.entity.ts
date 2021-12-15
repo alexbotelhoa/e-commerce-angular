@@ -1,10 +1,10 @@
 export interface BackupEntity {
     id: string;
     name: string;
-    type?: string;
+    type: string;
+    data: string;
     createdAt: string;
     updatedAt: string;
-    data: Record<string, unknown>;
 }
 
 export const BACKUP_TABLE = 'backup';
