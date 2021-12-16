@@ -2,14 +2,10 @@ import { Redis } from "ioredis";
 import { parse } from "json2csv";
 import { FastifyReply, FastifyRequest } from "fastify";
 
-import { DatabaseService } from "../../../shared/services/database.service";
 import { Environment } from "../../../shared/types/environment.type";
 import { generateBackup, saveBackup } from "../services/backup.service";
+import { DatabaseService } from "../../../shared/services/database.service";
 import { getLevelById } from "../../../shared/repositories/level.repository";
-
-interface IParams {
-  levelId?: string;
-}
 
 export const backupLevelController = (
   env: Environment,
@@ -55,3 +51,26 @@ export const backupLevelController = (
     await redis.del(nameBackup);
   }
 };
+
+export const restoreLevelController = (
+  env: Environment,
+  db: DatabaseService,
+  readonlyDb: DatabaseService
+) => async (
+  req: FastifyRequest,
+  reply: FastifyReply
+): Promise<FastifyReply | undefined> => {
+
+  const backupId = req.headers.backupid;
+  const levelId = req.headers.levelid;
+
+  if (!backupId || !levelId) {
+    return reply.status(400).send({ message: "Error header request!" });
+  }
+
+  console.log(`Processo de restauração do level ${levelId} iniciado!!!`)
+
+  setTimeout(function(){ 
+    return reply.send({ finish: "loading restore" });
+  }, 12000);
+}
