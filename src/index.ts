@@ -138,7 +138,9 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   
   app.post('/webhook-events', {}, webhookEventsController(databaseService, readonlyDatabaseService, app.redis));
 
-  app.get('/backup-level.csv', {}, backupLevelController(environment, databaseService, readonlyDatabaseService, app.redis));
+  app.get('/backup-level.csv', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).createBackup);
+
+  app.get('/backup/retore/db/:idBackup', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).restoreBackupFronDB);
 
   app.get("/redis/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
     const { '*': key } = req.params;
