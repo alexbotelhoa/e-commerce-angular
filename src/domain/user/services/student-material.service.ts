@@ -26,11 +26,12 @@ export const processStudentMaterialEvent =
             };
         }
         const baseMaterialInfo: Partial<MaterialEntity> = {
-            acquiredLanguageBooster: materialData.acquiredLanguageBooster == 'true' ? true : false,
             userId,
+            active: true,
             classId: materialData.classId,
             isInternal: materialData.isInternal,
-            active: true,
+            languageBank: materialData.languageBank,
+            acquiredLanguageBooster: materialData.acquiredLanguageBooster == 'true' ? true : false,
         }
         materialData.CourseMaterials.forEach(async material => {
             const [hasMaterial] = await selectMaterial(readonlyDatabase).where("userId", "=", userId)

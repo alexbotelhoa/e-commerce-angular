@@ -1,26 +1,23 @@
-
-
-import { MaterialEntity } from "../../entities/material.entity";
 import { GQLMaterialResolvers } from "../../resolvers-types";
 import { getClassById } from "../repositories/class.repository";
-
+import { MaterialEntity } from "../../entities/material.entity";
 
 export const studentMaterialFieldResolvers: Pick<GQLMaterialResolvers, keyof MaterialEntity> = {
-    acquiredLanguageBooster: (obj) => obj.acquiredLanguageBooster,
-    active: (obj) => obj.active,
-    classId: (obj) => obj.classId,
-    author: (obj) => obj.author,
-    coverImg: (obj) => obj.coverImg,
-    createdAt: (obj) => obj.createdAt,
     id: (obj) => obj.id,
-    isInternal: (obj) => obj.isInternal,
     userId: (obj) => obj.userId,
+    classId: (obj) => obj.classId,
     isbn: (obj) => obj.isbn,
-    publisher: (obj) => obj.publisher,
+    author: (obj) => obj.author,
     title: (obj) => obj.title,
+    publisher: (obj) => obj.publisher,
+    coverImg: (obj) => obj.coverImg,
+    isInternal: (obj) => obj.isInternal,
+    acquiredLanguageBooster: (obj) => obj.acquiredLanguageBooster,
+    languageBank: (obj) => obj.languageBank || null,
+    active: (obj) => obj.active,
+    createdAt: (obj) => obj.createdAt,
     updatedAt: (obj) => obj.updatedAt,
 }
-
 
 export const studentMaterialResolver: GQLMaterialResolvers = {
     ...studentMaterialFieldResolvers,

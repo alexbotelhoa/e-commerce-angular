@@ -1344,9 +1344,10 @@ export type GQLMaterial = {
   readonly coverImg: Scalars['String'];
   readonly isInternal: Scalars['Boolean'];
   readonly acquiredLanguageBooster: Scalars['Boolean'];
+  readonly languageBank: Maybe<Scalars['String']>;
+  readonly active: Scalars['Boolean'];
   readonly createdAt: Scalars['String'];
   readonly updatedAt: Scalars['String'];
-  readonly active: Scalars['Boolean'];
   readonly materialClass: GQLClass;
 };
 
@@ -2351,9 +2352,10 @@ export type GQLMaterialResolvers<ContextType = GraphQLContext, ParentType extend
   coverImg: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   isInternal: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   acquiredLanguageBooster: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  languageBank: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   createdAt: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   updatedAt: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
-  active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   materialClass: Resolver<GQLResolversTypes['Class'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

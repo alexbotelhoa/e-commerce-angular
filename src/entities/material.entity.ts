@@ -9,10 +9,10 @@ export interface MaterialEntity {
     coverImg: string;
     isInternal: boolean;
     acquiredLanguageBooster: boolean;
+    languageBank: string | null;
+    active: boolean;
     createdAt: string;
     updatedAt: string;
-    active: boolean;
-
 }
 
 export const MATERIAL_TABLE = 'material';
