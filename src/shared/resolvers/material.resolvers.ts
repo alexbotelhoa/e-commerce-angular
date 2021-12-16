@@ -13,7 +13,7 @@ export const studentMaterialFieldResolvers: Pick<GQLMaterialResolvers, keyof Mat
     coverImg: (obj) => obj.coverImg,
     isInternal: (obj) => obj.isInternal,
     acquiredLanguageBooster: (obj) => obj.acquiredLanguageBooster,
-    languageBank: (obj) => obj.languageBank || null,
+    languageBank: (obj) => obj.languageBank ? true : false,
     active: (obj) => obj.active,
     createdAt: (obj) => obj.createdAt,
     updatedAt: (obj) => obj.updatedAt,
