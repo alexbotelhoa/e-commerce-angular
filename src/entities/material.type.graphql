@@ -9,7 +9,7 @@ type Material {
     coverImg: String!
     isInternal: Boolean!
     acquiredLanguageBooster: Boolean!
-    languageBank: String
+    languageBank: Boolean!
     active: Boolean!
     createdAt: String!
     updatedAt: String!
