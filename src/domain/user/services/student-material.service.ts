@@ -29,8 +29,7 @@ export const processStudentMaterialEvent =
             userId,
             active: true,
             classId: materialData.classId,
-            isInternal: materialData.isInternal,
-            languageBank: materialData.languageBank,
+            isInternal: materialData.isInternal,            
             acquiredLanguageBooster: materialData.acquiredLanguageBooster == 'true' ? true : false,
         }
         materialData.CourseMaterials.forEach(async material => {
@@ -42,11 +41,12 @@ export const processStudentMaterialEvent =
                     updatedAt: new Date().toLocaleString("en-US", {
                         timeZone: "America/Sao_Paulo"
                     }),
-                    author: material.author,
-                    coverImg: material.coverImg,
                     isbn: material.isbn,
+                    author: material.author,
                     title: material.title,
                     publisher: material.publisher,
+                    coverImg: material.coverImg,
+                    languageBank: material.languageBank,
                 })(qb => qb.where("id", hasMaterial.id))
             } else {
                 await insertMaterial(db)({
@@ -54,11 +54,12 @@ export const processStudentMaterialEvent =
                     updatedAt: new Date().toLocaleString(undefined, {
                         timeZone: "America/Sao_Paulo"
                     }),
-                    author: material.author,
-                    coverImg: material.coverImg,
                     isbn: material.isbn,
+                    author: material.author,
                     title: material.title,
                     publisher: material.publisher,
+                    coverImg: material.coverImg,
+                    languageBank: material.languageBank,
                 })
             }
         });
