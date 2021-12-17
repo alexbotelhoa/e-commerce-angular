@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { number } from "io-ts";
+import { Redis } from "ioredis";
 import { parse } from "json2csv";
-import Knex from "knex";
 
 import { EmbeddedActivityDataEntity } from "../../../entities/activities/embedded-activity-data.entity";
 import { ActivityEntity } from "../../../entities/activity.entity";
@@ -15,7 +15,7 @@ import { getBackupById, insertBackup } from "../../../shared/repositories/backup
 import { deleteCycleActivity, insertCycleActivity, selectCycleActivity, updateCycleActivity } from "../../../shared/repositories/cycle-activity.repository";
 import { deleteCycle, insertCycle, selectCycle, updateCycle } from "../../../shared/repositories/cycle.repository";
 import { insertEmbeddedActivityData, selectEmbeddedActivityData, updateEmbeddedActivityData } from "../../../shared/repositories/embedded-activity-data.repository";
-import { deleteLevelTheme, selectLevelTheme, updateLevelTheme } from "../../../shared/repositories/level-theme.repository";
+import { deleteLevelTheme, insertLevelTheme, selectLevelTheme, updateLevelTheme } from "../../../shared/repositories/level-theme.repository";
 import { getLevelById } from "../../../shared/repositories/level.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 
@@ -46,16 +46,17 @@ interface IActivity extends ActivityEntity, IActions {
   embedded_activity_data: EmbeddedActivityDataEntity;
 }
 
-interface IElementsBD {
-  activitiesBD: IActivity[];
-  cyclesBD: ICycle[];
-  cycleActivitiesBD: ICycleActivity[];
+interface ILog {
+  levelTheme: ILogResult;
+  cycle: ILogResult;
+  cycleActivity: ILogResult;
+  activity: ILogResult;
 }
 
-interface IElementsBackup {
-  activitiesBackup: IActivity[];
-  cycleActivitiesBackup: ICycleActivity[];
-  cyclesBackup: ICycle[];
+interface ILogResult { 
+  create: number [];
+  update: number[];
+  delete: number[];
 }
 
 interface GenericHash<T = any> {
@@ -65,6 +66,7 @@ interface GenericHash<T = any> {
 // aplicar os indefineds
 export interface IBackupCSV {
     levelId: number;
+    levelThemeId?: number;
     themeId: number;
     themeOrder: number;
     cycleId: number;
@@ -108,7 +110,7 @@ function getElementInLevel<T>(
 ): T[] {
   if (element === "cycle") {
     const cycles: ICycle[] = [];
-    level.level_themes.forEach((lt) => {
+    level.level_themes?.forEach((lt) => {
       lt.cycles?.forEach(c => {
         cycles.push({
           id: c.id,
@@ -123,7 +125,7 @@ function getElementInLevel<T>(
   } 
   else if (element === "activity") {
     const activities: IActivity[] = [];
-    level.level_themes.forEach((lt) => {
+    level.level_themes?.forEach((lt) => {
       lt.cycles?.forEach((c) => {
         c.cycle_activities?.forEach((ca) => {
           ca.activity && activities.push(ca.activity);
@@ -134,7 +136,7 @@ function getElementInLevel<T>(
   } 
   else if (element === "embedded") {
     const embeddeds: EmbeddedActivityDataEntity[] = [];
-    level.level_themes.forEach((lt) => {
+    level.level_themes?.forEach((lt) => {
       lt.cycles?.forEach((c) => {
         c.cycle_activities?.forEach((ca) => {
           ca.activity && embeddeds.push({
@@ -149,7 +151,7 @@ function getElementInLevel<T>(
   } 
   else if (element === 'cycleActivity') {
     const cycleActivity: ICycleActivity[] = [];
-    level.level_themes.forEach(lt => {
+    level.level_themes?.forEach(lt => {
       lt.cycles?.forEach(c => {
         c.cycle_activities?.forEach(ca => {
           cycleActivity.push({
@@ -165,7 +167,7 @@ function getElementInLevel<T>(
   }
   else if (element === 'levelTheme') {
     const levelTheme: ILeveltheme[] = [];
-    level.level_themes.forEach(lt => {
+    level.level_themes?.forEach(lt => {
       levelTheme.push({
         id: lt.id,
         levelId: lt.levelId,
@@ -180,22 +182,22 @@ function getElementInLevel<T>(
 
 function backupToLevel(backupCSV: IBackupCSV[]): ILevel {
   return backupCSV.reduce((acc, line) => {
-    const levelTheme: ILeveltheme = {
+    const levelTheme = {
       levelId: line.levelId,
-      id: line.themeId,
+      id: line.levelThemeId,
       order: line.themeOrder,
       themeId: line.themeId,
       cycles: []
-    }
+    } as ILeveltheme;
 
-    const cycle: ICycle = {
+    const cycle = {
       id: line.cycleId,
       levelThemeId: line.themeId,
       name: line.cycleName,
       order: line.cycleOrder,
       cycle_activities: [],
       active: true
-    } 
+    } as ICycle;
 
     const activity: IActivity = {
       id: line.activityId,
@@ -215,12 +217,12 @@ function backupToLevel(backupCSV: IBackupCSV[]): ILevel {
       id: line.cycleActivityId,
       activityId: activity.id,
       cycleId: cycle.id,
-      order: line.cycleOrder,
+      order: line.activityOrder,
       activity
     } as ICycleActivity;
 
     if (acc.id) {
-      const hasLevelTheme = acc.level_themes.find(item => item.themeId === line.themeId);
+      const hasLevelTheme = acc.level_themes?.find(item => item.themeId === line.themeId);
       if (hasLevelTheme) {
         const hasCycle = hasLevelTheme.cycles?.find(item => item.id === cycle.id);
 
@@ -233,7 +235,7 @@ function backupToLevel(backupCSV: IBackupCSV[]): ILevel {
       } else {
         cycle.cycle_activities?.push(cycleActivities);
         levelTheme.cycles?.push(cycle);
-        acc.level_themes.push(levelTheme)
+        acc.level_themes?.push(levelTheme)
       }
     } else {
       cycle.cycle_activities?.push(cycleActivities);
@@ -276,12 +278,15 @@ export const generateBackup = async (readonlyDatabase: DatabaseService, levelId:
         const levelThemeHash = levelThemesHash[levelThemeId]
         return {
             levelId: level?.id,
+            levelThemeId: levelThemeHash.id, // <-validar com o ivan
+            levelThemeOrder: levelThemeHash.id, // <-validar com o ivan
             themeId : levelThemeHash.themeId,
             themeOrder: levelThemeHash.order,
             cycleId: cycleId,
             cycleOrder: cyclesHash[cycleId].order,
             cycleName: cyclesHash[cycleId].name,
             cycleActivityId: cycleActivityHash[activity].id, // <-validar com o ivan
+            cycleActivityOrder: cycleActivityHash[activity].id, // <-validar com o ivan
             activityId: activityHash[activity].id,
             activityOrder: cycleActivityHash[activity].order,
             activityName: activityHash[activity].name,
@@ -385,15 +390,39 @@ export const elementsForDeletion = (levelIn: ILevel, levelOut: ILevel): void => 
   });
 }
 
-export const elementsForCreation = (levelIn: ILevel): void => {
-  levelIn.level_themes.map(lt => {
+export const elementsForCreation = (levelIn: ILevel, levelOut: ILevel): void => {
+  const isMesmoLevel = levelIn.id === levelOut.id;
+  const levelThemesOut = getElementInLevel<ILeveltheme>('levelTheme', levelOut);
+  const cyclesOut = getElementInLevel<ICycle>('cycle', levelOut);
+  const cycleActivitiesOut = getElementInLevel<ICycleActivity>('cycleActivity', levelOut);
+
+  levelIn.level_themes?.map(lt => {
+    const lto = levelThemesOut.find(lto => lto.id === lt.id);
+    if (!isMesmoLevel || !lto) {
+      // @ts-ignore
+      lt.id = undefined
+      lt.isSave = true;
+    }
+
     lt.cycles?.map(c => {
-      if (c.id === undefined) {
+      const co = cyclesOut.find(co => co.id === c.id);
+      if (!isMesmoLevel || c.id === undefined || !co) {
+        // @ts-ignore
+        c.id = undefined; c.levelThemeId = lt.id;
         c.isSave = true;
       }
+
       c.cycle_activities?.map(ca => {
-        if (ca.activity && ca.activity?.id === undefined) {
+        const cao = cycleActivitiesOut.find(cao => cao.id === ca.id);
+        if (!isMesmoLevel || !cao) {
+          // @ts-ignore
+          ca.id = undefined; ca.cycleId = undefined;
           ca.isSave = true;
+        }
+
+        if (ca.activity && ca.activity?.id === undefined) {
+          // @ts-ignore
+          ca.activity.id = undefined;
           ca.activity.isSave = true;
         }
       });
@@ -401,94 +430,25 @@ export const elementsForCreation = (levelIn: ILevel): void => {
   });
 }
 
-export const elementsForUpdationOld = async (db: DatabaseService, levelIn: ILevel): Promise<void> => {
-  const idsLevelThemes = levelIn.level_themes.map(lt => lt.id);
-  const cyclesNow = await selectCycle(db).whereIn('levelThemeId', idsLevelThemes) as ICycle[];
-
-  const idsActivities: number[] = [];
-  levelIn.level_themes.forEach(lt => lt.cycles?.forEach(c => c.cycle_activities?.forEach(ca => ca.activityId && idsActivities.push(ca.activityId))));
-  const activitiesNow = await selectActivity(db).whereIn('id', idsActivities);
-  const embeddedsNow = await selectEmbeddedActivityData(db).whereIn('activityId', idsActivities);
-
-  for (const lt of levelIn.level_themes) {
-    for (const cycle of lt.cycles || []) {
-      // verifica se o cyclo tem alteracoes
-      const cycleNow = cyclesNow.find(cn => cn.id === cycle.id);
-      if (cycleNow) {
-        if (cycleNow.id === 1261) {
-          console.log('teste');
-        }
-        const comparationA = JSON.stringify({
-          id: cycle.id,
-          name: cycle.name,
-          order: cycle.order
-        });
-
-        const comparationB = JSON.stringify({
-          id: cycleNow.id,
-          name: cycleNow.name,
-          order: cycleNow.order
-        });
-
-        if (comparationA !== comparationB) {
-          cycle.isUpdate = true;
-        }
-      }
-
-      for (const ca of cycle.cycle_activities || []) {
-        if (ca.activityId && ca.cycleId) {
-          const caNow = await selectCycleActivity(db).where({
-            activityId: ca.activityId,
-            cycleId: ca.cycleId,
-          });
-          if (caNow[0]) {
-            ca.id = caNow[0].id;
-            const comparationA = ca.order;
-            const comparationB = caNow[0].order;
-
-            if (comparationA !== comparationB) {
-              ca.isUpdate = true;
-            }
-          }
-        }
-
-        const activityNow = activitiesNow.find((an) => an.id === ca.activityId);
-        const embeddedNow = embeddedsNow.find(
-          (an) => an.activityId === ca.activityId
-        );
-        if (activityNow && embeddedNow && ca.activity) {
-          const comparationA = JSON.stringify({
-            name: activityNow.name,
-            description: activityNow.description,
-            estimatedTime: activityNow.estimatedTime,
-            height: embeddedNow.height,
-            url: embeddedNow.url,
-          });
-
-          const comparationB = JSON.stringify({
-            name: ca.activity?.name,
-            description: ca.activity?.description,
-            estimatedTime: ca.activity?.estimatedTime,
-            height: ca.activity?.embedded_activity_data.height,
-            url: ca.activity?.embedded_activity_data.url,
-          });
-
-          if (comparationA !== comparationB) {
-            ca.activity.isUpdate = true;
-          }
-        }
-      }
-    }
-  }
-}
-
 export const elementsForUpdation = (levelIn: ILevel, levelInNow: ILevel): void => {
+  const levelThemesNow = getElementInLevel<ILeveltheme>('levelTheme', levelInNow);
   const cyclesNow = getElementInLevel<ICycle>('cycle', levelInNow);
   const cyclesActivitiesNow = getElementInLevel<ICycleActivity>('cycleActivity', levelInNow);
   const activitiesNow = getElementInLevel<IActivity>('activity', levelInNow);
   const embeddedsNow = getElementInLevel<EmbeddedActivityDataEntity>('embedded', levelInNow);
 
   for (const lt of levelIn.level_themes) {
+    // verifica se o levelTheme tem alteracoes;
+    const levelThemeNow = levelThemesNow.find(ltn => ltn.id === lt.id)
+    if (levelThemeNow) {
+      const comparationA = lt.order;
+      const comparationB = levelThemeNow.order;
+
+      if (comparationA !== comparationB) {
+        lt.isUpdate = true;
+      }
+    }
+
     for (const cycle of lt.cycles || []) {
       // verifica se o cyclo tem alteracoes
       const cycleNow = cyclesNow.find(cn => cn.id === cycle.id);
@@ -510,9 +470,8 @@ export const elementsForUpdation = (levelIn: ILevel, levelInNow: ILevel): void =
 
       for (const ca of cycle.cycle_activities || []) {
         if (ca.activityId && ca.cycleId) {
-          const caNow = cyclesActivitiesNow.find(can => can.activityId == ca.activityId && can.cycleId === ca.cycleId);
+          const caNow = cyclesActivitiesNow.find(can => can.id === ca.id);
           if (caNow) {
-            ca.id = caNow.id;
             const comparationA = ca.order;
             const comparationB = caNow.order;
             if (comparationA !== comparationB) {
@@ -551,540 +510,232 @@ export const elementsForUpdation = (levelIn: ILevel, levelInNow: ILevel): void =
   }
 }
 
-export const executeTransactionsOld = async (db: DatabaseService, levelIn: ILevel, levelOut: ILevel): Promise<any> => {
-  const levelThemesForDelete: number[] = [];
-  const levelThemesForUpdate: LevelThemeEntity[] = [];
-
-  const cyclesForSave: CycleEntity[] = [];
-  const cyclesForUpdate: CycleEntity[] = [];
-  const cyclesForDelete: number[] = [];
-
-  const cyclesActivitiesForSave: CycleActivityEntity[] = [];
-  const cyclesActivitiesForUpdate: CycleActivityEntity[] = [];
-  const cyclesActivitiesForDelete: {cycleId: number, activityId: number}[] = [];
-
-  const activitiesForSave: IActivity[] = [];
-  const activitiesForUpdate: ActivityEntity[] = [];
-
-  const embeddedsForUpdate: EmbeddedActivityDataEntity[] = [];
-
-  // extrai os dados que serão ecluidos
-  levelOut.level_themes.forEach(lt => {
-    if (lt.isDelete) {
-      levelThemesForDelete.push(lt.id);
+export const logFactory = (levelIn: ILevel, levelOut: ILevel): ILog => {
+  const log: ILog = {
+    levelTheme: {
+      create: [],
+      update: [],
+      delete: []
+    },
+    cycleActivity: {
+      create: [],
+      update: [],
+      delete: []
+    },
+    cycle: {
+      create: [],
+      update: [],
+      delete: []
+    },
+    activity: {
+      create: [],
+      update: [],
+      delete: []
     }
-    lt.cycles?.forEach(c => {
-      if (c.isDelete) {
-        cyclesForDelete.push(c.id);
-      }
-      c.cycle_activities?.forEach(ca => {
-        if (ca.isDelete) {
-          cyclesActivitiesForDelete.push({ cycleId: ca.cycleId, activityId: ca.activityId});
-        }
-      })
-    })
-  });
+  }
 
-  // extrais os dados que serão criados ou alterados
   levelIn.level_themes.forEach(lt => {
-    if (lt.isUpdate) {
-      levelThemesForUpdate.push({
-        // id: lt.id,
-        // levelId: lt.levelId,
-        order: lt.order,
-        // themeId: lt.themeId
-      } as LevelThemeEntity);
-    }
-
+    lt.isSave && log.levelTheme.create.push(lt.id);
+    lt.isUpdate && log.levelTheme.update.push(lt.id);
     lt.cycles?.forEach(c => {
-      if (c.isSave) {
-        cyclesForSave.push({
-          levelThemeId: c.levelThemeId,
-          name: c.name,
-          order: c.order,
-          active: true
-        } as CycleEntity);
-      }
-      if (c.isUpdate) {
-        cyclesForUpdate.push({
-          id: c.id,
-          levelThemeId: c.levelThemeId,
-          name: c.name,
-          order: c.order,
-          active: true
-        });
-      }
-
+      c.isSave && log.cycle.create.push(c.id);
+      c.isUpdate && log.cycle.update.push(c.id);
       c.cycle_activities?.forEach(ca => {
-        if (ca.isSave) {
-          cyclesActivitiesForSave.push({
-            cycleId: ca.cycleId,
-            activityId: ca.activityId,
-            order: ca.order,
-          } as CycleActivityEntity);
-        }
-        if (ca.isUpdate) {
-          cyclesActivitiesForUpdate.push({
-            id: ca.id,
-            cycleId: ca.cycleId,
-            activityId: ca.activityId,
-            order: ca.order,
-          } as CycleActivityEntity);
-        }
-
-        if (ca.activity && ca.activity?.isSave) {
-          activitiesForSave.push(ca.activity);
-        }
-
-        if (ca.activity && ca.activity?.isUpdate) {
-          activitiesForUpdate.push({
-            id: ca.activity.id,
-            name: ca.activity.name,
-            description: ca.activity.description,
-            estimatedTime: ca.activity.estimatedTime,
-            typeId: 1,
-            active: true
-          } as ActivityEntity);
-
-          embeddedsForUpdate.push({
-            activityId: ca.activity.id,
-            height: ca.activity.embedded_activity_data.height,
-            url: ca.activity.embedded_activity_data.url
-          });
-        }
-        
+        ca.isSave && log.cycleActivity.create.push(ca.id);
+        ca.isUpdate && log.cycleActivity.update.push(ca.id);
+        ca.activity?.isSave && log.activity.create.push(ca.activity.id);
+        ca.activity?.isUpdate && log.activity.update.push(ca.activity.id);
       });
     });
   });
 
-  let selfScope: Knex.Transaction<any, any> = {} as any;
-  try {
-    await db.transaction(async scope => {
-      const queries: Promise<any>[] = [];
-      selfScope = scope;
-
-      // exclusoes-----------------------------------
-      queries.push(...cyclesActivitiesForDelete.map(ca => {
-        return deleteCycleActivity(scope)(builder => 
-          builder
-          .andWhere('cycleId', ca.cycleId)
-          .andWhere('activityId', ca.activityId)
-        );
-      }));
-      
-      queries.push(...cyclesActivitiesForDelete.map(ca => {
-        return deleteCycleActivity(scope)(builder => 
-          builder
-          .andWhere('cycleId', ca.cycleId)
-          .andWhere('activityId', ca.activityId)
-        );
-      }));
-
-      cyclesForDelete.length && queries.push(
-        deleteCycle(scope)(builder => 
-          builder.whereIn('id', cyclesForDelete)
-        )
-      );
-
-      levelThemesForDelete.length && queries.push(
-        deleteLevelTheme(scope)(builder => 
-          builder.whereIn('id', levelThemesForDelete)
-        )
-      );
-      // ---------------------------------------------
-
-      // atualizacoes --------------------------------
-      queries.push(...activitiesForUpdate.map(activity => { 
-        const data = {
-          name: activity.name,
-          description: activity.description,
-          estimatedTime: activity.estimatedTime,
-          active: activity.active
-        } as ActivityEntity;
-        return updateActivity(scope)(data)(builder => 
-          builder.andWhere('id', activity.id)
-        );
-      }));
-
-      queries.push(...embeddedsForUpdate.map(embedded => {
-        const data = {
-          height: embedded.height,
-          url: embedded.url
-        } as EmbeddedActivityDataEntity;
-        return updateEmbeddedActivityData(scope)(data)(builder => 
-          builder.andWhere('activityId', embedded.activityId)
-        );
-      }));
-
-      queries.push(...cyclesForUpdate.map(cycle => {
-        const data = {
-          name: cycle.name,
-          order: cycle.order,
-          active: cycle.active
-        } as CycleEntity;
-        return updateCycle(scope)(data)(builder => 
-          builder.andWhere('id', cycle.id)
-        );
-      }));
-
-      queries.push(...cyclesActivitiesForUpdate.map(cycleActivity => {
-        const data = {
-          order: cycleActivity.order
-        } as CycleActivityEntity;
-        return updateCycleActivity(scope)(data)(builder =>
-          builder.andWhere('id', cycleActivity.id)
-        );
-      }));
-
-      queries.push(...levelThemesForUpdate.map(levelTheme => {
-        const data = {
-          order: levelTheme.order
-        } as LevelThemeEntity;
-        return updateLevelTheme(scope)(data)(builder =>
-          builder.andWhere('id', levelTheme.id)
-        );
-      }));
-      // ------------------------------------------------
-
-      // resolve as atualizacoes e exclusoes;
-      await Promise.all(queries);
-
-      // inserções --------------------------------------
-      for (const levelTheme of levelIn.level_themes) {
-        for (const cycle of levelTheme.cycles || []) {
-          for (const cycleActivity of cycle.cycle_activities || []) {
-            if (cycleActivity.isSave && cycleActivity.activity) {
-              cycleActivity.activity.id = await insertActivity(scope)({
-                name: cycleActivity.activity.name,
-                description: cycleActivity.activity.description,
-                estimatedTime: cycleActivity.activity.estimatedTime,
-                typeId: cycleActivity.activity.typeId,
-                active: cycleActivity.activity.active
-              } as ActivityEntity);
-
-              await insertEmbeddedActivityData(scope)({
-                activityId: cycleActivity.activity.id,
-                height: cycleActivity.activity.embedded_activity_data.height,
-                url: cycleActivity.activity.embedded_activity_data.url
-              } as EmbeddedActivityDataEntity);
-
-              cycleActivity.activity.embedded_activity_data.activityId = cycleActivity.id;
-              cycleActivity.activityId = cycleActivity.activity.id;
-            }
-            if (cycle.isSave) {
-              cycle.id = await insertCycle(scope)({
-                name: cycle.name,
-                order: cycle.order,
-                levelThemeId: cycle.levelThemeId,
-                active: cycle.active
-              } as CycleEntity);
-
-              cycleActivity.cycleId = cycle.id;
-            }
-            if (cycleActivity.isSave) {
-              await insertCycleActivity(scope)({
-                cycleId: cycleActivity.cycleId,
-                activityId: cycleActivity.activityId,
-                order: cycleActivity.order
-              } as CycleActivityEntity);
-            }
-          }
-        }
-      }
-      console.log('Fim do restore');
-      // throw new Error('forçado');
+  levelOut.level_themes.forEach(lt => {
+    lt.isDelete && log.levelTheme.delete.push(lt.id);
+    lt.cycles?.forEach(c => {
+      c.isDelete && log.cycle.delete.push(c.id);
+      c.cycle_activities?.forEach(ca => {
+        ca.isDelete && log.cycleActivity.delete.push(ca.id);
+      });
     });
-  } catch (e) {
-    console.log(e)
-    selfScope?.rollback();
-  }
+  });
 
-  return {
-    levelThemesForDelete,
-    cyclesForSave,
-    cyclesForUpdate,
-    cyclesForDelete,
-    cyclesActivitiesForSave,
-    cyclesActivitiesForUpdate,
-    cyclesActivitiesForDelete,
-    activitiesForSave,
-    activitiesForUpdate,
-    embeddedsForUpdate,
-  }
+  return log;
 }
 
 export const executeTransactions = async (db: DatabaseService, levelIn: ILevel, levelInNow: ILevel, levelOut: ILevel): Promise<any> => {
-  const levelThemesForDelete: number[] = [];
-  const levelThemesForUpdate: LevelThemeEntity[] = [];
+  console.log('\nTransactions iniciadas\n');
 
-  const cyclesForSave: CycleEntity[] = [];
-  const cyclesForUpdate: CycleEntity[] = [];
-  const cyclesForDelete: number[] = [];
-
-  const cyclesActivitiesForSave: CycleActivityEntity[] = [];
-  const cyclesActivitiesForUpdate: CycleActivityEntity[] = [];
-  const cyclesActivitiesForDelete: CycleActivityEntity[] = [];
-
-  const activitiesForSave: IActivity[] = [];
-  const activitiesForUpdate: ActivityEntity[] = [];
-
-  const embeddedsForUpdate: EmbeddedActivityDataEntity[] = [];
-
-  // extrai os dados que serão ecluidos
+  const forDelete: any[] = [];
   levelOut.level_themes?.forEach(lt => {
     if (lt.isDelete) {
-      levelThemesForDelete.push(lt.id);
+      forDelete.push({ levelTheme: lt.id });
     }
     lt.cycles?.forEach(c => {
       if (c.isDelete) {
-        cyclesForDelete.push(c.id);
+        forDelete.push({ cycle: c.id });
       }
       c.cycle_activities?.forEach(ca => {
         if (ca.isDelete) {
-          cyclesActivitiesForDelete.push({
-            id: ca.id,
-            cycleId: ca.cycleId,
-            activityId: ca.activityId,
-          } as CycleActivityEntity);
+          forDelete.push({ cycleActivity: ca.id });
         }
       });
     });
   });
 
-  // extrais os dados que serão criados ou alterados
-  levelIn.level_themes.forEach(lt => {
-    if (lt.isUpdate) {
-      levelThemesForUpdate.push({
-        id: lt.id,
-        order: lt.order,
-      } as LevelThemeEntity);
-    }
+  const deleteGrouped = forDelete.reduce((acc, item) => {
+    item['cycle'] && acc.cycles.push(item['cycle']);
+    item['cycleActivity'] && acc.cycleActivities.push(item['cycleActivity']);
+    item['levelTheme'] && acc.levelThemes.push(item['levelTheme']);
+    return acc;
+  }, { cycles: [], cycleActivities: [], levelThemes: [] });
 
-    // definir exclusao levelTheme
+  await db.transaction(async scope => {
+    deleteGrouped.cycleActivities.length && await deleteCycleActivity(scope)(builder => 
+      builder.whereIn('id', deleteGrouped.cycleActivities)
+    );
 
-    lt.cycles?.forEach(c => {
-      if (c.isSave) {
-        cyclesForSave.push({
-          levelThemeId: c.levelThemeId,
-          name: c.name,
-          order: c.order,
-          active: true
-        } as CycleEntity);
-      }
-      if (c.isUpdate) {
-        cyclesForUpdate.push({
-          id: c.id,
-          levelThemeId: c.levelThemeId,
-          name: c.name,
-          order: c.order,
-          active: true
-        });
-      }
+    deleteGrouped.cycles.length && await deleteCycle(scope)(builder => 
+      builder.whereIn('id', deleteGrouped.cycles)
+    );
 
-      c.cycle_activities?.forEach(ca => {
-        if (ca.isSave) {
-          cyclesActivitiesForSave.push({
-            cycleId: ca.cycleId,
-            activityId: ca.activityId,
-            order: ca.order,
-          } as CycleActivityEntity);
-        }
-        if (ca.isUpdate) {
-          cyclesActivitiesForUpdate.push({
-            id: ca.id,
-            cycleId: ca.cycleId,
-            activityId: ca.activityId,
-            order: ca.order,
-          } as CycleActivityEntity);
-        }
+    deleteGrouped.levelThemes.length && await deleteLevelTheme(scope)(builder => 
+      builder.whereIn('id', deleteGrouped.levelThemes)
+    );
 
-        if (ca.activity && ca.activity?.isSave) {
-          activitiesForSave.push(ca.activity);
-        }
-
-        if (ca.activity && ca.activity?.isUpdate) {
-          activitiesForUpdate.push({
-            id: ca.activity.id,
-            name: ca.activity.name,
-            description: ca.activity.description,
-            estimatedTime: ca.activity.estimatedTime,
-            typeId: 1,
-            active: true
-          } as ActivityEntity);
-
-          embeddedsForUpdate.push({
-            activityId: ca.activity.id,
-            height: ca.activity.embedded_activity_data.height,
-            url: ca.activity.embedded_activity_data.url
-          });
-        }
-        
-      });
-    });
-  });
-
-  let selfScope: Knex.Transaction<any, any> = {} as any;
-  try {
-    await db.transaction(async scope => {
-      selfScope = scope;
-
-      // exclusoes-----------------------------------
-      // para as exclusoes foi adodato o envio sequencial pois é a transãcao mais custosa e propensa a erros.
-
-      // fesse reducer retorna um array com os ids do cycloActivity que contem, e outro com os que não contem.
-      const { ids, ca } = cyclesActivitiesForDelete.reduce(
-        (acc, item) => {
-          item.id ? acc.ids.push(item.id) : acc.ca.push({ cycleId: item.cycleId, activityId: item.activityId });
-          return acc;
-        },
-        { ids: [], ca: [] } as {
-          ids: number[];
-          ca: { cycleId: number; activityId: number }[];
-        }
-      );
-
-      ids.length && await deleteCycleActivity(scope)(builder => 
-        builder.whereIn('id', ids)
-      );
-
-      for (const c of ca) {
-        await deleteCycleActivity(scope)(builder => 
-          builder
-            .andWhere('cycleId', c.cycleId)
-            .andWhere('activityId', c.activityId)
-        );
-      }
-
-      cyclesForDelete.length && await deleteCycle(scope)(builder => 
-        builder.whereIn('id', cyclesForDelete)
-      );
-
-      levelThemesForDelete.length && await deleteLevelTheme(scope)(builder => 
-        builder.whereIn('id', levelThemesForDelete)
-      );
-
-      console.log('\n\nExclusões realizadas \n');
-      // ---------------------------------------------
-
-      // atualizacoes --------------------------------
-      // nas atualizaçoes envio todas as promesas de uma unica vez pois são as maisrapdas.
-      const queries: Promise<any>[] = [];
-      queries.push(...activitiesForUpdate.map(activity => { 
-        const data = {
-          name: activity.name,
-          description: activity.description,
-          estimatedTime: activity.estimatedTime,
-          active: activity.active
-        } as ActivityEntity;
-        return updateActivity(scope)(data)(builder => 
-          builder.andWhere('id', activity.id)
-        );
-      }));
-
-      queries.push(...embeddedsForUpdate.map(embedded => {
-        const data = {
-          height: embedded.height,
-          url: embedded.url
-        } as EmbeddedActivityDataEntity;
-        return updateEmbeddedActivityData(scope)(data)(builder => 
-          builder.andWhere('activityId', embedded.activityId)
-        );
-      }));
-
-      queries.push(...cyclesForUpdate.map(cycle => {
-        const data = {
-          name: cycle.name,
-          order: cycle.order,
-          active: cycle.active
-        } as CycleEntity;
-        return updateCycle(scope)(data)(builder => 
-          builder.andWhere('id', cycle.id)
-        );
-      }));
-
-      queries.push(...cyclesActivitiesForUpdate.map(cycleActivity => {
-        const data = {
-          order: cycleActivity.order
-        } as CycleActivityEntity;
-        return updateCycleActivity(scope)(data)(builder =>
-          builder.andWhere('id', cycleActivity.id)
-        );
-      }));
-
-      queries.push(...levelThemesForUpdate.map(levelTheme => {
-        const data = {
+    levelIn.id = levelOut.id || levelIn.id;
+    for (const levelTheme of levelIn.level_themes || []) {
+      if (levelTheme.isSave) {
+        levelTheme.levelId = levelIn.id;
+        levelTheme.id = await insertLevelTheme(scope)({
+          levelId: levelTheme.levelId,
+          themeId: levelTheme.themeId,
           order: levelTheme.order
-        } as LevelThemeEntity;
-        return updateLevelTheme(scope)(data)(builder =>
+        } as LevelThemeEntity);
+      }
+
+      if (levelTheme.isUpdate) {
+        await updateLevelTheme(scope)({
+          order: levelTheme.order
+        })(builder =>
           builder.andWhere('id', levelTheme.id)
         );
-      }));
-       await Promise.all(queries);
-       console.log('\n\nAtualizações realizadas \n');
-      // ------------------------------------------------
+      }
 
-      /// inserções --------------------------------------
-      // nas insercoes tambem foi adotado o metodo sequencial pois preciso recuperar os ids inseridos
-      // para ser utilizados nas chaves esntrangeiras
-      for (const levelTheme of levelIn.level_themes) {
-        for (const cycle of levelTheme.cycles || []) {
-          for (const cycleActivity of cycle.cycle_activities || []) {
-            if (cycleActivity.isSave && cycleActivity.activity) {
-              cycleActivity.activity.id = await insertActivity(scope)({
-                name: cycleActivity.activity.name,
-                description: cycleActivity.activity.description,
-                estimatedTime: cycleActivity.activity.estimatedTime,
-                typeId: cycleActivity.activity.typeId,
-                active: cycleActivity.activity.active
-              } as ActivityEntity);
+      for (const cycle of levelTheme.cycles || []) {
+        if (cycle.isSave) {
+          cycle.id = await insertCycle(scope)({
+            name: cycle.name,
+            order: cycle.order,
+            levelThemeId: levelTheme.id,
+            active: cycle.active
+          } as CycleEntity);
+        }
 
-              await insertEmbeddedActivityData(scope)({
-                activityId: cycleActivity.activity.id,
-                height: cycleActivity.activity.embedded_activity_data.height,
-                url: cycleActivity.activity.embedded_activity_data.url
-              } as EmbeddedActivityDataEntity);
+        if (cycle.isUpdate) {
+          await updateCycle(scope)({
+            name: cycle.name,
+            order: cycle.order,
+            active: cycle.active
+          })(builder => 
+            builder.andWhere('id', cycle.id)
+          );
+        }
 
-              cycleActivity.activity.embedded_activity_data.activityId = cycleActivity.id;
-              cycleActivity.activityId = cycleActivity.activity.id;
-            }
-            if (cycle.isSave) {
-              cycle.id = await insertCycle(scope)({
-                name: cycle.name,
-                order: cycle.order,
-                levelThemeId: cycle.levelThemeId,
-                active: cycle.active
-              } as CycleEntity);
+        for (const cycleActivity of cycle.cycle_activities || []) {
+          if (cycleActivity?.activity?.isSave) {
+            cycleActivity.activity.id = await insertActivity(scope)({
+              name: cycleActivity.activity.name,
+              description: cycleActivity.activity.description,
+              estimatedTime: cycleActivity.activity.estimatedTime,
+              typeId: cycleActivity.activity.typeId,
+              active: cycleActivity.activity.active
+            } as ActivityEntity);
 
-              cycleActivity.cycleId = cycle.id;
-            }
-            if (cycleActivity.isSave) {
-              await insertCycleActivity(scope)({
-                cycleId: cycleActivity.cycleId,
-                activityId: cycleActivity.activityId,
-                order: cycleActivity.order
-              } as CycleActivityEntity);
-            }
+            await insertEmbeddedActivityData(scope)({
+              activityId: cycleActivity.activity.id,
+              height: cycleActivity.activity.embedded_activity_data.height,
+              url: cycleActivity.activity.embedded_activity_data.url
+            } as EmbeddedActivityDataEntity);
+
+            cycleActivity.activity.embedded_activity_data.activityId = cycleActivity.id;
+            cycleActivity.activityId = cycleActivity.activity.id;
+          }
+
+          if (cycleActivity?.activity?.isUpdate) {
+            await updateActivity(scope)({
+              name: cycleActivity.activity.name,
+              description: cycleActivity.activity.description,
+              estimatedTime: cycleActivity.activity.estimatedTime,
+              active: cycleActivity.activity.active
+            })(builder => 
+              builder.andWhere('id', cycleActivity.activity?.id)
+            );
+
+            await updateEmbeddedActivityData(scope)({
+              height: cycleActivity.activity.embedded_activity_data.height,
+              url: cycleActivity.activity.embedded_activity_data.url
+            })(builder => 
+              builder.andWhere('activityId', cycleActivity.activity?.id )
+            );
+          }
+
+          if (cycleActivity.isSave) {
+            cycleActivity.cycleId = cycle.id; 
+            cycleActivity.id = await insertCycleActivity(scope)({
+              cycleId: cycleActivity.cycleId,
+              activityId: cycleActivity.activityId,
+              order: cycleActivity.order
+            } as CycleActivityEntity);
+          }
+
+          if (cycleActivity.isUpdate) {
+            await updateCycleActivity(scope)({
+              order: cycleActivity.order
+            })(builder =>
+              builder.andWhere('id', cycleActivity.id)
+            );
           }
         }
       }
-      console.log('\n\nFim do restore\n');
-      throw new Error('forçado');
-    });
-  } catch (e) {
-    console.log(e)
-    selfScope?.rollback();
+    }
+  });
+  console.log('\nTransactions finalizadas\n');
+}
+
+export function workInRedis(
+  redis: Redis,
+): {
+  setInProcess: (redisKey: string) => void;
+  remove: (redisKey: string) => void;
+  setLog: (redisKey: string, log: ILog | string) => void;
+  get: (redisKey: string) => Promise<ILog | 'inProcess' | undefined>;
+} {
+  function setInProcess(redisKey: string) {
+    redis.set(redisKey, 'inProcess', 'ex', 3600); // 1 hora
   }
 
-  return {
-    levelThemesForDelete,
-    cyclesForSave,
-    cyclesForUpdate,
-    cyclesForDelete,
-    cyclesActivitiesForSave,
-    cyclesActivitiesForUpdate,
-    cyclesActivitiesForDelete,
-    activitiesForSave,
-    activitiesForUpdate,
-    embeddedsForUpdate,
+  function remove(redisKey: string) {
+    redis.del(redisKey);
   }
+
+  function setLog(redisKey: string, log: ILog | string) {
+    const data = JSON.stringify(log);
+    redis.set(redisKey, data, 'ex', 3600); // 1 hora
+  }
+
+  async function get(redisKey: string) {
+    const response = await redis.get(redisKey);
+    if (response === "inProcess") {
+      return response;
+    }
+
+    const log = response && JSON.parse(response);
+    if (log && log.length > 0) {
+      await redis.del(redisKey);
+      return log as ILog;
+    }
+    return undefined;
+  }
+
+  return { setInProcess, setLog, get, remove };
 }
