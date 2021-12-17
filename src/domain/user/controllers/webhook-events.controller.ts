@@ -128,13 +128,13 @@ const materialArray = t.type({
     title: t.string,
     publisher: t.string,
     coverImg: t.string,
+    languageBank: t.string,
 })
 
 export const studentMaterialEventData = t.type({
     userId: t.string,
     classId: t.string,
-    isInternal: t.boolean,
-    languageBank: t.string,
+    isInternal: t.boolean,    
     acquiredLanguageBooster: t.union([ t.boolean, t.string]),
     CourseMaterials: t.array(materialArray)
 })
