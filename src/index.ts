@@ -26,7 +26,7 @@ import { authenticationController } from './domain/authentication/controllers/au
 import { myNotesUsageReportController } from './domain/user/controllers/my-notes-usage-report.controller';
 import { classStudentGradesController } from './domain/activity/controllers/class-student-grades.controller';
 import { studentInterestReportController } from './domain/user/controllers/student-interest-report.controller';
-import { backupLevelController, restoreLevelController } from './domain/user/controllers/backup-level.controller';
+import { backupLevelController } from './domain/user/controllers/backup-level.controller';
 import { studentInactivityReportController } from './domain/user/controllers/student-inactivity-report.controller';
 import { databaseConfigurationFromEnvironment, readonlyDatabaseConfigurationFromEnvironment } from './shared/constants/configuration.constant';
 
@@ -134,8 +134,8 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.get('/student-interest-report.csv', {}, studentInterestReportController(environment, databaseService, readonlyDatabaseService, app.redis));
   app.get('/student-inactivity-report.csv', {}, studentInactivityReportController(environment, databaseService, readonlyDatabaseService, app.redis));
   
-  app.get('/restore-level', {}, restoreLevelController(environment, databaseService, readonlyDatabaseService));
-  app.get('/backup-level.csv', {}, backupLevelController(environment, databaseService, readonlyDatabaseService, app.redis));
+  app.get('/restore-level', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).restoreBackupFronDB);
+  app.get('/backup-level.csv', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).createBackup);
 
   app.get("/redis/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
     const { '*': key } = req.params;
