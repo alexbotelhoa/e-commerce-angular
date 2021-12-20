@@ -19,6 +19,8 @@ import { callBackAudit } from './domain/user/services/audit.service';
 import { LtiController } from './domain/lti/controller/lti.controller';
 import { environmentFactory } from './shared/services/environment.service';
 import { graphQLContextFactory } from './shared/services/graphql-context.service';
+import { KanttumController } from "./domain/kanttum/controllers/kanttum.controller";
+import { backupLevelController } from './domain/user/controllers/backup-level.controller';
 import { DatabaseService, databaseServiceFactory } from './shared/services/database.service';
 import { webhookEventsController } from './domain/user/controllers/webhook-events.controller';
 import { studentReportController } from './domain/user/controllers/student-report.controller';
@@ -26,7 +28,6 @@ import { authenticationController } from './domain/authentication/controllers/au
 import { myNotesUsageReportController } from './domain/user/controllers/my-notes-usage-report.controller';
 import { classStudentGradesController } from './domain/activity/controllers/class-student-grades.controller';
 import { studentInterestReportController } from './domain/user/controllers/student-interest-report.controller';
-import { backupLevelController } from './domain/user/controllers/backup-level.controller';
 import { studentInactivityReportController } from './domain/user/controllers/student-inactivity-report.controller';
 import { databaseConfigurationFromEnvironment, readonlyDatabaseConfigurationFromEnvironment } from './shared/constants/configuration.constant';
 
@@ -124,6 +125,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
       .type('text/html')
       .send(await filterHTML(await makeRequest(url), url))
   })
+
   app.post('/webhook-events', {}, webhookEventsController(databaseService, readonlyDatabaseService, app.redis));
   app.post('/authentication', {}, authenticationController(environment.CI_PORTAL_URL, databaseService, readonlyDatabaseService));
   app.post('/horizon-one-authentication', {}, authenticationController(environment.HORIZON_ONE_URL, databaseService, readonlyDatabaseService));
@@ -136,6 +138,9 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   
   app.get('/restore-level', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).restoreBackupFronDB);
   app.get('/backup-level.csv', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).createBackup);
+
+  app.get('/lti/params/:levelId', {}, LtiController(environment, readonlyDatabaseService));
+  app.get('/kanttum', {}, KanttumController(environment, readonlyDatabaseService));
 
   app.get("/redis/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
     const { '*': key } = req.params;
@@ -202,7 +207,6 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
           stack: error.stack,
         }
       }
-
     } else {
       return { message: "empty key" };
     }
@@ -222,14 +226,10 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
           stack: error.stack,
         }
       }
-
     } else {
       return { message: "empty key" }
     }
   })
-
-
-  app.get('/lti/params/:levelId', {}, LtiController(environment, readonlyDatabaseService));
 
   app.use(AWSXRay.express.closeSegment());
 

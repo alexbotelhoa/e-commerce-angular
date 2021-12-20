@@ -3,7 +3,6 @@ import { LevelCodeEntity } from "../../../entities/level-code.entity";
 import { selectLevelCode } from "../../../shared/repositories/level-code.repository";
 
 export const getLearningMoreLevelCodeCalculatorResolver: GQLQueryResolvers['learningMoreOption'] = async (obj, params, context) => {
-
     if (params.filters.levelId) {
         const levelCodes = await selectLevelCode(context.readonlyDatabase).where("levelId", params.filters.levelId);
         return determinateLearningMorePriorityReduce(levelCodes);
@@ -28,7 +27,6 @@ export const getLearningMoreLevelCodeCalculatorResolver: GQLQueryResolvers['lear
         `)
         return determinateLearningMorePriorityReduce(levelCodes)
     }
-
 }
 
 function determinateLearningMorePriorityReduce(levelCode: LevelCodeEntity[]): LevelCodeEntity {
@@ -37,6 +35,6 @@ function determinateLearningMorePriorityReduce(levelCode: LevelCodeEntity[]): Le
             acc[item.learningMore]  = item;
         }
         return acc;
-    }, {paginab2c: null, eyoung: null, spboost: null, podcast: null} as any);
-    return result.spboost || result.podcast || result.eyoung || result.paginab2c || null;
+    }, {kanttum: null, paginab2c: null, eyoung: null, spboost: null, podcast: null} as any);
+    return result.kanttum || result.spboost || result.podcast || result.eyoung || result.paginab2c || null;
 }
