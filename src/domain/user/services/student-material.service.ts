@@ -30,7 +30,8 @@ export const processStudentMaterialEvent =
             active: true,
             classId: materialData.classId,
             isInternal: materialData.isInternal,            
-            acquiredLanguageBooster: materialData.acquiredLanguageBooster == 'true' ? true : false,
+            acquiredLanguageBooster: materialData.acquiredLanguageBooster,
+            // acquiredLanguageBooster: materialData.acquiredLanguageBooster == 'true' ? true : false,
         }
         materialData.CourseMaterials.forEach(async material => {
             const [hasMaterial] = await selectMaterial(readonlyDatabase).where("userId", "=", userId)

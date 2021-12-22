@@ -39,14 +39,22 @@ interface HeadersParams {
 }
 
 export async function ltiParamsFactory(KEY: string, db: DatabaseService, userId: string, headers: HeadersParams): Promise<ILti | undefined> {
+  let email: string | null = '';
+
   try {
     const user = await getUserById(db)(userId);
     const level = await getLevelById(db)(headers.levelId);
     const material = await getMaterialById(db)(headers.materialId)
 
-    if (!user || !user.accountId || !level || !material || !material.languageBank) {
+    if (!user || !level || !material || !material.languageBank) {
       return;
     }
+
+    if (!user.accountId) {
+      email = 'aluno@culturainglesa.com.br';
+    } else {
+      email = user.accountId;
+    }    
 
     const timestamp = Math.round(Date.now() / 1000);
     const ACTION = material.languageBank;
@@ -66,9 +74,9 @@ export async function ltiParamsFactory(KEY: string, db: DatabaseService, userId:
       roles: 'Student',
       user_id: user.id,
       lis_person_name_full: user.name,
-      lis_person_contact_email_primary: user.accountId,
-      lis_person_sourced_id: `${user.accountId.split('@')[1]}:${user.accountId.split('@')[0]}`,
-      tool_consumer_instance_guid: `${user.accountId.split('@')[1]}`,
+      lis_person_contact_email_primary: email,
+      lis_person_sourced_id: `${email.split('@')[1]}:${email.split('@')[0]}`,
+      tool_consumer_instance_guid: `${email.split('@')[1]}`,
       tool_consumer_instance_description: 'Associação Cultura Inglesa',
       context_id: level.id.toString(),
       context_title: level.name,
