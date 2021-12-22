@@ -5,10 +5,9 @@ import { parse } from "json2csv";
 
 import { getLevelById } from "../../../shared/repositories/level.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
+import { RedisService } from "../../../shared/services/redis-tools.services";
 import { 
-  workInRedis,
   applyBusinessRules,
-  BackupResponse,
   generateBackup,
   getBackup,
   saveBackup,
@@ -18,6 +17,8 @@ import {
   elementsForUpdation,
   executeTransactions,
   logFactory,
+  IBackupCSV,
+  ILog,
 } from "../services/backup.service";
 
 
@@ -34,6 +35,7 @@ interface IController {
 }
 
 export function backupLevelController(db: DatabaseService, readonlyDb: DatabaseService, redis?: Redis): IController {
+  const redisService = new RedisService(redis);
 
   const createBackup = async (req: FastifyRequest, reply: FastifyReply) => {
     if (!redis) {
@@ -52,11 +54,11 @@ export function backupLevelController(db: DatabaseService, readonlyDb: DatabaseS
     const rawDate = date.toISOString().slice(0, 10).replace(/-/g, "");
     const nameBackup = `${levelToBackup?.name}_${levelToBackup?.id}_${rawDate}`;
     
-    const response = await redis.get(nameBackup);
-    const responseParsed = response && JSON.parse(response);
-    if (responseParsed && responseParsed.csvModel) {
+    const response = await redisService.get<IBackupCSV[]>(nameBackup);
+    if (response) {
+      // redisService.remove(nameBackup);
       reply.header("Content-Type", "text/csv");
-      return reply.send(parse(responseParsed.csvModel));
+      return reply.send(parse(response));
     }
     
     reply.send({ loading: "loading backup" });
@@ -65,7 +67,7 @@ export function backupLevelController(db: DatabaseService, readonlyDb: DatabaseS
     
     const backup = await generateBackup(readonlyDb, levelId);
     await saveBackup(backup, db, nameBackup);
-    if (backup.csvModel.length > 0 && backup.entities) {
+    if (backup) {
       await redis.set(nameBackup, JSON.stringify(backup), "ex", 43200);
     } else {
       await redis.del(nameBackup);
@@ -86,35 +88,35 @@ export function backupLevelController(db: DatabaseService, readonlyDb: DatabaseS
 
     // controle para saber se ja esta em processamento processamento
     const redisKey = `${levelId}-restore-backup`;
-    const redisResponse = await workInRedis(redis).get(redisKey);
-    if (redisResponse) {
-      if (redisResponse === 'inProcess') {
+    const data = await redisService.get<ILog>(redisKey, true);
+    if (data) {
+      if (typeof data === 'string') {
         return reply.status(202).send({ message: 'existe uma restauração de backup desse nível em processamento' });
       }
       else {
         reply.header("Content-Type", "application/json");
         return reply.status(200).send({
           redisKey,
-          redisResponse
-        }); // json com o log;
+          redisResponse: data
+        });
       }
     }
 
     // recupera o backup do banco de dados
     const response = await getBackup(db, +backupId);
-    const backup = response?.data as unknown as BackupResponse
+    const backup = response?.data as unknown as IBackupCSV[]
     if (!backup) {
       return reply.status(400).send({ message: 'Level not found' });
     }
 
     // aplicar regras de validação do CSV
-    const { isError, backupWithErrors } = applyBusinessRules(backup.csvModel); 
+    const { isError, backupWithErrors } = applyBusinessRules(backup); 
     if (isError) {
       return reply.status(400).send(backupWithErrors);
     }
 
     // busca o level que vai entrar e o level que vai sair
-    const levels = await getLevels(db, backup.csvModel, +levelId);
+    const levels = await getLevels(db, backup, +levelId);
     
     // seta no level os elementos a serem excluidos;
     elementsForDeletion(levels.levelIn, levels.levelOut);
@@ -125,39 +127,29 @@ export function backupLevelController(db: DatabaseService, readonlyDb: DatabaseS
     // seta no level os elementeos a serem atualizados
     elementsForUpdation(levels.levelIn, levels.levelInNow);
 
-    // caso a requisição demore mais que meio minuto o servidor devolve uma mensagem que será processado em segundo plano
-    let flag = true;
-    setTimeout(() => {
-      if (flag) {
-        workInRedis(redis).setInProcess(redisKey);
-        reply?.status(202).send({ message: 'Seu pedido de restauração está sendo processado em segundo plano' });
-        flag = false;
-      }
-    }, 30000); 
+    // caso a requisição demore mais que meio minuto o servidor devolve uma mensagem que notificando que será processado em segundo plano
+    redisService.flag = true;
+    redisService.setInRedisAfterTimeExpires(redisKey, reply);
 
     // então, executa as transacoes garantindo que todas tenham exito.
     try {
       await executeTransactions(db, levels.levelIn, levels.levelInNow, levels.levelOut);
-    } catch (e: any) {
-      if (flag) {
-        flag = false;
-        workInRedis(redis).remove(redisKey);
-        return reply.status(500).send({ message: `aconteceu um erro inesperado: ${e?.sqlMessage}` });
-      } else {
-        workInRedis(redis).setLog(redisKey, `aconteceu um erro inesperado: ${e?.sqlMessage}`);
-      }
+    } catch {
+      return redisService.throwInRedisAfterTimeExpires(redisKey, reply);
     }
+
     // um obheto de log com os ids de cada alteracao.
     const log = logFactory(levels.levelIn, levels.levelOut);
 
-    // seta o log no redis para consulta
-    !flag && workInRedis(redis).setLog(redisKey, log);
+    // verifica se executou apos o tempo esperado
+    if (!redisService.flag) { 
+      redisService.set(redisKey, log);
+      return;
+    } 
 
-    // indica que executou abaixo do tempo esperado e retorn o log deretamente mente
-    flag && reply.status(200).send(log);
-    
-    // setando flag como false indica que a requisição foi respondida com sucesso.
-    flag = false;
+    // indica que executou antes do tempo limite
+    redisService.flag = false;
+    reply.status(200).send(log);
   }
 
   return { createBackup, restoreBackupFronDB };
