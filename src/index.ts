@@ -139,7 +139,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.get('/restore-level', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).restoreBackupFronDB);
   app.get('/backup-level.csv', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).createBackup);
 
-  app.get('/lti/params/:levelId', {}, LtiController(environment, readonlyDatabaseService));
+  app.get('/lti', {}, LtiController(environment, readonlyDatabaseService));
   app.get('/kanttum', {}, KanttumController(environment, readonlyDatabaseService));
 
   app.get("/redis/*", {}, async (req: Record<string, any>, reply: FastifyReply) => {
