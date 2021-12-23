@@ -34,7 +34,7 @@ interface ILti {
 }
 
 interface HeadersParams {
-  levelId: string;
+  levelCodeId: string;
   materialId: string;
 }
 
@@ -43,7 +43,7 @@ export async function ltiParamsFactory(KEY: string, db: DatabaseService, userId:
 
   try {
     const user = await getUserById(db)(userId);
-    const level = await getLevelById(db)(headers.levelId);
+    const level = await getLevelById(db)(headers.levelCodeId);
     const material = await getMaterialById(db)(headers.materialId)
 
     if (!user || !level || !material || !material.languageBank) {

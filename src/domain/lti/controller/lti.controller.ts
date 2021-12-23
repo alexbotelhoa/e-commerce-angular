@@ -7,7 +7,7 @@ import { createCurrentUserFromRequest } from "../../authorization/services/autho
 
 interface IParams {
   Params: {
-    levelId: string;
+    levelCodeId: string;
     materialId: string;
   }
 }
@@ -20,15 +20,18 @@ export const LtiController = (
   reply: FastifyReply
 ): Promise<void> => {
   const currentUser = await createCurrentUserFromRequest(request);
-  const levelId = request.headers.levelid;
+
+  console.log("request.headers: ", request.headers)
+
+  const levelCodeId = request.headers.levelcodeid;
   const materialId = request.headers.materialid;
 
-  if (!currentUser || !levelId || !materialId) {
+  if (!currentUser || !levelCodeId || !materialId) {
     return reply.status(400).send({ message: 'Parameters not found' });
   }
   
   const headers = {
-    levelId: levelId.toString(),
+    levelCodeId: levelCodeId.toString(),
     materialId: materialId.toString(),
   };
 
