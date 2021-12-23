@@ -11,6 +11,7 @@ import {
   generateBackup,
   getBackup,
   saveBackup,
+  getLevel,
   getLevels,
   elementsForDeletion,
   elementsForCreation,
@@ -34,7 +35,7 @@ interface IController {
   restoreBackupFronDB(eq: FastifyRequest, reply: FastifyReply) : Promise<void>;
 }
 
-export function backupLevelController(db: DatabaseService, readonlyDb: DatabaseService, redis?: Redis): IController {
+export function backupLevelController(db: DatabaseService, rdb: DatabaseService, redis?: Redis): IController {
   const redisService = new RedisService(redis);
 
   const createBackup = async (req: FastifyRequest, reply: FastifyReply) => {
@@ -46,7 +47,7 @@ export function backupLevelController(db: DatabaseService, readonlyDb: DatabaseS
     if (!levelId) {
       return reply.status(400).send({ message: "levelId is required." });
     }
-    const levelToBackup = await getLevelById(readonlyDb)(levelId);
+    const levelToBackup = await getLevelById(rdb)(levelId);
     if (!levelToBackup) {
       return reply.status(400).send({ message: "level does not exist." });
     }
@@ -65,7 +66,7 @@ export function backupLevelController(db: DatabaseService, readonlyDb: DatabaseS
     
     //TODO
     
-    const backup = await generateBackup(readonlyDb, levelId);
+    const backup = await generateBackup(rdb, levelId);
     await saveBackup(backup, db, nameBackup);
     if (backup) {
       await redis.set(nameBackup, JSON.stringify(backup), "ex", 43200);
@@ -102,12 +103,18 @@ export function backupLevelController(db: DatabaseService, readonlyDb: DatabaseS
       }
     }
 
-    // recupera o backup do banco de dados
-    const response = await getBackup(db, +backupId);
+    // recupera o level atual e backup que vai entrar
+    const currentLevel = await getLevel(rdb, +levelId);
+    const response = await getBackup(rdb, +backupId);
     const backup = response?.data as unknown as IBackupCSV[]
-    if (!backup) {
+    if (!backup || !currentLevel) {
       return reply.status(400).send({ message: 'Level not found' });
     }
+
+    // recupero as informacoes para gerar o snapshot atual do level que vai sair.
+    const currentLevelCSV = await generateBackup(rdb, currentLevel.id.toString());
+    const rawDate = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
+    const nameBackup = `${currentLevel.name}_${levelId}_${rawDate}_automatic`;
 
     // aplicar regras de validação do CSV
     const { isError, backupWithErrors } = applyBusinessRules(backup); 
@@ -116,7 +123,7 @@ export function backupLevelController(db: DatabaseService, readonlyDb: DatabaseS
     }
 
     // busca o level que vai entrar e o level que vai sair
-    const levels = await getLevels(db, backup, +levelId);
+    const levels = await getLevels(rdb, backup, +levelId);
     
     // seta no level os elementos a serem excluidos;
     elementsForDeletion(levels.levelIn, levels.levelOut);
@@ -134,6 +141,7 @@ export function backupLevelController(db: DatabaseService, readonlyDb: DatabaseS
     // então, executa as transacoes garantindo que todas tenham exito.
     try {
       await executeTransactions(db, levels.levelIn, levels.levelInNow, levels.levelOut);
+      await saveBackup(currentLevelCSV, db, nameBackup); // 
     } catch {
       return redisService.throwInRedisAfterTimeExpires(redisKey, reply);
     }

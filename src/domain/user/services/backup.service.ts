@@ -428,6 +428,10 @@ export async function generateCsv(backup: IBackupCSV[]): Promise<string> {
 
 
 // services para restaurar backup --------------------------------------------------------------------------------------------
+export const getLevel = (db: DatabaseService, levelId: number): Promise<LevelEntity | null> => {
+  return getLevelById(db)(levelId);
+}
+
 export const getBackup = ( db: DatabaseService, id: number): Promise<BackupEntity | null> => {
   return getBackupById(db)(id);
 }
@@ -455,8 +459,8 @@ export const getLevels = async (
   backupIn: IBackupCSV[],
   idLevelOut: number
 ): Promise<{ levelIn: ILevel; levelInNow: ILevel; levelOut: ILevel }> => {
-  const backupInNow = (await generateBackup(db, (backupIn[0].levelId || 0).toString()));
-  const backupOut = (await generateBackup(db, idLevelOut.toString()));
+  const backupInNow = await generateBackup(db, (backupIn[0].levelId || 0).toString());
+  const backupOut = await generateBackup(db, idLevelOut.toString());
   const levelIn = backupToLevel(backupIn);
   const levelInNow = backupToLevel(backupInNow);
   const levelOut = backupToLevel(backupOut);
