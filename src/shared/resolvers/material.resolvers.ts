@@ -15,6 +15,7 @@ export const studentMaterialFieldResolvers: Pick<GQLMaterialResolvers, keyof Mat
     acquiredLanguageBooster: (obj) => obj.acquiredLanguageBooster,
     languageBank: (obj) => obj.languageBank ? true : false,
     active: (obj) => obj.active,
+    contextId: (obj) => obj.contextId,
     createdAt: (obj) => obj.createdAt,
     updatedAt: (obj) => obj.updatedAt,
 }

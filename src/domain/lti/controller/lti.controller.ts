@@ -7,7 +7,6 @@ import { createCurrentUserFromRequest } from "../../authorization/services/autho
 
 interface IParams {
   Params: {
-    levelCodeId: string;
     materialId: string;
   }
 }
@@ -21,21 +20,13 @@ export const LtiController = (
 ): Promise<void> => {
   const currentUser = await createCurrentUserFromRequest(request);
 
-  console.log("request.headers: ", request.headers)
+  const materialId = request.headers.materialid?.toString();
 
-  const levelCodeId = request.headers.levelcodeid;
-  const materialId = request.headers.materialid;
-
-  if (!currentUser || !levelCodeId || !materialId) {
+  if (!currentUser || !materialId) {
     return reply.status(400).send({ message: 'Parameters not found' });
   }
-  
-  const headers = {
-    levelCodeId: levelCodeId.toString(),
-    materialId: materialId.toString(),
-  };
 
-  const params = await ltiParamsFactory('DgcIJCkTQDTGhyMR', readonlyDb, currentUser.id, headers);
+  const params = await ltiParamsFactory('DgcIJCkTQDTGhyMR', readonlyDb, currentUser.id, materialId);
   
   if (!params) {
     reply.status(400).send({ message: 'Error building request' });

@@ -2,7 +2,6 @@ import { hmacsign } from './bundle';
 import { getUserById } from "../../../shared/repositories/user.repository";
 import { DatabaseService } from '../../../shared/services/database.service';
 import { getMaterialById } from '../../../shared/repositories/material.repository';
-import { getLevelCodeById } from '../../../shared/repositories/level-code.repository';
 
 export interface ILtiParams {
   lti_message_type: string;
@@ -33,20 +32,14 @@ interface ILti {
   action: string;
 }
 
-interface HeadersParams {
-  levelCodeId: string;
-  materialId: string;
-}
-
-export async function ltiParamsFactory(KEY: string, db: DatabaseService, userId: string, headers: HeadersParams): Promise<ILti | undefined> {
+export async function ltiParamsFactory(KEY: string, db: DatabaseService, userId: string, materialId: string): Promise<ILti | undefined> {
   let email: string | null = '';
 
   try {
     const user = await getUserById(db)(userId);
-    const levelCode = await getLevelCodeById(db)(headers.levelCodeId);
-    const material = await getMaterialById(db)(headers.materialId)
+    const material = await getMaterialById(db)(materialId)
 
-    if (!user || !levelCode || !levelCode.description || !material || !material.languageBank) {
+    if (!user || !material || !material.languageBank) {
       return;
     }
 
@@ -78,9 +71,9 @@ export async function ltiParamsFactory(KEY: string, db: DatabaseService, userId:
       lis_person_sourced_id: `${email.split('@')[1]}:${email.split('@')[0]}`,
       tool_consumer_instance_guid: `${email.split('@')[1]}`,
       tool_consumer_instance_description: 'Associação Cultura Inglesa',
-      context_id: levelCode.id.toString(),
-      context_title: levelCode.description,
-      context_label: levelCode.description,
+      context_id: material.contextId,
+      context_title: material.title,
+      context_label: material.title,
     };
 
     // const LtiParams: ILtiParams = {

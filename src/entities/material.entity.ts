@@ -11,6 +11,7 @@ export interface MaterialEntity {
     acquiredLanguageBooster: boolean;
     languageBank: string | null;
     active: boolean;
+    contextId: string;
     createdAt: string;
     updatedAt: string;
 }

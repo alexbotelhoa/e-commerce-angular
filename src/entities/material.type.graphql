@@ -11,6 +11,7 @@ type Material {
     acquiredLanguageBooster: Boolean!
     languageBank: Boolean!
     active: Boolean!
+    contextId: String!
     createdAt: String!
     updatedAt: String!
     materialClass: Class!

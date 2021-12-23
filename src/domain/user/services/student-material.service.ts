@@ -43,10 +43,11 @@ export const processStudentMaterialEvent =
                         timeZone: "America/Sao_Paulo"
                     }),
                     isbn: material.isbn,
-                    author: material.author,
                     title: material.title,
-                    publisher: material.publisher,
+                    contextId: material.id,
+                    author: material.author,
                     coverImg: material.coverImg,
+                    publisher: material.publisher,
                     languageBank: material.languageBank,
                 })(qb => qb.where("id", hasMaterial.id))
             } else {
@@ -56,10 +57,11 @@ export const processStudentMaterialEvent =
                         timeZone: "America/Sao_Paulo"
                     }),
                     isbn: material.isbn,
-                    author: material.author,
                     title: material.title,
-                    publisher: material.publisher,
+                    contextId: material.id,
+                    author: material.author,
                     coverImg: material.coverImg,
+                    publisher: material.publisher,
                     languageBank: material.languageBank,
                 })
             }
