@@ -1,8 +1,8 @@
 import { hmacsign } from './bundle';
 import { getUserById } from "../../../shared/repositories/user.repository";
 import { DatabaseService } from '../../../shared/services/database.service';
-import { getLevelById } from "../../../shared/repositories/level.repository";
 import { getMaterialById } from '../../../shared/repositories/material.repository';
+import { getLevelCodeById } from '../../../shared/repositories/level-code.repository';
 
 export interface ILtiParams {
   lti_message_type: string;
@@ -43,10 +43,10 @@ export async function ltiParamsFactory(KEY: string, db: DatabaseService, userId:
 
   try {
     const user = await getUserById(db)(userId);
-    const level = await getLevelById(db)(headers.levelCodeId);
+    const levelCode = await getLevelCodeById(db)(headers.levelCodeId);
     const material = await getMaterialById(db)(headers.materialId)
 
-    if (!user || !level || !material || !material.languageBank) {
+    if (!user || !levelCode || !levelCode.description || !material || !material.languageBank) {
       return;
     }
 
@@ -78,9 +78,9 @@ export async function ltiParamsFactory(KEY: string, db: DatabaseService, userId:
       lis_person_sourced_id: `${email.split('@')[1]}:${email.split('@')[0]}`,
       tool_consumer_instance_guid: `${email.split('@')[1]}`,
       tool_consumer_instance_description: 'Associação Cultura Inglesa',
-      context_id: level.id.toString(),
-      context_title: level.name,
-      context_label: level.name,
+      context_id: levelCode.id.toString(),
+      context_title: levelCode.description,
+      context_label: levelCode.description,
     };
 
     // const LtiParams: ILtiParams = {
