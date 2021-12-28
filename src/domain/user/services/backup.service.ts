@@ -603,8 +603,8 @@ const elementsForUpdation = (levelIn: ILevel, levelInNow: ILevel): void => {
         );
         if (activityNow && embeddedNow && ca.activity) {
           const comparationA = JSON.stringify({
-            name: activityNow.name,
-            description: activityNow.description,
+            name: activityNow.name?.trim(),
+            description: activityNow.description?.trim(),
             estimatedTime: activityNow.estimatedTime,
             height: embeddedNow.height,
             url: embeddedNow.url,
@@ -825,7 +825,7 @@ export const getBackup = ( db: DatabaseService, id: number): Promise<BackupEntit
 
 export const obtemDadosCSV = (file: any): IBackupCSV[] => {
   function getItem(line: any, key: keyof IBackupCSV, isNumber?: boolean) {
-    const value = line[key];
+    const value = decodeURIComponent(escape(line[key]));
     if (value !== undefined) {
       if (isNumber) {
         return +value.trim();
@@ -835,7 +835,7 @@ export const obtemDadosCSV = (file: any): IBackupCSV[] => {
     return undefined;
   }
 
-  const workbook = XLSX.read(file.buffer, {type:'buffer'});
+  const workbook = XLSX.read(file.buffer, { type:'buffer'	});
   const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {
     raw: false,
     rawNumbers: false,
@@ -854,9 +854,10 @@ export const obtemDadosCSV = (file: any): IBackupCSV[] => {
       activityId: getItem(line, 'activityId', true),
       activityOrder: getItem(line, 'activityOrder', true),
       activityName: getItem(line, 'activityName'),
+      activityDescription: getItem(line, 'activityDescription'),
       activityEstimatedTime: getItem(line, 'activityEstimatedTime'),
       activityEmbeddedUrl: getItem(line, 'activityEmbeddedUrl'),
-      activityEmbeddedHeight: getItem(line, 'activityEmbeddedHeight')
+      activityEmbeddedHeight: getItem(line, 'activityEmbeddedHeight', true)
     } as IBackupCSV);
   });
   return lista;
@@ -868,7 +869,8 @@ export const restoreBackup = async (
   redisService: RedisService,
   levelId: number,
   backup: IBackupCSV[],
-  reply: FastifyReply
+  reply: FastifyReply,
+  isFinish?: number
 ): Promise<void> => {
   // controle para saber se ja esta em processamento processamento
   const redisKey = `${levelId}-restore-backup`;
@@ -917,6 +919,10 @@ export const restoreBackup = async (
 
   // um obheto de log com os ids de cada alteracao.
   const log = logFactory(levels.levelIn, levels.levelOut);
+
+  if (!isFinish) {
+    return reply.send(log);
+  } 
 
   // caso a requisição demore mais que meio minuto o servidor devolve uma mensagem que notificando que será processado em segundo plano
   redisService.flag = true;

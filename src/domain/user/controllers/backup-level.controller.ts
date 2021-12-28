@@ -20,6 +20,7 @@ interface IParams {
   Headers: {
     backupid?: string;
     levelid?: string;
+    isfinish?: string;
   }
 }
 
@@ -75,7 +76,7 @@ export function backupLevelController(db: DatabaseService, rdb: DatabaseService,
     }
 
     // id do backup e id do level onde vai ser restaurado o backup;
-    const { backupid: backupId, levelid: levelId } = req.headers;
+    const { backupid: backupId, levelid: levelId, isfinish: isFinish } = req.headers;
 
     if (!levelId || !backupId) {
       return reply.status(400).send({ message: 'atributos ausentes' });
@@ -87,16 +88,16 @@ export function backupLevelController(db: DatabaseService, rdb: DatabaseService,
       return reply.status(400).send({ message: 'Level not found' });
     }
 
-    return restoreBackup(db, rdb, redisService, +levelId, backup, reply);
+    return restoreBackup(db, rdb, redisService, +levelId, backup, reply, parseInt(isFinish || '0'));
   }
 
-  const restoreBackupFromCSV = async (req: FastifyRequest, reply: FastifyReply) => {
+  const restoreBackupFromCSV = async (req: FastifyRequest<IParams>, reply: FastifyReply) => {
     if (!redis) {
       return reply.status(500).send({ message: 'redis not working' });
     }
 
     // id do level onde vai ser restaurado o backup e o csv file;
-    const { levelid: levelId } = req.headers;
+    const { levelid: levelId, isfinish: isFinish } = req.headers;
     const fileData = await req.file();
 
     if (!levelId || !fileData) {
@@ -106,7 +107,7 @@ export function backupLevelController(db: DatabaseService, rdb: DatabaseService,
     const file = await fileData.toBuffer();
     const backup = obtemDadosCSV(file);
 
-    return restoreBackup(db, rdb, redisService, +levelId, backup, reply);
+    return restoreBackup(db, rdb, redisService, +levelId, backup, reply, parseInt(isFinish || '0'));
   }
 
   return { createBackup, restoreBackupFromDB, restoreBackupFromCSV };
