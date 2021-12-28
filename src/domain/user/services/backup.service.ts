@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { FastifyReply } from "fastify";
+import { boolean } from "fp-ts";
 import { Redis } from "ioredis";
 import { parse } from "json2csv";
+import * as XLSX from 'xlsx';
 
 import { EmbeddedActivityDataEntity } from "../../../entities/activities/embedded-activity-data.entity";
 import { ActivityEntity } from "../../../entities/activity.entity";
@@ -18,6 +22,7 @@ import { insertEmbeddedActivityData, selectEmbeddedActivityData, updateEmbeddedA
 import { deleteLevelTheme, insertLevelTheme, selectLevelTheme, updateLevelTheme } from "../../../shared/repositories/level-theme.repository";
 import { getLevelById } from "../../../shared/repositories/level.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
+import { RedisService } from "../../../shared/services/redis-tools.services";
 
 
 interface IActions {
@@ -428,33 +433,42 @@ export async function generateCsv(backup: IBackupCSV[]): Promise<string> {
 
 
 // services para restaurar backup --------------------------------------------------------------------------------------------
-export const getLevel = (db: DatabaseService, levelId: number): Promise<LevelEntity | null> => {
+const getLevel = (db: DatabaseService, levelId: number): Promise<LevelEntity | null> => {
   return getLevelById(db)(levelId);
 }
 
-export const getBackup = ( db: DatabaseService, id: number): Promise<BackupEntity | null> => {
-  return getBackupById(db)(id);
-}
+const applyBusinessRules = (backup: IBackupCSV[]): { isError: boolean, backupWithErrors: (IBackupCSV & { error?: string } )[]} => {
+  let isError = false;
+  const backupWithErrors = backup.slice().map(item => {
+    let error = '';
+    if (item.levelId === undefined) {
+      error += '**Sem levelId;';
+    }
+    if ((item.themeId === undefined || item.themeOrder === undefined) && item.cycleId) {
+      error += '\n**sem themeId;';
+    }
+    if (item.cycleId === undefined && (item.cycleName === undefined || item.cycleOrder === undefined)) {
+      error += '\n**Ciclo sem nome ou ordem;';
+    }
+    if (item.activityId === undefined && (!item.activityName || item.activityOrder === undefined || !item.activityDescription || !item.activityEstimatedTime || !item.activityEmbeddedUrl || item.activityEmbeddedHeight === undefined)) {
+      error += '\n**Atividade com dados incompletos;';
+    }
 
-export const applyBusinessRules = (backup: IBackupCSV[]): { isError: boolean, backupWithErrors: (IBackupCSV & { error?: string } )[]} => {
-  // aqui vai aplicar todas as regras de validação;
+    if (error !== '') {
+      isError = true;
+      return { ...item, error }
+    }
 
-  // verificar se só tem um level no csv
-  // verifica se o nivel existe
-
-  // extrair todos os ids de ciclo
-  // fazer um consulta e verificar se os ids existem no banco, os que não existirem inserir em um array os que devem ser criados
-
-  // extrair todos os ids das atividades
-  // fazer um consulta e verificar se os ids existem no banco, os que não existirem inserir em um array os que devem ser criados
+    return item;
+  });
 
   return {
-    isError: false,
-    backupWithErrors: backup
+    isError,
+    backupWithErrors
   };
 }
 
-export const getLevels = async (
+const getLevels = async (
   db: DatabaseService,
   backupIn: IBackupCSV[],
   idLevelOut: number
@@ -467,7 +481,7 @@ export const getLevels = async (
   return { levelIn, levelInNow, levelOut };
 };
 
-export const elementsForDeletion = (levelIn: ILevel, levelOut: ILevel): void => {
+const elementsForDeletion = (levelIn: ILevel, levelOut: ILevel): void => {
   const cyclesIn = getElementInLevel<ICycle>('cycle', levelIn);
   const activitiesIn = getElementInLevel<IActivity>('activity', levelIn);
 
@@ -493,7 +507,7 @@ export const elementsForDeletion = (levelIn: ILevel, levelOut: ILevel): void => 
   });
 }
 
-export const elementsForCreation = (levelIn: ILevel, levelOut: ILevel): void => {
+const elementsForCreation = (levelIn: ILevel, levelOut: ILevel): void => {
   const isMesmoLevel = levelIn.id === levelOut.id;
   const levelThemesOut = getElementInLevel<ILeveltheme>('levelTheme', levelOut);
   const cyclesOut = getElementInLevel<ICycle>('cycle', levelOut);
@@ -533,7 +547,7 @@ export const elementsForCreation = (levelIn: ILevel, levelOut: ILevel): void => 
   });
 }
 
-export const elementsForUpdation = (levelIn: ILevel, levelInNow: ILevel): void => {
+const elementsForUpdation = (levelIn: ILevel, levelInNow: ILevel): void => {
   const levelThemesNow = getElementInLevel<ILeveltheme>('levelTheme', levelInNow);
   const cyclesNow = getElementInLevel<ICycle>('cycle', levelInNow);
   const cyclesActivitiesNow = getElementInLevel<ICycleActivity>('cycleActivity', levelInNow);
@@ -613,7 +627,7 @@ export const elementsForUpdation = (levelIn: ILevel, levelInNow: ILevel): void =
   }
 }
 
-export const logFactory = (levelIn: ILevel, levelOut: ILevel): ILog => {
+const logFactory = (levelIn: ILevel, levelOut: ILevel): ILog => {
   const log: ILog = {
     levelTheme: {
       create: [],
@@ -665,7 +679,7 @@ export const logFactory = (levelIn: ILevel, levelOut: ILevel): ILog => {
   return log;
 }
 
-export const executeTransactions = async (db: DatabaseService, levelIn: ILevel, levelInNow: ILevel, levelOut: ILevel): Promise<any> => {
+const executeTransactions = async (db: DatabaseService, levelIn: ILevel, levelInNow: ILevel, levelOut: ILevel): Promise<any> => {
   console.log('\nTransactions iniciadas\n');
 
   const forDelete: any[] = [];
@@ -805,40 +819,124 @@ export const executeTransactions = async (db: DatabaseService, levelIn: ILevel, 
   console.log('\nTransactions finalizadas\n');
 }
 
-export function workInRedis(
-  redis: Redis,
-): {
-  setInProcess: (redisKey: string) => void;
-  remove: (redisKey: string) => void;
-  setLog: (redisKey: string, log: ILog | string) => void;
-  get: (redisKey: string) => Promise<ILog | 'inProcess' | undefined>;
-} {
-  function setInProcess(redisKey: string) {
-    redis.set(redisKey, 'inProcess', 'ex', 3600); // 1 hora
-  }
+export const getBackup = ( db: DatabaseService, id: number): Promise<BackupEntity | null> => {
+  return getBackupById(db)(id);
+}
 
-  function remove(redisKey: string) {
-    redis.del(redisKey);
-  }
-
-  function setLog(redisKey: string, log: ILog | string) {
-    const data = JSON.stringify(log);
-    redis.set(redisKey, data, 'ex', 3600); // 1 hora
-  }
-
-  async function get(redisKey: string) {
-    const response = await redis.get(redisKey);
-    if (response === "inProcess") {
-      return response;
-    }
-
-    const log = response && JSON.parse(response);
-    if (log && log.length > 0) {
-      await redis.del(redisKey);
-      return log as ILog;
+export const obtemDadosCSV = (file: any): IBackupCSV[] => {
+  function getItem(line: any, key: keyof IBackupCSV, isNumber?: boolean) {
+    const value = line[key];
+    if (value !== undefined) {
+      if (isNumber) {
+        return +value.trim();
+      }
+      return value.trim();
     }
     return undefined;
   }
 
-  return { setInProcess, setLog, get, remove };
+  const workbook = XLSX.read(file.buffer, {type:'buffer'});
+  const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {
+    raw: false,
+    rawNumbers: false,
+  });
+  const lista: IBackupCSV[] = [];
+  sheet.map((line: any, index) => {    
+    lista.push({
+      levelId: getItem(line, 'levelId', true),
+      levelThemeId: getItem(line, 'levelThemeId', true),
+      themeId: getItem(line, 'themeId', true),
+      themeOrder: getItem(line, 'themeOrder',  true),
+      cycleId: getItem(line, 'cycleId', true),
+      cycleOrder: getItem(line, 'cycleOrder', true),
+      cycleName: getItem(line, 'cycleName'),
+      cycleActivityId: getItem(line, 'cycleActivityId', true),
+      activityId: getItem(line, 'activityId', true),
+      activityOrder: getItem(line, 'activityOrder', true),
+      activityName: getItem(line, 'activityName'),
+      activityEstimatedTime: getItem(line, 'activityEstimatedTime'),
+      activityEmbeddedUrl: getItem(line, 'activityEmbeddedUrl'),
+      activityEmbeddedHeight: getItem(line, 'activityEmbeddedHeight')
+    } as IBackupCSV);
+  });
+  return lista;
+}
+
+export const restoreBackup = async (
+  db: DatabaseService,
+  rdb: DatabaseService,
+  redisService: RedisService,
+  levelId: number,
+  backup: IBackupCSV[],
+  reply: FastifyReply
+): Promise<void> => {
+  // controle para saber se ja esta em processamento processamento
+  const redisKey = `${levelId}-restore-backup`;
+  const data = await redisService.get<ILog>(redisKey, true);
+  if (data) {
+    if (typeof data === 'string') {
+      return reply.status(202).send({ message: 'existe uma restauração de backup desse nível em processamento' });
+    }
+    else {
+      reply.header("Content-Type", "application/json");
+      return reply.status(200).send({
+        redisKey,
+        redisResponse: data
+      });
+    }
+  }
+
+  // recupera o level atual e backup que vai entrar
+  const currentLevel = await getLevel(rdb, +levelId);
+  if (!currentLevel) {
+    return reply.status(400).send({ message: 'Level not found' });
+  }
+
+  // recupero as informacoes para gerar o snapshot atual do level que vai sair.
+  const currentLevelCSV = await generateBackup(rdb, currentLevel.id.toString());
+  const rawDate = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
+  const nameBackup = `${currentLevel.name}_${levelId}_${rawDate}_automatic`;
+
+  const { isError, backupWithErrors } = applyBusinessRules(backup);
+  if (isError) {
+    reply.header("Content-Type", "text/csv");
+    return reply.status(400).send(parse(backupWithErrors));
+  }
+
+  // busca o level que vai entrar e o level que vai sair
+  const levels = await getLevels(rdb, backup, +levelId);
+  
+  // seta no level os elementos a serem excluidos;
+  elementsForDeletion(levels.levelIn, levels.levelOut);
+
+  // seta no level os alementos a serem criados
+  elementsForCreation(levels.levelIn, levels.levelOut);
+  
+  // seta no level os elementeos a serem atualizados
+  elementsForUpdation(levels.levelIn, levels.levelInNow);
+
+  // um obheto de log com os ids de cada alteracao.
+  const log = logFactory(levels.levelIn, levels.levelOut);
+
+  // caso a requisição demore mais que meio minuto o servidor devolve uma mensagem que notificando que será processado em segundo plano
+  redisService.flag = true;
+  redisService.setInRedisAfterTimeExpires(redisKey, reply);
+
+  // então, executa as transacoes garantindo que todas tenham exito.
+  try {
+    await executeTransactions(db, levels.levelIn, levels.levelInNow, levels.levelOut);
+    await saveBackup(currentLevelCSV, db, nameBackup); // 
+  } catch {
+    return redisService.throwInRedisAfterTimeExpires(redisKey, reply);
+  }
+
+  // verifica se executou apos o tempo esperado
+  if (!redisService.flag) { 
+    redisService.set(redisKey, log);
+    return;
+  } 
+
+  // indica que executou antes do tempo limite
+  redisService.flag = false;
+  reply.status(200).send(log);
 }

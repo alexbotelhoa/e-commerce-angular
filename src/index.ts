@@ -9,6 +9,7 @@ import fastifyRedis from 'fastify-redis';
 import { fastifyExpress } from "fastify-express";
 import fastify, { FastifyLoggerInstance, FastifyReply } from 'fastify';
 import { makeExecutableSchema, loadTypedefs, GraphQLFileLoader, mergeTypeDefs } from 'graphql-tools';
+import multipart from 'fastify-multipart';
 
 import { resolvers } from './resolvers';
 import { filterHTML } from './shared/utils/filter-html';
@@ -61,6 +62,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     }, 3600000)
 
   }
+  app.register(multipart)
   app.register(fastifyRedis, {
     host: environment.REDIS_HOST,
     port: Number(environment.REDIS_PORT),
@@ -136,7 +138,8 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.get('/student-interest-report.csv', {}, studentInterestReportController(environment, databaseService, readonlyDatabaseService, app.redis));
   app.get('/student-inactivity-report.csv', {}, studentInactivityReportController(environment, databaseService, readonlyDatabaseService, app.redis));
   
-  app.get('/restore-level', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).restoreBackupFronDB);
+  app.post('/restore-level-csv', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).restoreBackupFromCSV);
+  app.get('/restore-level', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).restoreBackupFromDB);
   app.get('/backup-level.csv', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).createBackup);
 
   app.get('/lti', {}, LtiController(environment, readonlyDatabaseService));
