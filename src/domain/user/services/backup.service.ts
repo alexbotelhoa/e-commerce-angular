@@ -507,6 +507,41 @@ const elementsForDeletion = (levelIn: ILevel, levelOut: ILevel): void => {
   });
 }
 
+const elementsForCreationBecauseNotExist = async (rdb: DatabaseService, levelIn: ILevel): Promise<void> => {
+  const cyclesId: number[] = [];
+  const activitiesId: number[] = [];
+
+  levelIn.level_themes.forEach(lt => {
+    lt.cycles?.length && cyclesId.push(...lt.cycles?.map(c => c.id));
+    lt.cycles?.forEach(c => {
+      c.cycle_activities?.length && activitiesId.push(...c.cycle_activities.map(ca => ca.activityId));
+    });
+  });
+
+  const cyclesIdBD = await selectCycle(rdb).whereIn('id', cyclesId).select('id');
+  const activitiesIdBD = await selectActivity(rdb).whereIn('id', activitiesId).select('id');
+
+  levelIn.level_themes.map(lt => {
+    lt.cycles?.map(c => {
+      if (c.id) {
+        const isExist = cyclesIdBD.map(cdb => cdb.id).includes(c.id);
+        if (!isExist) {
+          c.isSave = true;
+        }
+      }
+
+      c.cycle_activities?.map(ca => {
+        if(ca.activity?.id) {
+          const isExist = activitiesIdBD.map(adb => adb.id).includes(ca.activity.id);
+          if (!isExist) {
+            ca.activity.isSave = true;
+          }
+        } 
+      });
+    });
+  })
+}
+
 const elementsForCreation = (levelIn: ILevel, levelOut: ILevel): void => {
   const isMesmoLevel = levelIn.id === levelOut.id;
   const levelThemesOut = getElementInLevel<ILeveltheme>('levelTheme', levelOut);
@@ -525,7 +560,8 @@ const elementsForCreation = (levelIn: ILevel, levelOut: ILevel): void => {
       const co = cyclesOut.find(co => co.id === c.id);
       if (!isMesmoLevel || c.id === undefined || !co) {
         // @ts-ignore
-        c.id = undefined; c.levelThemeId = lt.id;
+        c.levelThemeId = lt.id;
+        // c.id = undefined; c.levelThemeId = lt.id;
         c.isSave = true;
       }
 
@@ -533,13 +569,13 @@ const elementsForCreation = (levelIn: ILevel, levelOut: ILevel): void => {
         const cao = cycleActivitiesOut.find(cao => cao.id === ca.id);
         if (!isMesmoLevel || !cao) {
           // @ts-ignore
-          ca.id = undefined; ca.cycleId = undefined;
+          // ca.id = undefined; ca.cycleId = undefined;
           ca.isSave = true;
         }
 
         if (ca.activity && ca.activity?.id === undefined) {
           // @ts-ignore
-          ca.activity.id = undefined;
+          // ca.activity.id = undefined;
           ca.activity.isSave = true;
         }
       });
@@ -740,12 +776,22 @@ const executeTransactions = async (db: DatabaseService, levelIn: ILevel, levelIn
 
       for (const cycle of levelTheme.cycles || []) {
         if (cycle.isSave) {
-          cycle.id = await insertCycle(scope)({
-            name: cycle.name,
-            order: cycle.order,
-            levelThemeId: levelTheme.id,
-            active: cycle.active
-          } as CycleEntity);
+          if (cycle.id) {
+            await insertCycle(scope)({
+              id: cycle.id,
+              name: cycle.name,
+              order: cycle.order,
+              levelThemeId: levelTheme.id,
+              active: cycle.active
+            } as CycleEntity);
+          } else {
+            cycle.id = await insertCycle(scope)({
+              name: cycle.name,
+              order: cycle.order,
+              levelThemeId: levelTheme.id,
+              active: cycle.active
+            } as CycleEntity);
+          }
         }
 
         if (cycle.isUpdate) {
@@ -760,13 +806,24 @@ const executeTransactions = async (db: DatabaseService, levelIn: ILevel, levelIn
 
         for (const cycleActivity of cycle.cycle_activities || []) {
           if (cycleActivity?.activity?.isSave) {
-            cycleActivity.activity.id = await insertActivity(scope)({
-              name: cycleActivity.activity.name,
-              description: cycleActivity.activity.description,
-              estimatedTime: cycleActivity.activity.estimatedTime,
-              typeId: cycleActivity.activity.typeId,
-              active: cycleActivity.activity.active
-            } as ActivityEntity);
+            if (cycleActivity.activity.id) {
+              await insertActivity(scope)({
+                id: cycleActivity.activity.id,
+                name: cycleActivity.activity.name,
+                description: cycleActivity.activity.description,
+                estimatedTime: cycleActivity.activity.estimatedTime,
+                typeId: cycleActivity.activity.typeId,
+                active: cycleActivity.activity.active
+              } as ActivityEntity);
+            } else {
+              cycleActivity.activity.id = await insertActivity(scope)({
+                name: cycleActivity.activity.name,
+                description: cycleActivity.activity.description,
+                estimatedTime: cycleActivity.activity.estimatedTime,
+                typeId: cycleActivity.activity.typeId,
+                active: cycleActivity.activity.active
+              } as ActivityEntity);
+            }
 
             await insertEmbeddedActivityData(scope)({
               activityId: cycleActivity.activity.id,
@@ -910,6 +967,9 @@ export const restoreBackup = async (
   
   // seta no level os elementos a serem excluidos;
   elementsForDeletion(levels.levelIn, levels.levelOut);
+
+  // seta os cyclos e atividadas que tem id mas não existe no banco
+  await elementsForCreationBecauseNotExist(rdb, levels.levelIn);
 
   // seta no level os alementos a serem criados
   elementsForCreation(levels.levelIn, levels.levelOut);
