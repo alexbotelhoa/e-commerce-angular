@@ -6,10 +6,10 @@ import fastifyJwt from 'fastify-jwt';
 import fastifyCors from 'fastify-cors';
 import * as AWSXRay from 'aws-xray-sdk';
 import fastifyRedis from 'fastify-redis';
+import multipart from 'fastify-multipart';
 import { fastifyExpress } from "fastify-express";
 import fastify, { FastifyLoggerInstance, FastifyReply } from 'fastify';
 import { makeExecutableSchema, loadTypedefs, GraphQLFileLoader, mergeTypeDefs } from 'graphql-tools';
-import multipart from 'fastify-multipart';
 
 import { resolvers } from './resolvers';
 import { filterHTML } from './shared/utils/filter-html';
@@ -150,7 +150,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     if (key) {
       try {
         return app.redis.get(key)
-      } catch (error) {
+      } catch (error: any) {
         return {
           error: error.message,
           stack: error.stack,
@@ -165,7 +165,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.delete("/redis/delete", {}, async (req: Record<string, any>, reply: FastifyReply) => {
     try {
       return app.redis.flushall()
-    } catch (error) {
+    } catch (error: any) {
       return {
         error: error.message,
         stack: error.stack,
@@ -186,7 +186,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
         }
       }
       return {totalDeleted: await app.redis.unlink(...keys[1])}
-    } catch (error) {
+    } catch (error: any) {
       return {
         error: error.message,
         stack: error.stack,
@@ -204,7 +204,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
         const keysFound = keys[1];
         const result = await app.redis.mget(...keysFound);
         return result.map(item => item && JSON.parse(item) || null)
-      } catch (error) {
+      } catch (error: any) {
         return {
           error: error.message,
           stack: error.stack,
@@ -223,7 +223,7 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
         key = haveStar ? key : key + '*'
         const keys =  await app.redis.scan(0, "MATCH", key)
         return keys[1];
-      } catch (error) {
+      } catch (error: any) {
         return {
           error: error.message,
           stack: error.stack,
@@ -239,4 +239,4 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   await executeJobs(databaseService, app.log);
 })();
 
-console.log("PROJETO RODANDO COM CODIGO MAIS RECENTE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+console.log("PROJETO RODANDO COM CÓDIGO MAIS RECENTE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");

@@ -1,10 +1,10 @@
-import { FastifyReply, FastifyRequest } from "fastify";
+import axios from 'axios';
 import * as t from "io-ts";
-import { GQLClassesQueryInput, GQLClassStudentGradesInput } from "../../../resolvers-types";
+import { FastifyReply, FastifyRequest } from "fastify";
+import { Environment } from "../../../shared/types/environment.type";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { graphQLContextFactory } from "../../../shared/services/graphql-context.service";
-import { Environment } from "../../../shared/types/environment.type";
-import axios from 'axios';
+import { GQLClassesQueryInput, GQLClassStudentGradesInput } from "../../../resolvers-types";
 
 const ClassStudentGradesFilters = t.type({
     chaveRequest: t.string,
@@ -17,7 +17,6 @@ const ClassStudentGradesFilters = t.type({
 });
 
 const exactClassStudentGradesFilters = t.exact(ClassStudentGradesFilters);
-
 
 export const classStudentGradesController = (env: Environment, db: DatabaseService, readonlyDb: DatabaseService) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
     const logger = request.log;
@@ -72,21 +71,21 @@ export const classStudentGradesController = (env: Environment, db: DatabaseServi
     });
 
     const graphqlResult = await reply.graphql(`
-query ClassStudentGrades(
-  $classesInput: ClassesQueryInput,
-  $classStudentGradesInput: ClassStudentGradesInput
-) {
-  turmas: classes(data: $classesInput) {
-    turma: id
-    alunos: studentGrades(data: $classStudentGradesInput) {
-      emplid: studentId
-      avaliacoes: grades {
-        avaliacao: typeId
-        nota: grade
-      }
-    }
-  }
-}
+        query ClassStudentGrades(
+            $classesInput: ClassesQueryInput,
+            $classStudentGradesInput: ClassStudentGradesInput
+        ) {
+            turmas: classes(data: $classesInput) {
+                turma: id
+                alunos: studentGrades(data: $classStudentGradesInput) {
+                    emplid: studentId
+                    avaliacoes: grades {
+                        avaliacao: typeId
+                        nota: grade
+                    }
+                }
+            }
+        }
     `, context, {
         classesInput: classesInput,
         classStudentGradesInput: classStudentGradesInput,
@@ -104,11 +103,7 @@ query ClassStudentGrades(
                 graphqlResult: graphqlResult,
             }
         }, 'classStudentGradesController error in graphql execution');
-        return reply
-            .status(400)
-            .send({
-                msg: graphqlResult.errors.join(','),
-            });
+        return reply.status(400).send({ msg: graphqlResult.errors.join(',') });
     }
 
     if (!graphqlResult.data) {
@@ -117,11 +112,7 @@ query ClassStudentGrades(
                 graphqlResult: graphqlResult,
             }
         }, 'classStudentGradesController graphql execution resulted in empty data');
-        return reply
-            .status(400)
-            .send({
-                msg: 'Unable to process graphql request data.',
-            });
+        return reply.status(400).send({ msg: 'Unable to process graphql request data.' });
     }
 
     logger.info({
@@ -145,9 +136,7 @@ query ClassStudentGrades(
     }, 'classStudentGradesController responded with successful reply');
 
     const turmas: any[] = graphqlResult.data.turmas;
-
     const maxResultsPerRequest = 50;
-
     const totalParts = Math.ceil(turmas.length / maxResultsPerRequest);
 
     const parts = turmas.reduce<any[][]>((acc, turma, index) => {
@@ -210,12 +199,10 @@ query ClassStudentGrades(
                     },
                 }
             }, 'classStudentGradesController integration response received');
-        }
-        catch (error) {
+        } catch (error) {
             logger.error({
                 err: error
             }, 'classStudentGradesController integration response error');
         }
     }
-
 }
