@@ -11,9 +11,10 @@ export class RedisService {
     this.redis = redis;
   }
 
-  setInRedisAfterTimeExpires(redisKey: string, reply: FastifyReply,timeout = 30000): void {
+  setInRedisAfterTimeExpires(redisKey: string, reply: FastifyReply, timeout = 30000, callback?: () => void): void {
     setTimeout(() => {
       if (this.flag) {
+        callback && callback();
         this.setInProcess(redisKey);
         reply?.status(202).send({ message: 'Seu pedido está sendo processado em segundo plano' });
         this.flag = false;
