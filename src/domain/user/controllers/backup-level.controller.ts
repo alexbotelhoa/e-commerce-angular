@@ -105,7 +105,7 @@ export function backupLevelController(db: DatabaseService, rdb: DatabaseService,
     }
 
     const file = await fileData.toBuffer();
-    const backup = obtemDadosCSV(file);
+    const backup = await obtemDadosCSV(file);
 
     return restoreBackup(db, rdb, redisService, +levelId, backup, reply, parseInt(isFinish || '0'));
   }

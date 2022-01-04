@@ -2,10 +2,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FastifyReply } from "fastify";
-import { boolean } from "fp-ts";
-import { Redis } from "ioredis";
 import { parse } from "json2csv";
-import * as XLSX from 'xlsx';
+import { Duplex } from 'stream';
+import * as csv from 'fast-csv';
 
 import { EmbeddedActivityDataEntity } from "../../../entities/activities/embedded-activity-data.entity";
 import { ActivityEntity } from "../../../entities/activity.entity";
@@ -23,6 +22,7 @@ import { deleteLevelTheme, insertLevelTheme, selectLevelTheme, updateLevelTheme 
 import { getLevelById } from "../../../shared/repositories/level.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { RedisService } from "../../../shared/services/redis-tools.services";
+import { insertLog } from "../../../shared/repositories/log.repository";
 
 
 interface IActions {
@@ -51,7 +51,7 @@ interface IActivity extends ActivityEntity, IActions {
   embedded_activity_data: EmbeddedActivityDataEntity;
 }
 
-export interface ILog {
+interface ILog {
   levelTheme: ILogResult;
   cycle: ILogResult;
   cycleActivity: ILogResult;
@@ -64,11 +64,6 @@ interface ILogResult {
   delete: number[];
 }
 
-interface GenericHash<T = any> {
-    [key: string]: T
-}
-
-// aplicar os indefineds
 export interface IBackupCSV {
     levelId: number;
     levelThemeId?: number;
@@ -86,28 +81,7 @@ export interface IBackupCSV {
     activityEmbeddedUrl: string;
     activityEmbeddedHeight: number;
 }
-export interface IBackupJSON {
-    level: LevelEntity | null;
-    levelThemes: LevelThemeEntity[];
-    cycles: CycleEntity[];
-    cycleActivity: CycleActivityEntity[];
-    activityList: ActivityEntity[];
-    activityDataEmbedded: EmbeddedActivityDataEntity[];
-}
 
-// export type BackupResponse = {csvModel: IBackupCSV[], entities: IBackupJSON};
-
-
-
-function transformArrayToHashTable<T>(array: T[], key: keyof T): GenericHash<T> {
-  return array.reduce((acc, value) => {
-      if (!acc[value[key]]) {
-          acc[value[key]] = {}
-      }
-      acc[value[key]] = value;
-      return acc;
-  }, {} as any)
-}
 
 function getElementInLevel<T>(
   element: "cycle" | "activity" | "cycleActivity" | "levelTheme" | 'embedded',
@@ -185,7 +159,7 @@ function getElementInLevel<T>(
   return [] as T[];
 }
 
-function backupToLevel(backupCSV: IBackupCSV[]): ILevel {
+const backupToLevel = (backupCSV: IBackupCSV[]): ILevel => {
   return backupCSV.reduce((acc, line) => {
     const levelTheme = {
       levelId: line.levelId,
@@ -229,7 +203,13 @@ function backupToLevel(backupCSV: IBackupCSV[]): ILevel {
     if (acc.id) {
       const hasLevelTheme = acc.level_themes?.find(item => item.themeId === line.themeId);
       if (hasLevelTheme) {
-        const hasCycle = hasLevelTheme.cycles?.find(item => item.id === cycle.id);
+        const hasCycle = hasLevelTheme.cycles?.find(item => {
+          if (item.id) {
+            return item.id === cycle.id;
+          } else {
+            return item.name === cycle.name;
+          }
+        });
 
         if (hasCycle) {
           hasCycle.cycle_activities?.push(cycleActivities);
@@ -254,185 +234,6 @@ function backupToLevel(backupCSV: IBackupCSV[]): ILevel {
   }, {} as ILevel);
 }
 
-
-// services para gerar backup -----------------------------------------------------------------------------------------------
-export const generateBackup = async (readonlyDatabase: DatabaseService, levelId: string): Promise<IBackupCSV[]> => {
-    const level = await getLevelById(readonlyDatabase)(levelId);
-
-    const levelThemes = await selectLevelTheme(readonlyDatabase).where('levelId', levelId);
-    const levelThemesIds = levelThemes.map(data => data.id);
-    // const levelThemesHash = transformArrayToHashTable(levelThemes, 'id');
-
-    const cycles = await selectCycle(readonlyDatabase).whereIn('levelThemeId', levelThemesIds);
-    const cyclesIds = cycles.map(data => data.id);
-    // const cyclesHash = transformArrayToHashTable(cycles, 'id');
-    
-    const cycleActivity = await selectCycleActivity(readonlyDatabase).whereIn('cycleId', cyclesIds);
-    // const cycleActivityHash = transformArrayToHashTable(cycleActivity, 'activityId');
-
-    const activityIds = cycleActivity.map(data => data.activityId);
-    const activityList = await selectActivity(readonlyDatabase).whereIn('id', activityIds);
-    // const activityHash = transformArrayToHashTable(activityList, 'id');
-    
-    const activityDataEmbedded = await selectEmbeddedActivityData(readonlyDatabase).whereIn('activityId', activityIds);
-    // const activityDataEmbeddedHash = transformArrayToHashTable(activityDataEmbedded, 'activityId');  
-
-    const backup: IBackupCSV[] = [];
-
-    if (!levelThemes.length) {
-      backup.push({
-          levelId: level?.id,
-          levelThemeId: '',
-          themeId : '',
-          themeOrder: '',
-          cycleId: '',
-          cycleOrder: '',
-          cycleName: '',
-          cycleActivityId: '',
-          activityId: '',
-          activityOrder: '',
-          activityName: '',
-          activityDescription: '',
-          activityEstimatedTime: '',
-          activityEmbeddedUrl: '',
-          activityEmbeddedHeight: '',
-        } as unknown as IBackupCSV);
-    }
-
-    levelThemes.forEach(lt => {
-      const line = {} as IBackupCSV;
-      line.levelId = lt.levelId;
-      line.levelThemeId = lt.id;
-      line.themeId = lt.themeId;
-      line.themeOrder = lt.order;
-
-      const cyclesFiltred = cycles.filter(c => c.levelThemeId === lt.id);
-      if (!cyclesFiltred.length) {
-        line.cycleId = '' as any;
-        line.cycleOrder = '' as any;
-        line.cycleName = '' as any;
-        line.cycleActivityId = '' as any;
-        line.activityId = '' as any;
-        line.activityOrder = '' as any;
-        line.activityName = '' as any;
-        line.activityDescription = '' as any;
-        line.activityEstimatedTime = '' as any;
-        line.activityEmbeddedUrl = '' as any;
-        line.activityEmbeddedHeight = '' as any;
-        backup.push({ ...line });
-        return;
-      }
-      cyclesFiltred.forEach(c => {
-        line.cycleId = c.id;
-        line.cycleOrder = c.order;
-        line.cycleName = c.name;
-
-        const cycleActivityFiltred = cycleActivity.filter(ca => ca.cycleId === c.id);
-        if (!cycleActivityFiltred.length) {
-          line.cycleActivityId = '' as any;
-          line.activityId = '' as any;
-          line.activityOrder = '' as any;
-          line.activityName = '' as any;
-          line.activityDescription = '' as any;
-          line.activityEstimatedTime = '' as any;
-          line.activityEmbeddedUrl = '' as any;
-          line.activityEmbeddedHeight = '' as any;
-          backup.push({ ...line });
-          return;
-        }
-        cycleActivityFiltred.forEach(ca => {
-          line.cycleActivityId = ca.id;
-          
-          const activityListFiltred = activityList.filter(a => a.id === ca.activityId);
-          if (!activityListFiltred.length) {
-            line.activityId = '' as any;
-            line.activityOrder = '' as any;
-            line.activityName = '' as any;
-            line.activityDescription = '' as any;
-            line.activityEstimatedTime = '' as any;
-            line.activityEmbeddedUrl = '' as any;
-            line.activityEmbeddedHeight = '' as any;
-            backup.push({ ...line });
-            return;
-          }
-          activityList.filter(a => a.id === ca.activityId).forEach(a => {
-            line.activityId = a.id;
-            line.activityOrder = ca.order;
-            line.activityName = a.name;
-            line.activityDescription = a.description;
-            line.activityEstimatedTime = a.estimatedTime;
-
-            const embedded = activityDataEmbedded.find(ae => ae.activityId === a.id);
-            if (embedded) {
-              line.activityEmbeddedUrl = embedded?.url;
-              line.activityEmbeddedHeight = embedded?.height;
-            }
-            backup.push({ ...line });
-          });
-        });
-      });
-    });
-
-    // const backupOld = activityIds.map(activity => {
-    //     const cycleId = cycleActivityHash[activity].cycleId;
-    //     const levelThemeId = cyclesHash[cycleId].levelThemeId
-    //     const levelThemeHash = levelThemesHash[levelThemeId]
-    //     return  {
-    //         levelId: level?.id,
-    //         levelThemeId: levelThemeHash.id, // <-validar com o ivan
-    //         themeId : levelThemeHash.themeId,
-    //         themeOrder: levelThemeHash.order,
-    //         cycleId: cycleId,
-    //         cycleOrder: cyclesHash[cycleId].order,
-    //         cycleName: cyclesHash[cycleId].name,
-    //         cycleActivityId: cycleActivityHash[activity].id, // <-validar com o ivan
-    //         activityId: activityHash[activity].id,
-    //         activityOrder: cycleActivityHash[activity].order,
-    //         activityName: activityHash[activity].name,
-    //         activityDescription: activityHash[activity].description,
-    //         activityEstimatedTime: activityHash[activity].estimatedTime,
-    //         activityEmbeddedUrl: activityDataEmbeddedHash[activity].url,
-    //         activityEmbeddedHeight: activityDataEmbeddedHash[activity].height,
-    //     } as IBackupCSV;
-    // })
-
-    backup
-      .sort((a, b) => a.activityOrder - b.activityOrder)
-      .sort((a, b) => a.cycleOrder - b.cycleOrder)
-      .sort((a, b) => a.themeOrder - b.themeOrder);
-
-    // return {
-    //     csvModel: backup,
-    //     entities: {
-    //         level,
-    //         levelThemes,
-    //         cycles,
-    //         cycleActivity,
-    //         activityList,
-    //         activityDataEmbedded
-    //     }
-    // }
-
-    return backup;
-}
-
-export async function saveBackup(backup: IBackupCSV[], db: DatabaseService, nameBackup: string): Promise<void> {
-    await insertBackup(db)({
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        name: nameBackup,
-        data: JSON.stringify(backup) as any,
-        type: "level"
-    })
-}
-
-export async function generateCsv(backup: IBackupCSV[]): Promise<string> {
-    return parse(backup);
-}
-
-
-
-// services para restaurar backup --------------------------------------------------------------------------------------------
 const getLevel = (db: DatabaseService, levelId: number): Promise<LevelEntity | null> => {
   return getLevelById(db)(levelId);
 }
@@ -456,7 +257,7 @@ const applyBusinessRules = (backup: IBackupCSV[]): { isError: boolean, backupWit
 
     if (error !== '') {
       isError = true;
-      return { ...item, error }
+      return { error, ...item };
     }
 
     return item;
@@ -482,50 +283,120 @@ const getLevels = async (
 };
 
 const elementsForDeletion = (levelIn: ILevel, levelOut: ILevel): void => {
+  // const levelThemesIn = getElementInLevel<ICycle>('levelTheme', levelIn);
   const cyclesIn = getElementInLevel<ICycle>('cycle', levelIn);
   const activitiesIn = getElementInLevel<IActivity>('activity', levelIn);
 
   levelOut?.level_themes?.map(lt => {
+    // const isLevelThemeIn = levelThemesIn.find(ltin => ltin.id === lt.id);
+    // if (!isLevelThemeIn && lt.id) {
+    //   lt.isDelete = true;
+    // }
+
     lt.cycles?.map(c => {
       const isCycleIn = cyclesIn.find(cin => cin.id === c.id);
-      if (!isCycleIn) {
+      // @ts-ignore
+      if (!isCycleIn && c.id !== '') {
         c.isDelete = true;
       }
 
       c.cycle_activities?.map(ca => {
         const isActivityIn = activitiesIn.find(ain => ain.id === ca.activityId);
-        if (!isActivityIn) {
+        // @ts-ignore
+        if (!isActivityIn && ca.id !== '') {
           ca.isDelete = true;
         }
       });
     });
 
     const isRemoveLevelTheme = lt.cycles?.filter(c => c.isDelete).length === lt.cycles?.length;
-    if (isRemoveLevelTheme) {
+    // @ts-ignore
+    if (isRemoveLevelTheme && lt.id !== '') {
       lt.isDelete = true;
     }
   });
 }
 
+const elementsForCreationBecauseNotExist = async (rdb: DatabaseService, levelIn: ILevel): Promise<void> => {
+  const themesId: number[] = [];
+  const cyclesId: number[] = [];
+  const activitiesId: number[] = [];
+
+  levelIn.level_themes.forEach(lt => {
+    lt.id && themesId.push(lt.themeId);
+    lt.cycles?.length && cyclesId.push(...lt.cycles?.filter(c => c.id).map(c => c.id));
+    lt.cycles?.forEach(c => {
+      c.cycle_activities?.length && activitiesId.push(...c.cycle_activities.filter(ca => ca.activityId).map(ca => ca.activityId));
+    });
+  });
+
+  const levelThemeIdBD = await selectLevelTheme(rdb).where('levelId', levelIn.id).whereIn('themeId', themesId);
+  const cyclesIdBD = await selectCycle(rdb).select('id').whereIn('id', cyclesId);
+  const activitiesIdBD = await selectActivity(rdb).select('id').whereIn('id', activitiesId);
+  const cyclesActivitiesBD = await selectCycleActivity(rdb).whereIn('cycleId', cyclesId).whereIn('activityId', activitiesId);
+
+  levelIn.level_themes.map(lt => {
+    if (lt.id) {
+      const isExist = levelThemeIdBD.find(ltbd => ltbd.themeId === lt.themeId);
+      if (!isExist) {
+        lt.isSave = true;
+      } else {
+        lt.id = isExist.id;
+      }
+    }
+
+    lt.cycles?.map(c => {
+      if (c.id) {
+        const isExist = cyclesIdBD.map(cdb => cdb.id).includes(c.id);
+        if (!isExist) {
+          c.isSave = true;
+        }
+      }
+
+      c.cycle_activities?.map(ca => {
+        if (ca.id) {
+          const isExist = cyclesActivitiesBD.find(cabd => cabd.cycleId === ca.cycleId && cabd.activityId === ca.activityId);
+          if (!isExist) {
+            ca.isSave = true;
+          } else {
+            ca.id = isExist.id;
+          }
+        }
+
+        if(ca.activity?.id) {
+          const isExist = activitiesIdBD.map(adb => adb.id).includes(ca.activity.id);
+          if (!isExist) {
+            ca.activity.isSave = true;
+          }
+        } 
+      });
+    });
+  })
+}
+
 const elementsForCreation = (levelIn: ILevel, levelOut: ILevel): void => {
   const isMesmoLevel = levelIn.id === levelOut.id;
-  const levelThemesOut = getElementInLevel<ILeveltheme>('levelTheme', levelOut);
+  // const levelThemesOut = getElementInLevel<ILeveltheme>('levelTheme', levelOut);
   const cyclesOut = getElementInLevel<ICycle>('cycle', levelOut);
   const cycleActivitiesOut = getElementInLevel<ICycleActivity>('cycleActivity', levelOut);
 
   levelIn.level_themes?.map(lt => {
-    const lto = levelThemesOut.find(lto => lto.id === lt.id);
-    if (!isMesmoLevel || !lto) {
-      // @ts-ignore
-      lt.id = undefined
+    if (!lt.id) {
       lt.isSave = true;
     }
+    // const lto = levelThemesOut.find(lto => lto.id === lt.id);
+    // if (!isMesmoLevel || !lto) {
+    //   // @ts-ignore
+    //   lt.id = undefined
+    //   lt.isSave = true;
+    // }
 
     lt.cycles?.map(c => {
       const co = cyclesOut.find(co => co.id === c.id);
       if (!isMesmoLevel || c.id === undefined || !co) {
         // @ts-ignore
-        c.id = undefined; c.levelThemeId = lt.id;
+        c.levelThemeId = lt.id;
+        // c.id = undefined; c.levelThemeId = lt.id;
         c.isSave = true;
       }
 
@@ -533,13 +404,13 @@ const elementsForCreation = (levelIn: ILevel, levelOut: ILevel): void => {
         const cao = cycleActivitiesOut.find(cao => cao.id === ca.id);
         if (!isMesmoLevel || !cao) {
           // @ts-ignore
-          ca.id = undefined; ca.cycleId = undefined;
+          // ca.id = undefined; ca.cycleId = undefined;
           ca.isSave = true;
         }
 
         if (ca.activity && ca.activity?.id === undefined) {
           // @ts-ignore
-          ca.activity.id = undefined;
+          // ca.activity.id = undefined;
           ca.activity.isSave = true;
         }
       });
@@ -679,9 +550,7 @@ const logFactory = (levelIn: ILevel, levelOut: ILevel): ILog => {
   return log;
 }
 
-const executeTransactions = async (db: DatabaseService, levelIn: ILevel, levelInNow: ILevel, levelOut: ILevel): Promise<any> => {
-  console.log('\nTransactions iniciadas\n');
-
+const executeTransactions = async (db: DatabaseService, levelIn: ILevel, levelOut: ILevel): Promise<any> => {
   const forDelete: any[] = [];
   levelOut.level_themes?.forEach(lt => {
     if (lt.isDelete) {
@@ -740,12 +609,22 @@ const executeTransactions = async (db: DatabaseService, levelIn: ILevel, levelIn
 
       for (const cycle of levelTheme.cycles || []) {
         if (cycle.isSave) {
-          cycle.id = await insertCycle(scope)({
-            name: cycle.name,
-            order: cycle.order,
-            levelThemeId: levelTheme.id,
-            active: cycle.active
-          } as CycleEntity);
+          if (cycle.id) {
+            await insertCycle(scope)({
+              id: cycle.id,
+              name: cycle.name,
+              order: cycle.order,
+              levelThemeId: levelTheme.id,
+              active: cycle.active
+            } as CycleEntity);
+          } else {
+            cycle.id = await insertCycle(scope)({
+              name: cycle.name,
+              order: cycle.order,
+              levelThemeId: levelTheme.id,
+              active: cycle.active
+            } as CycleEntity);
+          }
         }
 
         if (cycle.isUpdate) {
@@ -760,13 +639,24 @@ const executeTransactions = async (db: DatabaseService, levelIn: ILevel, levelIn
 
         for (const cycleActivity of cycle.cycle_activities || []) {
           if (cycleActivity?.activity?.isSave) {
-            cycleActivity.activity.id = await insertActivity(scope)({
-              name: cycleActivity.activity.name,
-              description: cycleActivity.activity.description,
-              estimatedTime: cycleActivity.activity.estimatedTime,
-              typeId: cycleActivity.activity.typeId,
-              active: cycleActivity.activity.active
-            } as ActivityEntity);
+            if (cycleActivity.activity.id) {
+              await insertActivity(scope)({
+                id: cycleActivity.activity.id,
+                name: cycleActivity.activity.name,
+                description: cycleActivity.activity.description,
+                estimatedTime: cycleActivity.activity.estimatedTime,
+                typeId: cycleActivity.activity.typeId,
+                active: cycleActivity.activity.active
+              } as ActivityEntity);
+            } else {
+              cycleActivity.activity.id = await insertActivity(scope)({
+                name: cycleActivity.activity.name,
+                description: cycleActivity.activity.description,
+                estimatedTime: cycleActivity.activity.estimatedTime,
+                typeId: cycleActivity.activity.typeId,
+                active: cycleActivity.activity.active
+              } as ActivityEntity);
+            }
 
             await insertEmbeddedActivityData(scope)({
               activityId: cycleActivity.activity.id,
@@ -816,51 +706,203 @@ const executeTransactions = async (db: DatabaseService, levelIn: ILevel, levelIn
       }
     }
   });
-  console.log('\nTransactions finalizadas\n');
+}
+
+
+export const generateBackup = async (readonlyDatabase: DatabaseService, levelId: string): Promise<IBackupCSV[]> => {
+  const level = await getLevelById(readonlyDatabase)(levelId);
+  const levelThemes = await selectLevelTheme(readonlyDatabase).where('levelId', levelId);
+  const levelThemesIds = levelThemes.map(data => data.id);
+  const cycles = await selectCycle(readonlyDatabase).whereIn('levelThemeId', levelThemesIds);
+  const cyclesIds = cycles.map(data => data.id);
+  const cycleActivity = await selectCycleActivity(readonlyDatabase).whereIn('cycleId', cyclesIds);
+  const activityIds = cycleActivity.map(data => data.activityId);
+  const activityList = await selectActivity(readonlyDatabase).whereIn('id', activityIds);
+  const activityDataEmbedded = await selectEmbeddedActivityData(readonlyDatabase).whereIn('activityId', activityIds);
+
+  const backup: IBackupCSV[] = [];
+
+  if (!levelThemes.length) {
+    backup.push({
+        levelId: level?.id,
+        levelThemeId: '',
+        themeId : '',
+        themeOrder: '',
+        cycleId: '',
+        cycleOrder: '',
+        cycleName: '',
+        cycleActivityId: '',
+        activityId: '',
+        activityOrder: '',
+        activityName: '',
+        activityDescription: '',
+        activityEstimatedTime: '',
+        activityEmbeddedUrl: '',
+        activityEmbeddedHeight: '',
+      } as unknown as IBackupCSV);
+  }
+
+  levelThemes.forEach(lt => {
+    const line = {} as IBackupCSV;
+    line.levelId = lt.levelId;
+    line.levelThemeId = lt.id;
+    line.themeId = lt.themeId;
+    line.themeOrder = lt.order;
+
+    const cyclesFiltred = cycles.filter(c => c.levelThemeId === lt.id);
+    if (!cyclesFiltred.length) {
+      line.cycleId = '' as any;
+      line.cycleOrder = '' as any;
+      line.cycleName = '' as any;
+      line.cycleActivityId = '' as any;
+      line.activityId = '' as any;
+      line.activityOrder = '' as any;
+      line.activityName = '' as any;
+      line.activityDescription = '' as any;
+      line.activityEstimatedTime = '' as any;
+      line.activityEmbeddedUrl = '' as any;
+      line.activityEmbeddedHeight = '' as any;
+      backup.push({ ...line });
+      return;
+    }
+    cyclesFiltred.forEach(c => {
+      line.cycleId = c.id;
+      line.cycleOrder = c.order;
+      line.cycleName = c.name;
+
+      const cycleActivityFiltred = cycleActivity.filter(ca => ca.cycleId === c.id);
+      if (!cycleActivityFiltred.length) {
+        line.cycleActivityId = '' as any;
+        line.activityId = '' as any;
+        line.activityOrder = '' as any;
+        line.activityName = '' as any;
+        line.activityDescription = '' as any;
+        line.activityEstimatedTime = '' as any;
+        line.activityEmbeddedUrl = '' as any;
+        line.activityEmbeddedHeight = '' as any;
+        backup.push({ ...line });
+        return;
+      }
+      cycleActivityFiltred.forEach(ca => {
+        line.cycleActivityId = ca.id;
+        
+        const activityListFiltred = activityList.filter(a => a.id === ca.activityId);
+        if (!activityListFiltred.length) {
+          line.activityId = '' as any;
+          line.activityOrder = '' as any;
+          line.activityName = '' as any;
+          line.activityDescription = '' as any;
+          line.activityEstimatedTime = '' as any;
+          line.activityEmbeddedUrl = '' as any;
+          line.activityEmbeddedHeight = '' as any;
+          backup.push({ ...line });
+          return;
+        }
+        activityList.filter(a => a.id === ca.activityId).forEach(a => {
+          line.activityId = a.id;
+          line.activityOrder = ca.order;
+          line.activityName = a.name;
+          line.activityDescription = a.description;
+          line.activityEstimatedTime = a.estimatedTime;
+
+          const embedded = activityDataEmbedded.find(ae => ae.activityId === a.id);
+          if (embedded) {
+            line.activityEmbeddedUrl = embedded?.url;
+            line.activityEmbeddedHeight = embedded?.height;
+          }
+          backup.push({ ...line });
+        });
+      });
+    });
+  });
+
+  backup
+    .sort((a, b) => a.activityOrder - b.activityOrder)
+    .sort((a, b) => a.cycleOrder - b.cycleOrder)
+    .sort((a, b) => a.themeOrder - b.themeOrder);
+
+  return backup;
+}
+
+export const saveBackup = async (backup: IBackupCSV[], db: DatabaseService, nameBackup: string): Promise<void> => {
+  await insertBackup(db)({
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      name: nameBackup,
+      data: JSON.stringify(backup) as any,
+      type: "level"
+  })
+}
+
+export const generateCsv = async (backup: IBackupCSV[]): Promise<string> => {
+  return parse(backup);
 }
 
 export const getBackup = ( db: DatabaseService, id: number): Promise<BackupEntity | null> => {
   return getBackupById(db)(id);
 }
 
-export const obtemDadosCSV = (file: any): IBackupCSV[] => {
-  function getItem(line: any, key: keyof IBackupCSV, isNumber?: boolean) {
-    const value = decodeURIComponent(escape(line[key]));
-    if (value !== undefined) {
-      if (isNumber) {
-        return +value.trim();
+export const obtemDadosCSV = (file: Buffer): Promise<IBackupCSV[]> => {
+  function normalizeKeys(row: any) {
+    const keys = Object.keys(row) || [];
+    const copy: any = {};
+    for (const key of keys){
+      copy[key.trim()] = row[key];
+    }
+    return copy;
+  }
+
+  function getItem(row: any, key: keyof IBackupCSV, isNumber?: boolean) {
+    try {
+      const value = row[key] && row[key] !== '' ? row[key] : undefined;
+      if (value !== undefined) {
+        if (isNumber) {
+          return +value.trim();
+        }
+        return value.trim();
       }
-      return value.trim();
+    } catch {
+      console.log('');
     }
     return undefined;
   }
 
-  const workbook = XLSX.read(file.buffer, { type:'buffer'	});
-  const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {
-    raw: false,
-    rawNumbers: false,
-  });
-  const lista: IBackupCSV[] = [];
-  sheet.map((line: any, index) => {    
-    lista.push({
-      levelId: getItem(line, 'levelId', true),
-      levelThemeId: getItem(line, 'levelThemeId', true),
-      themeId: getItem(line, 'themeId', true),
-      themeOrder: getItem(line, 'themeOrder',  true),
-      cycleId: getItem(line, 'cycleId', true),
-      cycleOrder: getItem(line, 'cycleOrder', true),
-      cycleName: getItem(line, 'cycleName'),
-      cycleActivityId: getItem(line, 'cycleActivityId', true),
-      activityId: getItem(line, 'activityId', true),
-      activityOrder: getItem(line, 'activityOrder', true),
-      activityName: getItem(line, 'activityName'),
-      activityDescription: getItem(line, 'activityDescription'),
-      activityEstimatedTime: getItem(line, 'activityEstimatedTime'),
-      activityEmbeddedUrl: getItem(line, 'activityEmbeddedUrl'),
-      activityEmbeddedHeight: getItem(line, 'activityEmbeddedHeight', true)
+  function listener(row: any) {
+    row = normalizeKeys(row);
+    row?.levelId && !isNaN(row?.levelId) && lista.push({
+      levelId: getItem(row, 'levelId', true),
+      levelThemeId: getItem(row, 'levelThemeId', true),
+      themeId: getItem(row, 'themeId', true),
+      themeOrder: getItem(row, 'themeOrder',  true),
+      cycleId: getItem(row, 'cycleId', true),
+      cycleOrder: getItem(row, 'cycleOrder', true),
+      cycleName: getItem(row, 'cycleName'),
+      cycleActivityId: getItem(row, 'cycleActivityId', true),
+      activityId: getItem(row, 'activityId', true),
+      activityOrder: getItem(row, 'activityOrder', true),
+      activityName: getItem(row, 'activityName'),
+      activityDescription: getItem(row, 'activityDescription'),
+      activityEstimatedTime: getItem(row, 'activityEstimatedTime'),
+      activityEmbeddedUrl: getItem(row, 'activityEmbeddedUrl'),
+      activityEmbeddedHeight: getItem(row, 'activityEmbeddedHeight', true)
     } as IBackupCSV);
+  }
+
+  function bufferToStream(myBuuffer: Buffer) {
+    const tmp = new Duplex();
+    tmp.push(myBuuffer);
+    tmp.push(null);
+    return tmp;
+  }
+
+  const lista: IBackupCSV[] = [];
+  return new Promise<IBackupCSV[]>((resolve, reject) => {
+    bufferToStream(file)
+    .pipe(csv.parse({ headers: true }))
+    .on('error', error => reject(error))
+    .on('data', listener)
+    .on('end', () => resolve(lista));
   });
-  return lista;
 }
 
 export const restoreBackup = async (
@@ -911,6 +953,9 @@ export const restoreBackup = async (
   // seta no level os elementos a serem excluidos;
   elementsForDeletion(levels.levelIn, levels.levelOut);
 
+  // seta os cyclos e atividadas que tem id mas não existe no banco
+  await elementsForCreationBecauseNotExist(rdb, levels.levelIn);
+
   // seta no level os alementos a serem criados
   elementsForCreation(levels.levelIn, levels.levelOut);
   
@@ -930,10 +975,17 @@ export const restoreBackup = async (
 
   // então, executa as transacoes garantindo que todas tenham exito.
   try {
-    await executeTransactions(db, levels.levelIn, levels.levelInNow, levels.levelOut);
-    await saveBackup(currentLevelCSV, db, nameBackup); // 
-  } catch {
-    return redisService.throwInRedisAfterTimeExpires(redisKey, reply);
+    await executeTransactions(db, levels.levelIn, levels.levelOut);
+    // salva o estado do level antes das alterações do restore
+    await saveBackup(currentLevelCSV, db, nameBackup);
+    // salva a alteracao no log;
+    await insertLog(db)({
+      status: "modify-level",
+      key: `${redisKey}-${(new Date()).toISOString()}`,
+      body: JSON.stringify(log),
+    });
+  } catch (e: any) {
+    return redisService.throwInRedisAfterTimeExpires(redisKey, reply, e);
   }
 
   // verifica se executou apos o tempo esperado
