@@ -22,14 +22,15 @@ export class RedisService {
     }, timeout); 
   }
 
-  throwInRedisAfterTimeExpires(redisKey: string, reply: FastifyReply) {
+  throwInRedisAfterTimeExpires(redisKey: string, reply: FastifyReply, error: any) {
+    const message = `aconteceu um erro inesperado: ${error?.sqlMessage || error.message}`;
     if (this.flag) {
       this.remove(redisKey);
     } else {
-      this.set(redisKey, `aconteceu um erro inesperado`);
+      this.set(redisKey, message);
     }
     this.flag = false;
-    return reply.status(500).send({ message: `aconteceu um erro inesperado` });
+    return reply.status(500).send({ message });
   }
 
   setInProcess(redisKey: string, expiryTime = 3600): void {
@@ -46,12 +47,16 @@ export class RedisService {
   }
 
   async get<T>(redisKey: string, deleteAfter?: boolean): Promise<T | undefined> {
-    const response = await this.redis?.get(redisKey);
-    if (response) {
-      if (response !== "inProcess") {
-        deleteAfter && await this.redis?.del(redisKey);
-      } 
-      return JSON.parse(response) as T;
+    try {
+      const response = await this.redis?.get(redisKey);
+      if (response) {
+        if (response !== "inProcess") {
+          deleteAfter && await this.redis?.del(redisKey);
+        } 
+        return JSON.parse(response) as T;
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 }
