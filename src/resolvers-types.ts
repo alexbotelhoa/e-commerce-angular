@@ -612,6 +612,8 @@ export type GQLQueryavailableThemesArgs = {
 
 export type GQLQuerybackupArgs = {
   id: Scalars['ID'];
+  name: Scalars['String'];
+  withAutomatic: Scalars['Boolean'];
 };
 
 
