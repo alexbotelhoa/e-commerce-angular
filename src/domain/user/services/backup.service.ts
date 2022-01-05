@@ -1,10 +1,11 @@
+/* eslint-disable no-empty */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import * as csv from 'fast-csv';
 import { FastifyReply } from "fastify";
 import { parse } from "json2csv";
 import { Duplex } from 'stream';
-import * as csv from 'fast-csv';
 
 import { EmbeddedActivityDataEntity } from "../../../entities/activities/embedded-activity-data.entity";
 import { ActivityEntity } from "../../../entities/activity.entity";
@@ -20,9 +21,9 @@ import { deleteCycle, insertCycle, selectCycle, updateCycle } from "../../../sha
 import { insertEmbeddedActivityData, selectEmbeddedActivityData, updateEmbeddedActivityData } from "../../../shared/repositories/embedded-activity-data.repository";
 import { deleteLevelTheme, insertLevelTheme, selectLevelTheme, updateLevelTheme } from "../../../shared/repositories/level-theme.repository";
 import { getLevelById } from "../../../shared/repositories/level.repository";
+import { insertLog } from "../../../shared/repositories/log.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { RedisService } from "../../../shared/services/redis-tools.services";
-import { insertLog } from "../../../shared/repositories/log.repository";
 
 
 interface IActions {
@@ -30,6 +31,7 @@ interface IActions {
   isUpdate?: boolean;
   isDelete?: boolean;
 }
+
 interface ILevel extends LevelEntity {
   level_themes: ILeveltheme[];
 }
@@ -283,16 +285,10 @@ const getLevels = async (
 };
 
 const elementsForDeletion = (levelIn: ILevel, levelOut: ILevel): void => {
-  // const levelThemesIn = getElementInLevel<ICycle>('levelTheme', levelIn);
   const cyclesIn = getElementInLevel<ICycle>('cycle', levelIn);
   const activitiesIn = getElementInLevel<IActivity>('activity', levelIn);
 
   levelOut?.level_themes?.map(lt => {
-    // const isLevelThemeIn = levelThemesIn.find(ltin => ltin.id === lt.id);
-    // if (!isLevelThemeIn && lt.id) {
-    //   lt.isDelete = true;
-    // }
-
     lt.cycles?.map(c => {
       const isCycleIn = cyclesIn.find(cin => cin.id === c.id);
       // @ts-ignore
@@ -317,7 +313,8 @@ const elementsForDeletion = (levelIn: ILevel, levelOut: ILevel): void => {
   });
 }
 
-const elementsForCreationBecauseNotExist = async (rdb: DatabaseService, levelIn: ILevel): Promise<void> => {
+const elementsForCreationBecauseNotExist = async (rdb: DatabaseService, levelIn: ILevel, levelId: number): Promise<void> => {
+  const isMesmoLevel = levelIn.id === levelId;
   const themesId: number[] = [];
   const cyclesId: number[] = [];
   const activitiesId: number[] = [];
@@ -331,13 +328,13 @@ const elementsForCreationBecauseNotExist = async (rdb: DatabaseService, levelIn:
   });
 
   const levelThemeIdBD = await selectLevelTheme(rdb).where('levelId', levelIn.id).whereIn('themeId', themesId);
-  const cyclesIdBD = await selectCycle(rdb).select('id').whereIn('id', cyclesId);
+  const cyclesIdBD = await selectCycle(rdb).whereIn('id', cyclesId);
   const activitiesIdBD = await selectActivity(rdb).select('id').whereIn('id', activitiesId);
-  const cyclesActivitiesBD = await selectCycleActivity(rdb).whereIn('cycleId', cyclesId).whereIn('activityId', activitiesId);
+  const cyclesActivitiesBD = await selectCycleActivity(rdb);
 
   levelIn.level_themes.map(lt => {
     if (lt.id) {
-      const isExist = levelThemeIdBD.find(ltbd => ltbd.themeId === lt.themeId);
+      const isExist = levelThemeIdBD.find(ltbd => ltbd.themeId === lt.themeId && ltbd.levelId === levelId);
       if (!isExist) {
         lt.isSave = true;
       } else {
@@ -347,7 +344,7 @@ const elementsForCreationBecauseNotExist = async (rdb: DatabaseService, levelIn:
 
     lt.cycles?.map(c => {
       if (c.id) {
-        const isExist = cyclesIdBD.map(cdb => cdb.id).includes(c.id);
+        const isExist = cyclesIdBD.find(cdb => cdb.id === c.id && cdb.levelThemeId === lt.id);
         if (!isExist) {
           c.isSave = true;
         }
@@ -355,11 +352,16 @@ const elementsForCreationBecauseNotExist = async (rdb: DatabaseService, levelIn:
 
       c.cycle_activities?.map(ca => {
         if (ca.id) {
-          const isExist = cyclesActivitiesBD.find(cabd => cabd.cycleId === ca.cycleId && cabd.activityId === ca.activityId);
+          const isExist = cyclesActivitiesBD.find(cabd => cabd.cycleId === c.id && cabd.activityId === ca.activityId);
           if (!isExist) {
             ca.isSave = true;
           } else {
-            ca.id = isExist.id;
+            const isExist = cyclesIdBD.find(cdb => cdb.id === c.id && cdb.levelThemeId === lt.id);
+            if (!isExist || !isMesmoLevel) {
+              // @ts-ignore
+              c.id = undefined;
+              c.isSave = true;
+            }
           }
         }
 
@@ -376,7 +378,6 @@ const elementsForCreationBecauseNotExist = async (rdb: DatabaseService, levelIn:
 
 const elementsForCreation = (levelIn: ILevel, levelOut: ILevel): void => {
   const isMesmoLevel = levelIn.id === levelOut.id;
-  // const levelThemesOut = getElementInLevel<ILeveltheme>('levelTheme', levelOut);
   const cyclesOut = getElementInLevel<ICycle>('cycle', levelOut);
   const cycleActivitiesOut = getElementInLevel<ICycleActivity>('cycleActivity', levelOut);
 
@@ -384,33 +385,21 @@ const elementsForCreation = (levelIn: ILevel, levelOut: ILevel): void => {
     if (!lt.id) {
       lt.isSave = true;
     }
-    // const lto = levelThemesOut.find(lto => lto.id === lt.id);
-    // if (!isMesmoLevel || !lto) {
-    //   // @ts-ignore
-    //   lt.id = undefined
-    //   lt.isSave = true;
-    // }
 
     lt.cycles?.map(c => {
       const co = cyclesOut.find(co => co.id === c.id);
-      if (!isMesmoLevel || c.id === undefined || !co) {
-        // @ts-ignore
+      if (c.id === undefined && (!isMesmoLevel || !co)) {
         c.levelThemeId = lt.id;
-        // c.id = undefined; c.levelThemeId = lt.id;
         c.isSave = true;
       }
 
       c.cycle_activities?.map(ca => {
         const cao = cycleActivitiesOut.find(cao => cao.id === ca.id);
-        if (!isMesmoLevel || !cao) {
-          // @ts-ignore
-          // ca.id = undefined; ca.cycleId = undefined;
+        if (ca.id === undefined && (!isMesmoLevel || !cao)) {
           ca.isSave = true;
         }
 
         if (ca.activity && ca.activity?.id === undefined) {
-          // @ts-ignore
-          // ca.activity.id = undefined;
           ca.activity.isSave = true;
         }
       });
@@ -426,7 +415,6 @@ const elementsForUpdation = (levelIn: ILevel, levelInNow: ILevel): void => {
   const embeddedsNow = getElementInLevel<EmbeddedActivityDataEntity>('embedded', levelInNow);
 
   for (const lt of levelIn.level_themes) {
-    // verifica se o levelTheme tem alteracoes;
     const levelThemeNow = levelThemesNow.find(ltn => ltn.id === lt.id)
     if (levelThemeNow) {
       const comparationA = lt.order;
@@ -438,7 +426,6 @@ const elementsForUpdation = (levelIn: ILevel, levelInNow: ILevel): void => {
     }
 
     for (const cycle of lt.cycles || []) {
-      // verifica se o cyclo tem alteracoes
       const cycleNow = cyclesNow.find(cn => cn.id === cycle.id);
       if (cycleNow) {
         const comparationA = JSON.stringify({
@@ -861,9 +848,7 @@ export const obtemDadosCSV = (file: Buffer): Promise<IBackupCSV[]> => {
         }
         return value.trim();
       }
-    } catch {
-      console.log('');
-    }
+    } catch { }
     return undefined;
   }
 
@@ -889,10 +874,10 @@ export const obtemDadosCSV = (file: Buffer): Promise<IBackupCSV[]> => {
   }
 
   function bufferToStream(myBuuffer: Buffer) {
-    const tmp = new Duplex();
-    tmp.push(myBuuffer);
-    tmp.push(null);
-    return tmp;
+    const stream = new Duplex();
+    stream.push(myBuuffer);
+    stream.push(null);
+    return stream;
   }
 
   const lista: IBackupCSV[] = [];
@@ -919,7 +904,11 @@ export const restoreBackup = async (
   const data = await redisService.get<ILog>(redisKey, true);
   if (data) {
     if (typeof data === 'string') {
-      return reply.status(202).send({ message: 'existe uma restauração de backup desse nível em processamento' });
+      if (data === 'inProcess') {
+        return reply.status(202).send({ message: 'existe uma restauração de backup desse nível em processamento' });
+      } else {
+        return reply.status(500).send({ message: data });
+      }
     }
     else {
       reply.header("Content-Type", "application/json");
@@ -954,7 +943,7 @@ export const restoreBackup = async (
   elementsForDeletion(levels.levelIn, levels.levelOut);
 
   // seta os cyclos e atividadas que tem id mas não existe no banco
-  await elementsForCreationBecauseNotExist(rdb, levels.levelIn);
+  await elementsForCreationBecauseNotExist(rdb, levels.levelIn, levelId);
 
   // seta no level os alementos a serem criados
   elementsForCreation(levels.levelIn, levels.levelOut);
@@ -984,7 +973,7 @@ export const restoreBackup = async (
       key: `${redisKey}-${(new Date()).toISOString()}`,
       body: JSON.stringify(log),
     });
-  } catch (e: any) {
+  } catch (e) {
     return redisService.throwInRedisAfterTimeExpires(redisKey, reply, e);
   }
 
