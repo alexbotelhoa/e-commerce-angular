@@ -469,8 +469,8 @@ const elementsForUpdation = (levelIn: ILevel, levelInNow: ILevel): void => {
           });
 
           const comparationB = JSON.stringify({
-            name: ca.activity?.name,
-            description: ca.activity?.description,
+            name: ca.activity?.name.trim(),
+            description: ca.activity?.description?.trim(),
             estimatedTime: ca.activity?.estimatedTime,
             height: ca.activity?.embedded_activity_data.height,
             url: ca.activity?.embedded_activity_data.url,
