@@ -32,7 +32,6 @@ import { studentInterestReportController } from './domain/user/controllers/stude
 import { studentInactivityReportController } from './domain/user/controllers/student-inactivity-report.controller';
 import { databaseConfigurationFromEnvironment, readonlyDatabaseConfigurationFromEnvironment } from './shared/constants/configuration.constant';
 
-
 AWSXRay.captureMySQL(mysql2 as any);
 const AWS = AWSXRay.captureAWS(AWSSdk);
 AWS.config.update({ region: 'us-east-1', });
@@ -60,13 +59,14 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
       const auditErrors = await selectLog(readonlyDatabaseService).where("status", "=", "audit-error")
       await callBackAudit(auditErrors, databaseService, logger)
     }, 3600000)
-
   }
+
   app.register(multipart)
   app.register(fastifyRedis, {
     host: environment.REDIS_HOST,
     port: Number(environment.REDIS_PORT),
   })
+
   const typeDefsSources = await loadTypedefs('./src/**/*.graphql', {
     loaders: [new GraphQLFileLoader()]
   });
@@ -75,9 +75,9 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
     typeDefs: mergeTypeDefs(typeDefsSources.map(source => source.rawSDL!)),
     resolvers: resolvers,
   });
+
   await app.register(fastifyExpress)
   app.use(AWSXRay.express.openSegment('LXP BackEnd Horizon One'));
-
   app.register(fastifyCors, {
     origin: '*',
   });
