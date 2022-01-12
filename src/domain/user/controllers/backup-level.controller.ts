@@ -1,57 +1,114 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FastifyReply, FastifyRequest } from "fastify";
 import { Redis } from "ioredis";
 import { parse } from "json2csv";
-import { FastifyReply, FastifyRequest } from "fastify";
 
-import { DatabaseService } from "../../../shared/services/database.service";
-import { Environment } from "../../../shared/types/environment.type";
-import { generateBackup, saveBackup } from "../services/backup.service";
 import { getLevelById } from "../../../shared/repositories/level.repository";
+import { DatabaseService } from "../../../shared/services/database.service";
+import { RedisService } from "../../../shared/services/redis-tools.services";
+import { 
+  generateBackup,
+  getBackup,
+  saveBackup,
+  IBackupCSV,
+  restoreBackup,
+  obtemDadosCSV
+} from "../services/backup.service";
+
 
 interface IParams {
-  levelId?: string;
+  Headers: {
+    backupid?: string;
+    levelid?: string;
+    isfinish?: string;
+  }
 }
 
-export const backupLevelController = (
-  env: Environment,
-  db: DatabaseService,
-  readonlyDb: DatabaseService,
-  redis?: Redis
-) => async (
-  req: FastifyRequest,
-  reply: FastifyReply
-): Promise<FastifyReply | undefined> => {
-  if (!redis) {
-    return reply.status(500).send({ message: "redis not working" });
+interface IController {
+  createBackup(eq: FastifyRequest, reply: FastifyReply): Promise<void>;
+  restoreBackupFromDB(eq: FastifyRequest, reply: FastifyReply) : Promise<void>;
+  restoreBackupFromCSV(eq: FastifyRequest, reply: FastifyReply) : Promise<void>;
+}
+
+export function backupLevelController(db: DatabaseService, rdb: DatabaseService, redis?: Redis): IController {
+  const redisService = new RedisService(redis);
+
+  const createBackup = async (req: FastifyRequest, reply: FastifyReply) => {
+    if (!redis) {
+      return reply.status(500).send({ message: "redis not working" });
+    }
+  
+    const levelId = (req.query as any).id as string;
+    if (!levelId) {
+      return reply.status(400).send({ message: "levelId is required." });
+    }
+    const levelToBackup = await getLevelById(rdb)(levelId);
+    if (!levelToBackup) {
+      return reply.status(400).send({ message: "level does not exist." });
+    }
+    const date = new Date();
+    const rawDate = date.toISOString().slice(0, 10).replace(/-/g, "");
+    const nameBackup = `${levelToBackup?.name}_${levelToBackup?.id}_${rawDate}`;
+    
+    const response = await redisService.get<IBackupCSV[]>(nameBackup);
+    if (response) {
+      // redisService.remove(nameBackup);
+      reply.header("Content-Type", "text/csv");
+      return reply.send(parse(response));
+    }
+    
+    reply.send({ loading: "loading backup" });
+    
+    //TODO
+    
+    const backup = await generateBackup(rdb, levelId);
+    await saveBackup(backup, db, nameBackup);
+    if (backup) {
+      await redis.set(nameBackup, JSON.stringify(backup), "ex", 43200);
+    } else {
+      await redis.del(nameBackup);
+    }
   }
 
-  const levelId = (req.query as any).id as string;
-  if (!levelId) {
-    return reply.status(400).send({ message: "levelId is required." });
+  const restoreBackupFromDB = async (req: FastifyRequest<IParams>, reply: FastifyReply) => {
+    if (!redis) {
+      return reply.status(500).send({ message: 'redis not working' });
+    }
+
+    // id do backup e id do level onde vai ser restaurado o backup;
+    const { backupid: backupId, levelid: levelId, isfinish: isFinish } = req.headers;
+
+    if (!levelId || !backupId) {
+      return reply.status(400).send({ message: 'atributos ausentes' });
+    }
+
+    const response = await getBackup(rdb, +backupId);
+    const backup = response?.data as unknown as IBackupCSV[]
+    if (!backup) {
+      return reply.status(400).send({ message: 'Level not found' });
+    }
+
+    return restoreBackup(db, rdb, redisService, +levelId, backup, reply, parseInt(isFinish || '0'));
   }
-  const levelToBackup = await getLevelById(readonlyDb)(levelId);
-  if (!levelToBackup) {
-    return reply.status(400).send({ message: "level does not exist." });
+
+  const restoreBackupFromCSV = async (req: FastifyRequest<IParams>, reply: FastifyReply) => {
+    if (!redis) {
+      return reply.status(500).send({ message: 'redis not working' });
+    }
+
+    // id do level onde vai ser restaurado o backup e o csv file;
+    const { levelid: levelId, isfinish: isFinish } = req.headers;
+    const fileData = await req.file();
+
+    if (!levelId || !fileData) {
+      return reply.status(400).send({ message: 'atributos ausentes' });
+    }
+
+    const file = await fileData.toBuffer();
+    const backup = await obtemDadosCSV(file);
+
+    return restoreBackup(db, rdb, redisService, +levelId, backup, reply, parseInt(isFinish || '0'));
   }
-  const date = new Date();
-  const rawDate = date.toISOString().slice(0, 10).replace(/-/g, "");
-  const nameBackup = `${levelToBackup?.name}_${levelToBackup?.id}_${rawDate}`;
-  
-  const response = await redis.get(nameBackup);
-  const responseParsed = response && JSON.parse(response);
-  if (responseParsed && responseParsed.csvModel) {
-    reply.header("Content-Type", "text/csv");
-    return reply.send(parse(responseParsed.csvModel));
-  }
-  
-  reply.send({ loading: "loading backup" });
-  
-  //TODO
-  
-  const backup = await generateBackup(readonlyDb, levelId);
-  await saveBackup(backup, db, nameBackup);
-  if (backup.csvModel.length > 0 && backup.entities) {
-    await redis.set(nameBackup, JSON.stringify(backup), "ex", 43200);
-  } else {
-    await redis.del(nameBackup);
-  }
-};
+
+  return { createBackup, restoreBackupFromDB, restoreBackupFromCSV };
+}

@@ -5,7 +5,7 @@ export interface LevelCodeEntity {
     active: boolean;
     createdAt: string;
     levelId: number | null;
-    learningMore: "paginab2c" | "eyoung" | "spboost" | "podcast" | null;
+    learningMore: "kanttum" | "paginab2c" | "eyoung" | "spboost" | "podcast" | null;
 }
 
 export const LEVEL_CODE_TABLE = 'level_code';

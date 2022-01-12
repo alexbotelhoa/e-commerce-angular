@@ -9,8 +9,10 @@ type Material {
     coverImg: String!
     isInternal: Boolean!
     acquiredLanguageBooster: Boolean!
+    languageBank: Boolean!
+    active: Boolean!
+    contextId: String!
     createdAt: String!
     updatedAt: String!
-    active: Boolean!
     materialClass: Class!
 }

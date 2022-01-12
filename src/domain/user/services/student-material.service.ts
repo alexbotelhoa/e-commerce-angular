@@ -26,11 +26,12 @@ export const processStudentMaterialEvent =
             };
         }
         const baseMaterialInfo: Partial<MaterialEntity> = {
-            acquiredLanguageBooster: materialData.acquiredLanguageBooster == 'true' ? true : false,
             userId,
-            classId: materialData.classId,
-            isInternal: materialData.isInternal,
             active: true,
+            classId: materialData.classId,
+            isInternal: materialData.isInternal,            
+            acquiredLanguageBooster: materialData.acquiredLanguageBooster,
+            // acquiredLanguageBooster: materialData.acquiredLanguageBooster == 'true' ? true : false,
         }
         materialData.CourseMaterials.forEach(async material => {
             const [hasMaterial] = await selectMaterial(readonlyDatabase).where("userId", "=", userId)
@@ -41,11 +42,13 @@ export const processStudentMaterialEvent =
                     updatedAt: new Date().toLocaleString("en-US", {
                         timeZone: "America/Sao_Paulo"
                     }),
-                    author: material.author,
-                    coverImg: material.coverImg,
                     isbn: material.isbn,
                     title: material.title,
+                    contextId: material.id,
+                    author: material.author,
+                    coverImg: material.coverImg,
                     publisher: material.publisher,
+                    languageBank: material.languageBank,
                 })(qb => qb.where("id", hasMaterial.id))
             } else {
                 await insertMaterial(db)({
@@ -53,11 +56,13 @@ export const processStudentMaterialEvent =
                     updatedAt: new Date().toLocaleString(undefined, {
                         timeZone: "America/Sao_Paulo"
                     }),
-                    author: material.author,
-                    coverImg: material.coverImg,
                     isbn: material.isbn,
                     title: material.title,
+                    contextId: material.id,
+                    author: material.author,
+                    coverImg: material.coverImg,
                     publisher: material.publisher,
+                    languageBank: material.languageBank,
                 })
             }
         });

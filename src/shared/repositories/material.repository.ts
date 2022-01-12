@@ -1,5 +1,5 @@
-import { MATERIAL_TABLE, MaterialEntity } from "../../entities/material.entity";
 import { createRepository } from "../services/repository.service";
+import { MaterialEntity, MATERIAL_TABLE } from "../../entities/material.entity";
 
 export const {
     getById: getMaterialById,

@@ -1,0 +1,3 @@
+type Query {
+    backup(id: ID!, name: String!, withAutomatic: Boolean!): [Backup]
+}

@@ -10,12 +10,12 @@ import { DatabaseService } from "../../../shared/services/database.service";
 import { processStudentUpdateEvent } from "../services/student-update.service";
 import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
 import { processStudentEnrollment } from "../services/student-enrollment.service";
+import { processStudentMaterialEvent } from "../services/student-material.service";
 import { WebhookErrorResponse, WebhookResponse } from "../types/webhook-events.types";
 import { processStudentClassTransfer } from "../services/student-class-transfer.service";
 import { getLogById, insertLog, updateLog } from "../../../shared/repositories/log.repository";
 import { processStudentEnrollmentCancellation } from "../services/student-enrollment-cancellation.service";
 import { processStudentActivityTimerCancellation } from "../services/student-activity-timer-cancellation.service";
-import { processStudentMaterialEvent } from "../services/student-material.service";
 
 
 const UserDataType = t.type({
@@ -65,7 +65,15 @@ export const LevelCodeSyncDataType = t.type({
     code: t.string,
     description: t.union([t.string, t.null, t.undefined]),
     active: t.union([t.boolean, t.undefined]),
-    learningMore: t.union([t.literal('paginab2c'), t.literal('eyoung'), t.literal('spboost'), t.literal("podcast"), t.null, t.undefined]),
+    learningMore: t.union([
+        t.literal('kanttum'),
+        t.literal('paginab2c'),
+        t.literal('eyoung'),
+        t.literal('spboost'),
+        t.literal("podcast"),
+        t.null,
+        t.undefined
+    ]),
 });
 
 export const ProcessLevelCodeSyncType = t.type({
@@ -123,18 +131,20 @@ const StudentActivityTimerCancellationEventType = t.type({
 });
 
 const materialArray = t.type({
+    id: t.string,
     isbn: t.string,
     author: t.string,
     title: t.string,
     publisher: t.string,
     coverImg: t.string,
+    languageBank: t.string,
 })
 
 export const studentMaterialEventData = t.type({
     userId: t.string,
     classId: t.string,
-    isInternal: t.boolean,
-    acquiredLanguageBooster: t.union([ t.boolean, t.string]),
+    isInternal: t.boolean,    
+    acquiredLanguageBooster: t.boolean,
     CourseMaterials: t.array(materialArray)
 })
 
