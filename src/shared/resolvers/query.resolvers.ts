@@ -50,7 +50,7 @@ import { getLearningMoreLevelCodeCalculatorResolver } from "../../domain/level-c
 import { activitiesListProgressQueryResolver } from "../../domain/activity/queries/activities-list-on-progress-order/activities-on-list-on-progress-order.resolver";
 import { annotationsQueryResolver } from "../../domain/annotation/queries/annotations.resolver";
 import { callOccLoginQueryResolver } from "../../domain/material/queries/material-integration.resolver";
-import { backupQueryResolver } from './../../domain/activity/queries/backup/backup.query';
+import { backupQueryResolver } from '../../domain/activity/queries/backup/backup.query';
 import { userRoleQueryResolver } from "../../domain/activity/queries/user-role/user-role.query";
 import { userRolesQueryResolver } from "../../domain/activity/queries/user-role/user-roles.query";
 

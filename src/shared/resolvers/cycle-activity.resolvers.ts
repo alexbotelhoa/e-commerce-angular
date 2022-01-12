@@ -74,7 +74,8 @@ export const cycleActivityUserHasCompletedLoader: DatabaseLoaderFactory<number, 
             .andWhere('userId', userId)
             .andWhere('completed', true)
             .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
-            .andWhereRaw(`${CLASS_TABLE}.startDate <= CURDATE()`);
+            .andWhereRaw(`DATEDIFF(${CLASS_TABLE}.startDate, CURDATE()) < 31`);
+        
         const sorted = cycleActivityUserHasCompletedSorter(cycleActivityIds)(entities);
         return sorted.map(Boolean);
     }
