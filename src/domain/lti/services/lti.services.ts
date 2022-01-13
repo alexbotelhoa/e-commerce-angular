@@ -33,26 +33,17 @@ interface ILti {
 }
 
 export async function ltiParamsFactory(KEY: string, db: DatabaseService, userId: string, materialId: string): Promise<ILti | undefined> {
-  let email: string | null = '';
-
   try {
     const user = await getUserById(db)(userId);
     const material = await getMaterialById(db)(materialId)
-
-    if (!user || !material || !material.languageBank) {
-      return;
-    }
-
-    if (!user.accountId) {
-      email = 'aluno@culturainglesa.com.br';
-    } else {
-      email = user.accountId;
-    }    
-
+    
+    if (!user || !material || !material.languageBank) return;
+    
+    const email = !user.accountId ? 'aluno@culturainglesa.com.br' : user.accountId;
     const timestamp = Math.round(Date.now() / 1000);
+    
     const ACTION = material.languageBank;
     const METHOD = 'POST';
-
     const LtiParams: ILtiParams = {
       lti_message_type: 'basic-lti-launch-request', 
       lti_version: 'LTI-1p0', 

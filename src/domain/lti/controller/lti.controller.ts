@@ -19,7 +19,6 @@ export const LtiController = (
   reply: FastifyReply
 ): Promise<void> => {
   const currentUser = await createCurrentUserFromRequest(request);
-
   const materialId = request.headers.materialid?.toString();
 
   if (!currentUser || !materialId) {
