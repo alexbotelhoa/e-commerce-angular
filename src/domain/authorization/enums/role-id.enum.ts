@@ -9,6 +9,7 @@ export const RoleId = {
     STUDENT: 3,
     GUARDIAN: 4,
     HORIZON_ONE: 5,
+    E_TUTOR: 6
 } as const;
 
 export type RoleId = EnumLiteral<typeof RoleId>;

@@ -53,6 +53,21 @@ export const permissionsById: Record<PermissionId, Permission> = {
         name: 'Horizon One',
         description: `Horizon One`
     },
+    CHAT_ETUTOR: {
+        id: 'CHAT_ETUTOR',
+        name: 'Chat E-Tutor',
+        description: 'Manage chat'
+    },
+    COURSES_ETUTOR: {
+        id: 'COURSES_ETUTOR',
+        name: 'Courses E-Tutor',
+        description: 'Manage courses'
+    },
+    MY_QUESTIONS: {
+        id: 'MY_QUESTIONS',
+        name: 'My questions E-Tutor',
+        description: 'Manage questions'
+    }
 }
 
 export const permissionsList: ReadonlyArray<Permission> = objectKeys(permissionsById)

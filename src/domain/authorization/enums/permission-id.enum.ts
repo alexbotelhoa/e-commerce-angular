@@ -14,6 +14,9 @@ export const PermissionId = {
     MANAGE_NEWSLETTER: 'MANAGE_NEWSLETTER',
     MANAGE_CLASS: 'MANAGE_CLASS',
     HORIZON_ONE: 'HORIZON_ONE',
+    MY_QUESTIONS: 'MY_QUESTIONS',
+    CHAT_ETUTOR: 'CHAT_ETUTOR',
+    COURSES_ETUTOR: 'COURSES_ETUTOR',
 } as const;
 
 export type PermissionId = EnumLiteral<typeof PermissionId>;

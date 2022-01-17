@@ -35,8 +35,6 @@ import { StudentGrade } from './domain/activity/types/student-grade.type';
 import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
@@ -1347,8 +1345,8 @@ export type GQLMaterial = {
   readonly isInternal: Scalars['Boolean'];
   readonly acquiredLanguageBooster: Scalars['Boolean'];
   readonly languageBank: Scalars['Boolean'];
-  readonly contextId: Scalars['String'];
   readonly active: Scalars['Boolean'];
+  readonly contextId: Scalars['String'];
   readonly createdAt: Scalars['String'];
   readonly updatedAt: Scalars['String'];
   readonly materialClass: GQLClass;
@@ -1870,7 +1868,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   availableActivitiesForCycle: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryavailableActivitiesForCycleArgs, 'cycleId'>>;
   availableThemes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQueryavailableThemesArgs, 'availableThemesInputData'>>;
   avatars: Resolver<ReadonlyArray<GQLResolversTypes['Avatar']>, ParentType, ContextType>;
-  backup: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Backup']>>>, ParentType, ContextType, RequireFields<GQLQuerybackupArgs, 'id'>>;
+  backup: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Backup']>>>, ParentType, ContextType, RequireFields<GQLQuerybackupArgs, 'id' | 'name' | 'withAutomatic'>>;
   challenge: Resolver<Maybe<GQLResolversTypes['Challenge']>, ParentType, ContextType, RequireFields<GQLQuerychallengeArgs, 'id'>>;
   challenges: Resolver<ReadonlyArray<GQLResolversTypes['Challenge']>, ParentType, ContextType>;
   class: Resolver<Maybe<GQLResolversTypes['Class']>, ParentType, ContextType, RequireFields<GQLQueryclassArgs, 'id'>>;
@@ -2024,9 +2022,9 @@ export type GQLStudentGradeResolvers<ContextType = GraphQLContext, ParentType ex
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type GQLPermissionIdResolvers = EnumResolverSignature<{ MANAGE_LEVEL: any, MANAGE_THEME: any, MANAGE_CYCLE: any, MANAGE_ACTIVITY: any, EXECUTE_ACTIVITY: any, MANAGE_COMMENTS: any, MANAGE_CLASS: any, MANAGE_CHALLENGE: any, MANAGE_NEWSLETTER: any, HORIZON_ONE: any }, GQLResolversTypes['PermissionId']>;
+export type GQLPermissionIdResolvers = EnumResolverSignature<{ MANAGE_LEVEL: any, MANAGE_THEME: any, MANAGE_CYCLE: any, MANAGE_ACTIVITY: any, EXECUTE_ACTIVITY: any, MANAGE_COMMENTS: any, MANAGE_CLASS: any, MANAGE_CHALLENGE: any, MANAGE_NEWSLETTER: any, HORIZON_ONE: any, CHAT_ETUTOR: any, COURSES_ETUTOR: any, MY_QUESTIONS: any }, GQLResolversTypes['PermissionId']>;
 
-export type GQLRoleIdResolvers = EnumResolverSignature<{ ADMIN: any, STUDENT: any, TEACHER: any, GUARDIAN: any, HORIZON_ONE: any }, GQLResolversTypes['RoleId']>;
+export type GQLRoleIdResolvers = EnumResolverSignature<{ ADMIN: any, STUDENT: any, TEACHER: any, GUARDIAN: any, HORIZON_ONE: any, E_TUTOR: any }, GQLResolversTypes['RoleId']>;
 
 export type GQLPermissionResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Permission'] = GQLResolversParentTypes['Permission']> = {
   id: Resolver<GQLResolversTypes['PermissionId'], ParentType, ContextType>;
@@ -2356,8 +2354,8 @@ export type GQLMaterialResolvers<ContextType = GraphQLContext, ParentType extend
   isInternal: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   acquiredLanguageBooster: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
   languageBank: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
-  contextId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   active: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>;
+  contextId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   createdAt: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   updatedAt: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   materialClass: Resolver<GQLResolversTypes['Class'], ParentType, ContextType>;
