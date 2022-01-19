@@ -32,7 +32,7 @@ export async function kanttumFactory(userName: string, userEmail: string): Promi
         responseType: 'json',
     });
 
-    const subdomain = 'cisp.dev';
+    const subdomain = 'cisp';
     const accessToken = data.data.attributes.access_token;
     const redirect = '/processes/mentored';
 
