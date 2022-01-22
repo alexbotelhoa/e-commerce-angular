@@ -110,9 +110,10 @@ export const cycleUserHasCompletedLoader
             .andWhere(`${ACTIVITY_TIMER_TABLE}.completed`, true)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.userId`, userId)
             .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
-            .andWhereRaw(`${CLASS_TABLE}.startDate <= CURDATE()`)
+            .andWhereRaw(`DATEDIFF(${CLASS_TABLE}.startDate, CURDATE()) < 31`)
             .groupBy([`${CYCLE_ACTIVITY_TABLE}.cycleId`]);
-        const sorted = cycleActivitiesSummaryByCycleIdSorter(ids)(entities);
+        
+            const sorted = cycleActivitiesSummaryByCycleIdSorter(ids)(entities);
         const result = sorted.map(entity => {
             if (!entity) {
                 return false;

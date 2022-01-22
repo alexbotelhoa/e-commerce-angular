@@ -10,9 +10,9 @@ export const themeEntityResolvers: Pick<GQLThemeResolvers, keyof ThemeEntity> = 
 }
 
 import { ThemeIconEntity } from "../../entities/themes/theme-icon.entity";
-import { selectThemeIcon } from "../../shared/repositories/theme-icon.repository";
-import { DatabaseLoaderFactory } from "../../shared/types/database-loader.type";
-import { createDataloaderSingleSort } from "../../shared/utils/dataloader-single-sort";
+import { selectThemeIcon } from "../repositories/theme-icon.repository";
+import { DatabaseLoaderFactory } from "../types/database-loader.type";
+import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 
 const themeIconDataLoaderSorter = createDataloaderSingleSort<ThemeIconEntity, number, ThemeIconEntity>('themeId');
 
@@ -29,7 +29,6 @@ const themeIconDataLoaderFactory: DatabaseLoaderFactory<ThemeIconEntity['themeId
 export const themeIconDataResolver: GQLThemeResolvers['icon'] = async (obj, params, context) => {
     return await context.getDatabaseLoader(themeIconDataLoaderFactory, undefined).load(obj.id)
 }
-
 
 export const themeResolvers: GQLThemeResolvers = {
     ...themeEntityResolvers,
