@@ -1,5 +1,5 @@
-import { Redis } from "ioredis";
 import * as t from "io-ts";
+import { Redis } from "ioredis";
 import { FastifyReply, FastifyRequest } from "fastify";
 
 import { processClassSync } from "../services/class-sync.service";
@@ -9,21 +9,14 @@ import { processLevelCodeSync } from "../services/level-code-sync.service";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { processStudentUpdateEvent } from "../services/student-update.service";
 import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
+import { processCourseMaterialEvent } from "../services/couse-material.service";
 import { processStudentEnrollment } from "../services/student-enrollment.service";
-import { processStudentMaterialEvent } from "../services/student-material.service";
+import { processUserRolesUpdateEvent } from "../services/user-roles-update.service";
 import { WebhookErrorResponse, WebhookResponse } from "../types/webhook-events.types";
 import { processStudentClassTransfer } from "../services/student-class-transfer.service";
 import { getLogById, insertLog, updateLog } from "../../../shared/repositories/log.repository";
 import { processStudentEnrollmentCancellation } from "../services/student-enrollment-cancellation.service";
 import { processStudentActivityTimerCancellation } from "../services/student-activity-timer-cancellation.service";
-
-
-const UserDataType = t.type({
-    id: t.string,
-    name: t.string,
-    macId: t.union([t.string, t.null]),
-    macPass: t.union([t.string, t.null]),
-});
 
 export const classSyncEventData = t.type({
     class: ClassWithLocationsFullDataType,
@@ -35,17 +28,17 @@ const ClassSyncEventType = t.type({
     data: classSyncEventData
 });
 
-export const CarrerSyncDataType = t.array(
+export const CarrerSyncEventData = t.array(
     t.type({
         carrer: t.string,
         roles: t.array(t.string),
     })
 );
 
-export const ProcessCarrerSyncType = t.type({
+const CarrerSyncEventType = t.type({
     id: t.string,
     type: t.literal("CARRER_SYNC"),
-    data: CarrerSyncDataType,
+    data: CarrerSyncEventData,
 });
 
 const StudentUpdateEventType = t.type({
@@ -60,7 +53,50 @@ const StudentUpdateEventType = t.type({
     }),
 });
 
-export const LevelCodeSyncDataType = t.type({
+export const studentRolesSyncEventData = t.type({
+    userId: t.string,
+    rolesId: t.array(t.union([
+        t.literal(1),
+        t.literal(2),
+        t.literal(3),
+        t.literal(4),
+        t.literal(5),
+        t.literal(6),
+        t.undefined
+    ])),
+});
+
+const StudentRolesSyncEventType = t.type({
+    id: t.string,
+    type: t.literal("USER_ROLES_UPDATE"),
+    data: studentRolesSyncEventData,
+});
+
+export const materialArray = t.type({
+    id: t.string,
+    isbn: t.string,
+    author: t.string,
+    title: t.string,
+    publisher: t.string,
+    coverImg: t.string,
+    languageBank: t.string,
+})
+
+export const curseMaterialSyncEventData = t.type({
+    userId: t.string,
+    classId: t.string,
+    isInternal: t.boolean,
+    acquiredLanguageBooster: t.boolean,
+    CourseMaterials: t.array(materialArray)
+})
+
+const CourseMaterialSyncEventType = t.type({
+    id: t.string,
+    type: t.literal("COURSE_MATERIALS"),
+    data: curseMaterialSyncEventData,
+});
+
+export const LevelCodeSyncEventData = t.type({
     levelCodeId: t.number,
     code: t.string,
     description: t.union([t.string, t.null, t.undefined]),
@@ -76,43 +112,43 @@ export const LevelCodeSyncDataType = t.type({
     ]),
 });
 
-export const ProcessLevelCodeSyncType = t.type({
+const LevelCodeSyncEventType = t.type({
     id: t.string,
     type: t.literal("LEVEL_CODE_SYNC"),
-    data: LevelCodeSyncDataType,
+    data: LevelCodeSyncEventData,
 });
 
-export const studantEnrollmentNewData = t.type({
+export const UserDataType = t.type({
+    id: t.string,
+    name: t.string,
+    macId: t.union([t.string, t.null]),
+    macPass: t.union([t.string, t.null]),
+});
+
+export const studentEnrollmentSyncEventData = t.type({
     user: UserDataType,
     ClassId: t.string,
 });
 
-// const studantEnrollmentOldData = t.type({
-//     user: UserDataType,
-//     class: ClassDataType,
-// })
-
-// export const studantEnrollmentData = t.union([studantEnrollmentNewData, studantEnrollmentOldData])
-
-const StudentEnrollmentEventType = t.type({
+const StudentEnrollmentSyncEventType = t.type({
     id: t.string,
     type: t.literal('STUDENT_ENROLLMENT'),
-    data: studantEnrollmentNewData,
+    data: studentEnrollmentSyncEventData,
 });
 
-export const StudentClassTransferClassByIdType = t.type({
+export const StudentClassTransferSyncEventData = t.type({
     userId: t.string,
     oldClassId: t.string,
     newClassId: t.string,
 });
 
-const StudentClassTransferClassType = t.type({
+const StudentClassTransferSyncEventType = t.type({
     id: t.string,
     type: t.literal('STUDENT_CLASS_TRANSFER'),
-    data: StudentClassTransferClassByIdType
+    data: StudentClassTransferSyncEventData
 });
 
-const StudentEnrollmentCancellationEventType = t.type({
+const StudentEnrollmentCancellationSyncEventType = t.type({
     id: t.string,
     type: t.literal('STUDENT_ENROLLMENT_CANCELLATION'),
     data: t.type({
@@ -121,7 +157,7 @@ const StudentEnrollmentCancellationEventType = t.type({
     }),
 });
 
-const StudentActivityTimerCancellationEventType = t.type({
+const StudentActivityTimerCancellationSyncEventType = t.type({
     id: t.string,
     type: t.literal("STUDENT_ACTIVITY_TIMER_CANCELLATION"),
     data: t.type({
@@ -130,43 +166,27 @@ const StudentActivityTimerCancellationEventType = t.type({
     }),
 });
 
-const materialArray = t.type({
-    id: t.string,
-    isbn: t.string,
-    author: t.string,
-    title: t.string,
-    publisher: t.string,
-    coverImg: t.string,
-    languageBank: t.string,
-})
-
-export const studentMaterialEventData = t.type({
-    userId: t.string,
-    classId: t.string,
-    isInternal: t.boolean,    
-    acquiredLanguageBooster: t.boolean,
-    CourseMaterials: t.array(materialArray)
-})
-
-const StudentMaterialSyncEventType = t.type({
-    id: t.string,
-    type: t.literal("COURSE_MATERIALS"),
-    data: studentMaterialEventData,
-});
-
 const WebhookEventType = t.union([
     ClassSyncEventType,
-    ProcessCarrerSyncType,
+    CarrerSyncEventType,
+    LevelCodeSyncEventType,
     StudentUpdateEventType,
-    ProcessLevelCodeSyncType,
-    StudentEnrollmentEventType,
-    StudentClassTransferClassType,
-    StudentEnrollmentCancellationEventType,
-    StudentActivityTimerCancellationEventType,
-    StudentMaterialSyncEventType
+    StudentRolesSyncEventType,
+    CourseMaterialSyncEventType,
+    StudentEnrollmentSyncEventType,
+    StudentClassTransferSyncEventType,
+    StudentEnrollmentCancellationSyncEventType,
+    StudentActivityTimerCancellationSyncEventType,
 ]);
 
-export const webhookEventsController = (db: DatabaseService, readonlyDatabase: DatabaseService, redis?: Redis) => async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
+export const webhookEventsController = (
+    db: DatabaseService,
+    readonlyDatabase: DatabaseService,
+    redis?: Redis
+) => async (
+    request: FastifyRequest,
+    reply: FastifyReply
+): Promise<void> => {
     const loggerId = await insertLog(db)({
         body: JSON.stringify(request.body),
         status: "created",
@@ -225,36 +245,40 @@ export const webhookEventsController = (db: DatabaseService, readonlyDatabase: D
 
         let response: WebhookResponse;
         switch (body.type) {
-            case 'STUDENT_CLASS_TRANSFER': {
-                response = await processStudentClassTransfer(db, request.log, redis)(body);
-                break;
-            }
-            case 'STUDENT_ENROLLMENT': {
-                response = await processStudentEnrollment(db, request.log)(body);
-                break;
-            }
-            case 'STUDENT_ENROLLMENT_CANCELLATION': {
-                response = await processStudentEnrollmentCancellation(db, request.log)(body);
-                break;
-            }
             case 'CLASS_SYNC': {
                 response = await processClassSync(db, readonlyDatabase, request.log, redis)(body);
-                break;
-            }
-            case 'STUDENT_UPDATE': {
-                response = await processStudentUpdateEvent(db, request.log)(body);
-                break;
-            }
-            case 'LEVEL_CODE_SYNC': {
-                response = await processLevelCodeSync(db, request.log)(body);
                 break;
             }
             case 'CARRER_SYNC': {
                 response = await processCarrerSync(db, request.log)(body);
                 break;
             }
+            case 'LEVEL_CODE_SYNC': {
+                response = await processLevelCodeSync(db, request.log)(body);
+                break;
+            }
+            case 'STUDENT_UPDATE': {
+                response = await processStudentUpdateEvent(db, request.log)(body);
+                break;
+            }
+            case 'USER_ROLES_UPDATE': {
+                response = await processUserRolesUpdateEvent(db, request.log)(body);
+                break;
+            }
             case 'COURSE_MATERIALS': {
-                response = await processStudentMaterialEvent(db, readonlyDatabase, request.log)(body);
+                response = await processCourseMaterialEvent(db, readonlyDatabase, request.log)(body);
+                break;
+            }
+            case 'STUDENT_ENROLLMENT': {
+                response = await processStudentEnrollment(db, request.log)(body);
+                break;
+            }
+            case 'STUDENT_CLASS_TRANSFER': {
+                response = await processStudentClassTransfer(db, request.log, redis)(body);
+                break;
+            }
+            case 'STUDENT_ENROLLMENT_CANCELLATION': {
+                response = await processStudentEnrollmentCancellation(db, request.log)(body);
                 break;
             }
             case 'STUDENT_ACTIVITY_TIMER_CANCELLATION': {
@@ -272,11 +296,11 @@ export const webhookEventsController = (db: DatabaseService, readonlyDatabase: D
         const responseStatus = response.success ? 200 : 400;
         reply.status(responseStatus);
         reply.send(response);
-        request.log.info(body, `response generated to webhook request of id ${body.id} with response ${response} loggerid ${loggerId}`);
-    } catch (error) {
+        request.log.info(body, `response generated to webhook request of id ${body.id} with response ${response} loggerId ${loggerId}`);
+    } catch (error: any) {
         const webhookResponse: WebhookErrorResponse = {
             success: false,
-            message: error?.message || 'Unexpected error',
+            message: error.message || 'Unexpected error',
         };
         reply.status(400);
         reply.send(webhookResponse);
