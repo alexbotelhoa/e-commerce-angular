@@ -24,12 +24,8 @@ import { KanttumController } from "./domain/kanttum/controllers/kanttum.controll
 import { backupLevelController } from './domain/user/controllers/backup-level.controller';
 import { DatabaseService, databaseServiceFactory } from './shared/services/database.service';
 import { webhookEventsController } from './domain/user/controllers/webhook-events.controller';
-import { studentReportController } from './domain/user/controllers/student-report.controller';
 import { authenticationController } from './domain/authentication/controllers/authentication.controller';
-import { myNotesUsageReportController } from './domain/user/controllers/my-notes-usage-report.controller';
 import { classStudentGradesController } from './domain/activity/controllers/class-student-grades.controller';
-import { studentInterestReportController } from './domain/user/controllers/student-interest-report.controller';
-import { studentInactivityReportController } from './domain/user/controllers/student-inactivity-report.controller';
 import { databaseConfigurationFromEnvironment, readonlyDatabaseConfigurationFromEnvironment } from './shared/constants/configuration.constant';
 
 AWSXRay.captureMySQL(mysql2 as any);
@@ -133,10 +129,6 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
   app.post('/horizon-one-authentication', {}, authenticationController(environment.HORIZON_ONE_URL, databaseService, readonlyDatabaseService));
 
   app.post('/student-grades', {}, classStudentGradesController(environment, databaseService, readonlyDatabaseService));
-  app.get('/student-report.csv', {}, studentReportController(environment, databaseService, readonlyDatabaseService, app.redis));
-  app.get('/my-notes-usage-report.csv', {}, myNotesUsageReportController(environment, databaseService, readonlyDatabaseService, app.redis));
-  app.get('/student-interest-report.csv', {}, studentInterestReportController(environment, databaseService, readonlyDatabaseService, app.redis));
-  app.get('/student-inactivity-report.csv', {}, studentInactivityReportController(environment, databaseService, readonlyDatabaseService, app.redis));
   
   app.post('/restore-level-csv', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).restoreBackupFromCSV);
   app.get('/restore-level', {}, backupLevelController(databaseService, readonlyDatabaseService, app.redis).restoreBackupFromDB);
