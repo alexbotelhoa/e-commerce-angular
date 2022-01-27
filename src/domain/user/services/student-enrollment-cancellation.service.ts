@@ -1,17 +1,19 @@
 import { FastifyLoggerInstance } from "fastify";
-import { getClassById } from "../../../shared/repositories/class.repository";
-import { deleteEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
-import { deleteEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
-import { StudentEnrollmentCancellationEvent, WebhookResponse } from "../types/webhook-events.types";
+import { getClassById } from "../../../shared/repositories/class.repository";
+import { deleteEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
+import { StudentEnrollmentCancellationSyncEvent, WebhookResponse } from "../types/webhook-events.types";
+import { deleteEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 
 export interface StudentEnrollmentCancellationData {
     userId: string;
     classId: string;
 }
 
-export const processStudentEnrollmentCancellation = (db: DatabaseService, log: FastifyLoggerInstance) =>
-    async (event: StudentEnrollmentCancellationEvent): Promise<WebhookResponse> => {
+export const processStudentEnrollmentCancellation = (
+    db: DatabaseService,
+    log: FastifyLoggerInstance
+) => async (event: StudentEnrollmentCancellationSyncEvent): Promise<WebhookResponse> => {
         const data = event.data;
         const existingClass = await getClassById(db)(data.classId);
 
@@ -33,7 +35,6 @@ export const processStudentEnrollmentCancellation = (db: DatabaseService, log: F
             }
         }
 
-        // class exists
         const allEnrollmentClasses = await selectEnrollmentClass(db).andWhere('enrollmentId', enrollment.id);
         const enrollmentClassToDelete = allEnrollmentClasses.find(enrollmentClass => enrollmentClass.classId === data.classId);
 
@@ -42,7 +43,6 @@ export const processStudentEnrollmentCancellation = (db: DatabaseService, log: F
             await db.transaction(async trx => {
                 await deleteEnrollmentClass(trx)(where => where.andWhere('classId', data.classId).andWhere('enrollmentId', enrollment.id));
                 if (allEnrollmentClasses.length === 1) {
-                    // if the enrollment class removed is the only one, then we should also remove the enrollment of the level
                     await deleteEnrollment(trx)(where => where.andWhere('id', enrollment.id));
                 }
             })

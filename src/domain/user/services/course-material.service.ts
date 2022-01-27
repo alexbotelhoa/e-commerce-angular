@@ -3,14 +3,14 @@ import { MaterialEntity } from "../../../entities/material.entity";
 import { getUserById } from "../../../shared/repositories/user.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { getClassById } from "../../../shared/repositories/class.repository";
-import { StudentMaterialEvent, WebhookResponse } from "../types/webhook-events.types";
+import { CourseMaterialSyncEvent, WebhookResponse } from "../types/webhook-events.types";
 import { insertMaterial, selectMaterial, updateMaterial } from "../../../shared/repositories/material.repository";
 
 export const processCourseMaterialEvent = (
     db: DatabaseService,
     readonlyDatabase: DatabaseService,
     log: FastifyLoggerInstance
-) => async (event: StudentMaterialEvent): Promise<WebhookResponse> => {
+) => async (event: CourseMaterialSyncEvent): Promise<WebhookResponse> => {
     const materialData = event.data;
     const userId = materialData.userId;
     const user = await getUserById(db)(userId);

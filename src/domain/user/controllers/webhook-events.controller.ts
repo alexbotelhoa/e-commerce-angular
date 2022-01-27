@@ -1,5 +1,5 @@
-import { Redis } from "ioredis";
 import * as t from "io-ts";
+import { Redis } from "ioredis";
 import { FastifyReply, FastifyRequest } from "fastify";
 
 import { processClassSync } from "../services/class-sync.service";
@@ -18,22 +18,14 @@ import { getLogById, insertLog, updateLog } from "../../../shared/repositories/l
 import { processStudentEnrollmentCancellation } from "../services/student-enrollment-cancellation.service";
 import { processStudentActivityTimerCancellation } from "../services/student-activity-timer-cancellation.service";
 
-
-const UserDataType = t.type({
-    id: t.string,
-    name: t.string,
-    macId: t.union([t.string, t.null]),
-    macPass: t.union([t.string, t.null]),
-});
-
-export const classSyncEventData = t.type({
+export const ClassSyncEventData = t.type({
     class: ClassWithLocationsFullDataType,
 });
 
 const ClassSyncEventType = t.type({
     id: t.string,
     type: t.literal('CLASS_SYNC'),
-    data: classSyncEventData
+    data: ClassSyncEventData
 });
 
 export const CarrerSyncEventData = t.array(
@@ -43,22 +35,10 @@ export const CarrerSyncEventData = t.array(
     })
 );
 
-export const CarrerSyncEventType = t.type({
+const CarrerSyncEventType = t.type({
     id: t.string,
     type: t.literal("CARRER_SYNC"),
     data: CarrerSyncEventData,
-});
-
-const StudentUpdateEventType = t.type({
-    id: t.string,
-    type: t.literal("STUDENT_UPDATE"),
-    data: t.type({
-        userId: t.string,
-        name: t.union([t.string, t.null, t.undefined]),
-        macId: t.union([t.string, t.null, t.undefined]),
-        macPass: t.union([t.string, t.null, t.undefined]),
-        accountId: t.union([t.string, t.null, t.undefined]),
-    }),
 });
 
 export const LevelCodeSyncEventData = t.type({
@@ -77,28 +57,85 @@ export const LevelCodeSyncEventData = t.type({
     ]),
 });
 
-export const LevelCodeSyncEventType = t.type({
+const LevelCodeSyncEventType = t.type({
     id: t.string,
     type: t.literal("LEVEL_CODE_SYNC"),
     data: LevelCodeSyncEventData,
 });
 
-export const studentEnrollmentSyncEventData = t.type({
+export const StudentUpdateSyncEventData = t.type({
+    userId: t.string,
+    name: t.union([t.string, t.null, t.undefined]),
+    macId: t.union([t.string, t.null, t.undefined]),
+    macPass: t.union([t.string, t.null, t.undefined]),
+    accountId: t.union([t.string, t.null, t.undefined]),
+});
+
+const StudentUpdateSyncEventType = t.type({
+    id: t.string,
+    type: t.literal("STUDENT_UPDATE"),
+    data: StudentUpdateSyncEventData,
+});
+
+const materialArray = t.type({
+    id: t.string,
+    isbn: t.string,
+    author: t.string,
+    title: t.string,
+    publisher: t.string,
+    coverImg: t.string,
+    languageBank: t.string,
+})
+
+export const CourseMaterialSyncEventData = t.type({
+    userId: t.string,
+    classId: t.string,
+    isInternal: t.boolean,
+    acquiredLanguageBooster: t.boolean,
+    CourseMaterials: t.array(materialArray)
+})
+
+const CourseMaterialSyncEventType = t.type({
+    id: t.string,
+    type: t.literal("COURSE_MATERIALS"),
+    data: CourseMaterialSyncEventData,
+});
+
+const UserDataType = t.type({
+    id: t.string,
+    name: t.string,
+    macId: t.union([t.string, t.null]),
+    macPass: t.union([t.string, t.null]),
+});
+
+export const StudentEnrollmentSyncEventData = t.type({
     user: UserDataType,
     ClassId: t.string,
 });
 
-// const studantEnrollmentOldData = t.type({
-//     user: UserDataType,
-//     class: ClassDataType,
-// })
-
-// export const studantEnrollmentData = t.union([studantEnrollmentNewData, studantEnrollmentOldData])
-
 const StudentEnrollmentSyncEventType = t.type({
     id: t.string,
     type: t.literal('STUDENT_ENROLLMENT'),
-    data: studentEnrollmentSyncEventData,
+    data: StudentEnrollmentSyncEventData,
+});
+
+export const StudentRolesUpdateSyncEventData = t.type({
+    userId: t.string,
+    rolesId: t.array(t.union([
+        t.literal(1),
+        t.literal(2),
+        t.literal(3),
+        t.literal(4),
+        t.literal(5),
+        t.literal(6),
+        t.undefined
+    ])),
+});
+
+const StudentRolesUpdateSyncEventType = t.type({
+    id: t.string,
+    type: t.literal("USER_ROLES_UPDATE"),
+    data: StudentRolesUpdateSyncEventData,
 });
 
 export const StudentClassTransferSyncEventData = t.type({
@@ -131,57 +168,14 @@ const StudentActivityTimerCancellationSyncEventType = t.type({
     }),
 });
 
-const materialArray = t.type({
-    id: t.string,
-    isbn: t.string,
-    author: t.string,
-    title: t.string,
-    publisher: t.string,
-    coverImg: t.string,
-    languageBank: t.string,
-})
-
-export const curseMaterialSyncEventData = t.type({
-    userId: t.string,
-    classId: t.string,
-    isInternal: t.boolean,
-    acquiredLanguageBooster: t.boolean,
-    CourseMaterials: t.array(materialArray)
-})
-
-const CourseMaterialSyncEventType = t.type({
-    id: t.string,
-    type: t.literal("COURSE_MATERIALS"),
-    data: curseMaterialSyncEventData,
-});
-
-export const studentRolesSyncEventData = t.type({
-    userId: t.string,
-    rolesId: t.array(t.union([
-        t.literal(1),
-        t.literal(2),
-        t.literal(3),
-        t.literal(4),
-        t.literal(5),
-        t.literal(6),
-        t.undefined
-    ])),
-});
-
-const StudentRolesSyncEventType = t.type({
-    id: t.string,
-    type: t.literal("USER_ROLES_UPDATE"),
-    data: studentRolesSyncEventData,
-});
-
 const WebhookEventType = t.union([
     ClassSyncEventType,
     CarrerSyncEventType,
     LevelCodeSyncEventType,
-    StudentUpdateEventType,
-    StudentRolesSyncEventType,
+    StudentUpdateSyncEventType,
     CourseMaterialSyncEventType,
     StudentEnrollmentSyncEventType,
+    StudentRolesUpdateSyncEventType,
     StudentClassTransferSyncEventType,
     StudentEnrollmentCancellationSyncEventType,
     StudentActivityTimerCancellationSyncEventType,

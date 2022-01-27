@@ -1,53 +1,67 @@
-import { FastifyLoggerInstance } from "fastify";
 import { Redis } from "ioredis";
-import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
-import { EnrollmentClassEntity } from "../../../entities/enrollment-class.entity";
-import { deleteActivityTimer, insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
-import { getClassById } from "../../../shared/repositories/class.repository";
-import { deleteEnrollmentClass, insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
-import { deleteEnrollment, insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
-import { getLevelCodeById } from "../../../shared/repositories/level-code.repository";
-import { getLevelById } from "../../../shared/repositories/level.repository";
+import { FastifyLoggerInstance } from "fastify";
 import { getUserById } from "../../../shared/repositories/user.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
-import { StudentClassTransferEvent, WebhookResponse } from "../types/webhook-events.types";
+import { getClassById } from "../../../shared/repositories/class.repository";
+import { getLevelById } from "../../../shared/repositories/level.repository";
+import { EnrollmentClassEntity } from "../../../entities/enrollment-class.entity";
+import { getLevelCodeById } from "../../../shared/repositories/level-code.repository";
+import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
+import { StudentClassTransferSyncEvent, WebhookResponse } from "../types/webhook-events.types";
+import { deleteEnrollment, insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
+import { deleteActivityTimer, insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
+import { deleteEnrollmentClass, insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 
-export const processStudentClassTransfer =
-    (db: DatabaseService, log: FastifyLoggerInstance, redisClient?: Redis) => async (event: StudentClassTransferEvent): Promise<WebhookResponse> => {
-        const data = event.data;
-        const userId = data.userId;
-        const newClassId = data.newClassId;
-        const existingClass = await getClassById(db)(newClassId);
-        if (!existingClass) {
-            return {
-                message: "When passed newClassId, class must already be synced.",
-                success: false,
-            };
-        }
-        const existingLevelCode = await getLevelCodeById(db)(existingClass.levelCodeId);
-        if (!existingLevelCode) {
-            return {
-                message: "When passed newClassId, class level must already be synced.",
-                success: false,
-            };
-        }
-        const user = await getUserById(db)(userId)
-        if (!user) {
-            return {
-                message: "User Don't found.",
-                success: false,
-            };
-        }
-        await transferEnrollment(db, userId, existingLevelCode, data.oldClassId, newClassId, log, event);
-        if (redisClient) {
-            await redisClient.del("meeting-" + userId)
-        }
+export const processStudentClassTransfer = (
+    db: DatabaseService,
+    log: FastifyLoggerInstance,
+    redisClient?: Redis
+) => async (event: StudentClassTransferSyncEvent): Promise<WebhookResponse> => {
+    const data = event.data;
+    const userId = data.userId;
+    const newClassId = data.newClassId;
+    const existingClass = await getClassById(db)(newClassId);
+    if (!existingClass) {
         return {
-            success: true,
+            message: "When passed newClassId, class must already be synced.",
+            success: false,
         };
     }
+    const existingLevelCode = await getLevelCodeById(db)(existingClass.levelCodeId);
+    if (!existingLevelCode) {
+        return {
+            message: "When passed newClassId, class level must already be synced.",
+            success: false,
+        };
+    }
+    const user = await getUserById(db)(userId)
+    if (!user) {
+        return {
+            message: "User Don't found.",
+            success: false,
+        };
+    }
+    await transferEnrollment(db, userId, existingLevelCode, data.oldClassId, newClassId, log, event);
+    if (redisClient) {
+        await redisClient.del("meeting-" + userId)
+    }
+    return {
+        success: true,
+    };
+}
 
-async function transferEnrollment(db: DatabaseService, userId: string, levelData: { id: number; code: string; }, oldClassId: string, newClassId: string, log: FastifyLoggerInstance, event: StudentClassTransferEvent) {
+async function transferEnrollment(
+    db: DatabaseService,
+    userId: string,
+    levelData: {
+        id: number;
+        code: string;
+    },
+    oldClassId: string,
+    newClassId: string,
+    log: FastifyLoggerInstance,
+    event: StudentClassTransferSyncEvent
+) {
     const enrollments = await selectEnrollment(db).andWhere('userId', userId).andWhere('levelCodeId', levelData.id);
     let enrollmentId: number;
 
@@ -128,7 +142,7 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
                 }
             }
         }
-        // checking if we need to do anything at all
+
         if (hasToInsertEnrollmentClass) {
             await insertEnrollmentClass(db)({
                 classId: newClassId,
@@ -139,4 +153,3 @@ async function transferEnrollment(db: DatabaseService, userId: string, levelData
         log.info(event as any, 'User is already enrolled in class.');
     }
 }
-

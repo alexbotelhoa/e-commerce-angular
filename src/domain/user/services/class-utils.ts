@@ -1,14 +1,12 @@
 import * as t from "io-ts";
 import { format } from "date-fns";
-import { ClassEntity } from "../../../entities/class.entity";
-import { classSyncEventData } from "../controllers/webhook-events.controller";
 import { ClassData } from "../types/class-data.type";
+import { ClassEntity } from "../../../entities/class.entity";
 import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
 
 export function isClassDataDivergent(existingClass: ClassEntity, receivedClass: ClassData): boolean {
     const status = receivedClass.status.toUpperCase() === "C" ? false : true
     return (
-        // make sure we are dealing with the same class
         existingClass.id === receivedClass.id &&
         (
             existingClass.name !== receivedClass.name ||
@@ -41,7 +39,6 @@ export function isClassDataDivergent(existingClass: ClassEntity, receivedClass: 
 export function isFullClassDataDivergent(existingClass: ClassEntity, data: t.TypeOf<typeof ClassWithLocationsFullDataType>): boolean {
     const receivedClass = data;
     return (
-        // make sure we are dealing with the same class
         existingClass.id === receivedClass.id &&
         (
             existingClass.name !== receivedClass.name ||

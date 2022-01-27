@@ -1,18 +1,16 @@
 import { FastifyLoggerInstance } from "fastify";
-import Knex from "knex";
-import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
-import { insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
-import { getClassById, insertClass, updateClass } from "../../../shared/repositories/class.repository";
-import { insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
-import { insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
-import { getLevelCodeById, insertLevelCode } from "../../../shared/repositories/level-code.repository";
-import { deleteUserRole, insertUserRole, selectUserRole } from "../../../shared/repositories/user-role.repository";
-import { getUserById, insertUser, updateUser } from "../../../shared/repositories/user.repository";
-import { DatabaseService } from "../../../shared/services/database.service";
+
 import { RoleId } from "../../authorization/enums/role-id.enum";
-import { ClassData } from "../types/class-data.type";
-import { StudentEnrollmentEvent, WebhookResponse } from "../types/webhook-events.types";
-import { isClassDataDivergent } from "./class-utils";
+import { DatabaseService } from "../../../shared/services/database.service";
+import { getClassById } from "../../../shared/repositories/class.repository";
+import { getLevelCodeById } from "../../../shared/repositories/level-code.repository";
+import { ActivityTimerEntity } from "../../../entities/activities/activity-timer.entity";
+import { StudentEnrollmentSyncEvent, WebhookResponse } from "../types/webhook-events.types";
+import { deleteUserRole, insertUserRole } from "../../../shared/repositories/user-role.repository";
+import { getUserById, insertUser, updateUser } from "../../../shared/repositories/user.repository";
+import { insertEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
+import { insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
+import { insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 
 interface UserData {
     id: string;
@@ -21,21 +19,14 @@ interface UserData {
     macPass: string | null;
 }
 
+export const processStudentEnrollment = (
+    db: DatabaseService,
+    log: FastifyLoggerInstance
+) => async (event: StudentEnrollmentSyncEvent): Promise<WebhookResponse> => {
+    const userData = event.data.user;
+    if ("ClassId" in event.data) {
 
-export const processStudentEnrollment = (db: DatabaseService, log: FastifyLoggerInstance) => async (event: StudentEnrollmentEvent): Promise<WebhookResponse> => {
-    const data = event.data;
-    const userData = data.user;
-    // old payload when class is passed in enrollment, deprecated
-    /*     if ("class" in data) {
-            // data.class
-            await studantEnrollmentWithClassBody(userData, db, data.class);
-            return {
-                success: true,
-            };
-        } */
-    if ("ClassId" in data) {
-
-        const classFound = await getClassById(db)(data.ClassId);
+        const classFound = await getClassById(db)(event.data.ClassId);
         if (!classFound) {
             return {
                 message: "When passed ClassId, class must already be synced.",
@@ -50,7 +41,7 @@ export const processStudentEnrollment = (db: DatabaseService, log: FastifyLogger
             };
         }
         const existingUser = await getUserById(db)(userData.id);
-        await upsertUserAndMakeEnrollment(existingUser, db, userData, existingLevelCode, data.ClassId);
+        await upsertUserAndMakeEnrollment(existingUser, db, userData, existingLevelCode, event.data.ClassId);
         return {
             success: true,
         };
@@ -91,19 +82,14 @@ async function upsertUserAndMakeEnrollment(existingUser: {
             enrollmentId: enrollmentId,
         });
     } else {
-        // const existingStudentRoles = await selectUserRole(db).andWhere('roleId', RoleId.STUDENT).andWhere('userId', userData.id);
         const [existingEnrollment] = await selectEnrollment(db).andWhere('userId', userData.id).andWhere('levelCodeId', levelData.id);
-        // we need to update user, because mac id and pass are required for some systems
         await updateUser(db)({
             macId: userData.macId,
             macPass: userData.macPass,
             name: userData.name
         })(where => where.andWhere('id', existingUser.id));
-        //if (existingStudentRoles.length === 0) {
         await upsertRole(db, userData);
-        // }
 
-        // no enrollments, we need to insert everything
         if (!existingEnrollment) {
             const enrollmentId = await insertEnrollment(db)({
                 userId: userData.id,
@@ -118,14 +104,11 @@ async function upsertUserAndMakeEnrollment(existingUser: {
                 .andWhere('enrollmentId', existingEnrollment.id);
             const isCurrentlyEnrolledInClass = Boolean(existingEnrollmentClasses
                 .find(enrollmentClass => enrollmentClass.classId === classId));
-            // enrollment exists, so we should only insert enrollment class if not already exist
             if (!isCurrentlyEnrolledInClass) {
                 await insertEnrollmentClass(db)({
                     classId: classId,
                     enrollmentId: existingEnrollment.id,
                 });
-                // we need to check if the student is enrolled in other classes of the same level, 
-                // to then replicate their activities to the new class
                 const oldClassIds = existingEnrollmentClasses
                     .filter(enrollmentClass => enrollmentClass.classId !== classId)
                     .map(enrollmentClass => enrollmentClass.classId);
