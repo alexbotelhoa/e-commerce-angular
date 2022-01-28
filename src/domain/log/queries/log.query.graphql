@@ -1,5 +1,3 @@
-
-
 type Query {
     logs(data: LogsQueryInput): [Log!]!
 }
@@ -9,4 +7,5 @@ input LogsQueryInput {
     search: String
     perPage: ID
     page: ID
+    orderBy: String
 }
