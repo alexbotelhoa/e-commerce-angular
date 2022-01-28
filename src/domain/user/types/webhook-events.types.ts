@@ -5,12 +5,12 @@ import {
     LevelCodeSyncEventData,
     StudentUpdateSyncEventData,
     CourseMaterialSyncEventData,
+    UserRolesUpdateSyncEventData,
     StudentEnrollmentSyncEventData,
-    StudentRolesUpdateSyncEventData,
     StudentClassTransferSyncEventData,
+    StudentEnrollmentCancellationSyncEventData,
+    StudentActivityTimerCancellationSyncEventData,
 } from "../controllers/webhook-events.controller";
-import { StudentEnrollmentCancellationData } from "../services/student-enrollment-cancellation.service";
-import { StudentActivityTimerCancellationData } from "../services/student-activity-timer-cancellation.service";
 
 export interface WebhookSuccessResponse {
     success: true;
@@ -53,16 +53,16 @@ export interface CourseMaterialSyncEvent {
     data: t.TypeOf<typeof CourseMaterialSyncEventData>
 }
 
+export interface UserRolesUpdateSyncEvent {
+    id: string;
+    type: 'USER_ROLES_UPDATE',
+    data: t.TypeOf<typeof UserRolesUpdateSyncEventData>;
+}
+
 export interface StudentEnrollmentSyncEvent {
     id: string;
     type: 'STUDENT_ENROLLMENT',
     data: t.TypeOf<typeof StudentEnrollmentSyncEventData>;
-}
-
-export interface StudentRolesUpdateSyncEvent {
-    id: string;
-    type: 'USER_ROLES_UPDATE',
-    data: t.TypeOf<typeof StudentRolesUpdateSyncEventData>;
 }
 
 export interface StudentClassTransferSyncEvent {
@@ -74,13 +74,13 @@ export interface StudentClassTransferSyncEvent {
 export interface StudentEnrollmentCancellationSyncEvent {
     id: string;
     type: 'STUDENT_ENROLLMENT_CANCELLATION';
-    data: StudentEnrollmentCancellationData;
+    data: t.TypeOf<typeof StudentEnrollmentCancellationSyncEventData>;
 }
 
 export interface StudentActivityTimerCancellationSyncEvent {
     id: string;
     type: 'STUDENT_ACTIVITY_TIMER_CANCELLATION';
-    data: StudentActivityTimerCancellationData;
+    data: t.TypeOf<typeof StudentActivityTimerCancellationSyncEventData>;
 }
 
 export type WebhookEvent =
@@ -89,8 +89,8 @@ export type WebhookEvent =
     | LevelCodeSyncEvent
     | StudentUpdateSyncEvent
     | CourseMaterialSyncEvent
+    | UserRolesUpdateSyncEvent
     | StudentEnrollmentSyncEvent
-    | StudentRolesUpdateSyncEvent
     | StudentClassTransferSyncEvent
     | StudentEnrollmentCancellationSyncEvent
     | StudentActivityTimerCancellationSyncEvent;

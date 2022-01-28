@@ -1,24 +1,12 @@
 import { FastifyLoggerInstance } from "fastify";
-import { WebhookResponse } from "../types/webhook-events.types";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { getUserById, updateUser } from "../../../shared/repositories/user.repository";
+import { StudentUpdateSyncEvent, WebhookResponse } from "../types/webhook-events.types";
 
-interface StudentUpdateBody {
-    id: string;
-    type: "STUDENT_UPDATE";
-    data: {
-        userId: string;
-        name: string | null | undefined;
-        macId: string | null | undefined;
-        macPass: string | null | undefined;
-        accountId: string | null | undefined;
-    };
-}
-
-export const processStudentUpdateEvent = (
+export const processStudentUpdateSync = (
     db: DatabaseService,
     log: FastifyLoggerInstance
-) => async (event: StudentUpdateBody): Promise<WebhookResponse> => {
+) => async (event: StudentUpdateSyncEvent): Promise<WebhookResponse> => {
     const user = await getUserById(db)(event.data.userId)
     if (!user) throw new Error("User dont found.")
     

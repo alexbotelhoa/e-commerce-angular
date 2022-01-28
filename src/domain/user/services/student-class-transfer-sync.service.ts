@@ -12,7 +12,7 @@ import { deleteEnrollment, insertEnrollment, selectEnrollment } from "../../../s
 import { deleteActivityTimer, insertActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
 import { deleteEnrollmentClass, insertEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 
-export const processStudentClassTransfer = (
+export const processStudentClassTransferSync = (
     db: DatabaseService,
     log: FastifyLoggerInstance,
     redisClient?: Redis

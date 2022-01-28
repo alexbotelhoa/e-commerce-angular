@@ -4,12 +4,7 @@ import { getClassById } from "../../../shared/repositories/class.repository";
 import { WebhookResponse, StudentActivityTimerCancellationSyncEvent } from "../types/webhook-events.types";
 import { deleteActivityTimer, selectActivityTimer } from "../../../shared/repositories/activity-timer.repository";
 
-export interface StudentActivityTimerCancellationData {
-    userId: string;
-    classId: string;
-}
-
-export const processStudentActivityTimerCancellation = (
+export const processStudentActivityTimerCancellationSync = (
     db: DatabaseService,
     log: FastifyLoggerInstance
 ) => async (event: StudentActivityTimerCancellationSyncEvent): Promise<WebhookResponse> => {

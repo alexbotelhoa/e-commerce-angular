@@ -19,7 +19,7 @@ interface UserData {
     macPass: string | null;
 }
 
-export const processStudentEnrollment = (
+export const processStudentEnrollmentSync = (
     db: DatabaseService,
     log: FastifyLoggerInstance
 ) => async (event: StudentEnrollmentSyncEvent): Promise<WebhookResponse> => {

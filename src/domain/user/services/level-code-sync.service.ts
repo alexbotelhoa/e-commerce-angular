@@ -1,6 +1,6 @@
 import { FastifyLoggerInstance } from "fastify";
 import { DatabaseService } from "../../../shared/services/database.service";
-import { WebhookResponse, LevelCodeSyncEvent } from "../types/webhook-events.types";
+import { LevelCodeSyncEvent, WebhookResponse } from "../types/webhook-events.types";
 import { getLevelCodeById, insertLevelCode, updateLevelCode  } from "../../../shared/repositories/level-code.repository";
 
 export const processLevelCodeSync = (

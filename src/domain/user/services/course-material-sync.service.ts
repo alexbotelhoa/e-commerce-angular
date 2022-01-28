@@ -6,7 +6,7 @@ import { getClassById } from "../../../shared/repositories/class.repository";
 import { CourseMaterialSyncEvent, WebhookResponse } from "../types/webhook-events.types";
 import { insertMaterial, selectMaterial, updateMaterial } from "../../../shared/repositories/material.repository";
 
-export const processCourseMaterialEvent = (
+export const processCourseMaterialSync = (
     db: DatabaseService,
     readonlyDatabase: DatabaseService,
     log: FastifyLoggerInstance
