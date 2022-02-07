@@ -14,7 +14,7 @@ interface KanttumResponseData {
 
 export async function kanttumFactory(userName: string, userEmail: string): Promise<KanttumRequestPromise | undefined> {
   try {
-    const authenticationEndpoint = `https://api.kanttum.com/public/integracao_ci/access-token`;
+    const authenticationEndpoint = `https://api.kanttum.com/public/integracao_ci`;
     const { data } = await axios.post<KanttumResponseData>(authenticationEndpoint, {
       data: {
         attributes: {
