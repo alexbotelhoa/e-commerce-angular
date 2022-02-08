@@ -63,6 +63,8 @@ import { DeleteActivityCommentSuccessResultResolvers } from "./domain/activity/m
 import { overallClassCompletedActivitiesResolvers } from "./domain/teacher/queries/overall-class-completed-activities/overall-class-completed-activities.type";
 import { viewerChangeAvatarMutationErrorResolvers, viewerChangeAvatarMutationResultResolvers } from "./domain/avatar/mutations/viewer-change-avatar/viewer-change-avatar.types";
 import { classItemResolvers, levelCodeItemResolvers, teacherClassesActivatedResolvers } from "./domain/teacher/queries/teacher-classes-activated/teacher-classes-activated.resolvers";
+import { chatResolvers } from "./shared/resolvers/chat.resolvers";
+import { chatMessageEntityResolvers } from "./shared/resolvers/chat-message.resolvers";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 
@@ -134,4 +136,6 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Material: studentMaterialResolver,
     OccResult: occLoginResolvers,
     Backup: backupResolvers,
+    Chat: chatResolvers,
+    ChatMessage: chatMessageEntityResolvers
 };

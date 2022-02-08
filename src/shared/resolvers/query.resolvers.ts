@@ -53,6 +53,7 @@ import { callOccLoginQueryResolver } from "../../domain/material/queries/materia
 import { backupQueryResolver } from '../../domain/activity/queries/backup/backup.query';
 import { userRoleQueryResolver } from "../../domain/activity/queries/user-role/user-role.query";
 import { userRolesQueryResolver } from "../../domain/activity/queries/user-role/user-roles.query";
+import { chatQueryResolver } from "../../domain/chat/query/chat.query";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -111,4 +112,6 @@ export const queryResolvers: GQLResolvers['Query'] = {
     backup: backupQueryResolver,
     userRole: userRoleQueryResolver,
     userRoles: userRolesQueryResolver,
+    chat: chatQueryResolver,
+    // chatMessage: chatMess
 }

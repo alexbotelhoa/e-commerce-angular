@@ -1,0 +1,7 @@
+type Mutation {
+  message(message: MessageInput!): Boolean
+}
+
+input MessageInput {
+  message: String
+}

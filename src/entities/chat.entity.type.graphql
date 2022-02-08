@@ -1,0 +1,4 @@
+type Chat {
+  userId: ID!
+  messages: [ChatMessage]
+}
