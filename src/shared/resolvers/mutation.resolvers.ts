@@ -43,6 +43,7 @@ import { createNewsletterMutationResolver, toggleNewsletterState, updateNewslett
 import { upsertAnnotationResolver } from "../../domain/annotation/mutations/upsert-annotation.resolver";
 import { auditResolver } from "../../domain/log/mutation/call-audit.mutation.resolver";
 import { presenceResolver } from "../../domain/presence/presence.mutation.resolver";
+import { messageResolver } from "../../domain/chat/mutations/chat.mutation.resolver";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,
@@ -115,4 +116,5 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     upsertAnnotation: upsertAnnotationResolver,
     audit: auditResolver,
     presence: presenceResolver,
+    message: messageResolver
 }
