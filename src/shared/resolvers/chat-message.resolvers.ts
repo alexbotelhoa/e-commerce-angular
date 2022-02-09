@@ -12,6 +12,8 @@ const chatMessageEntityResolvers: Pick<GQLChatMessageResolvers, keyof ChatMessag
   cycleActivityId: obj => obj.cycleActivityId,
   cycleActivityName: obj => obj.cycleActivityName,
   message: obj => obj.message,
+  createdAt: (obj) => obj.createdAt && new Date(obj.createdAt).toISOString(),
+  updatedAt: (obj) => obj.updatedAt && new Date(obj.updatedAt).toISOString(),
 }
 
 export const chatMessageResolvers: GQLChatMessageResolvers = {

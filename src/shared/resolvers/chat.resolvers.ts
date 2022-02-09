@@ -9,6 +9,8 @@ const chatEntityResolvers: Pick<GQLChatResolvers, keyof ChatEntity> = {
   dateMessage: obj => obj.dateMessage,
   amountMessage: obj => obj.amountMessage,
   isRead: obj => obj.isRead,
+  createdAt: (obj) => obj.createdAt && new Date(obj.createdAt).toISOString(),
+  updatedAt: (obj) => obj.updatedAt && new Date(obj.updatedAt).toISOString(),
 }
 
 export const chatResolvers: GQLChatResolvers = {
