@@ -35,6 +35,8 @@ import { StudentGrade } from './domain/activity/types/student-grade.type';
 import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
@@ -1212,12 +1214,26 @@ export type GQLChallenge = {
 
 export type GQLChatMessage = {
   readonly __typename?: 'ChatMessage';
-  readonly userId: Scalars['ID'];
+  readonly id: Scalars['ID'];
+  readonly userId: Scalars['String'];
+  readonly isEtutor: Maybe<Scalars['Boolean']>;
+  readonly levelCodeId: Maybe<Scalars['String']>;
+  readonly levelCodeName: Maybe<Scalars['String']>;
+  readonly levelThemeId: Maybe<Scalars['String']>;
+  readonly levelThemeName: Maybe<Scalars['String']>;
+  readonly cycleActivityId: Maybe<Scalars['String']>;
+  readonly cycleActivityName: Maybe<Scalars['String']>;
+  readonly message: Scalars['String'];
 };
 
 export type GQLChat = {
   readonly __typename?: 'Chat';
-  readonly userId: Scalars['ID'];
+  readonly id: Scalars['ID'];
+  readonly userId: Scalars['String'];
+  readonly firstMessage: Scalars['String'];
+  readonly dateMessage: Scalars['String'];
+  readonly amountMessage: Maybe<Scalars['Int']>;
+  readonly isRead: Maybe<Scalars['Boolean']>;
   readonly messages: Maybe<ReadonlyArray<Maybe<GQLChatMessage>>>;
 };
 
@@ -2264,12 +2280,26 @@ export type GQLChallengeResolvers<ContextType = GraphQLContext, ParentType exten
 };
 
 export type GQLChatMessageResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ChatMessage'] = GQLResolversParentTypes['ChatMessage']> = {
-  userId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  userId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  isEtutor: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
+  levelCodeId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  levelCodeName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  levelThemeId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  levelThemeName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  cycleActivityId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  cycleActivityName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  message: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GQLChatResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Chat'] = GQLResolversParentTypes['Chat']> = {
-  userId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  userId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  firstMessage: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  dateMessage: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  amountMessage: Resolver<Maybe<GQLResolversTypes['Int']>, ParentType, ContextType>;
+  isRead: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   messages: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['ChatMessage']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
