@@ -5,4 +5,6 @@ type Chat {
   dateMessage: String!
   amountMessage: Int
   isRead: Boolean
+  updatedAt: DateTime!
+  createdAt: DateTime!
 }

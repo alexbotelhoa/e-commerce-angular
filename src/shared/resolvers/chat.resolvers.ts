@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { ChatEntity } from "../../entities/chat.entity"
-import { GQLChatResolvers } from "../../resolvers-types"
+import { ChatEntity } from "../../entities/chat.entity";
+import { GQLChatResolvers } from "../../resolvers-types";
 
 const chatEntityResolvers: Pick<GQLChatResolvers, keyof ChatEntity> = {
   id: obj => obj.id,
@@ -11,8 +11,6 @@ const chatEntityResolvers: Pick<GQLChatResolvers, keyof ChatEntity> = {
   isRead: obj => obj.isRead,
 }
 
-export const chatMessages = async () => []
-
 export const chatResolvers: GQLChatResolvers = {
-  ...chatEntityResolvers
+  ...chatEntityResolvers,
 }

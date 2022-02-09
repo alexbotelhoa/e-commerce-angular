@@ -9,6 +9,8 @@ export interface ChatMessageEntity {
   cycleActivityId: string;
   cycleActivityName: string;
   message: string;
+  updatedAt: string;
+  createdAt: string;
 }
 
 export const CHAT_MESSAGE_TABLE = 'chat_message';

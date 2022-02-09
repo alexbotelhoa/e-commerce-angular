@@ -5,6 +5,8 @@ export interface ChatEntity {
   dateMessage: string;
   amountMessage: number;
   isRead: boolean;
+  updatedAt: string;
+  createdAt: string;
 }
 
 export const CHAT_TABLE = 'chat';
