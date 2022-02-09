@@ -41,11 +41,13 @@ import { activityCommentResolvers } from "./shared/resolvers/activity-comment.re
 import { carrerPermissionResolver } from "./shared/resolvers/carrer-permission.resolvers";
 import { activitiesListResolver } from "./shared/resolvers/activities-on-list-on-progress-order.resolvers";
 
+import { chatResolvers } from "./shared/resolvers/chat.resolvers";
 import { RoleId } from "./domain/authorization/enums/role-id.enum";
 import { GradeTypeId } from "./domain/activity/enums/grade-type-id.enum";
 import { PermissionId } from "./domain/authorization/enums/permission-id.enum";
 import { activityUnionResolvers } from "./domain/activity/types/activity.union";
 import { roleResolvers } from "./domain/authorization/types/role.type.resolvers";
+import { chatMessageEntityResolvers } from "./shared/resolvers/chat-message.resolvers";
 import { themeTotalResolvers } from "./domain/theme/resolvers/theme.total-parts.resolvers";
 import { permissionResolvers } from "./domain/authorization/types/permission.type.resolvers";
 import { studentGradesResolvers } from "./domain/activity/resolvers/student-grades.type.resolvers";
@@ -63,8 +65,6 @@ import { DeleteActivityCommentSuccessResultResolvers } from "./domain/activity/m
 import { overallClassCompletedActivitiesResolvers } from "./domain/teacher/queries/overall-class-completed-activities/overall-class-completed-activities.type";
 import { viewerChangeAvatarMutationErrorResolvers, viewerChangeAvatarMutationResultResolvers } from "./domain/avatar/mutations/viewer-change-avatar/viewer-change-avatar.types";
 import { classItemResolvers, levelCodeItemResolvers, teacherClassesActivatedResolvers } from "./domain/teacher/queries/teacher-classes-activated/teacher-classes-activated.resolvers";
-import { chatResolvers } from "./shared/resolvers/chat.resolvers";
-import { chatMessageEntityResolvers } from "./shared/resolvers/chat-message.resolvers";
 
 export type InterfaceResolverKeys = 'Activity' | 'ActivityData' | 'Comment' | 'GenericError';
 

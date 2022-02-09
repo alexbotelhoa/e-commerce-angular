@@ -14,6 +14,5 @@ const chatEntityResolvers: Pick<GQLChatResolvers, keyof ChatEntity> = {
 export const chatMessages = async () => []
 
 export const chatResolvers: GQLChatResolvers = {
-  ...chatEntityResolvers,
-  messages: chatMessages
+  ...chatEntityResolvers
 }

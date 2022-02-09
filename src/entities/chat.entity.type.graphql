@@ -5,5 +5,4 @@ type Chat {
   dateMessage: String!
   amountMessage: Int
   isRead: Boolean
-  messages: [ChatMessage]
 }
