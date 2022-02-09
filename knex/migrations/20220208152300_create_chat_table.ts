@@ -1,5 +1,4 @@
 import * as Knex from "knex";
-import { USER_TABLE } from "../../src/entities/user.entity";
 import { CHAT_TABLE } from '../../src/entities/chat.entity';
 import { setUTF8Table } from "../utils/set-utf8-table.migration";
 

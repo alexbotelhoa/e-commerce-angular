@@ -1,5 +1,4 @@
 import * as Knex from "knex";
-import { USER_TABLE } from "../../src/entities/user.entity";
 import { setUTF8Table } from "../utils/set-utf8-table.migration";
 import { CHAT_MESSAGE_TABLE } from "../../src/entities/chat-message.entity";
 
@@ -7,7 +6,6 @@ import { CHAT_MESSAGE_TABLE } from "../../src/entities/chat-message.entity";
 export async function up(knex: Knex): Promise<void> {
   const hasTable = await knex.schema.hasTable('chat_message');
   if (!hasTable) {
-
     await knex.schema.createTable(CHAT_MESSAGE_TABLE, (table) => {
       setUTF8Table(table);
       table.increments('id');
