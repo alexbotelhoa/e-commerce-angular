@@ -5,7 +5,7 @@ export const chatQueryResolver: GQLQueryResolvers['chat'] = async (obj, { userId
   const query = selectChat(context.database);
 
   if (userId) {
-    query.where("userId", "like", userId)
+    query.where("userId", "like", userId);
   }
 
   return await query;

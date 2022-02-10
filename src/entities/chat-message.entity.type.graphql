@@ -9,4 +9,6 @@ type ChatMessage {
   cycleActivityId: String
   cycleActivityName: String
   message: String!
+  updatedAt: DateTime!
+  createdAt: DateTime!
 }

@@ -47,7 +47,7 @@ import { GradeTypeId } from "./domain/activity/enums/grade-type-id.enum";
 import { PermissionId } from "./domain/authorization/enums/permission-id.enum";
 import { activityUnionResolvers } from "./domain/activity/types/activity.union";
 import { roleResolvers } from "./domain/authorization/types/role.type.resolvers";
-import { chatMessageEntityResolvers } from "./shared/resolvers/chat-message.resolvers";
+import { chatMessageResolvers } from "./shared/resolvers/chat-message.resolvers";
 import { themeTotalResolvers } from "./domain/theme/resolvers/theme.total-parts.resolvers";
 import { permissionResolvers } from "./domain/authorization/types/permission.type.resolvers";
 import { studentGradesResolvers } from "./domain/activity/resolvers/student-grades.type.resolvers";
@@ -137,5 +137,5 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     OccResult: occLoginResolvers,
     Backup: backupResolvers,
     Chat: chatResolvers,
-    ChatMessage: chatMessageEntityResolvers
+    ChatMessage: chatMessageResolvers
 };

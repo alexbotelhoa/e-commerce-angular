@@ -537,6 +537,7 @@ export type GQLQuery = {
   readonly challenges: ReadonlyArray<GQLChallenge>;
   readonly chat: ReadonlyArray<Maybe<GQLChat>>;
   readonly chatMessage: ReadonlyArray<Maybe<GQLChatMessage>>;
+  readonly chatStudentMessages: ReadonlyArray<Maybe<GQLChat>>;
   readonly class: Maybe<GQLClass>;
   readonly classCycles: ReadonlyArray<GQLCycle>;
   readonly classLevelThemes: ReadonlyArray<GQLLevelTheme>;
@@ -1230,16 +1231,19 @@ export type GQLChatMessage = {
   readonly cycleActivityId: Maybe<Scalars['String']>;
   readonly cycleActivityName: Maybe<Scalars['String']>;
   readonly message: Scalars['String'];
+  readonly updatedAt: Scalars['DateTime'];
+  readonly createdAt: Scalars['DateTime'];
 };
 
 export type GQLChat = {
   readonly __typename?: 'Chat';
-  readonly id: Scalars['ID'];
   readonly userId: Scalars['String'];
   readonly firstMessage: Scalars['String'];
   readonly dateMessage: Scalars['String'];
   readonly amountMessage: Maybe<Scalars['Int']>;
   readonly isRead: Maybe<Scalars['Boolean']>;
+  readonly updatedAt: Scalars['DateTime'];
+  readonly createdAt: Scalars['DateTime'];
 };
 
 export type GQLActivityComment = GQLComment & {
@@ -1929,6 +1933,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   challenges: Resolver<ReadonlyArray<GQLResolversTypes['Challenge']>, ParentType, ContextType>;
   chat: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['Chat']>>, ParentType, ContextType, RequireFields<GQLQuerychatArgs, never>>;
   chatMessage: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['ChatMessage']>>, ParentType, ContextType, RequireFields<GQLQuerychatMessageArgs, never>>;
+  chatStudentMessages: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['Chat']>>, ParentType, ContextType>;
   class: Resolver<Maybe<GQLResolversTypes['Class']>, ParentType, ContextType, RequireFields<GQLQueryclassArgs, 'id'>>;
   classCycles: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLQueryclassCyclesArgs, 'classId'>>;
   classLevelThemes: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQueryclassLevelThemesArgs, 'classId'>>;
@@ -2296,16 +2301,19 @@ export type GQLChatMessageResolvers<ContextType = GraphQLContext, ParentType ext
   cycleActivityId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   cycleActivityName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   message: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  updatedAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
+  createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GQLChatResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Chat'] = GQLResolversParentTypes['Chat']> = {
-  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   userId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   firstMessage: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   dateMessage: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   amountMessage: Resolver<Maybe<GQLResolversTypes['Int']>, ParentType, ContextType>;
   isRead: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
+  updatedAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
+  createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

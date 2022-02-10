@@ -6,6 +6,7 @@
         "visualstudioexptteam.vscodeintellicode",
         "vscode-icons-team.vscode-icons",
         "coenraads.bracket-pair-colorizer",
-        "apollographql.vscode-apollo"
+        "apollographql.vscode-apollo",
+        "GraphQL.vscode-graphql"
     ]
 }
