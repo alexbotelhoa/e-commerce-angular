@@ -1,5 +1,4 @@
 export interface ChatEntity {
-  id: string;
   userId: string;
   firstMessage: string;
   dateMessage: string;

@@ -1237,7 +1237,6 @@ export type GQLChatMessage = {
 
 export type GQLChat = {
   readonly __typename?: 'Chat';
-  readonly id: Scalars['ID'];
   readonly userId: Scalars['String'];
   readonly firstMessage: Scalars['String'];
   readonly dateMessage: Scalars['String'];
@@ -2308,7 +2307,6 @@ export type GQLChatMessageResolvers<ContextType = GraphQLContext, ParentType ext
 };
 
 export type GQLChatResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Chat'] = GQLResolversParentTypes['Chat']> = {
-  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   userId: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   firstMessage: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   dateMessage: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
