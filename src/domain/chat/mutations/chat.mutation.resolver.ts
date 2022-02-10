@@ -19,7 +19,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
     throw new Error('Invalid user');
   }
 
-  const existingChat = await getChatById(context.readonlyDatabase)('');
+  const existingChat = await getChatById(context.readonlyDatabase)(payload.userId as string);
 
   if (!existingChat && idRole === RoleId['E_TUTOR']) {
     throw new Error('you are not allowed to start a chat');
@@ -29,16 +29,29 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
     await insertChat(context.database)({
       userId: user?.id,
       firstMessage: payload.message?.replace(/<[^>]*>/g, '').slice(0, 100),
-      dateMessage: (new Date()).toUTCString(),
+      dateMessage: new Date().toUTCString(),
       amountMessage: 1,
       isRead: false //controla se o aluno viu a notificação
     } as ChatEntity);
   }
   else {
-    await updateChat(context.database)({
-      amountMessage: payload.isEtutor ? 0 : existingChat.amountMessage +1,
-      isRead: !payload.isEtutor // seta como read tru se o aluno enviar uma nova mensagem;
-    })(builder => 
+    const valuesOfUpdate: Partial<ChatEntity> = {};
+
+    if (idRole === RoleId['E_TUTOR']) {
+      valuesOfUpdate.amountMessage = 0;
+    }
+
+    if (idRole === RoleId['STUDENT']) {
+      valuesOfUpdate.amountMessage = existingChat.amountMessage +1;
+      valuesOfUpdate.isRead = true;
+
+      if (valuesOfUpdate.amountMessage === 1) {
+        valuesOfUpdate.firstMessage = payload.message?.replace(/<[^>]*>/g, '').slice(0, 100);
+        valuesOfUpdate.dateMessage = new Date().toUTCString();
+      }
+    }
+
+    await updateChat(context.database)(valuesOfUpdate)(builder => 
       builder.andWhere('userId', existingChat.userId)
     );
   }
