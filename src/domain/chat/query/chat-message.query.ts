@@ -6,6 +6,7 @@ export const chatMessageQueryResolver: GQLQueryResolvers['chatMessage'] = async 
 
   if (userId) {
     query.where("userId", "like", userId);
+    query.orderBy("createdAt", "asc");
   }
 
   return await query;
