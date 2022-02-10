@@ -537,6 +537,8 @@ export type GQLQuery = {
   readonly challenges: ReadonlyArray<GQLChallenge>;
   readonly chat: ReadonlyArray<Maybe<GQLChat>>;
   readonly chatMessage: ReadonlyArray<Maybe<GQLChatMessage>>;
+  readonly chatNewMessages: ReadonlyArray<Maybe<GQLChat>>;
+  readonly chatNotifications: ReadonlyArray<Maybe<GQLChat>>;
   readonly chatStudentMessages: ReadonlyArray<Maybe<GQLChat>>;
   readonly class: Maybe<GQLClass>;
   readonly classCycles: ReadonlyArray<GQLCycle>;
@@ -637,6 +639,16 @@ export type GQLQuerychatArgs = {
 
 
 export type GQLQuerychatMessageArgs = {
+  userId: Maybe<Scalars['String']>;
+};
+
+
+export type GQLQuerychatNewMessagesArgs = {
+  userId: Scalars['String'];
+};
+
+
+export type GQLQuerychatNotificationsArgs = {
   userId: Maybe<Scalars['String']>;
 };
 
@@ -1933,6 +1945,8 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   challenges: Resolver<ReadonlyArray<GQLResolversTypes['Challenge']>, ParentType, ContextType>;
   chat: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['Chat']>>, ParentType, ContextType, RequireFields<GQLQuerychatArgs, never>>;
   chatMessage: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['ChatMessage']>>, ParentType, ContextType, RequireFields<GQLQuerychatMessageArgs, never>>;
+  chatNewMessages: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['Chat']>>, ParentType, ContextType, RequireFields<GQLQuerychatNewMessagesArgs, 'userId'>>;
+  chatNotifications: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['Chat']>>, ParentType, ContextType, RequireFields<GQLQuerychatNotificationsArgs, never>>;
   chatStudentMessages: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['Chat']>>, ParentType, ContextType>;
   class: Resolver<Maybe<GQLResolversTypes['Class']>, ParentType, ContextType, RequireFields<GQLQueryclassArgs, 'id'>>;
   classCycles: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLQueryclassCyclesArgs, 'classId'>>;

@@ -21,6 +21,7 @@ import { availableThemesResolver } from "../../domain/activity/queries/level/lev
 import { activityQueryResolver } from "../../domain/activity/queries/activity/activity.query";
 import { interestQueryResolver } from "../../domain/activity/queries/interest/interest.query";
 import { annotationQueryResolver } from "../../domain/annotation/queries/annotation.resolver";
+import { chatNewMessagesQueryResolver } from "../../domain/chat/query/chat-new-messages.query";
 import { myLevelQueryResolver } from "../../domain/activity/queries/my-levels/my-levels.query";
 import { userRoleQueryResolver } from "../../domain/activity/queries/user-role/user-role.query";
 import { annotationsQueryResolver } from "../../domain/annotation/queries/annotations.resolver";
@@ -56,6 +57,7 @@ import { teacherClassesActivatedQueryResolver } from "../../domain/teacher/queri
 import { viewerEnrollmentLevelCodesQueryResolver } from "../../domain/enrollment/queries/viewer-enrollment-level-codes/viewer-enrollment-level-codes.query";
 import { activitiesListProgressQueryResolver } from "../../domain/activity/queries/activities-list-on-progress-order/activities-on-list-on-progress-order.resolver";
 import { overallClassCompletedActivitiesQueryResolver } from "../../domain/teacher/queries/overall-class-completed-activities/overall-class-completed-activities.query";
+import { chatNotificationsQueryResolver } from "../../domain/chat/query/chat-notifications.query";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     theme: themeQueryResolver,
@@ -116,4 +118,6 @@ export const queryResolvers: GQLResolvers['Query'] = {
     chat: chatQueryResolver,
     chatMessage: chatMessageQueryResolver,
     chatStudentMessages: chatStudentMessagesQueryResolver,
+    chatNewMessages: chatNewMessagesQueryResolver,
+    chatNotifications: chatNotificationsQueryResolver,
 }
