@@ -116,5 +116,5 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     upsertAnnotation: upsertAnnotationResolver,
     audit: auditResolver,
     presence: presenceResolver,
-    message: messageResolver
+    insertChat: messageResolver
 }

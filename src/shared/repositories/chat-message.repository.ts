@@ -10,4 +10,4 @@ export const {
     delete: deleteChatMessage,
     deleteAll: deleteAllChatMessages,
     count: countChatMessages,
-} = createRepository<ChatMessageEntity>(CHAT_MESSAGE_TABLE, 'id');
+} = createRepository<ChatMessageEntity>(CHAT_MESSAGE_TABLE, 'userId');
