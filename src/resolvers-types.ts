@@ -35,8 +35,6 @@ import { StudentGrade } from './domain/activity/types/student-grade.type';
 import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
@@ -88,7 +86,7 @@ export type GQLMutation = {
   readonly deleteCycleFromLevelTheme: GQLLevelTheme;
   readonly deleteThemeFromLevel: GQLLevel;
   readonly finishOnboard: GQLUser;
-  readonly message: Maybe<Scalars['Boolean']>;
+  readonly insertChat: Maybe<Scalars['Boolean']>;
   readonly presence: Maybe<Scalars['Boolean']>;
   readonly startActivity: GQLStartActivityResult;
   readonly updateBasicLevelInfo: GQLLevel;
@@ -251,8 +249,8 @@ export type GQLMutationdeleteThemeFromLevelArgs = {
 };
 
 
-export type GQLMutationmessageArgs = {
-  message: GQLMessageInput;
+export type GQLMutationinsertChatArgs = {
+  payload: GQLInsertChatInput;
 };
 
 
@@ -975,7 +973,16 @@ export type GQLViewerChangeAvatarMutationError = GQLGenericError & {
 
 export type GQLViewerChangeAvatarMutationResult = GQLUser | GQLViewerChangeAvatarMutationError;
 
-export type GQLMessageInput = {
+export type GQLInsertChatInput = {
+  readonly id: Maybe<Scalars['String']>;
+  readonly userId: Maybe<Scalars['String']>;
+  readonly isEtutor: Maybe<Scalars['Boolean']>;
+  readonly levelCodeId: Maybe<Scalars['String']>;
+  readonly levelCodeName: Maybe<Scalars['String']>;
+  readonly levelThemeId: Maybe<Scalars['String']>;
+  readonly levelThemeName: Maybe<Scalars['String']>;
+  readonly cycleActivityId: Maybe<Scalars['String']>;
+  readonly cycleActivityName: Maybe<Scalars['String']>;
   readonly message: Maybe<Scalars['String']>;
 };
 
@@ -1665,7 +1672,7 @@ export type GQLResolversTypes = {
   ViewerChangeAvatarInput: GQLViewerChangeAvatarInput;
   ViewerChangeAvatarMutationError: ResolverTypeWrapper<GQLViewerChangeAvatarMutationError>;
   ViewerChangeAvatarMutationResult: GQLResolversTypes['User'] | GQLResolversTypes['ViewerChangeAvatarMutationError'];
-  MessageInput: GQLMessageInput;
+  InsertChatInput: GQLInsertChatInput;
   countQueryInput: GQLcountQueryInput;
   ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
   learningMoreOptionsInput: GQLlearningMoreOptionsInput;
@@ -1791,7 +1798,7 @@ export type GQLResolversParentTypes = {
   ViewerChangeAvatarInput: GQLViewerChangeAvatarInput;
   ViewerChangeAvatarMutationError: GQLViewerChangeAvatarMutationError;
   ViewerChangeAvatarMutationResult: GQLResolversParentTypes['User'] | GQLResolversParentTypes['ViewerChangeAvatarMutationError'];
-  MessageInput: GQLMessageInput;
+  InsertChatInput: GQLInsertChatInput;
   countQueryInput: GQLcountQueryInput;
   ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
   learningMoreOptionsInput: GQLlearningMoreOptionsInput;
@@ -1889,7 +1896,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   deleteCycleFromLevelTheme: Resolver<GQLResolversTypes['LevelTheme'], ParentType, ContextType, RequireFields<GQLMutationdeleteCycleFromLevelThemeArgs, 'cycleId'>>;
   deleteThemeFromLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationdeleteThemeFromLevelArgs, 'levelThemeId'>>;
   finishOnboard: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
-  message: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationmessageArgs, 'message'>>;
+  insertChat: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationinsertChatArgs, 'payload'>>;
   presence: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationpresenceArgs, 'turma'>>;
   startActivity: Resolver<GQLResolversTypes['StartActivityResult'], ParentType, ContextType, RequireFields<GQLMutationstartActivityArgs, 'data'>>;
   updateBasicLevelInfo: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationupdateBasicLevelInfoArgs, 'data'>>;

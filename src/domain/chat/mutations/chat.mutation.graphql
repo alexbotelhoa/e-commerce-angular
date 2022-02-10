@@ -1,7 +1,16 @@
 type Mutation {
-  message(message: MessageInput!): Boolean
+  insertChat(payload: InsertChatInput!): Boolean
 }
 
-input MessageInput {
+input InsertChatInput {
+  id: String
+  userId: String
+  isEtutor: Boolean
+  levelCodeId: String
+  levelCodeName: String
+  levelThemeId: String
+  levelThemeName: String
+  cycleActivityId: String
+  cycleActivityName: String
   message: String
 }
