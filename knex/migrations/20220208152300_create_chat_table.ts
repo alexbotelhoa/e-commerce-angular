@@ -8,8 +8,7 @@ export async function up(knex: Knex): Promise<void> {
   if (!hasTable) {
     await knex.schema.createTable(CHAT_TABLE, (table) => {
       setUTF8Table(table);
-      table.increments('id');
-      table.string('userId', 36).notNullable();
+      table.string('userId', 36).primary();
       table.string('firstMessage', 100).notNullable();
       table.string('dateMessage', 30).notNullable();
       table.integer('amountMessage', 2).defaultTo(0);
