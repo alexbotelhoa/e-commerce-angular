@@ -974,15 +974,11 @@ export type GQLViewerChangeAvatarMutationError = GQLGenericError & {
 export type GQLViewerChangeAvatarMutationResult = GQLUser | GQLViewerChangeAvatarMutationError;
 
 export type GQLInsertChatInput = {
-  readonly id: Maybe<Scalars['String']>;
-  readonly userId: Maybe<Scalars['String']>;
+  readonly userId: Maybe<Scalars['Int']>;
+  readonly classId: Maybe<Scalars['Int']>;
+  readonly levelThemeId: Maybe<Scalars['Int']>;
+  readonly cycleActivityId: Maybe<Scalars['Int']>;
   readonly isEtutor: Maybe<Scalars['Boolean']>;
-  readonly levelCodeId: Maybe<Scalars['String']>;
-  readonly levelCodeName: Maybe<Scalars['String']>;
-  readonly levelThemeId: Maybe<Scalars['String']>;
-  readonly levelThemeName: Maybe<Scalars['String']>;
-  readonly cycleActivityId: Maybe<Scalars['String']>;
-  readonly cycleActivityName: Maybe<Scalars['String']>;
   readonly message: Maybe<Scalars['String']>;
 };
 

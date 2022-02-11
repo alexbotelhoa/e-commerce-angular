@@ -3,6 +3,12 @@ import { ChatEntity } from "../../../entities/chat.entity";
 import { GQLMutationResolvers, RoleId } from "../../../resolvers-types";
 import { insertChatMessage } from "../../../shared/repositories/chat-message.repository";
 import { insertChat, getChatById, updateChat } from "../../../shared/repositories/chat.repository";
+import { getClassById } from "../../../shared/repositories/class.repository";
+import { getCycleActivityById } from "../../../shared/repositories/cycle-activity.repository";
+import { getCycleById } from "../../../shared/repositories/cycle.repository";
+import { getLevelCodeById } from "../../../shared/repositories/level-code.repository";
+import { getLevelThemeById } from "../../../shared/repositories/level-theme.repository";
+import { getThemeById } from "../../../shared/repositories/theme.repository";
 
 export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { payload }, context) => {
   const user = context.currentUser;
@@ -19,7 +25,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
     throw new Error('Invalid user');
   }
 
-  const existingChat = await getChatById(context.readonlyDatabase)(payload.userId as string);
+  const existingChat = await getChatById(context.readonlyDatabase)(payload.userId as number);
 
   if (!existingChat && idRole === RoleId['E_TUTOR']) {
     throw new Error('you are not allowed to start a chat');
@@ -56,17 +62,33 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
     );
   }
 
-  await insertChatMessage(context.database)({
-    userId: payload.userId,
+  const message = {
+    userId: payload.userId?.toString(),
     isEtutor: payload.isEtutor,
-    levelCodeId: payload.levelCodeId,
-    levelCodeName: payload.levelCodeName,
-    levelThemeId: payload.levelThemeId,
-    levelThemeName: payload.levelThemeName,
-    cycleActivityId: payload.cycleActivityId,
-    cycleActivityName: payload.cycleActivityName,
     message: payload.message,
-  } as ChatMessageEntity);
+  } as ChatMessageEntity;
+
+  if (payload.classId && payload.cycleActivityId && payload.levelThemeId) {
+    const cycleActivity = await getCycleActivityById(context.readonlyDatabase)(payload.cycleActivityId);
+    const classe = await getClassById(context.readonlyDatabase)(payload.classId);
+    const levelCode = await getLevelCodeById(context.readonlyDatabase)(classe?.levelCodeId || 0);
+    const levelTheme = await getLevelThemeById(context.readonlyDatabase)(payload.levelThemeId);
+    const theme = await getThemeById(context.readonlyDatabase)(levelTheme?.themeId || 0);
+    const cycle = await getCycleById(context.readonlyDatabase)(cycleActivity?.cycleId || 0);
+
+    if (!classe || !cycleActivity || !levelCode || !theme || !cycle) {
+      throw new Error('');
+    }
+
+    message.levelThemeId = payload.levelThemeId.toString();
+    message.cycleActivityId = cycleActivity.id.toString();
+    message.levelCodeId = levelCode.id.toString();
+    message.levelCodeName = levelCode.code;
+    message.levelThemeName = theme.name;
+    message.cycleActivityName = cycle.name;
+  }
+
+  await insertChatMessage(context.database)(message);
 
   return true;
 };
