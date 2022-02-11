@@ -1,36 +1,36 @@
-import { GQLUserInterest, GQLUserResolvers } from "../../resolvers-types"
-import { UserEntity, USER_TABLE } from "../../entities/user.entity";
-import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
-import { UserRoleEntity } from "../../entities/user-role.entity";
-import { DatabaseLoaderFactory } from "../types/database-loader.type";
-import { selectUserRole } from "../repositories/user-role.repository";
-import { getRoleById } from "../../domain/authorization/constants/roles.constants";
-import { RoleId } from "../../domain/authorization/enums/role-id.enum";
-import { countActivityTimers } from "../repositories/activity-timer.repository";
-import { CountObj } from "../types/count-obj.type";
-import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
-import { countCycleActivities } from "../repositories/cycle-activity.repository";
 import { CYCLE_TABLE } from "../../entities/cycle.entity";
-import { CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-activity.entity";
-import { LEVEL_THEME_TABLE } from "../../entities/level-theme.entity";
-import { LEVEL_TABLE, LevelEntity } from "../../entities/level.entity";
+import { AvatarEntity } from "../../entities/avatar.entity";
+import { ACTIVITY_TABLE } from "../../entities/activity.entity";
+import { UserRoleEntity } from "../../entities/user-role.entity";
 import { LEVEL_CODE_TABLE } from "../../entities/level-code.entity";
 import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
-import { TeacherClassEntity, TEACHER_CLASS_TABLE } from "../../entities/teacher-class.entity"
-import { LevelTypeId } from "../../domain/activity/enums/level-type.enum";
-import { AvatarEntity } from "../../entities/avatar.entity";
-import { getAvatarsByIds } from "../repositories/avatar.repository";
-import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
-import { totalProgressChecksByClassIdLoader } from "../../domain/activity/resolvers/user/user.total-progress-checks-completed-for-class.resolver";
-import { selectUserInterest } from "../repositories/user-interest.repository";
-import { getInterestById } from "../repositories/interest.repository";
+import { UserEntity, USER_TABLE } from "../../entities/user.entity";
+import { LEVEL_THEME_TABLE } from "../../entities/level-theme.entity";
+import { LEVEL_TABLE, LevelEntity } from "../../entities/level.entity";
+import { CYCLE_ACTIVITY_TABLE } from "../../entities/cycle-activity.entity";
 import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
-import { ACTIVITY_TABLE } from "../../entities/activity.entity";
-import { selectEnrollmentClass } from "../repositories/enrollment-class.repository";
-import { selectEnrollment } from "../repositories/enrollment.repository";
-// import { eventProcess } from "../../domain/user/services/event-process.service";
+import { TeacherClassEntity, TEACHER_CLASS_TABLE } from "../../entities/teacher-class.entity";
+
+import { CountObj } from "../types/count-obj.type";
 import { getClassesByIds } from "../repositories/class.repository";
+import { getAvatarsByIds } from "../repositories/avatar.repository";
 import { selectMaterial } from "../repositories/material.repository";
+import { DatabaseLoaderFactory } from "../types/database-loader.type";
+import { selectUserRole } from "../repositories/user-role.repository";
+import { getInterestById } from "../repositories/interest.repository";
+import { RoleId } from "../../domain/authorization/enums/role-id.enum";
+import { selectEnrollment } from "../repositories/enrollment.repository";
+import { LevelTypeId } from "../../domain/activity/enums/level-type.enum";
+import { GQLUserInterest, GQLUserResolvers } from "../../resolvers-types";
+import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
+import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
+import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
+import { selectUserInterest } from "../repositories/user-interest.repository";
+import { countActivityTimers } from "../repositories/activity-timer.repository";
+import { countCycleActivities } from "../repositories/cycle-activity.repository";
+import { getRoleById } from "../../domain/authorization/constants/roles.constants";
+import { selectEnrollmentClass } from "../repositories/enrollment-class.repository";
+import { totalProgressChecksByClassIdLoader } from "../../domain/activity/resolvers/user/user.total-progress-checks-completed-for-class.resolver";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
@@ -76,7 +76,6 @@ export const userInitialsResolver: GQLUserResolvers['initials'] = obj => {
     return `${firstChar}${lastChar}`;
 }
 
-
 export const userIsTeacherFieldResolver: GQLUserResolvers['isTeacher'] = async (obj, params, context) => {
     const userRoles = await context.getDatabaseLoader(userUserRoleDataloader, undefined).load(obj.id);
     return userRoles.some(userRole => userRole.roleId === RoleId.TEACHER);
@@ -86,12 +85,9 @@ type UserActivitiesCount = CountObj & { userId: number };
 
 export const userCountAtivitiesSorter = createDataloaderCountSort<UserActivitiesCount, string>('userId');
 
-
 export const userAvailableActivitiesByIdLoader: DatabaseLoaderFactory<string, number, number> = {
     id: 'userAvailableActivitiesById',
     batchFn: (db) => async ids => {
-        // This query currently has a bug that if a user is enrolled in two or more different classes for the same level, it'll
-        // end up multiplicating their available activities. This is not an usual case, so I decided to leave it like this for now.
         const entities = await countCycleActivities(db)
             .select<UserActivitiesCount[]>([`${ENROLLMENT_TABLE}.userId`])
             .innerJoin(CYCLE_TABLE, `${CYCLE_TABLE}.id`, `${CYCLE_ACTIVITY_TABLE}.cycleId`)
@@ -106,16 +102,13 @@ export const userAvailableActivitiesByIdLoader: DatabaseLoaderFactory<string, nu
     },
 }
 
-
 export const totalAvailableActivitiesFieldResolver: GQLUserResolvers['totalAvailableActivities'] = (obj, params, context) => {
     return context.getDatabaseLoader(userAvailableActivitiesByIdLoader, undefined).load(obj.id);
 }
 
-
 export const userCompletedActivitiesByIdLoader: DatabaseLoaderFactory<string, number, number, { classId: string } | undefined | null> = {
     id: 'userCompletedActivitiesById',
     batchFn: (db, params) => async ids => {
-
         if (params) {
             const entities = await countActivityTimers(db)
                 .select<UserActivitiesCount[]>(['userId'])
@@ -192,7 +185,6 @@ export const userAvatarFieldResolver: GQLUserResolvers['avatar'] = async (obj, p
 }
 
 export const totalProgressChecksByClassFieldResolver: GQLUserResolvers['totalProgressChecksCompletedForClass'] = async (obj, params, context) => {
-
     return context.getDatabaseLoader(totalProgressChecksByClassIdLoader, params.classId).load(obj.id);
 }
 
@@ -209,10 +201,7 @@ export const userInterestResolver: GQLUserResolvers['userInterest'] = async (obj
             })
         }
     }
-
-
     return response;
-
 }
 
 export const studentLevelResolver: GQLUserResolvers['studentLevel'] = async (obj, params, context) => {
@@ -263,23 +252,19 @@ export const materialsResolver: GQLUserResolvers["materials"] = async (obj, para
 
 export const userResolvers: GQLUserResolvers = {
     ...userEntityResolvers,
-    initials: userInitialsResolver,
-    userRoles: userUserRolesResolver,
     roles: userRolesResolver,
-    isTeacher: userIsTeacherFieldResolver,
-    teacherClasses: teacherClassesFieldResolver,
-    totalCompletedActivities: totalCompletedActivitiesFieldResolver,
-    totalAvailableActivities: totalAvailableActivitiesFieldResolver,
-    defaultLevelTypeId: userDefaultLevelTypeIdFieldResolver,
-    avatar: userAvatarFieldResolver,
-    totalProgressChecksCompletedForClass: totalProgressChecksByClassFieldResolver,
-    userInterest: userInterestResolver,
-    studentLevel: studentLevelResolver,
-    // meeting: meetingResolver,
-    // event: eventResolver,
-    hasEcampus: hasEcampusResolver,
     hasEyoung: hasEyoungResolver,
     materials: materialsResolver,
+    initials: userInitialsResolver,
+    hasEcampus: hasEcampusResolver,
+    avatar: userAvatarFieldResolver,
+    userRoles: userUserRolesResolver,
+    userInterest: userInterestResolver,
+    studentLevel: studentLevelResolver,
+    isTeacher: userIsTeacherFieldResolver,
+    teacherClasses: teacherClassesFieldResolver,
+    defaultLevelTypeId: userDefaultLevelTypeIdFieldResolver,
+    totalAvailableActivities: totalAvailableActivitiesFieldResolver,
+    totalCompletedActivities: totalCompletedActivitiesFieldResolver,
+    totalProgressChecksCompletedForClass: totalProgressChecksByClassFieldResolver,
 }
-
-
