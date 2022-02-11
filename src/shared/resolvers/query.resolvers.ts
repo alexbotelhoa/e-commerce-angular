@@ -21,10 +21,10 @@ import { chatStudentsQueryResolver } from "../../domain/chat/queries/chat-studen
 import { activityQueryResolver } from "../../domain/activity/queries/activity/activity.query";
 import { interestQueryResolver } from "../../domain/activity/queries/interest/interest.query";
 import { annotationQueryResolver } from "../../domain/annotation/queries/annotation.resolver";
-import { chatNewMessagesQueryResolver } from "../../domain/chat/query/chat-new-messages.query";
 import { myLevelQueryResolver } from "../../domain/activity/queries/my-levels/my-levels.query";
 import { userRoleQueryResolver } from "../../domain/activity/queries/user-role/user-role.query";
 import { annotationsQueryResolver } from "../../domain/annotation/queries/annotations.resolver";
+import { chatNewMessagesQueryResolver } from "../../domain/chat/queries/chat-new-messages.query";
 import { challengeQueryResolver } from "../../domain/activity/queries/challenge/challenge.query";
 import { getServiceNowUrlQueryResolver } from "../../domain/user/query/get-service-now.resolver";
 import { userRolesQueryResolver } from "../../domain/activity/queries/user-role/user-roles.query";
@@ -32,6 +32,7 @@ import { currentUserQueryResolver } from "../../domain/authentication/queries/cu
 import { themeTotalQueryResolver } from "../../domain/theme/resolvers/theme.total-parts.resolvers";
 import { activitiesQueryResolver } from "../../domain/activity/queries/activities/activities.query";
 import { challengesQueryResolver } from "../../domain/activity/queries/challenges/challenges.query";
+import { chatNotificationsQueryResolver } from "../../domain/chat/queries/chat-notifications.query";
 import { levelThemeQueryResolver } from "../../domain/activity/queries/level-theme/level-theme.query";
 import { levelCodesQueryResolver } from "../../domain/activity/queries/level-codes/level-codes.query";
 import { newslettersQueryResolver } from "../../domain/activity/queries/newsletters/newsletters.query";
@@ -56,7 +57,6 @@ import { teacherClassesActivatedQueryResolver } from "../../domain/teacher/queri
 import { viewerEnrollmentLevelCodesQueryResolver } from "../../domain/enrollment/queries/viewer-enrollment-level-codes/viewer-enrollment-level-codes.query";
 import { activitiesListProgressQueryResolver } from "../../domain/activity/queries/activities-list-on-progress-order/activities-on-list-on-progress-order.resolver";
 import { overallClassCompletedActivitiesQueryResolver } from "../../domain/teacher/queries/overall-class-completed-activities/overall-class-completed-activities.query";
-import { chatNotificationsQueryResolver } from "../../domain/chat/query/chat-notifications.query";
 
 export const queryResolvers: GQLResolvers['Query'] = {
     logs: logQueryResolver,
@@ -104,9 +104,11 @@ export const queryResolvers: GQLResolvers['Query'] = {
     getServiceNow: getServiceNowUrlQueryResolver,
     activeChallenge: activeChallengeQueryResolver,
     cycleActivities: cycleActivitiesQueryResolver,
+    chatNewMessages: chatNewMessagesQueryResolver,
     activityComments: activityCommentsQueryResolver,
     classLevelThemes: classLevelThemesQueryResolver,
     progressStudents: progressStudentsQueryResolver,
+    chatNotifications: chatNotificationsQueryResolver,
     newslettersActive: newslettersActiveQueryResolver,
     viewerTeacherClasses: viewerTeacherClassesQueryResolver,
     viewerTeacherLevelCodes: viewerTeacherLevelCodesQueryResolver,
@@ -114,19 +116,6 @@ export const queryResolvers: GQLResolvers['Query'] = {
     learningMoreOption: getLearningMoreLevelCodeCalculatorResolver,
     availableActivitiesForCycle: availableActivitiesForCycleResolver,
     activitiesListByProgressOrder: activitiesListProgressQueryResolver,
-<<<<<<< HEAD
-    Annotations: annotationsQueryResolver,
-    occLogin: callOccLoginQueryResolver,
-    backup: backupQueryResolver,
-    userRole: userRoleQueryResolver,
-    userRoles: userRolesQueryResolver,
-    chat: chatQueryResolver,
-    chatMessage: chatMessageQueryResolver,
-    chatStudentMessages: chatStudentMessagesQueryResolver,
-    chatNewMessages: chatNewMessagesQueryResolver,
-    chatNotifications: chatNotificationsQueryResolver,
-=======
     viewerEnrollmentLevelCodes: viewerEnrollmentLevelCodesQueryResolver,
     overallClassCompletedActivities: overallClassCompletedActivitiesQueryResolver,
->>>>>>> 9002a2e120a898b4a4a5539c99546744df68b456
 }

@@ -537,6 +537,7 @@ export type GQLQuery = {
   readonly backup: Maybe<ReadonlyArray<Maybe<GQLBackup>>>;
   readonly challenge: Maybe<GQLChallenge>;
   readonly challenges: ReadonlyArray<GQLChallenge>;
+  readonly chatMessage: ReadonlyArray<Maybe<GQLChatMessage>>;
   readonly chatNewMessages: ReadonlyArray<Maybe<GQLChat>>;
   readonly chatNotifications: ReadonlyArray<Maybe<GQLChat>>;
   readonly chatStudents: ReadonlyArray<GQLChat>;
@@ -638,13 +639,13 @@ export type GQLQuerychatMessageArgs = {
 };
 
 
-export type GQLQuerychatStudentsArgs = {
-  data: Maybe<GQLChatStudentsQueryInput>;
+export type GQLQuerychatNewMessagesArgs = {
+  userId: Scalars['String'];
 };
 
 
-export type GQLQuerychatNewMessagesArgs = {
-  userId: Scalars['String'];
+export type GQLQuerychatStudentsArgs = {
+  data: Maybe<GQLChatStudentsQueryInput>;
 };
 
 
@@ -1676,7 +1677,6 @@ export type GQLResolversTypes = {
   ViewerChangeAvatarMutationError: ResolverTypeWrapper<GQLViewerChangeAvatarMutationError>;
   ViewerChangeAvatarMutationResult: GQLResolversTypes['User'] | GQLResolversTypes['ViewerChangeAvatarMutationError'];
   InsertChatInput: GQLInsertChatInput;
-  MessageInput: GQLMessageInput;
   ChatStudentsQueryInput: GQLChatStudentsQueryInput;
   countQueryInput: GQLcountQueryInput;
   ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
@@ -1804,7 +1804,6 @@ export type GQLResolversParentTypes = {
   ViewerChangeAvatarMutationError: GQLViewerChangeAvatarMutationError;
   ViewerChangeAvatarMutationResult: GQLResolversParentTypes['User'] | GQLResolversParentTypes['ViewerChangeAvatarMutationError'];
   InsertChatInput: GQLInsertChatInput;
-  MessageInput: GQLMessageInput;
   ChatStudentsQueryInput: GQLChatStudentsQueryInput;
   countQueryInput: GQLcountQueryInput;
   ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
@@ -1960,8 +1959,17 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   chatMessage: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['ChatMessage']>>, ParentType, ContextType, RequireFields<GQLQuerychatMessageArgs, never>>;
   chatNewMessages: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['Chat']>>, ParentType, ContextType, RequireFields<GQLQuerychatNewMessagesArgs, 'userId'>>;
   chatNotifications: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['Chat']>>, ParentType, ContextType>;
+  chatStudents: Resolver<ReadonlyArray<GQLResolversTypes['Chat']>, ParentType, ContextType, RequireFields<GQLQuerychatStudentsArgs, never>>;
+  class: Resolver<Maybe<GQLResolversTypes['Class']>, ParentType, ContextType, RequireFields<GQLQueryclassArgs, 'id'>>;
   classCycles: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLQueryclassCyclesArgs, 'classId'>>;
+  classLevelThemes: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQueryclassLevelThemesArgs, 'classId'>>;
+  classStudents: Resolver<ReadonlyArray<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryclassStudentsArgs, 'data'>>;
+  classes: Resolver<ReadonlyArray<GQLResolversTypes['Class']>, ParentType, ContextType, RequireFields<GQLQueryclassesArgs, never>>;
+  count: Resolver<ReadonlyArray<GQLResolversTypes['Count']>, ParentType, ContextType, RequireFields<GQLQuerycountArgs, never>>;
   currentUser: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>;
+  cycle: Resolver<Maybe<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLQuerycycleArgs, 'id'>>;
+  cycleActivities: Resolver<ReadonlyArray<GQLResolversTypes['CycleActivity']>, ParentType, ContextType>;
+  cycleActivity: Resolver<Maybe<GQLResolversTypes['CycleActivity']>, ParentType, ContextType, RequireFields<GQLQuerycycleActivityArgs, 'id'>>;
   cycles: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType>;
   getServiceNow: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   getZoom: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType, RequireFields<GQLQuerygetZoomArgs, 'classId'>>;
