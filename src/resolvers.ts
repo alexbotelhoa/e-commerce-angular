@@ -4,6 +4,7 @@ import { queryResolvers } from "./shared/resolvers/query.resolvers";
 import { mutationResolvers } from "./shared/resolvers/mutation.resolvers";
 
 import { logResolver } from "./shared/resolvers/log.resolver";
+import { chatResolvers } from "./shared/resolvers/chat.resolvers";
 import { userResolvers } from "./shared/resolvers/user.resolvers";
 import { countResolver } from "./shared/resolvers/count.resolver";
 import { carrerResolver } from "./shared/resolvers/carrer.resolver";
@@ -41,7 +42,6 @@ import { activityCommentResolvers } from "./shared/resolvers/activity-comment.re
 import { carrerPermissionResolver } from "./shared/resolvers/carrer-permission.resolvers";
 import { activitiesListResolver } from "./shared/resolvers/activities-on-list-on-progress-order.resolvers";
 
-import { chatResolvers } from "./shared/resolvers/chat.resolvers";
 import { RoleId } from "./domain/authorization/enums/role-id.enum";
 import { GradeTypeId } from "./domain/activity/enums/grade-type-id.enum";
 import { PermissionId } from "./domain/authorization/enums/permission-id.enum";
@@ -137,5 +137,5 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     OccResult: occLoginResolvers,
     Backup: backupResolvers,
     Chat: chatResolvers,
-    ChatMessage: chatMessageResolvers
+    ChatMessage: chatMessageResolvers,
 };

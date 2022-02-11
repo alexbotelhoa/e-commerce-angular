@@ -1,3 +1,4 @@
+import { getUserById } from "../repositories/user.repository";
 import { GQLChatMessageResolvers } from "../../resolvers-types";
 import { ChatMessageEntity } from "../../entities/chat-message.entity";
 
@@ -18,4 +19,5 @@ const chatMessageEntityResolvers: Pick<GQLChatMessageResolvers, keyof ChatMessag
 
 export const chatMessageResolvers: GQLChatMessageResolvers = {
   ...chatMessageEntityResolvers,
+  user: async (obj, params, context) => (await getUserById(context.readonlyDatabase)(obj.userId))!,
 }
