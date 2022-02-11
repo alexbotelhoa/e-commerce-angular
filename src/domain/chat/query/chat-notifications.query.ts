@@ -1,14 +1,11 @@
 import { GQLQueryResolvers } from "../../../resolvers-types";
 import { selectChat } from "../../../shared/repositories/chat.repository";
 
-export const chatNotificationsQueryResolver: GQLQueryResolvers['chat'] = async (obj, { userId }, context) => {
+export const chatNotificationsQueryResolver: GQLQueryResolvers['chat'] = async (obj, params, context) => {
   const query = selectChat(context.database);
 
-  if (userId) {
-    query.where("userId", "like", userId);
-    query.andWhere("amountMessage", ">", 0);
-    query.andWhere("isRead", "=", 0);
-  }
+  query.where("amountMessage", ">", 0);
+  query.andWhere("isRead", "=", 0);
 
   return await query;
 }
