@@ -3,7 +3,7 @@ import { getUserById } from "../repositories/user.repository";
 import { UserRoleEntity } from "../../entities/user-role.entity";
 import { getRoleById } from "../../domain/authorization/constants/roles.constants";
 
-export const userRoleEntityResolvers: Pick<GQLUserRoleResolvers, keyof UserRoleEntity> = {
+const userRoleEntityResolvers: Pick<GQLUserRoleResolvers, keyof UserRoleEntity> = {
     id: obj => obj.id.toString(),
     roleId: obj => obj.roleId,
     userId: obj => obj.userId.toString(),

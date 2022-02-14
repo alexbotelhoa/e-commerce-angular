@@ -2,7 +2,7 @@ import { GQLMaterialResolvers } from "../../resolvers-types";
 import { getClassById } from "../repositories/class.repository";
 import { MaterialEntity } from "../../entities/material.entity";
 
-export const studentMaterialFieldResolvers: Pick<GQLMaterialResolvers, keyof MaterialEntity> = {
+const materialEntityResolvers: Pick<GQLMaterialResolvers, keyof MaterialEntity> = {
     id: (obj) => obj.id,
     userId: (obj) => obj.userId,
     classId: (obj) => obj.classId,
@@ -20,8 +20,8 @@ export const studentMaterialFieldResolvers: Pick<GQLMaterialResolvers, keyof Mat
     updatedAt: (obj) => obj.updatedAt,
 }
 
-export const studentMaterialResolver: GQLMaterialResolvers = {
-    ...studentMaterialFieldResolvers,
+export const materialResolvers: GQLMaterialResolvers = {
+    ...materialEntityResolvers,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     materialClass:  async (obj, params, context) =>  (await getClassById(context.readonlyDatabase)(obj.classId))!,
 }

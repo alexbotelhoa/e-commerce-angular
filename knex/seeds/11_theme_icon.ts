@@ -1,6 +1,6 @@
 import * as Knex from "knex";
 import { insertThemeIcon, deleteAllThemeIconsData } from "../../src/shared/repositories/theme-icon.repository";
-import { ThemeIconEntity } from "../../src/entities/themes/theme-icon.entity";
+import { ThemeIconEntity } from "../../src/entities/theme-icon.entity";
 import SpeechIcon from "./attachments/speech-icon.base64";
 import { allThemesSeeds } from "./03_theme";
 

@@ -1,12 +1,12 @@
-import { GQLTeacherClassResolvers } from "../../resolvers-types";
-import { TeacherClassEntity } from "../../entities/teacher-class.entity";
-import { getClassesByIds } from "../repositories/class.repository";
-import { getUserById } from "../repositories/user.repository"
-import { DatabaseLoaderFactory } from "../types/database-loader.type";
 import { ClassEntity } from "../../entities/class.entity";
+import { getUserById } from "../repositories/user.repository";
+import { GQLTeacherClassResolvers } from "../../resolvers-types";
+import { getClassesByIds } from "../repositories/class.repository";
+import { DatabaseLoaderFactory } from "../types/database-loader.type";
+import { TeacherClassEntity } from "../../entities/teacher-class.entity";
 import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 
-export const teacherClassEntityResolvers: Pick<GQLTeacherClassResolvers, keyof TeacherClassEntity> = {
+const teacherClassEntityResolvers: Pick<GQLTeacherClassResolvers, keyof TeacherClassEntity> = {
     id: obj => obj.id.toString(10),
     classId: obj => obj.classId,
     teacherId: obj => obj.teacherId,

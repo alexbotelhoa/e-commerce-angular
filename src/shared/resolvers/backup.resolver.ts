@@ -1,7 +1,7 @@
 import { GQLBackupResolvers } from "../../resolvers-types";
 import { BackupEntity } from "../../entities/backup.entity";
 
-export const backupEntityResolvers: Pick<GQLBackupResolvers, keyof BackupEntity> = {
+const backupEntityResolvers: Pick<GQLBackupResolvers, keyof BackupEntity> = {
     id: (obj) => obj.id,
     name: (obj) => obj.name,
     type: (obj) => obj.type,
