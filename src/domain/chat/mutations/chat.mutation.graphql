@@ -3,8 +3,8 @@ type Mutation {
 }
 
 input InsertChatInput {
-  userId: Int
-  classId: Int
+  userId: String
+  classId: String
   levelThemeId: Int
   cycleActivityId: Int
   isEtutor: Boolean

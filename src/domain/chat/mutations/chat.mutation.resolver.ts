@@ -10,17 +10,22 @@ import { getCycleById } from "../../../shared/repositories/cycle.repository";
 import { getLevelCodeById } from "../../../shared/repositories/level-code.repository";
 import { getLevelThemeById } from "../../../shared/repositories/level-theme.repository";
 import { getThemeById } from "../../../shared/repositories/theme.repository";
+import { selectUserRole } from "../../../shared/repositories/user-role.repository";
 
 export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { payload }, context) => {
   const user = context.currentUser;
-  const idRole = payload.isEtutor ? RoleId['E_TUTOR'] : RoleId['STUDENT'];
+  const idRoleSendMessage = payload.isEtutor ? RoleId['E_TUTOR'] : RoleId['STUDENT'];
   const dateNow = new Date();
 
+  const userLogeedRoles = await selectUserRole(context.readonlyDatabase).where({ userId: user?.id });
+
+  const isInvalidEtutor = idRoleSendMessage === RoleId['E_TUTOR'] && !userLogeedRoles.map(r => r.roleId).includes(RoleId['E_TUTOR']);
+  const isInvalidStutent = idRoleSendMessage === RoleId['STUDENT'] && !userLogeedRoles.map(r => r.roleId).find(id => id === RoleId['STUDENT'] || id === RoleId['HORIZON_ONE']);
+
   const isInvalid = [
-    !payload,
     !user?.id,
-    idRole === RoleId['E_TUTOR'] && !user?.roleIds.includes(RoleId['E_TUTOR']),
-    idRole === RoleId['STUDENT'] && (!user?.roleIds.includes(RoleId['STUDENT']) || !user?.roleIds.includes(RoleId['HORIZON_ONE']))
+    isInvalidEtutor,
+    isInvalidStutent
   ];
 
   if(isInvalid.some(isInvalid => isInvalid)) {
@@ -29,7 +34,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
 
   const existingChat = await getChatById(context.readonlyDatabase)(payload.userId as number);
 
-  if (!existingChat && idRole === RoleId['E_TUTOR']) {
+  if (!existingChat && idRoleSendMessage === RoleId['E_TUTOR']) {
     throw new Error('you are not allowed to start a chat');
   }
 
@@ -45,12 +50,12 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
   else {
     const valuesOfUpdate: Partial<ChatEntity> = {};
 
-    if (idRole === RoleId['E_TUTOR']) {
+    if (idRoleSendMessage === RoleId['E_TUTOR']) {
       valuesOfUpdate.amountMessage = 0;
       valuesOfUpdate.isRead = false;
     }
 
-    if (idRole === RoleId['STUDENT']) {
+    if (idRoleSendMessage === RoleId['STUDENT']) {
       valuesOfUpdate.amountMessage = existingChat.amountMessage +1;
       valuesOfUpdate.isRead = true;
 
