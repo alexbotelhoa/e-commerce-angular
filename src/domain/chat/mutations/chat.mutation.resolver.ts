@@ -20,7 +20,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
     !payload,
     !user?.id,
     idRole === RoleId['E_TUTOR'] && !user?.roleIds.includes(RoleId['E_TUTOR']),
-    idRole === RoleId['STUDENT'] && !user?.roleIds.includes(RoleId['STUDENT'])
+    idRole === RoleId['STUDENT'] && (!user?.roleIds.includes(RoleId['STUDENT']) || !user?.roleIds.includes(RoleId['HORIZON_ONE']))
   ];
 
   if(isInvalid.some(isInvalid => isInvalid)) {
@@ -90,7 +90,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
     message.levelCodeName = levelCode.code;
     message.levelThemeName = theme.name;
     message.cycleActivityName = cycle.name;
-    // message.activityName = activity.name;
+    message.activityName = activity.name;
   }
 
   await insertChatMessage(context.database)(message);

@@ -8,6 +8,7 @@ type ChatMessage {
   levelThemeName: String
   cycleActivityId: String
   cycleActivityName: String
+  activityName: String
   message: String!
   updatedAt: DateTime!
   createdAt: DateTime!

@@ -8,6 +8,7 @@ export interface ChatMessageEntity {
   levelThemeName: string;
   cycleActivityId: string;
   cycleActivityName: string;
+  activityName: string;
   message: string;
   updatedAt: string;
   createdAt: string;

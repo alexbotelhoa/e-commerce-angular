@@ -37,8 +37,6 @@ import { StudentGrade } from './domain/activity/types/student-grade.type';
 import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
@@ -1247,6 +1245,7 @@ export type GQLChatMessage = {
   readonly levelThemeName: Maybe<Scalars['String']>;
   readonly cycleActivityId: Maybe<Scalars['String']>;
   readonly cycleActivityName: Maybe<Scalars['String']>;
+  readonly activityName: Maybe<Scalars['String']>;
   readonly message: Scalars['String'];
   readonly updatedAt: Scalars['DateTime'];
   readonly createdAt: Scalars['DateTime'];
@@ -2322,6 +2321,7 @@ export type GQLChatMessageResolvers<ContextType = GraphQLContext, ParentType ext
   levelThemeName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   cycleActivityId: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   cycleActivityName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  activityName: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
   message: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   updatedAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
