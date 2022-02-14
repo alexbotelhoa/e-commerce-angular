@@ -1,9 +1,10 @@
 type Chat {
-  userId: String!
+  userId: ID!
   firstMessage: String!
   dateMessage: String!
   amountMessage: Int
   isRead: Boolean
   updatedAt: DateTime!
   createdAt: DateTime!
+  user: User!
 }

@@ -43,6 +43,8 @@ generates:
         LevelCode: ./entities/level-code.entity#LevelCodeEntity
         Level: ./entities/level.entity#LevelEntity
         Theme: ./entities/theme.entity#ThemeEntity
+        Chat: ./entities/chat.entity#ChatEntity
+        ChatMessage: ./entities/chat-message.entity#ChatMessageEntity
         ThemeIcon: ./entities/themes/theme-icon.entity#ThemeIconEntity
         Challenge: ./entities/challenge.entity#ChallengeEntity
         UserRole: ./entities/user-role.entity#UserRoleEntity

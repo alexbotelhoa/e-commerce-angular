@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { ChatEntity } from "../../entities/chat.entity";
 import { GQLChatResolvers } from "../../resolvers-types";
+import { getUserById } from "../repositories/user.repository";
 
 const chatEntityResolvers: Pick<GQLChatResolvers, keyof ChatEntity> = {
-  userId: obj => obj.userId,
+  userId: obj => obj.userId.toString(),
   firstMessage: obj => obj.firstMessage,
   dateMessage: obj => obj.dateMessage,
   amountMessage: obj => obj.amountMessage,
@@ -14,4 +14,5 @@ const chatEntityResolvers: Pick<GQLChatResolvers, keyof ChatEntity> = {
 
 export const chatResolvers: GQLChatResolvers = {
   ...chatEntityResolvers,
+  user: async (obj, params, context) => (await getUserById(context.readonlyDatabase)(obj.userId))!,
 }

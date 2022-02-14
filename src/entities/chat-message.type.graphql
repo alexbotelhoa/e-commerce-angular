@@ -11,4 +11,5 @@ type ChatMessage {
   message: String!
   updatedAt: DateTime!
   createdAt: DateTime!
+  user: User!
 }
