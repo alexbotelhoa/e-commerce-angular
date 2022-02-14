@@ -1,6 +1,7 @@
 import { ChatMessageEntity } from "../../../entities/chat-message.entity";
 import { ChatEntity } from "../../../entities/chat.entity";
 import { GQLMutationResolvers, RoleId } from "../../../resolvers-types";
+import { getActivityById } from "../../../shared/repositories/activity.repository";
 import { insertChatMessage } from "../../../shared/repositories/chat-message.repository";
 import { insertChat, getChatById, updateChat } from "../../../shared/repositories/chat.repository";
 import { getClassById } from "../../../shared/repositories/class.repository";
@@ -13,6 +14,7 @@ import { getThemeById } from "../../../shared/repositories/theme.repository";
 export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { payload }, context) => {
   const user = context.currentUser;
   const idRole = payload.isEtutor ? RoleId['E_TUTOR'] : RoleId['STUDENT'];
+  const dateNow = new Date();
 
   const isInvalid = [
     !payload,
@@ -35,7 +37,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
     await insertChat(context.database)({
       userId: user?.id,
       firstMessage: payload.message?.replace(/<[^>]*>/g, '').slice(0, 100),
-      dateMessage: new Date().toUTCString(),
+      dateMessage: dateNow.toISOString(),
       amountMessage: 1,
       isRead: false //controla se o aluno viu a notificação
     } as ChatEntity);
@@ -45,6 +47,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
 
     if (idRole === RoleId['E_TUTOR']) {
       valuesOfUpdate.amountMessage = 0;
+      valuesOfUpdate.isRead = false;
     }
 
     if (idRole === RoleId['STUDENT']) {
@@ -53,7 +56,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
 
       if (valuesOfUpdate.amountMessage === 1) {
         valuesOfUpdate.firstMessage = payload.message?.replace(/<[^>]*>/g, '').slice(0, 100);
-        valuesOfUpdate.dateMessage = new Date().toUTCString();
+        valuesOfUpdate.dateMessage = dateNow.toISOString();
       }
     }
 
@@ -75,8 +78,9 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
     const levelTheme = await getLevelThemeById(context.readonlyDatabase)(payload.levelThemeId);
     const theme = await getThemeById(context.readonlyDatabase)(levelTheme?.themeId || 0);
     const cycle = await getCycleById(context.readonlyDatabase)(cycleActivity?.cycleId || 0);
+    const activity = await getActivityById(context.readonlyDatabase)(cycleActivity?.activityId || 0);
 
-    if (!classe || !cycleActivity || !levelCode || !theme || !cycle) {
+    if (!classe || !cycleActivity || !levelCode || !theme || !cycle || !activity) {
       throw new Error('');
     }
 
@@ -86,6 +90,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
     message.levelCodeName = levelCode.code;
     message.levelThemeName = theme.name;
     message.cycleActivityName = cycle.name;
+    // message.activityName = activity.name;
   }
 
   await insertChatMessage(context.database)(message);
