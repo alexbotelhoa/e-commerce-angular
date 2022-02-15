@@ -67,6 +67,7 @@ export type GQLMutation = {
   readonly addActivitiesToCycle: GQLCycle;
   readonly addThemesToLevel: GQLLevel;
   readonly audit: Maybe<Scalars['Boolean']>;
+  readonly chatMakeRead: Maybe<Scalars['Boolean']>;
   readonly completeActivity: GQLCompleteActivityResult;
   readonly createChallenge: GQLChallenge;
   readonly createCommentOnActivity: GQLCreateCommentOnActivityResult;
@@ -971,7 +972,7 @@ export type GQLViewerChangeAvatarMutationResult = GQLUser | GQLViewerChangeAvata
 
 export type GQLInsertChatInput = {
   readonly userId: Maybe<Scalars['String']>;
-  readonly classId: Maybe<Scalars['Int']>;
+  readonly classId: Maybe<Scalars['String']>;
   readonly levelThemeId: Maybe<Scalars['Int']>;
   readonly cycleActivityId: Maybe<Scalars['Int']>;
   readonly isEtutor: Maybe<Scalars['Boolean']>;
@@ -1876,6 +1877,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   addActivitiesToCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationaddActivitiesToCycleArgs, 'data'>>;
   addThemesToLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationaddThemesToLevelArgs, 'data'>>;
   audit: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationauditArgs, 'data'>>;
+  chatMakeRead: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType>;
   completeActivity: Resolver<GQLResolversTypes['CompleteActivityResult'], ParentType, ContextType, RequireFields<GQLMutationcompleteActivityArgs, 'data'>>;
   createChallenge: Resolver<GQLResolversTypes['Challenge'], ParentType, ContextType, RequireFields<GQLMutationcreateChallengeArgs, 'data'>>;
   createCommentOnActivity: Resolver<GQLResolversTypes['CreateCommentOnActivityResult'], ParentType, ContextType, RequireFields<GQLMutationcreateCommentOnActivityArgs, 'data'>>;
