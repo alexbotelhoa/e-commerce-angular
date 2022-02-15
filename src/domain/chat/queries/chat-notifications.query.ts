@@ -5,7 +5,6 @@ export const chatNotificationsQueryResolver: GQLQueryResolvers['chatNotification
   const query = selectChat(context.database);
 
   query.where("amountMessage", ">", 0);
-  query.andWhere("isRead", "=", 0);
 
   return await query;
 }
