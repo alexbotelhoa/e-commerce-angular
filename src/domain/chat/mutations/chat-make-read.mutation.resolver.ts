@@ -1,7 +1,7 @@
 import { GQLMutationResolvers } from "../../../resolvers-types";
 import { updateChat } from "../../../shared/repositories/chat.repository";
 
-export const chatMakeRead: GQLMutationResolvers["chatMakeRead"] = async (_, __, context) => {
+export const chatMakeReadResolver: GQLMutationResolvers["chatMakeRead"] = async (_, __, context) => {
   const currentUser = context.currentUser;
   if (!currentUser) {
     throw new Error('User not found');

@@ -44,6 +44,7 @@ import { upsertAnnotationResolver } from "../../domain/annotation/mutations/upse
 import { auditResolver } from "../../domain/log/mutation/call-audit.mutation.resolver";
 import { presenceResolver } from "../../domain/presence/presence.mutation.resolver";
 import { messageResolver } from "../../domain/chat/mutations/chat.mutation.resolver";
+import { chatMakeReadResolver } from "../../domain/chat/mutations/chat-make-read.mutation.resolver";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,
@@ -116,5 +117,6 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     upsertAnnotation: upsertAnnotationResolver,
     audit: auditResolver,
     presence: presenceResolver,
-    insertChat: messageResolver
+    insertChat: messageResolver,
+    chatMakeRead: chatMakeReadResolver
 }
