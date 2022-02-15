@@ -1,6 +1,11 @@
 import { ChatEntity } from "../../entities/chat.entity";
 import { GQLChatResolvers } from "../../resolvers-types";
+import { CLASS_TABLE } from "../../entities/class.entity";
 import { getUserById } from "../repositories/user.repository";
+import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
+import { LEVEL_CODE_TABLE } from "../../entities/level-code.entity";
+import { selectLevelCode } from "../repositories/level-code.repository";
+import { ENROLLMENT_CLASS_TABLE } from "../../entities/enrollment-class.entity";
 
 const chatEntityResolvers: Pick<GQLChatResolvers, keyof ChatEntity> = {
   userId: obj => obj.userId.toString(),
@@ -12,7 +17,19 @@ const chatEntityResolvers: Pick<GQLChatResolvers, keyof ChatEntity> = {
   updatedAt: (obj) => obj.updatedAt && new Date(obj.updatedAt).toISOString(),
 }
 
+const levelCodeResolver: GQLChatResolvers['levelCode'] = async (obj, params, context) => {
+  const query = selectLevelCode(context.readonlyDatabase);
+  query.innerJoin(CLASS_TABLE, `${CLASS_TABLE}.levelCodeId`, `${LEVEL_CODE_TABLE}.id`)
+  query.innerJoin(ENROLLMENT_CLASS_TABLE, `${ENROLLMENT_CLASS_TABLE}.classId`, `${CLASS_TABLE}.id`)
+  query.innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.id`, `${ENROLLMENT_CLASS_TABLE}.enrollmentId`)
+  query.where(`${ENROLLMENT_TABLE}.userId`, "like", obj.userId)
+  query.orderBy(`${CLASS_TABLE}.startDate`, "desc")
+  query.limit(1)
+  return await query as any;
+}
+
 export const chatResolvers: GQLChatResolvers = {
   ...chatEntityResolvers,
   user: async (obj, params, context) => (await getUserById(context.readonlyDatabase)(obj.userId))!,
+  levelCode: levelCodeResolver,
 }

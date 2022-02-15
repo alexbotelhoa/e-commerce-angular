@@ -1,0 +1,3 @@
+type Query {
+  chatHeader(userId: String!): [Chat!]!
+}

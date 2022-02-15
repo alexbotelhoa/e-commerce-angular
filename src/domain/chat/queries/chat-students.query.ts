@@ -1,7 +1,7 @@
 import { GQLQueryResolvers } from "../../../resolvers-types";
 import { selectChat } from "../../../shared/repositories/chat.repository";
 
-export const chatStudentsQueryResolver: GQLQueryResolvers['chatStudents'] = async (obj, { data }, context) => {
+export const chatStudentsQueryResolver: GQLQueryResolvers['chatStudents'] = async (obj, params, context) => {
   const query1 = selectChat(context.readonlyDatabase);
   query1.where("isRead", false)
   query1.orderBy("dateMessage", "asc")

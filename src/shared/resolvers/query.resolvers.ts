@@ -7,6 +7,7 @@ import { levelQueryResolver } from "../../domain/activity/queries/level/level.qu
 import { themeQueryResolver } from "../../domain/activity/queries/theme/theme.query";
 import { cycleQueryResolver } from "../../domain/activity/queries/cycle/cycle.query";
 import { getCarrersResolver } from "../../domain/carrer/carrer-permissions.resolver";
+import { chatHeaderQueryResolver } from "../../domain/chat/queries/chat-header.query";
 import { levelsQueryResolver } from "../../domain/activity/queries/levels/levels.query";
 import { themesQueryResolver } from "../../domain/activity/queries/themes/themes.query";
 import { cyclesQueryResolver } from "../../domain/activity/queries/cycles/cycles.query";
@@ -82,6 +83,7 @@ export const queryResolvers: GQLResolvers['Query'] = {
     userRoles: userRolesQueryResolver,
     challenge: challengeQueryResolver,
     challenges: challengesQueryResolver,
+    chatHeader: chatHeaderQueryResolver,
     activities: activitiesQueryResolver,
     Annotation: annotationQueryResolver,
     newsletter: newsletterQueryResolver,

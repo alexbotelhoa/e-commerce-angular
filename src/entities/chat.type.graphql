@@ -7,4 +7,5 @@ type Chat {
   updatedAt: DateTime!
   createdAt: DateTime!
   user: User!
+  levelCode: [LevelCode]!
 }
