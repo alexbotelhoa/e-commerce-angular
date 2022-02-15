@@ -537,6 +537,7 @@ export type GQLQuery = {
   readonly backup: Maybe<ReadonlyArray<Maybe<GQLBackup>>>;
   readonly challenge: Maybe<GQLChallenge>;
   readonly challenges: ReadonlyArray<GQLChallenge>;
+  readonly chatHeader: ReadonlyArray<GQLChat>;
   readonly chatMessage: ReadonlyArray<Maybe<GQLChatMessage>>;
   readonly chatNewMessages: ReadonlyArray<Maybe<GQLChat>>;
   readonly chatNotifications: ReadonlyArray<Maybe<GQLChat>>;
@@ -631,6 +632,11 @@ export type GQLQuerybackupArgs = {
 
 export type GQLQuerychallengeArgs = {
   id: Scalars['ID'];
+};
+
+
+export type GQLQuerychatHeaderArgs = {
+  userId: Scalars['String'];
 };
 
 
@@ -1263,6 +1269,7 @@ export type GQLChat = {
   readonly updatedAt: Scalars['DateTime'];
   readonly createdAt: Scalars['DateTime'];
   readonly user: GQLUser;
+  readonly levelCode: ReadonlyArray<Maybe<GQLLevelCode>>;
 };
 
 export type GQLActivityComment = GQLComment & {
@@ -1952,6 +1959,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   backup: Resolver<Maybe<ReadonlyArray<Maybe<GQLResolversTypes['Backup']>>>, ParentType, ContextType, RequireFields<GQLQuerybackupArgs, 'id' | 'name' | 'withAutomatic'>>;
   challenge: Resolver<Maybe<GQLResolversTypes['Challenge']>, ParentType, ContextType, RequireFields<GQLQuerychallengeArgs, 'id'>>;
   challenges: Resolver<ReadonlyArray<GQLResolversTypes['Challenge']>, ParentType, ContextType>;
+  chatHeader: Resolver<ReadonlyArray<GQLResolversTypes['Chat']>, ParentType, ContextType, RequireFields<GQLQuerychatHeaderArgs, 'userId'>>;
   chatMessage: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['ChatMessage']>>, ParentType, ContextType, RequireFields<GQLQuerychatMessageArgs, never>>;
   chatNewMessages: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['Chat']>>, ParentType, ContextType, RequireFields<GQLQuerychatNewMessagesArgs, 'userId'>>;
   chatNotifications: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['Chat']>>, ParentType, ContextType>;
@@ -2338,6 +2346,7 @@ export type GQLChatResolvers<ContextType = GraphQLContext, ParentType extends GQ
   updatedAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   user: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
+  levelCode: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['LevelCode']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

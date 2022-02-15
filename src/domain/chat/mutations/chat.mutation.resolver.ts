@@ -35,7 +35,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
     await insertChat(context.database)({
       userId: user?.id,
       firstMessage: payload.message?.replace(/<[^>]*>/g, '').slice(0, 100),
-      dateMessage: new Date().toUTCString(),
+      dateMessage: new Date().toISOString(),
       amountMessage: 1,
       isRead: false //controla se o aluno viu a notificação
     } as ChatEntity);
@@ -53,7 +53,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
 
       if (valuesOfUpdate.amountMessage === 1) {
         valuesOfUpdate.firstMessage = payload.message?.replace(/<[^>]*>/g, '').slice(0, 100);
-        valuesOfUpdate.dateMessage = new Date().toUTCString();
+        valuesOfUpdate.dateMessage = new Date().toISOString();
       }
     }
 
