@@ -970,7 +970,7 @@ export type GQLViewerChangeAvatarMutationError = GQLGenericError & {
 export type GQLViewerChangeAvatarMutationResult = GQLUser | GQLViewerChangeAvatarMutationError;
 
 export type GQLInsertChatInput = {
-  readonly userId: Maybe<Scalars['Int']>;
+  readonly userId: Maybe<Scalars['String']>;
   readonly classId: Maybe<Scalars['Int']>;
   readonly levelThemeId: Maybe<Scalars['Int']>;
   readonly cycleActivityId: Maybe<Scalars['Int']>;
