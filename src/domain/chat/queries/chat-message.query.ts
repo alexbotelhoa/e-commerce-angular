@@ -6,6 +6,7 @@ export const chatMessageQueryResolver: GQLQueryResolvers['chatMessage'] = async 
 
   if (userId) {
     query.where("userId", "like", userId);
+    query.andWhere("createdAt", '>=', context.database.raw('DATE_ADD(CURRENT_DATE(), INTERVAL -6 MONTH)'));
     query.orderBy("createdAt", "asc");
   }
 

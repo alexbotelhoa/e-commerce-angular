@@ -32,7 +32,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
     throw new Error('Invalid user');
   }
 
-  const existingChat = await getChatById(context.readonlyDatabase)(payload.userId as number);
+  const existingChat = await getChatById(context.readonlyDatabase)(payload.userId as string);
 
   if (!existingChat && idRoleSendMessage === RoleId['E_TUTOR']) {
     throw new Error('you are not allowed to start a chat');
