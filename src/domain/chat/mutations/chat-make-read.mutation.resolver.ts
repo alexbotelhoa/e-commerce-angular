@@ -8,7 +8,7 @@ export const chatMakeReadResolver: GQLMutationResolvers["chatMakeRead"] = async 
   }
 
   const affectRows = await updateChat(context.database)({
-    isRead: true
+    isRead: false
   })(builder => 
     builder.where({ userId: currentUser.id })
   );

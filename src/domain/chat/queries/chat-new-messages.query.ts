@@ -7,7 +7,7 @@ export const chatNewMessagesQueryResolver: GQLQueryResolvers['chatNewMessages'] 
   if (userId) {
     query.where("userId", "like", userId);
     query.andWhere("amountMessage", "=", 0);
-    query.andWhere("isRead", "=", false);
+    query.andWhere("isRead", "=", true);
     query.andWhere("updatedAt", '>=', context.database.raw('DATE_ADD(CURRENT_DATE(), INTERVAL -6 MONTH)'));
     query.orderBy("updatedAt", "desc");
   }

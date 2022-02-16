@@ -52,12 +52,12 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
 
     if (idRoleSendMessage === RoleId['E_TUTOR']) {
       valuesOfUpdate.amountMessage = 0;
-      valuesOfUpdate.isRead = false;
+      valuesOfUpdate.isRead = true;
     }
 
     if (idRoleSendMessage === RoleId['STUDENT']) {
       valuesOfUpdate.amountMessage = existingChat.amountMessage +1;
-      valuesOfUpdate.isRead = true;
+      valuesOfUpdate.isRead = false;
 
       if (valuesOfUpdate.amountMessage === 1) {
         valuesOfUpdate.firstMessage = payload.message?.replace(/<[^>]*>/g, '').slice(0, 100);
