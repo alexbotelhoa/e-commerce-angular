@@ -24,7 +24,7 @@ import { LevelEntity } from './entities/level.entity';
 import { ThemeEntity } from './entities/theme.entity';
 import { ChatEntity } from './entities/chat.entity';
 import { ChatMessageEntity } from './entities/chat-message.entity';
-import { ThemeIconEntity } from './entities/themes/theme-icon.entity';
+import { ThemeIconEntity } from './entities/theme-icon.entity';
 import { ChallengeEntity } from './entities/challenge.entity';
 import { UserRoleEntity } from './entities/user-role.entity';
 import { Role } from './domain/authorization/types/role.type';

@@ -45,7 +45,7 @@ generates:
         Theme: ./entities/theme.entity#ThemeEntity
         Chat: ./entities/chat.entity#ChatEntity
         ChatMessage: ./entities/chat-message.entity#ChatMessageEntity
-        ThemeIcon: ./entities/themes/theme-icon.entity#ThemeIconEntity
+        ThemeIcon: ./entities/theme-icon.entity#ThemeIconEntity
         Challenge: ./entities/challenge.entity#ChallengeEntity
         UserRole: ./entities/user-role.entity#UserRoleEntity
         Role: ./domain/authorization/types/role.type#Role
