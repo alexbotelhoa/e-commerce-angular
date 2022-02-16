@@ -6,7 +6,7 @@ import { DatabaseLoaderFactory } from "../types/database-loader.type";
 import { getLevelCodesByIds } from "../repositories/level-code.repository";
 import { classStudentGradesFieldResolver } from "../../domain/activity/resolvers/class/class-student-grades.type.resolver";
 
-export const classEntityResolvers: Pick<GQLClassResolvers, keyof ClassEntity> = {
+const classEntityResolvers: Pick<GQLClassResolvers, keyof ClassEntity> = {
     id: obj => obj.id,
     levelCodeId: obj => obj.levelCodeId.toString(10),
     name: obj => obj.name,
@@ -26,7 +26,6 @@ export const classEntityResolvers: Pick<GQLClassResolvers, keyof ClassEntity> = 
 
 const classLevelCodeSorter = createDataloaderSingleSort<LevelCodeEntity, number, LevelCodeEntity>('id');
 
-
 const classLevelCodeDataloader: DatabaseLoaderFactory<number, LevelCodeEntity> = {
     id: 'classLevelCodeDataloader',
     batchFn: db => async (ids) => {
@@ -44,7 +43,6 @@ export const classLevelCodeResolver: GQLClassResolvers['levelCode'] = async (obj
 
 export const classResolvers: GQLClassResolvers = {
     ...classEntityResolvers,
-
     levelCode: classLevelCodeResolver,
     studentGrades: classStudentGradesFieldResolver,
 }

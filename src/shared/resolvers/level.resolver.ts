@@ -1,24 +1,20 @@
-import { GQLLevelResolvers } from "../../resolvers-types"
-
-import { LevelThemeEntity, LEVEL_THEME_TABLE } from "../../entities/level-theme.entity"
-import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
-
-import { selectLevelTheme } from "../repositories/level-theme.repository"
-
-import { DatabaseLoaderFactory } from "../types/database-loader.type";
-
-import { LevelEntity } from "../../entities/level.entity";
-import { LevelCodeEntity, LEVEL_CODE_TABLE } from "../../entities/level-code.entity";
-import { selectLevelCode } from "../repositories/level-code.repository";
 import { CountObj } from "../types/count-obj.type";
-import { CYCLE_ACTIVITY_TABLE, CycleActivityEntity } from "../../entities/cycle-activity.entity";
-import { CYCLE_TABLE } from "../../entities/cycle.entity";
-import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
-import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
-import { getOneOrNull } from "../utils/get-one-or-null.util";
-import { ENROLLMENT_CLASS_TABLE, EnrollmentClassEntity } from "../../entities/enrollment-class.entity";
-import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
+import { GQLLevelResolvers } from "../../resolvers-types";
+import { LevelEntity } from "../../entities/level.entity";
 import { CLASS_TABLE } from "../../entities/class.entity";
+import { CYCLE_TABLE } from "../../entities/cycle.entity";
+import { getOneOrNull } from "../utils/get-one-or-null.util";
+import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
+import { DatabaseLoaderFactory } from "../types/database-loader.type";
+import { selectLevelCode } from "../repositories/level-code.repository";
+import { selectLevelTheme } from "../repositories/level-theme.repository";
+import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
+import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
+import { ENROLLMENT_CLASS_TABLE } from "../../entities/enrollment-class.entity";
+import { LevelCodeEntity, LEVEL_CODE_TABLE } from "../../entities/level-code.entity";
+import { ACTIVITY_TIMER_TABLE } from "../../entities/activities/activity-timer.entity";
+import { LevelThemeEntity, LEVEL_THEME_TABLE } from "../../entities/level-theme.entity";
+import { CYCLE_ACTIVITY_TABLE, CycleActivityEntity } from "../../entities/cycle-activity.entity";
 
 const levelEntityResolvers: Pick<GQLLevelResolvers, keyof LevelEntity> = {
     id: obj => obj.id.toString(),
@@ -124,8 +120,6 @@ const levelTotalActivitiesFieldResolver: GQLLevelResolvers['totalActivities'] = 
     return context.getDatabaseLoader(levelTotalCycleActivitiesByLevelIdLoader, undefined).load(obj.id);
 }
 
-
-
 const levelViewerTotalCompletedActivitiesFieldResolver: GQLLevelResolvers['viewerTotalCompletedActivities'] = async (obj, params, context) => {
     const user = context.currentUser;
     if (!user) {
@@ -175,5 +169,3 @@ export const levelResolvers: GQLLevelResolvers = {
     viewerTotalCompletedActivities: levelViewerTotalCompletedActivitiesFieldResolver,
     viewerNextUnfinishedActivity: levelViewerNextUnfinishedActivityFieldResolver,
 }
-
-

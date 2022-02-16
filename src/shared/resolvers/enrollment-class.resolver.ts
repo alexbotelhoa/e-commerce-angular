@@ -5,7 +5,7 @@ import { EnrollmentClassEntity } from "../../entities/enrollment-class.entity";
 import { getClassesByIds } from "../repositories/class.repository";
 import { ClassEntity } from "../../entities/class.entity";
 
-export const enrollmentClassEntityResolvers: Pick<GQLEnrollmentClassResolvers, keyof EnrollmentClassEntity> = {
+const enrollmentClassEntityResolvers: Pick<GQLEnrollmentClassResolvers, keyof EnrollmentClassEntity> = {
     id: obj => obj.id.toString(10),
     classId: obj => obj.classId,
     enrollmentId: obj => obj.enrollmentId.toString(10),

@@ -3,7 +3,7 @@
 import { PermissionEntity } from "../../entities/permission.entity";
 import { GQLCarrerPermissionResolvers } from "../../resolvers-types";
 
-export const CarrerPermissionEntityResolvers: Pick<GQLCarrerPermissionResolvers, keyof PermissionEntity> = {
+const CarrerPermissionEntityResolvers: Pick<GQLCarrerPermissionResolvers, keyof PermissionEntity> = {
     id: obj => obj.id,
     active: obj => obj.active,
     carrerId: obj => obj.carrerId,
@@ -12,7 +12,6 @@ export const CarrerPermissionEntityResolvers: Pick<GQLCarrerPermissionResolvers,
     carrer: obj => obj.carrer,
     name: obj => obj.name
 }
-
 
 export const carrerPermissionResolver: GQLCarrerPermissionResolvers = {
     ...CarrerPermissionEntityResolvers,

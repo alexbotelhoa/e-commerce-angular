@@ -1486,6 +1486,12 @@ export type GQLTeacherClass = {
   readonly teacher: GQLUser;
 };
 
+export type GQLThemeIcon = {
+  readonly __typename?: 'ThemeIcon';
+  readonly themeId: Scalars['ID'];
+  readonly content: Scalars['String'];
+};
+
 export type GQLTheme = {
   readonly __typename?: 'Theme';
   readonly id: Scalars['ID'];
@@ -1494,12 +1500,6 @@ export type GQLTheme = {
   readonly startColor: Scalars['String'];
   readonly endColor: Scalars['String'];
   readonly icon: GQLThemeIcon;
-};
-
-export type GQLThemeIcon = {
-  readonly __typename?: 'ThemeIcon';
-  readonly themeId: Scalars['ID'];
-  readonly content: Scalars['String'];
 };
 
 export type GQLUserInterest = {
@@ -1733,8 +1733,8 @@ export type GQLResolversTypes = {
   CarrerPermission: ResolverTypeWrapper<GQLCarrerPermission>;
   Regional: ResolverTypeWrapper<GQLRegional>;
   TeacherClass: ResolverTypeWrapper<TeacherClassEntity>;
-  Theme: ResolverTypeWrapper<ThemeEntity>;
   ThemeIcon: ResolverTypeWrapper<ThemeIconEntity>;
+  Theme: ResolverTypeWrapper<ThemeEntity>;
   UserInterest: ResolverTypeWrapper<GQLUserInterest>;
   UserRole: ResolverTypeWrapper<UserRoleEntity>;
   studentLevel: ResolverTypeWrapper<GQLstudentLevel>;
@@ -1860,8 +1860,8 @@ export type GQLResolversParentTypes = {
   CarrerPermission: GQLCarrerPermission;
   Regional: GQLRegional;
   TeacherClass: TeacherClassEntity;
-  Theme: ThemeEntity;
   ThemeIcon: ThemeIconEntity;
+  Theme: ThemeEntity;
   UserInterest: GQLUserInterest;
   UserRole: UserRoleEntity;
   studentLevel: GQLstudentLevel;
@@ -2542,6 +2542,12 @@ export type GQLTeacherClassResolvers<ContextType = GraphQLContext, ParentType ex
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type GQLThemeIconResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ThemeIcon'] = GQLResolversParentTypes['ThemeIcon']> = {
+  themeId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  content: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GQLThemeResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Theme'] = GQLResolversParentTypes['Theme']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
@@ -2549,12 +2555,6 @@ export type GQLThemeResolvers<ContextType = GraphQLContext, ParentType extends G
   startColor: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   endColor: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   icon: Resolver<GQLResolversTypes['ThemeIcon'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type GQLThemeIconResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['ThemeIcon'] = GQLResolversParentTypes['ThemeIcon']> = {
-  themeId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
-  content: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2660,8 +2660,8 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   CarrerPermission: GQLCarrerPermissionResolvers<ContextType>;
   Regional: GQLRegionalResolvers<ContextType>;
   TeacherClass: GQLTeacherClassResolvers<ContextType>;
-  Theme: GQLThemeResolvers<ContextType>;
   ThemeIcon: GQLThemeIconResolvers<ContextType>;
+  Theme: GQLThemeResolvers<ContextType>;
   UserInterest: GQLUserInterestResolvers<ContextType>;
   UserRole: GQLUserRoleResolvers<ContextType>;
   studentLevel: GQLstudentLevelResolvers<ContextType>;

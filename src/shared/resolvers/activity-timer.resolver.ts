@@ -3,7 +3,7 @@ import { ActivityTimerEntity } from "../../entities/activities/activity-timer.en
 import { getCycleActivityById } from "../repositories/cycle-activity.repository";
 import { getUserById } from "../repositories/user.repository";
 
-export const activityTimerEntityResolvers: Pick<GQLActivityTimerResolvers, keyof ActivityTimerEntity> = {
+const activityTimerEntityResolvers: Pick<GQLActivityTimerResolvers, keyof ActivityTimerEntity> = {
     id: obj => obj.id.toString(10),
     cycleActivityId: obj => obj.cycleActivityId.toString(10),
     userId: obj => obj.userId,
