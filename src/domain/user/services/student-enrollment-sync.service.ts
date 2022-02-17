@@ -26,7 +26,7 @@ export const processStudentEnrollmentSync = (
     const userData = event.data.user;
     if ("ClassId" in event.data) {
 
-        const classFound = await getClassById(db)(event.data.ClassId);
+        const classFound = await getClassById(db)(event.data.classId);
         if (!classFound) {
             return {
                 message: "When passed ClassId, class must already be synced.",
@@ -41,7 +41,7 @@ export const processStudentEnrollmentSync = (
             };
         }
         const existingUser = await getUserById(db)(userData.id);
-        await upsertUserAndMakeEnrollment(existingUser, db, userData, existingLevelCode, event.data.ClassId);
+        await upsertUserAndMakeEnrollment(existingUser, db, userData, existingLevelCode, event.data.classId);
         return {
             success: true,
         };
