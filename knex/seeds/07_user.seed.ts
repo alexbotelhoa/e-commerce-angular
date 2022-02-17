@@ -46,6 +46,16 @@ export const guardianUserSeed: UserEntityWithRoles = {
     roles: [RoleId.GUARDIAN],
 }
 
+export const eTutorUserSeed: UserEntityWithRoles = {
+    id: '2',
+    name: 'E_TUTOR',
+    onboarded: false,
+    avatarId: null,
+    macId: '',
+    macPass: '',
+    roles: [RoleId.TEACHER],
+}
+
 export const fullUserSeed: UserEntityWithRoles = {
     id: '999999',
     name: 'FULL',
@@ -59,6 +69,7 @@ export const fullUserSeed: UserEntityWithRoles = {
         RoleId.STUDENT,
         RoleId.GUARDIAN,
         RoleId.HORIZON_ONE,
+        RoleId.E_TUTOR,
     ],
 }
 
@@ -72,6 +83,7 @@ export const userSeeds: UserEntityWithRoles[] = [
     studentUserSeed,
     guardianUserSeed,
     fullUserSeed,
+    eTutorUserSeed
 ];
 
 for (let index = 6; index <= 30; index++) {

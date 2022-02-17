@@ -5,6 +5,7 @@ export const logQueryResolver: GQLQueryResolvers['logs'] = async (obj, { data },
     const query = selectLog(context.readonlyDatabase);
     const perPage =  data?.perPage && parseFloat(data.perPage) || 10;
     const offset = perPage ? ((data?.page ? Number(data?.page) : 1) - 1) * Number(perPage) : 0
+    const orderBy =  data?.orderBy === 'ASC' ? 'ASC' : 'DESC';
     if (data) {
         if (data.search) {
             query.where("key", "like", `%${data.search}%`)
@@ -16,5 +17,6 @@ export const logQueryResolver: GQLQueryResolvers['logs'] = async (obj, { data },
         query.limit(perPage)
         .offset(offset);
     }
+    query.orderBy('createdAt', orderBy);
     return await query;
 }
