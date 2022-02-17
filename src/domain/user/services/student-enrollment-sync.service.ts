@@ -24,7 +24,7 @@ export const processStudentEnrollmentSync = (
     log: FastifyLoggerInstance
 ) => async (event: StudentEnrollmentSyncEvent): Promise<WebhookResponse> => {
     const userData = event.data.user;
-    if ("ClassId" in event.data) {
+    if ("classId" in event.data) {
 
         const classFound = await getClassById(db)(event.data.classId);
         if (!classFound) {
