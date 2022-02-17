@@ -1,11 +1,11 @@
 import * as t from "io-ts";
 import {
-    classSyncEventData,
-    CarrerSyncDataType,
-    LevelCodeSyncDataType,
-    studantEnrollmentNewData,
-    StudentClassTransferClassByIdType,
-    studentMaterialEventData,
+    ClassSyncEventData,
+    CarrerSyncEventData,
+    LevelCodeSyncEventData,
+    CurseMaterialSyncEventData,
+    StudentEnrollmentSyncEventData,
+    StudentClassTransferSyncEventData,
 } from "../controllers/webhook-events.controller";
 import { StudentEnrollmentCancellationData } from "../services/student-enrollment-cancellation.service";
 import { StudentActivityTimerCancellationData } from "../services/student-activity-timer-cancellation.service";
@@ -24,7 +24,7 @@ export type WebhookResponse = WebhookSuccessResponse | WebhookErrorResponse;
 export interface StudentEnrollmentEvent {
     id: string;
     type: 'STUDENT_ENROLLMENT',
-    data: t.TypeOf<typeof studantEnrollmentNewData>;
+    data: t.TypeOf<typeof StudentEnrollmentSyncEventData>;
 }
 
 export interface StudentEnrollmentCancellationEvent {
@@ -42,37 +42,31 @@ export interface StudentActivityTimerCancellationEvent {
 export interface StudentClassTransferEvent {
     id: string;
     type: 'STUDENT_CLASS_TRANSFER',
-    data: t.TypeOf<typeof StudentClassTransferClassByIdType>;
+    data: t.TypeOf<typeof StudentClassTransferSyncEventData>;
 }
 
 export interface ClassSyncEvent {
     id: string;
     type: 'CLASS_SYNC',
-    data: t.TypeOf<typeof classSyncEventData>
+    data: t.TypeOf<typeof ClassSyncEventData>
 }
 
 export interface LevelCodeSyncEvent {
     id: string;
     type: 'LEVEL_CODE_SYNC',
-    data: t.TypeOf<typeof LevelCodeSyncDataType>
+    data: t.TypeOf<typeof LevelCodeSyncEventData>
 }
 
 export interface CarrerSyncEvent {
     id: string;
     type: 'CARRER_SYNC',
-    data: t.TypeOf<typeof CarrerSyncDataType>
+    data: t.TypeOf<typeof CarrerSyncEventData>
 }
 
-export interface StudentActivityTimerCancellationEvent {
-    id: string;
-    type: 'STUDENT_ACTIVITY_TIMER_CANCELLATION';
-    data: StudentActivityTimerCancellationData;
-}
-
-export interface StudentMaterialEvent {
+export interface CourseMaterialSyncEvent {
     id: string;
     type: 'COURSE_MATERIALS',
-    data: t.TypeOf<typeof studentMaterialEventData>
+    data: t.TypeOf<typeof CurseMaterialSyncEventData>
 }
 
 export type WebhookEvent =
@@ -80,6 +74,7 @@ export type WebhookEvent =
     | StudentEnrollmentCancellationEvent
     | StudentActivityTimerCancellationEvent
     | StudentClassTransferEvent
+    | ClassSyncEvent
     | LevelCodeSyncEvent
     | CarrerSyncEvent
-    | StudentMaterialEvent;
+    | CourseMaterialSyncEvent;

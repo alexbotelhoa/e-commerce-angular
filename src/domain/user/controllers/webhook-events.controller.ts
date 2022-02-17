@@ -18,14 +18,14 @@ import { getLogById, insertLog, updateLog } from "../../../shared/repositories/l
 import { processStudentEnrollmentCancellation } from "../services/student-enrollment-cancellation.service";
 import { processStudentActivityTimerCancellation } from "../services/student-activity-timer-cancellation.service";
 
-export const classSyncEventData = t.type({
+export const ClassSyncEventData = t.type({
     class: ClassWithLocationsFullDataType,
 });
 
 const ClassSyncEventType = t.type({
     id: t.string,
     type: t.literal('CLASS_SYNC'),
-    data: classSyncEventData
+    data: ClassSyncEventData
 });
 
 export const CarrerSyncEventData = t.array(
@@ -53,7 +53,7 @@ const StudentUpdateEventType = t.type({
     }),
 });
 
-export const studentRolesSyncEventData = t.type({
+export const StudentRolesSyncEventData = t.type({
     userId: t.string,
     rolesId: t.array(t.union([
         t.literal(1),
@@ -69,7 +69,7 @@ export const studentRolesSyncEventData = t.type({
 const StudentRolesSyncEventType = t.type({
     id: t.string,
     type: t.literal("USER_ROLES_UPDATE"),
-    data: studentRolesSyncEventData,
+    data: StudentRolesSyncEventData,
 });
 
 export const materialArray = t.type({
@@ -82,7 +82,7 @@ export const materialArray = t.type({
     languageBank: t.string,
 })
 
-export const curseMaterialSyncEventData = t.type({
+export const CurseMaterialSyncEventData = t.type({
     userId: t.string,
     classId: t.string,
     isInternal: t.boolean,
@@ -93,7 +93,7 @@ export const curseMaterialSyncEventData = t.type({
 const CourseMaterialSyncEventType = t.type({
     id: t.string,
     type: t.literal("COURSE_MATERIALS"),
-    data: curseMaterialSyncEventData,
+    data: CurseMaterialSyncEventData,
 });
 
 export const LevelCodeSyncEventData = t.type({
@@ -125,7 +125,7 @@ export const UserDataType = t.type({
     macPass: t.union([t.string, t.null]),
 });
 
-export const studentEnrollmentSyncEventData = t.type({
+export const StudentEnrollmentSyncEventData = t.type({
     user: UserDataType,
     ClassId: t.string,
 });
@@ -133,7 +133,7 @@ export const studentEnrollmentSyncEventData = t.type({
 const StudentEnrollmentSyncEventType = t.type({
     id: t.string,
     type: t.literal('STUDENT_ENROLLMENT'),
-    data: studentEnrollmentSyncEventData,
+    data: StudentEnrollmentSyncEventData,
 });
 
 export const StudentClassTransferSyncEventData = t.type({
