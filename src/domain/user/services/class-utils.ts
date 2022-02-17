@@ -1,7 +1,6 @@
 import * as t from "io-ts";
 import { format } from "date-fns";
 import { ClassEntity } from "../../../entities/class.entity";
-import { classSyncEventData } from "../controllers/webhook-events.controller";
 import { ClassData } from "../types/class-data.type";
 import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
 
