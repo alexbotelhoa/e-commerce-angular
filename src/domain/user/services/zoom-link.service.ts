@@ -1,12 +1,13 @@
+import axios from 'axios';
 import { FastifyLoggerInstance } from 'fastify';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { environmentFactory } from '../../../shared/services/environment.service';
-import axios from 'axios';
 
 interface ZoomResponseLink {
     zoom_personal_meeting_url: string
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const getZoomLink = async (teacherId: string, database: DatabaseService<any, any>, logger: FastifyLoggerInstance) => {
     const env = environmentFactory()
     const url = `${env.STUDENT_GRADE_INTEGRATION_URL.replace("lxp", "portalservices")}/users/${teacherId}/zoom`
@@ -19,7 +20,7 @@ export const getZoomLink = async (teacherId: string, database: DatabaseService<a
             responseType: 'json',
         });
         return integrationRequest.data.zoom_personal_meeting_url;
-    } catch (error) {
+    } catch (error: any) {
         logger.error({
             msg: 'zoom url request error',
             errorMessage: error.message || "",

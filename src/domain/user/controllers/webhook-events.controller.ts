@@ -7,16 +7,16 @@ import { processCarrerSync } from "../services/carrer-sync.service";
 import { API_KEYS } from "../../../shared/constants/api-keys.constant";
 import { processLevelCodeSync } from "../services/level-code-sync.service";
 import { DatabaseService } from "../../../shared/services/database.service";
-import { processStudentUpdateEvent } from "../services/student-update.service";
 import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
-import { processCourseMaterialEvent } from "../services/couse-material.service";
-import { processStudentEnrollment } from "../services/student-enrollment.service";
-import { processUserRolesUpdateEvent } from "../services/user-roles-update.service";
+import { processStudentUpdateSync } from "../services/student-update-sync.service";
+import { processCourseMaterialSync } from "../services/course-material-sync.service";
 import { WebhookErrorResponse, WebhookResponse } from "../types/webhook-events.types";
-import { processStudentClassTransfer } from "../services/student-class-transfer.service";
+import { processUserRolesUpdateSync } from "../services/user-roles-update.service-sync";
+import { processStudentEnrollmentSync } from "../services/student-enrollment-sync.service";
 import { getLogById, insertLog, updateLog } from "../../../shared/repositories/log.repository";
-import { processStudentEnrollmentCancellation } from "../services/student-enrollment-cancellation.service";
-import { processStudentActivityTimerCancellation } from "../services/student-activity-timer-cancellation.service";
+import { processStudentClassTransferSync } from "../services/student-class-transfer-sync.service";
+import { processStudentEnrollmentCancellationSync } from "../services/student-enrollment-cancellation-sync.service";
+import { processStudentActivityTimerCancellationSync } from "../services/student-activity-timer-cancellation-sync.service";
 
 export const ClassSyncEventData = t.type({
     class: ClassWithLocationsFullDataType,
@@ -25,7 +25,7 @@ export const ClassSyncEventData = t.type({
 const ClassSyncEventType = t.type({
     id: t.string,
     type: t.literal('CLASS_SYNC'),
-    data: ClassSyncEventData
+    data: ClassSyncEventData,
 });
 
 export const CarrerSyncEventData = t.array(
@@ -39,61 +39,6 @@ const CarrerSyncEventType = t.type({
     id: t.string,
     type: t.literal("CARRER_SYNC"),
     data: CarrerSyncEventData,
-});
-
-const StudentUpdateEventType = t.type({
-    id: t.string,
-    type: t.literal("STUDENT_UPDATE"),
-    data: t.type({
-        userId: t.string,
-        name: t.union([t.string, t.null, t.undefined]),
-        macId: t.union([t.string, t.null, t.undefined]),
-        macPass: t.union([t.string, t.null, t.undefined]),
-        accountId: t.union([t.string, t.null, t.undefined]),
-    }),
-});
-
-export const StudentRolesSyncEventData = t.type({
-    userId: t.string,
-    rolesId: t.array(t.union([
-        t.literal(1),
-        t.literal(2),
-        t.literal(3),
-        t.literal(4),
-        t.literal(5),
-        t.literal(6),
-        t.undefined
-    ])),
-});
-
-const StudentRolesSyncEventType = t.type({
-    id: t.string,
-    type: t.literal("USER_ROLES_UPDATE"),
-    data: StudentRolesSyncEventData,
-});
-
-export const materialArray = t.type({
-    id: t.string,
-    isbn: t.string,
-    author: t.string,
-    title: t.string,
-    publisher: t.string,
-    coverImg: t.string,
-    languageBank: t.string,
-})
-
-export const CurseMaterialSyncEventData = t.type({
-    userId: t.string,
-    classId: t.string,
-    isInternal: t.boolean,
-    acquiredLanguageBooster: t.boolean,
-    CourseMaterials: t.array(materialArray)
-})
-
-const CourseMaterialSyncEventType = t.type({
-    id: t.string,
-    type: t.literal("COURSE_MATERIALS"),
-    data: CurseMaterialSyncEventData,
 });
 
 export const LevelCodeSyncEventData = t.type({
@@ -118,7 +63,64 @@ const LevelCodeSyncEventType = t.type({
     data: LevelCodeSyncEventData,
 });
 
-export const UserDataType = t.type({
+export const StudentUpdateSyncEventData = t.type({
+    userId: t.string,
+    name: t.union([t.string, t.null, t.undefined]),
+    macId: t.union([t.string, t.null, t.undefined]),
+    macPass: t.union([t.string, t.null, t.undefined]),
+    accountId: t.union([t.string, t.null, t.undefined]),
+});
+
+const StudentUpdateSyncEventType = t.type({
+    id: t.string,
+    type: t.literal("STUDENT_UPDATE"),
+    data: StudentUpdateSyncEventData,
+});
+
+const materialArray = t.type({
+    id: t.string,
+    isbn: t.string,
+    author: t.string,
+    title: t.string,
+    publisher: t.string,
+    coverImg: t.string,
+    languageBank: t.string,
+})
+
+export const CourseMaterialSyncEventData = t.type({
+    userId: t.string,
+    classId: t.string,
+    isInternal: t.boolean,
+    acquiredLanguageBooster: t.boolean,
+    CourseMaterials: t.array(materialArray)
+})
+
+const CourseMaterialSyncEventType = t.type({
+    id: t.string,
+    type: t.literal("COURSE_MATERIALS"),
+    data: CourseMaterialSyncEventData,
+});
+
+export const UserRolesUpdateSyncEventData = t.type({
+    userId: t.string,
+    rolesId: t.array(t.union([
+        t.literal(1),
+        t.literal(2),
+        t.literal(3),
+        t.literal(4),
+        t.literal(5),
+        t.literal(6),
+        t.undefined
+    ])),
+});
+
+const UserRolesUpdateSyncEventType = t.type({
+    id: t.string,
+    type: t.literal("USER_ROLES_UPDATE"),
+    data: UserRolesUpdateSyncEventData,
+});
+
+const UserDataType = t.type({
     id: t.string,
     name: t.string,
     macId: t.union([t.string, t.null]),
@@ -127,7 +129,7 @@ export const UserDataType = t.type({
 
 export const StudentEnrollmentSyncEventData = t.type({
     user: UserDataType,
-    ClassId: t.string,
+    classId: t.string,
 });
 
 const StudentEnrollmentSyncEventType = t.type({
@@ -145,34 +147,38 @@ export const StudentClassTransferSyncEventData = t.type({
 const StudentClassTransferSyncEventType = t.type({
     id: t.string,
     type: t.literal('STUDENT_CLASS_TRANSFER'),
-    data: StudentClassTransferSyncEventData
+    data: StudentClassTransferSyncEventData,
+});
+
+export const StudentEnrollmentCancellationSyncEventData = t.type({
+    userId: t.string,
+    classId: t.string,
 });
 
 const StudentEnrollmentCancellationSyncEventType = t.type({
     id: t.string,
     type: t.literal('STUDENT_ENROLLMENT_CANCELLATION'),
-    data: t.type({
-        userId: t.string,
-        classId: t.string,
-    }),
+    data: StudentEnrollmentCancellationSyncEventData,
+});
+
+export const StudentActivityTimerCancellationSyncEventData = t.type({
+    userId: t.string,
+    classId: t.string,
 });
 
 const StudentActivityTimerCancellationSyncEventType = t.type({
     id: t.string,
     type: t.literal("STUDENT_ACTIVITY_TIMER_CANCELLATION"),
-    data: t.type({
-        userId: t.string,
-        classId: t.string,
-    }),
+    data: StudentActivityTimerCancellationSyncEventData,
 });
 
 const WebhookEventType = t.union([
     ClassSyncEventType,
     CarrerSyncEventType,
     LevelCodeSyncEventType,
-    StudentUpdateEventType,
-    StudentRolesSyncEventType,
+    StudentUpdateSyncEventType,
     CourseMaterialSyncEventType,
+    UserRolesUpdateSyncEventType,
     StudentEnrollmentSyncEventType,
     StudentClassTransferSyncEventType,
     StudentEnrollmentCancellationSyncEventType,
@@ -258,31 +264,31 @@ export const webhookEventsController = (
                 break;
             }
             case 'STUDENT_UPDATE': {
-                response = await processStudentUpdateEvent(db, request.log)(body);
-                break;
-            }
-            case 'USER_ROLES_UPDATE': {
-                response = await processUserRolesUpdateEvent(db, request.log)(body);
+                response = await processStudentUpdateSync(db, request.log)(body);
                 break;
             }
             case 'COURSE_MATERIALS': {
-                response = await processCourseMaterialEvent(db, readonlyDatabase, request.log)(body);
+                response = await processCourseMaterialSync(db, readonlyDatabase, request.log)(body);
+                break;
+            }
+            case 'USER_ROLES_UPDATE': {
+                response = await processUserRolesUpdateSync(db, request.log)(body);
                 break;
             }
             case 'STUDENT_ENROLLMENT': {
-                response = await processStudentEnrollment(db, request.log)(body);
+                response = await processStudentEnrollmentSync(db, request.log)(body);
                 break;
             }
             case 'STUDENT_CLASS_TRANSFER': {
-                response = await processStudentClassTransfer(db, request.log, redis)(body);
+                response = await processStudentClassTransferSync(db, request.log, redis)(body);
                 break;
             }
             case 'STUDENT_ENROLLMENT_CANCELLATION': {
-                response = await processStudentEnrollmentCancellation(db, request.log)(body);
+                response = await processStudentEnrollmentCancellationSync(db, request.log)(body);
                 break;
             }
             case 'STUDENT_ACTIVITY_TIMER_CANCELLATION': {
-                response = await processStudentActivityTimerCancellation(db, request.log)(body);
+                response = await processStudentActivityTimerCancellationSync(db, request.log)(body);
                 break;
             }
             default: {

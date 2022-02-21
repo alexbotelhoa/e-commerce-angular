@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { FastifyLoggerInstance } from 'fastify';
-import { environmentFactory } from '../../../shared/services/environment.service';
 import { NotificationResponse } from '../types/notification.type';
-
+import { environmentFactory } from '../../../shared/services/environment.service';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const getNotificationsByUser = async (userId: string, logger: FastifyLoggerInstance) => {
@@ -29,7 +28,7 @@ export const getNotificationsByUser = async (userId: string, logger: FastifyLogg
         });
 
         return integrationRequest.data;
-    } catch (error) {
+    } catch (error: any) {
         logger.error({
             msg: 'notification query request error',
             errorMessage: error.message || error.response.data.error || "",

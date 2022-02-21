@@ -1,5 +1,5 @@
 import { createRepository } from "../services/repository.service";
-import { ThemeIconEntity, THEME_ICON_TABLE } from "../../entities/themes/theme-icon.entity";
+import { ThemeIconEntity, THEME_ICON_TABLE } from "../../entities/theme-icon.entity";
 
 export const {
     getById: getThemeIconById,

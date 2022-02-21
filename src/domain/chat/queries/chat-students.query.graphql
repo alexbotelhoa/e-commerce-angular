@@ -1,0 +1,7 @@
+type Query {
+  chatStudents(data: ChatStudentsQueryInput): [Chat!]!
+}
+
+input ChatStudentsQueryInput {
+  userIds: [ID!]
+}

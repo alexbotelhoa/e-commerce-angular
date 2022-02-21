@@ -1,0 +1,11 @@
+type Chat {
+  userId: ID!
+  firstMessage: String!
+  dateMessage: String!
+  amountMessage: Int
+  isRead: Boolean
+  updatedAt: DateTime!
+  createdAt: DateTime!
+  user: User!
+  levelCode: [LevelCode]!
+}

@@ -1,8 +1,8 @@
-import { FastifyLoggerInstance } from 'fastify';
-import { environmentFactory } from '../../../shared/services/environment.service';
 import axios from 'axios';
+import { FastifyLoggerInstance } from 'fastify';
 import { insertLog } from '../../../shared/repositories/log.repository';
 import { DatabaseService } from '../../../shared/services/database.service';
+import { environmentFactory } from '../../../shared/services/environment.service';
 
 interface BodyPresence {
     turma: string;
@@ -23,7 +23,7 @@ export const callPresence = async (body: BodyPresence, logger: FastifyLoggerInst
             },
             responseType: 'json',
         });
-    } catch (error) {
+    } catch (error: any) {
         logger.error({
             msg: 'presence service request error',
             errorMessage: error.message || "",
@@ -36,22 +36,22 @@ export const callPresence = async (body: BodyPresence, logger: FastifyLoggerInst
 }
 
 export const callPresenceService = async (body: BodyPresence, databaseService: DatabaseService, logger: FastifyLoggerInstance): Promise<boolean> => {
-        try {
-            await callPresence(body, logger)
-            await insertLog(databaseService)({
-                status: "presence-success",
-                key: body.turma,
-                body: JSON.stringify({body, tentativas: 1}),
+    try {
+        await callPresence(body, logger)
+        await insertLog(databaseService)({
+            status: "presence-success",
+            key: body.turma,
+            body: JSON.stringify({body, tentativas: 1}),
 
-            })
-            return true;
-        } catch (error) {
-            await insertLog(databaseService)({
-                status: "presence-error",
-                key: body.turma,
-                body: JSON.stringify({body, tentativas: 1, error: error?.message || "no message provided"}),
+        })
+        return true;
+    } catch (error: any) {
+        await insertLog(databaseService)({
+            status: "presence-error",
+            key: body.turma,
+            body: JSON.stringify({body, tentativas: 1, error: error?.message || "no message provided"}),
 
-            })
-            return false;
-        }
+        })
+        return false;
+    }
 }

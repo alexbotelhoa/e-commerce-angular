@@ -1,0 +1,16 @@
+type ChatMessage {
+  id: ID!
+  userId: String!
+  isEtutor: Boolean
+  levelCodeId: String
+  levelCodeName: String
+  levelThemeId: String
+  levelThemeName: String
+  cycleActivityId: String
+  cycleActivityName: String
+  activityName: String
+  message: String!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+  user: User!
+}

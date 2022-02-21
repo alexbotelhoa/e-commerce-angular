@@ -230,5 +230,3 @@ export const readonlyDatabaseService: DatabaseService = databaseServiceFactory(r
 
   await executeJobs(databaseService, app.log);
 })();
-
-console.log("PROJETO RODANDO COM CÓDIGO MAIS RECENTE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");

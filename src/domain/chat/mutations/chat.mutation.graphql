@@ -1,0 +1,12 @@
+type Mutation {
+  insertChat(payload: InsertChatInput!): Boolean
+}
+
+input InsertChatInput {
+  userId: String
+  classId: String
+  levelThemeId: Int
+  cycleActivityId: Int
+  isEtutor: Boolean
+  message: String
+}

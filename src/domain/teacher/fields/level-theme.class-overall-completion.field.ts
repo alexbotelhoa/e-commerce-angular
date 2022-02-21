@@ -1,5 +1,5 @@
 import { GQLLevelThemeResolvers } from "../../../resolvers-types";
-import { levelThemeTotalResourcesByLevelThemeIdLoader } from "../../../shared/resolvers/level-theme.resolvers";
+import { levelThemeTotalResourcesByLevelThemeIdLoader } from "../../../shared/resolvers/level-theme.resolver";
 import { classTotalStudentsByClassIdLoader } from "../dataloaders/class-total-students-by-class-id.loader";
 import { levelThemeClassTotalCompletedActivitiesByLevelThemeIdLoader } from "../dataloaders/level-theme-class-total-completed-activities-by-level-theme-id.loader";
 

@@ -1,12 +1,11 @@
 import { GQLMeetingResolvers } from "../../resolvers-types";
 import { MeetingEntity } from "../../entities/meeting.entity";
+import { getUserById } from "../repositories/user.repository";
 import { getClassById } from "../repositories/class.repository";
 import { getLevelCodeById } from "../repositories/level-code.repository";
 import { selectTeacherClass } from "../repositories/teacher-class.repository";
-import { getUserById } from "../repositories/user.repository";
 
-
-export const meetingEntityResolvers: Pick<GQLMeetingResolvers, keyof MeetingEntity> = {
+const meetingEntityResolvers: Pick<GQLMeetingResolvers, keyof MeetingEntity> = {
     id: obj => obj.id.toString(),
     classId: obj => obj.classId,
     date: obj => obj.date,
@@ -19,7 +18,6 @@ export const meetingEntityResolvers: Pick<GQLMeetingResolvers, keyof MeetingEnti
     teacherNotes: obj => obj.teacherNotes,
     homework: obj => obj.homework
 }
-
 
 export const meetingResolvers: GQLMeetingResolvers = {
     ...meetingEntityResolvers,

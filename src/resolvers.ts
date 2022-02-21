@@ -1,45 +1,47 @@
 import { GQLResolvers, ActivityTypeId, LevelTypeId } from "./resolvers-types";
 
-import { queryResolvers } from "./shared/resolvers/query.resolvers";
-import { mutationResolvers } from "./shared/resolvers/mutation.resolvers";
+import { queryResolvers } from "./shared/resolvers/query.resolver";
+import { mutationResolvers } from "./shared/resolvers/mutation.resolver";
 
 import { logResolver } from "./shared/resolvers/log.resolver";
-import { userResolvers } from "./shared/resolvers/user.resolvers";
-import { countResolver } from "./shared/resolvers/count.resolver";
-import { carrerResolver } from "./shared/resolvers/carrer.resolver";
-import { cycleResolvers } from "./shared/resolvers/cycle.resolvers";
-import { themeResolvers } from "./shared/resolvers/theme.resolvers";
-import { levelResolvers } from "./shared/resolvers/level.resolvers";
-import { classResolvers } from "./shared/resolvers/class.resolvers";
-import { localResolvers } from "./shared/resolvers/local.resolvers";
-import { campusResolvers } from "./shared/resolvers/campus.resolvers";
-import { avatarResolvers } from "./shared/resolvers/avatar.resolvers";
-import { backupResolvers } from './shared/resolvers/backup.resolvers';
+import { chatResolvers } from "./shared/resolvers/chat.resolver";
+import { userResolvers } from "./shared/resolvers/user.resolver";
+import { countResolvers } from "./shared/resolvers/count.resolver";
+import { cycleResolvers } from "./shared/resolvers/cycle.resolver";
+import { themeResolvers } from "./shared/resolvers/theme.resolver";
+import { levelResolvers } from "./shared/resolvers/level.resolver";
+import { classResolvers } from "./shared/resolvers/class.resolver";
+import { localResolvers } from "./shared/resolvers/local.resolver";
+import { carrerResolvers } from "./shared/resolvers/carrer.resolver";
+import { campusResolvers } from "./shared/resolvers/campus.resolver";
+import { avatarResolvers } from "./shared/resolvers/avatar.resolver";
+import { backupResolvers } from './shared/resolvers/backup.resolver';
 import { meetingResolvers } from "./shared/resolvers/meeting.resolver";
-import { regionalResolvers } from "./shared/resolvers/regional.resolvers";
+import { regionalResolvers } from "./shared/resolvers/regional.resolver";
+import { interestResolvers } from "./shared/resolvers/interest.resolver";
+import { materialResolvers } from "./shared/resolvers/material.resolver";
+import { userRoleResolvers } from "./shared/resolvers/user-role.resolver";
 import { dateTimeScalarResolver } from "./shared/scalars/datetime.scalar";
-import { userRoleResolvers } from "./shared/resolvers/user-role.resolvers";
 import { challengeResolvers } from "./shared/resolvers/challenge.resolver";
-import { themeIconResolvers } from "./shared/resolvers/theme-icon.resolvers";
+import { themeIconResolvers } from "./shared/resolvers/theme-icon.resolver";
+import { levelCodeResolvers } from "./shared/resolvers/level-code.resolver";
 import { enrollmentResolvers } from "./shared/resolvers/enrollment.resolver";
-import { levelCodeResolvers } from "./shared/resolvers/level-code.resolvers";
 import { annotationResolvers } from "./shared/resolvers/annotation.resolver";
 import { newsletterResolvers } from "./shared/resolvers/newsletter.resolver";
-import { levelThemeResolvers } from "./shared/resolvers/level-theme.resolvers";
-import { interestEntityResolvers } from "./shared/resolvers/interest.resolver";
+import { levelThemeResolvers } from "./shared/resolvers/level-theme.resolver";
 import { simpleErrorResolvers } from "./shared/resolvers/simple-error.resolver";
-import { studentMaterialResolver } from "./shared/resolvers/material.resolvers";
+import { chatMessageResolvers } from "./shared/resolvers/chat-message.resolver";
 import { teacherClassResolvers } from "./shared/resolvers/teacher-class.resolver";
 import { occLoginResolvers } from "./shared/resolvers/occ-call-to-login.resolver";
 import { userInterestResolvers } from "./shared/resolvers/user-interest.resolver";
-import { activityTypeResolvers } from "./shared/resolvers/activity-type.resolvers";
-import { studentLevelResolvers } from "./shared/resolvers/student-level.resolvers";
-import { cycleActivityResolvers } from "./shared/resolvers/cycle-activity.resolvers";
-import { activityTimerResolvers } from "./shared/resolvers/activity-timer.resolvers";
+import { activityTypeResolvers } from "./shared/resolvers/activity-type.resolver";
+import { studentLevelResolvers } from "./shared/resolvers/student-level.resolver";
+import { cycleActivityResolvers } from "./shared/resolvers/cycle-activity.resolver";
+import { activityTimerResolvers } from "./shared/resolvers/activity-timer.resolver";
 import { enrollmentClassResolvers } from "./shared/resolvers/enrollment-class.resolver";
-import { activityCommentResolvers } from "./shared/resolvers/activity-comment.resolvers";
-import { carrerPermissionResolver } from "./shared/resolvers/carrer-permission.resolvers";
-import { activitiesListResolver } from "./shared/resolvers/activities-on-list-on-progress-order.resolvers";
+import { activityCommentResolvers } from "./shared/resolvers/activity-comment.resolver";
+import { carrerPermissionResolver } from "./shared/resolvers/carrer-permission.resolver";
+import { activitiesListResolvers } from "./shared/resolvers/activities-on-list-on-progress-order.resolver";
 
 import { RoleId } from "./domain/authorization/enums/role-id.enum";
 import { GradeTypeId } from "./domain/activity/enums/grade-type-id.enum";
@@ -120,18 +122,20 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Local: localResolvers,
     Regional: regionalResolvers,
     ProgressStudent: progressStudentsResolver,
-    Interest: interestEntityResolvers,
+    Interest: interestResolvers,
     UserInterest: userInterestResolvers,
     studentLevel: studentLevelResolvers,
     Meeting: meetingResolvers,
     Annotation: annotationResolvers,
     Newsletter: newsletterResolvers,
     Log: logResolver,
-    Count: countResolver,
-    Carrer: carrerResolver,
+    Count: countResolvers,
+    Carrer: carrerResolvers,
     CarrerPermission: carrerPermissionResolver,
-    ActivitiesListByProgressOrder: activitiesListResolver,
-    Material: studentMaterialResolver,
+    ActivitiesListByProgressOrder: activitiesListResolvers,
+    Material: materialResolvers,
     OccResult: occLoginResolvers,
     Backup: backupResolvers,
+    Chat: chatResolvers,
+    ChatMessage: chatMessageResolvers,
 };

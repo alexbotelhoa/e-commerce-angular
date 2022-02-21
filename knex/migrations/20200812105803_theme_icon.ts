@@ -1,5 +1,5 @@
 import * as Knex from "knex";
-import { THEME_ICON_TABLE } from "../../src/entities/themes/theme-icon.entity";
+import { THEME_ICON_TABLE } from "../../src/entities/theme-icon.entity";
 import { setUTF8Table } from "../utils/set-utf8-table.migration";
 
 
