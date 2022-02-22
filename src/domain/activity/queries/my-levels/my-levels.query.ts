@@ -10,16 +10,34 @@ export const myLevelQueryResolver: GQLQueryResolvers['myLevels'] = async (obj, p
     if (!user) {
         return [];
     }
-    return await context.database
-        .distinct(`${LEVEL_TABLE}.*`)
+    
+    const classFuture = await context.readonlyDatabase
+        .select(`${LEVEL_TABLE}.*`)
         .from(LEVEL_TABLE)
         .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.levelId`, `${LEVEL_TABLE}.id`)
         .innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.levelCodeId`, `${LEVEL_CODE_TABLE}.id`)
         .innerJoin(ENROLLMENT_CLASS_TABLE, `${ENROLLMENT_CLASS_TABLE}.enrollmentId`, `${ENROLLMENT_TABLE}.Id`)
         .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${ENROLLMENT_CLASS_TABLE}.classId`)
-
         .andWhere(`${ENROLLMENT_TABLE}.userId`, user.id)
         .andWhere(`${LEVEL_TABLE}.active`, true)
         .andWhere(`${LEVEL_CODE_TABLE}.active`, true)
-        .andWhere(`${CLASS_TABLE}.hasActivated`, true);
+        .andWhere(`${CLASS_TABLE}.hasActivated`, true)
+        .andWhereRaw(`${CLASS_TABLE}.endDate >= CURDATE()`)
+        .orderBy(`${CLASS_TABLE}.endDate`, 'asc');
+
+    const classPassed = await context.readonlyDatabase
+        .select(`${LEVEL_TABLE}.*`)
+        .from(LEVEL_TABLE)
+        .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.levelId`, `${LEVEL_TABLE}.id`)
+        .innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.levelCodeId`, `${LEVEL_CODE_TABLE}.id`)
+        .innerJoin(ENROLLMENT_CLASS_TABLE, `${ENROLLMENT_CLASS_TABLE}.enrollmentId`, `${ENROLLMENT_TABLE}.Id`)
+        .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${ENROLLMENT_CLASS_TABLE}.classId`)
+        .andWhere(`${ENROLLMENT_TABLE}.userId`, user.id)
+        .andWhere(`${LEVEL_TABLE}.active`, true)
+        .andWhere(`${LEVEL_CODE_TABLE}.active`, true)
+        .andWhere(`${CLASS_TABLE}.hasActivated`, true)
+        .andWhereRaw(`${CLASS_TABLE}.endDate < CURDATE()`)
+        .groupBy(`${LEVEL_TABLE}.id`);
+
+    return [...classFuture,...classPassed]
 }

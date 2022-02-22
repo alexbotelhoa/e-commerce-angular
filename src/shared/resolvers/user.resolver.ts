@@ -83,7 +83,7 @@ export const userIsTeacherFieldResolver: GQLUserResolvers['isTeacher'] = async (
 
 type UserActivitiesCount = CountObj & { userId: number };
 
-export const userCountAtivitiesSorter = createDataloaderCountSort<UserActivitiesCount, string>('userId');
+export const userCountActivitiesSorter = createDataloaderCountSort<UserActivitiesCount, string>('userId');
 
 export const userAvailableActivitiesByIdLoader: DatabaseLoaderFactory<string, number, number> = {
     id: 'userAvailableActivitiesById',
@@ -97,7 +97,7 @@ export const userAvailableActivitiesByIdLoader: DatabaseLoaderFactory<string, nu
             .innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.levelCodeId`, `${LEVEL_CODE_TABLE}.id`)
             .whereIn(`${ENROLLMENT_TABLE}.userId`, ids)
             .groupBy(`${ENROLLMENT_TABLE}.userId`);
-        const sorted = userCountAtivitiesSorter(ids)(entities);
+        const sorted = userCountActivitiesSorter(ids)(entities);
         return sorted;
     },
 }
@@ -116,7 +116,7 @@ export const userCompletedActivitiesByIdLoader: DatabaseLoaderFactory<string, nu
                 .andWhere('completed', true)
                 .andWhere("classId", params)
                 .groupBy('userId');
-            const sorted = userCountAtivitiesSorter(ids)(entities);
+            const sorted = userCountActivitiesSorter(ids)(entities);
             return sorted;
         }
         const entities = await countActivityTimers(db)
@@ -124,7 +124,7 @@ export const userCompletedActivitiesByIdLoader: DatabaseLoaderFactory<string, nu
             .whereIn('userId', ids)
             .andWhere('completed', true)
             .groupBy('userId');
-        const sorted = userCountAtivitiesSorter(ids)(entities);
+        const sorted = userCountActivitiesSorter(ids)(entities);
         return sorted;
     },
 }
@@ -246,7 +246,10 @@ export const hasEyoungResolver: GQLUserResolvers["hasEyoung"] = async (obj, para
 
 export const materialsResolver: GQLUserResolvers["materials"] = async (obj, params, context) => {
     const userId = context.currentUser?.id;
-    const materials = await selectMaterial(context.readonlyDatabase).where("userId", userId);
+
+    const materials = await selectMaterial(context.readonlyDatabase)
+        .where("userId", userId);
+
     return materials as any;
 }
 
