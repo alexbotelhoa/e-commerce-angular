@@ -9,11 +9,12 @@ import {
     addActivitiesToCycleMutationResolver,
 } from "../../domain/activity/mutations/cycle/cycle.mutation";
 
-import { presenceResolver } from "../../domain/presence/presence.mutation.resolver";
-import { messageResolver } from "../../domain/chat/mutations/chat.mutation.resolver";
+import { presenceResolver } from "../../domain/presence/presence.mutation";
+import { messageResolver } from "../../domain/chat/mutations/chat.mutation";
 import { auditResolver } from "../../domain/log/mutations/call-audit.mutation.resolver";
-import { chatMakeReadResolver } from "../../domain/chat/mutations/chat-make-read.mutation.resolver";
+import { chatMakeReadResolver } from "../../domain/chat/mutations/chat-make-read.mutation";
 import { finishOnboardMutationResolver } from "../../domain/finish-onboard/finish-onboard.mutation";
+import { updateUserRolesMutationResolver } from "../../domain/user-role/mutations/user-roles.mutation";
 import { upsertAnnotationResolver } from "../../domain/annotation/mutations/upsert-annotation.mutation";
 import { createLevelMutationResolver } from "../../domain/activity/mutations/level/create-level.mutation";
 import { createLevelCodeMutation } from "../../domain/activity/mutations/level/create-level-code.mutation";
@@ -95,6 +96,7 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     finishOnboard: finishOnboardMutationResolver,
     startActivity: startActivityMutationResolver,
     updateCyclesOrder: updateCyclesOrderMutation,
+    updateUserRoles: updateUserRolesMutationResolver,
     completeActivity: completeActivityMutationResolver,
     viewerChangeAvatar: viewerChangeAvatarMutationResolver,
     updateLevelThemesOrder: updateLevelThemesOrderMutation,

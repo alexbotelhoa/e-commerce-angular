@@ -17,10 +17,10 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
   const idRoleSendMessage = payload.isEtutor ? RoleId['E_TUTOR'] : RoleId['STUDENT'];
   const dateNow = new Date();
 
-  const userLogeedRoles = await selectUserRole(context.readonlyDatabase).where({ userId: user?.id });
+  const userLoggedRoles = await selectUserRole(context.readonlyDatabase).where({ userId: user?.id });
 
-  const isInvalidEtutor = idRoleSendMessage === RoleId['E_TUTOR'] && !userLogeedRoles.map(r => r.roleId).includes(RoleId['E_TUTOR']);
-  const isInvalidStutent = idRoleSendMessage === RoleId['STUDENT'] && !userLogeedRoles.map(r => r.roleId).find(id => id === RoleId['STUDENT'] || id === RoleId['HORIZON_ONE']);
+  const isInvalidEtutor = idRoleSendMessage === RoleId['E_TUTOR'] && !userLoggedRoles.map(r => r.roleId).includes(RoleId['E_TUTOR']);
+  const isInvalidStutent = idRoleSendMessage === RoleId['STUDENT'] && !userLoggedRoles.map(r => r.roleId).find(id => id === RoleId['STUDENT'] || id === RoleId['HORIZON_ONE']);
 
   const isInvalid = [
     !user?.id,

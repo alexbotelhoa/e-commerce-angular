@@ -1,0 +1,8 @@
+type Mutation {
+    updateUserRoles(data: UpdateUserRolesQueryInput!): Boolean
+}
+
+input UpdateUserRolesQueryInput {
+    userId: String!
+    roleIds: [Int!]!
+}

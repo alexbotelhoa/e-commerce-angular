@@ -103,6 +103,7 @@ export type GQLMutation = {
   readonly updateLevelThemesOrder: ReadonlyArray<GQLLevelTheme>;
   readonly updateNewsletter: GQLNewsletter;
   readonly updateTheme: GQLTheme;
+  readonly updateUserRoles: Maybe<Scalars['Boolean']>;
   readonly upsertAnnotation: Maybe<GQLAnnotation>;
   readonly upsertOrRemoveUserInterest: Maybe<GQLInterest>;
   readonly viewerChangeAvatar: GQLViewerChangeAvatarMutationResult;
@@ -311,6 +312,11 @@ export type GQLMutationupdateNewsletterArgs = {
 
 export type GQLMutationupdateThemeArgs = {
   data: GQLUpdateThemeInput;
+};
+
+
+export type GQLMutationupdateUserRolesArgs = {
+  data: GQLUpdateUserRolesQueryInput;
 };
 
 
@@ -1142,6 +1148,11 @@ export type GQLThemeTotal = {
   readonly totalCompleted: Scalars['Int'];
 };
 
+export type GQLUpdateUserRolesQueryInput = {
+  readonly userId: Scalars['String'];
+  readonly roleIds: ReadonlyArray<Scalars['Int']>;
+};
+
 export type GQLUserRolesQueryInput = {
   readonly ids: Maybe<ReadonlyArray<Scalars['ID']>>;
   readonly roleIds: Maybe<ReadonlyArray<Scalars['ID']>>;
@@ -1700,6 +1711,7 @@ export type GQLResolversTypes = {
   TeacherClassesQueryInput: GQLTeacherClassesQueryInput;
   ViewerTeacherLevelCodesFilterInput: GQLViewerTeacherLevelCodesFilterInput;
   ThemeTotal: ResolverTypeWrapper<GQLThemeTotal>;
+  UpdateUserRolesQueryInput: GQLUpdateUserRolesQueryInput;
   UserRolesQueryInput: GQLUserRolesQueryInput;
   ActivityData: GQLResolversTypes['EmbeddedActivityData'] | GQLResolversTypes['HtmlActivityData'];
   ActivityTimer: ResolverTypeWrapper<ActivityTimerEntity>;
@@ -1827,6 +1839,7 @@ export type GQLResolversParentTypes = {
   TeacherClassesQueryInput: GQLTeacherClassesQueryInput;
   ViewerTeacherLevelCodesFilterInput: GQLViewerTeacherLevelCodesFilterInput;
   ThemeTotal: GQLThemeTotal;
+  UpdateUserRolesQueryInput: GQLUpdateUserRolesQueryInput;
   UserRolesQueryInput: GQLUserRolesQueryInput;
   ActivityData: GQLResolversParentTypes['EmbeddedActivityData'] | GQLResolversParentTypes['HtmlActivityData'];
   ActivityTimer: ActivityTimerEntity;
@@ -1920,6 +1933,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   updateLevelThemesOrder: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLMutationupdateLevelThemesOrderArgs, 'data'>>;
   updateNewsletter: Resolver<GQLResolversTypes['Newsletter'], ParentType, ContextType, RequireFields<GQLMutationupdateNewsletterArgs, 'data'>>;
   updateTheme: Resolver<GQLResolversTypes['Theme'], ParentType, ContextType, RequireFields<GQLMutationupdateThemeArgs, 'data'>>;
+  updateUserRoles: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationupdateUserRolesArgs, 'data'>>;
   upsertAnnotation: Resolver<Maybe<GQLResolversTypes['Annotation']>, ParentType, ContextType, RequireFields<GQLMutationupsertAnnotationArgs, 'annotation'>>;
   upsertOrRemoveUserInterest: Resolver<Maybe<GQLResolversTypes['Interest']>, ParentType, ContextType, RequireFields<GQLMutationupsertOrRemoveUserInterestArgs, 'data'>>;
   viewerChangeAvatar: Resolver<GQLResolversTypes['ViewerChangeAvatarMutationResult'], ParentType, ContextType, RequireFields<GQLMutationviewerChangeAvatarArgs, 'data'>>;
