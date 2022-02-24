@@ -362,19 +362,6 @@ export type GQLUpdateEmbeddedActivityInput = {
   readonly data: GQLEmbeddedActivityDataInput;
 };
 
-export type GQLCreateChallengeInput = {
-  readonly text: Scalars['String'];
-  readonly startAt: Scalars['String'];
-  readonly endAt: Scalars['String'];
-};
-
-export type GQLUpdateChallengeInput = {
-  readonly id: Scalars['ID'];
-  readonly text: Scalars['String'];
-  readonly startAt: Scalars['String'];
-  readonly endAt: Scalars['String'];
-};
-
 export type GQLCompleteActivityInput = {
   readonly cycleActivityId: Scalars['ID'];
   readonly classId: Scalars['ID'];
@@ -478,19 +465,6 @@ export type GQLUpdateBasicLevelInfoInput = {
   readonly codes: ReadonlyArray<Scalars['ID']>;
 };
 
-export type GQLCreateNewsletterInput = {
-  readonly name: Scalars['String'];
-  readonly linkUrl: Scalars['String'];
-  readonly imgSrc: Scalars['String'];
-};
-
-export type GQLUpdateNewsletterInput = {
-  readonly id: Scalars['ID'];
-  readonly name: Scalars['String'];
-  readonly linkUrl: Scalars['String'];
-  readonly imgSrc: Scalars['String'];
-};
-
 export type GQLStartActivityInput = {
   readonly cycleActivityId: Scalars['ID'];
   readonly classId: Scalars['ID'];
@@ -516,10 +490,6 @@ export type GQLUpdateThemeInput = {
   readonly endColor: Scalars['String'];
   readonly active: Scalars['Boolean'];
   readonly icon: GQLIconDataInput;
-};
-
-export type GQLUpsertUserInterestInput = {
-  readonly interestId: Scalars['Int'];
 };
 
 export type GQLQuery = {
@@ -797,20 +767,6 @@ export type GQLActivityCommentsQueryInput = {
   readonly classIds: Maybe<ReadonlyArray<Scalars['ID']>>;
 };
 
-export type GQLClassesQueryInput = {
-  readonly ids: Maybe<ReadonlyArray<Scalars['ID']>>;
-  readonly institutionIds: Maybe<ReadonlyArray<Scalars['ID']>>;
-  readonly sessionIds: Maybe<ReadonlyArray<Scalars['ID']>>;
-  readonly periodIds: Maybe<ReadonlyArray<Scalars['ID']>>;
-  readonly carrerIds: Maybe<ReadonlyArray<Scalars['ID']>>;
-  readonly search: Maybe<Scalars['String']>;
-};
-
-export type GQLInterestPaginationData = {
-  readonly page: Maybe<Scalars['ID']>;
-  readonly perpage: Maybe<Scalars['ID']>;
-};
-
 export type GQLLevelThemesQueryInput = {
   readonly levelId: Scalars['ID'];
   readonly enrollmentStudent: Maybe<Scalars['ID']>;
@@ -818,11 +774,6 @@ export type GQLLevelThemesQueryInput = {
 
 export type GQLAvailableThemesInputData = {
   readonly levelId: Scalars['ID'];
-};
-
-export type GQLUserRolesQueryInput = {
-  readonly ids: Maybe<ReadonlyArray<Scalars['ID']>>;
-  readonly roleIds: Maybe<ReadonlyArray<Scalars['ID']>>;
 };
 
 export type GQLClass = {
@@ -978,6 +929,19 @@ export type GQLViewerChangeAvatarMutationError = GQLGenericError & {
 
 export type GQLViewerChangeAvatarMutationResult = GQLUser | GQLViewerChangeAvatarMutationError;
 
+export type GQLCreateChallengeInput = {
+  readonly text: Scalars['String'];
+  readonly startAt: Scalars['String'];
+  readonly endAt: Scalars['String'];
+};
+
+export type GQLUpdateChallengeInput = {
+  readonly id: Scalars['ID'];
+  readonly text: Scalars['String'];
+  readonly startAt: Scalars['String'];
+  readonly endAt: Scalars['String'];
+};
+
 export type GQLInsertChatInput = {
   readonly userId: Maybe<Scalars['String']>;
   readonly classId: Maybe<Scalars['String']>;
@@ -991,6 +955,15 @@ export type GQLChatStudentsQueryInput = {
   readonly userIds: Maybe<ReadonlyArray<Scalars['ID']>>;
 };
 
+export type GQLClassesQueryInput = {
+  readonly ids: Maybe<ReadonlyArray<Scalars['ID']>>;
+  readonly institutionIds: Maybe<ReadonlyArray<Scalars['ID']>>;
+  readonly sessionIds: Maybe<ReadonlyArray<Scalars['ID']>>;
+  readonly periodIds: Maybe<ReadonlyArray<Scalars['ID']>>;
+  readonly carrerIds: Maybe<ReadonlyArray<Scalars['ID']>>;
+  readonly search: Maybe<Scalars['String']>;
+};
+
 export type GQLcountQueryInput = {
   readonly ids: Maybe<ReadonlyArray<Scalars['ID']>>;
   readonly search: Maybe<Scalars['String']>;
@@ -999,6 +972,15 @@ export type GQLcountQueryInput = {
 export type GQLViewerEnrollmenLevelCodestFilterInput = {
   readonly last30days: Maybe<Scalars['Boolean']>;
   readonly userId: Maybe<Scalars['ID']>;
+};
+
+export type GQLUpsertUserInterestInput = {
+  readonly interestId: Scalars['Int'];
+};
+
+export type GQLInterestPaginationData = {
+  readonly page: Maybe<Scalars['ID']>;
+  readonly perpage: Maybe<Scalars['ID']>;
 };
 
 export type GQLlearningMoreOptionsInput = {
@@ -1023,6 +1005,19 @@ export type GQLOccResult = {
   readonly __typename?: 'OccResult';
   readonly tokenSaml: Scalars['String'];
   readonly urlSubmit: Scalars['String'];
+};
+
+export type GQLCreateNewsletterInput = {
+  readonly name: Scalars['String'];
+  readonly linkUrl: Scalars['String'];
+  readonly imgSrc: Scalars['String'];
+};
+
+export type GQLUpdateNewsletterInput = {
+  readonly id: Scalars['ID'];
+  readonly name: Scalars['String'];
+  readonly linkUrl: Scalars['String'];
+  readonly imgSrc: Scalars['String'];
 };
 
 export type GQLCycle = {
@@ -1145,6 +1140,11 @@ export type GQLThemeTotal = {
   readonly name: Scalars['String'];
   readonly total: Scalars['Int'];
   readonly totalCompleted: Scalars['Int'];
+};
+
+export type GQLUserRolesQueryInput = {
+  readonly ids: Maybe<ReadonlyArray<Scalars['ID']>>;
+  readonly roleIds: Maybe<ReadonlyArray<Scalars['ID']>>;
 };
 
 export type GQLActivityData = {
@@ -1626,8 +1626,6 @@ export type GQLResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   HtmlActivityDataInput: GQLHtmlActivityDataInput;
   UpdateEmbeddedActivityInput: GQLUpdateEmbeddedActivityInput;
-  CreateChallengeInput: GQLCreateChallengeInput;
-  UpdateChallengeInput: GQLUpdateChallengeInput;
   CompleteActivityInput: GQLCompleteActivityInput;
   CompleteActivityResult: GQLResolversTypes['ActivityTimer'] | GQLResolversTypes['SimpleError'];
   CreateCommentOnActivityInput: GQLCreateCommentOnActivityInput;
@@ -1647,22 +1645,16 @@ export type GQLResolversTypes = {
   AddThemesToLevelItemsInput: GQLAddThemesToLevelItemsInput;
   AddThemesToLevelInput: GQLAddThemesToLevelInput;
   UpdateBasicLevelInfoInput: GQLUpdateBasicLevelInfoInput;
-  CreateNewsletterInput: GQLCreateNewsletterInput;
-  UpdateNewsletterInput: GQLUpdateNewsletterInput;
   StartActivityInput: GQLStartActivityInput;
   StartActivityResult: GQLResolversTypes['ActivityTimer'] | GQLResolversTypes['SimpleError'];
   CreateThemeInput: GQLCreateThemeInput;
   IconDataInput: GQLIconDataInput;
   UpdateThemeInput: GQLUpdateThemeInput;
-  UpsertUserInterestInput: GQLUpsertUserInterestInput;
   Query: ResolverTypeWrapper<{}>;
   ActivitiesListByProgressOrder: ResolverTypeWrapper<GQLActivitiesListByProgressOrder>;
   ActivityCommentsQueryInput: GQLActivityCommentsQueryInput;
-  ClassesQueryInput: GQLClassesQueryInput;
-  InterestPaginationData: GQLInterestPaginationData;
   LevelThemesQueryInput: GQLLevelThemesQueryInput;
   AvailableThemesInputData: GQLAvailableThemesInputData;
-  UserRolesQueryInput: GQLUserRolesQueryInput;
   Class: ResolverTypeWrapper<ClassEntity>;
   ClassStudentGradesInput: GQLClassStudentGradesInput;
   User: ResolverTypeWrapper<UserEntity>;
@@ -1681,14 +1673,21 @@ export type GQLResolversTypes = {
   ViewerChangeAvatarInput: GQLViewerChangeAvatarInput;
   ViewerChangeAvatarMutationError: ResolverTypeWrapper<GQLViewerChangeAvatarMutationError>;
   ViewerChangeAvatarMutationResult: GQLResolversTypes['User'] | GQLResolversTypes['ViewerChangeAvatarMutationError'];
+  CreateChallengeInput: GQLCreateChallengeInput;
+  UpdateChallengeInput: GQLUpdateChallengeInput;
   InsertChatInput: GQLInsertChatInput;
   ChatStudentsQueryInput: GQLChatStudentsQueryInput;
+  ClassesQueryInput: GQLClassesQueryInput;
   countQueryInput: GQLcountQueryInput;
   ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
+  UpsertUserInterestInput: GQLUpsertUserInterestInput;
+  InterestPaginationData: GQLInterestPaginationData;
   learningMoreOptionsInput: GQLlearningMoreOptionsInput;
   AuditInput: GQLAuditInput;
   LogsQueryInput: GQLLogsQueryInput;
   OccResult: ResolverTypeWrapper<GQLOccResult>;
+  CreateNewsletterInput: GQLCreateNewsletterInput;
+  UpdateNewsletterInput: GQLUpdateNewsletterInput;
   Cycle: ResolverTypeWrapper<CycleEntity>;
   LevelTheme: ResolverTypeWrapper<LevelThemeEntity>;
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
@@ -1701,6 +1700,7 @@ export type GQLResolversTypes = {
   TeacherClassesQueryInput: GQLTeacherClassesQueryInput;
   ViewerTeacherLevelCodesFilterInput: GQLViewerTeacherLevelCodesFilterInput;
   ThemeTotal: ResolverTypeWrapper<GQLThemeTotal>;
+  UserRolesQueryInput: GQLUserRolesQueryInput;
   ActivityData: GQLResolversTypes['EmbeddedActivityData'] | GQLResolversTypes['HtmlActivityData'];
   ActivityTimer: ResolverTypeWrapper<ActivityTimerEntity>;
   EmbeddedActivityData: ResolverTypeWrapper<EmbeddedActivityDataEntity>;
@@ -1755,8 +1755,6 @@ export type GQLResolversParentTypes = {
   Int: Scalars['Int'];
   HtmlActivityDataInput: GQLHtmlActivityDataInput;
   UpdateEmbeddedActivityInput: GQLUpdateEmbeddedActivityInput;
-  CreateChallengeInput: GQLCreateChallengeInput;
-  UpdateChallengeInput: GQLUpdateChallengeInput;
   CompleteActivityInput: GQLCompleteActivityInput;
   CompleteActivityResult: GQLResolversParentTypes['ActivityTimer'] | GQLResolversParentTypes['SimpleError'];
   CreateCommentOnActivityInput: GQLCreateCommentOnActivityInput;
@@ -1776,22 +1774,16 @@ export type GQLResolversParentTypes = {
   AddThemesToLevelItemsInput: GQLAddThemesToLevelItemsInput;
   AddThemesToLevelInput: GQLAddThemesToLevelInput;
   UpdateBasicLevelInfoInput: GQLUpdateBasicLevelInfoInput;
-  CreateNewsletterInput: GQLCreateNewsletterInput;
-  UpdateNewsletterInput: GQLUpdateNewsletterInput;
   StartActivityInput: GQLStartActivityInput;
   StartActivityResult: GQLResolversParentTypes['ActivityTimer'] | GQLResolversParentTypes['SimpleError'];
   CreateThemeInput: GQLCreateThemeInput;
   IconDataInput: GQLIconDataInput;
   UpdateThemeInput: GQLUpdateThemeInput;
-  UpsertUserInterestInput: GQLUpsertUserInterestInput;
   Query: {};
   ActivitiesListByProgressOrder: GQLActivitiesListByProgressOrder;
   ActivityCommentsQueryInput: GQLActivityCommentsQueryInput;
-  ClassesQueryInput: GQLClassesQueryInput;
-  InterestPaginationData: GQLInterestPaginationData;
   LevelThemesQueryInput: GQLLevelThemesQueryInput;
   AvailableThemesInputData: GQLAvailableThemesInputData;
-  UserRolesQueryInput: GQLUserRolesQueryInput;
   Class: ClassEntity;
   ClassStudentGradesInput: GQLClassStudentGradesInput;
   User: UserEntity;
@@ -1808,14 +1800,21 @@ export type GQLResolversParentTypes = {
   ViewerChangeAvatarInput: GQLViewerChangeAvatarInput;
   ViewerChangeAvatarMutationError: GQLViewerChangeAvatarMutationError;
   ViewerChangeAvatarMutationResult: GQLResolversParentTypes['User'] | GQLResolversParentTypes['ViewerChangeAvatarMutationError'];
+  CreateChallengeInput: GQLCreateChallengeInput;
+  UpdateChallengeInput: GQLUpdateChallengeInput;
   InsertChatInput: GQLInsertChatInput;
   ChatStudentsQueryInput: GQLChatStudentsQueryInput;
+  ClassesQueryInput: GQLClassesQueryInput;
   countQueryInput: GQLcountQueryInput;
   ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
+  UpsertUserInterestInput: GQLUpsertUserInterestInput;
+  InterestPaginationData: GQLInterestPaginationData;
   learningMoreOptionsInput: GQLlearningMoreOptionsInput;
   AuditInput: GQLAuditInput;
   LogsQueryInput: GQLLogsQueryInput;
   OccResult: GQLOccResult;
+  CreateNewsletterInput: GQLCreateNewsletterInput;
+  UpdateNewsletterInput: GQLUpdateNewsletterInput;
   Cycle: CycleEntity;
   LevelTheme: LevelThemeEntity;
   ClassStudentsQueryInput: GQLClassStudentsQueryInput;
@@ -1828,6 +1827,7 @@ export type GQLResolversParentTypes = {
   TeacherClassesQueryInput: GQLTeacherClassesQueryInput;
   ViewerTeacherLevelCodesFilterInput: GQLViewerTeacherLevelCodesFilterInput;
   ThemeTotal: GQLThemeTotal;
+  UserRolesQueryInput: GQLUserRolesQueryInput;
   ActivityData: GQLResolversParentTypes['EmbeddedActivityData'] | GQLResolversParentTypes['HtmlActivityData'];
   ActivityTimer: ActivityTimerEntity;
   EmbeddedActivityData: EmbeddedActivityDataEntity;
