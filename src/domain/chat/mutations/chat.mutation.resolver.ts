@@ -1,16 +1,16 @@
-import { ChatMessageEntity } from "../../../entities/chat-message.entity";
 import { ChatEntity } from "../../../entities/chat.entity";
 import { GQLMutationResolvers, RoleId } from "../../../resolvers-types";
-import { getActivityById } from "../../../shared/repositories/activity.repository";
-import { insertChatMessage } from "../../../shared/repositories/chat-message.repository";
-import { insertChat, getChatById, updateChat } from "../../../shared/repositories/chat.repository";
+import { ChatMessageEntity } from "../../../entities/chat-message.entity";
 import { getClassById } from "../../../shared/repositories/class.repository";
-import { getCycleActivityById } from "../../../shared/repositories/cycle-activity.repository";
 import { getCycleById } from "../../../shared/repositories/cycle.repository";
-import { getLevelCodeById } from "../../../shared/repositories/level-code.repository";
-import { getLevelThemeById } from "../../../shared/repositories/level-theme.repository";
 import { getThemeById } from "../../../shared/repositories/theme.repository";
 import { selectUserRole } from "../../../shared/repositories/user-role.repository";
+import { getActivityById } from "../../../shared/repositories/activity.repository";
+import { getLevelCodeById } from "../../../shared/repositories/level-code.repository";
+import { getLevelThemeById } from "../../../shared/repositories/level-theme.repository";
+import { insertChatMessage } from "../../../shared/repositories/chat-message.repository";
+import { getCycleActivityById } from "../../../shared/repositories/cycle-activity.repository";
+import { insertChat, getChatById, updateChat } from "../../../shared/repositories/chat.repository";
 
 export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { payload }, context) => {
   const user = context.currentUser;

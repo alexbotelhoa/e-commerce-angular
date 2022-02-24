@@ -37,9 +37,9 @@ import { startActivityMutationResolver } from "../../domain/activity/mutations/s
 import { completeActivityMutationResolver } from "../../domain/activity/mutations/complete-activity/complete-activity.mutation";
 import { viewerChangeAvatarMutationResolver } from "../../domain/avatar/mutations/viewer-change-avatar/viewer-change-avatar.mutation";
 import { finishOnboardMutationResolver } from "../../domain/finish-onboard/finish-onboard.mutation";
-import { upsertOrRemoteUserInterestMutationResolver } from "../../domain/user-interest/upsert-or-remove-user-interest.mutation";
-import { createChallengeMutationResolver, toggleChallengeState, updateChallengeMutationResolver } from "../../domain/challenge/challenge.mutation";
-import { createNewsletterMutationResolver, toggleNewsletterState, updateNewsletterMutationResolver } from "../../domain/newsletter/newsletter.mutation";
+import { upsertOrRemoteUserInterestMutationResolver } from "../../domain/interest/mutations/upsert-or-remove-user-interest.mutation";
+import { createChallengeMutationResolver, toggleChallengeState, updateChallengeMutationResolver } from "../../domain/challenge/mutations/challenge.mutation";
+import { createNewsletterMutationResolver, toggleNewsletterState, updateNewsletterMutationResolver } from "../../domain/newsletter/mutations/newsletter.mutation";
 import { upsertAnnotationResolver } from "../../domain/annotation/mutations/upsert-annotation.resolver";
 import { auditResolver } from "../../domain/log/mutation/call-audit.mutation.resolver";
 import { presenceResolver } from "../../domain/presence/presence.mutation.resolver";

@@ -1,5 +1,5 @@
-import { GQLNewsletter, GQLQueryResolvers } from "../../../../resolvers-types";
-import { getNewsletterById, selectNewsletter } from "../../../../shared/repositories/newsletter.repository";
+import { GQLNewsletter, GQLQueryResolvers } from "../../../resolvers-types";
+import { getNewsletterById, selectNewsletter } from "../../../shared/repositories/newsletter.repository";
 
 export const newsletterQueryResolver: GQLQueryResolvers['newsletter'] = async (obj, { id }, context) => {
     const valor: GQLNewsletter | null = await getNewsletterById(context.database)(id);

@@ -1,5 +1,5 @@
-import { GQLQueryResolvers } from "../../resolvers-types";
-import { selectInterest } from "../../shared/repositories/interest.repository";
+import { GQLQueryResolvers } from "../../../resolvers-types";
+import { selectInterest } from "../../../shared/repositories/interest.repository";
 
 export const interestQueryResolver: GQLQueryResolvers['interest'] = async (obj, params, context) => {
     const page = params.filters.page ? Number(params.filters.page) : undefined;
