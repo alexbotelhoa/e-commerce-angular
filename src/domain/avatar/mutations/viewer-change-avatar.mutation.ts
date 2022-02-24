@@ -1,6 +1,6 @@
-import { GQLMutationResolvers } from "../../../../resolvers-types";
-import { getAvatarById } from "../../../../shared/repositories/avatar.repository";
-import { updateUser, getUserById } from "../../../../shared/repositories/user.repository";
+import { GQLMutationResolvers } from "../../../resolvers-types";
+import { getAvatarById } from "../../../shared/repositories/avatar.repository";
+import { updateUser, getUserById } from "../../../shared/repositories/user.repository";
 
 export const viewerChangeAvatarMutationResolver: GQLMutationResolvers['viewerChangeAvatar'] = async (obj, params, context) => {
     const user = context.currentUser;

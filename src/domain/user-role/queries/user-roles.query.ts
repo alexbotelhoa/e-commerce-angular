@@ -1,5 +1,5 @@
-import { GQLQueryResolvers } from "../../resolvers-types";
-import { selectUserRole } from "../../shared/repositories/user-role.repository";
+import { GQLQueryResolvers } from "../../../resolvers-types";
+import { selectUserRole } from "../../../shared/repositories/user-role.repository";
 
 export const userRolesQueryResolver: GQLQueryResolvers['userRoles'] = async (obj, { data }, context) => {
     const query = selectUserRole(context.readonlyDatabase);

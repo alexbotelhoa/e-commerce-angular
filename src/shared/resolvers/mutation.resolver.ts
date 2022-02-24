@@ -3,28 +3,28 @@ import { GQLResolvers, GQLMutationResolvers } from "../../resolvers-types";
 import {
     toggleCycleState,
     createCycleMutationResolver,
-    addActivitiesToCycleMutationResolver,
+    updateCycleMutationResolver,
     deleteActivityFromCycleMutation,
     deleteCycleFromLevelThemeMutation,
-    updateCycleMutationResolver,
+    addActivitiesToCycleMutationResolver,
 } from "../../domain/activity/mutations/cycle/cycle.mutation";
 
 import { presenceResolver } from "../../domain/presence/presence.mutation.resolver";
 import { messageResolver } from "../../domain/chat/mutations/chat.mutation.resolver";
-import { auditResolver } from "../../domain/log/mutation/call-audit.mutation.resolver";
+import { auditResolver } from "../../domain/log/mutations/call-audit.mutation.resolver";
 import { chatMakeReadResolver } from "../../domain/chat/mutations/chat-make-read.mutation.resolver";
 import { finishOnboardMutationResolver } from "../../domain/finish-onboard/finish-onboard.mutation";
-import { upsertAnnotationResolver } from "../../domain/annotation/mutations/upsert-annotation.resolver";
+import { upsertAnnotationResolver } from "../../domain/annotation/mutations/upsert-annotation.mutation";
 import { createLevelMutationResolver } from "../../domain/activity/mutations/level/create-level.mutation";
 import { createLevelCodeMutation } from "../../domain/activity/mutations/level/create-level-code.mutation";
 import { updateCyclesOrderMutation } from "../../domain/activity/mutations/cycle/update-cycles-order.mutation";
+import { viewerChangeAvatarMutationResolver } from "../../domain/avatar/mutations/viewer-change-avatar.mutation";
 import { startActivityMutationResolver } from "../../domain/activity/mutations/start-activity/start-activity.mutation";
 import { updateBasicLevelInfoMutationResolver } from "../../domain/activity/mutations/level/update-basic-level-info.mutation";
 import { updateLevelThemesOrderMutation } from "../../domain/activity/mutations/level-theme/update-level-themes-order.mutation";
 import { completeActivityMutationResolver } from "../../domain/activity/mutations/complete-activity/complete-activity.mutation";
 import { updateEmbeddedActivityMutationResolver } from "../../domain/activity/mutations/activity/update-embedded-activity.mutation";
 import { upsertOrRemoteUserInterestMutationResolver } from "../../domain/interest/mutations/upsert-or-remove-user-interest.mutation";
-import { viewerChangeAvatarMutationResolver } from "../../domain/avatar/mutations/viewer-change-avatar/viewer-change-avatar.mutation";
 import { updateCycleActivitiesOrderMutation } from "../../domain/activity/mutations/cycle-activity/update-cycle-activities-order.mutation";
 import { deleteActivityCommentMutationResolver } from "../../domain/activity/mutations/delete-activity-comment/delete-activity-comment.mutation";
 import { toggleThemeState, createThemeMutationResolver, updateThemeMutationResolver } from "../../domain/activity/mutations/theme/theme.mutation";
@@ -80,8 +80,8 @@ const newsletterEntityResolvers: Pick<GQLMutationResolvers, 'createNewsletter' |
 export const mutationResolvers: GQLResolvers['Mutation'] = {
     ...cycleEntityResolvers,
     ...themeEntityResolvers,
-    ...activityEntityResolvers,
     ...levelEntityResolvers,
+    ...activityEntityResolvers,
     ...challengeEntityResolvers,
     ...newsletterEntityResolvers,
     audit: auditResolver,

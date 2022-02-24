@@ -1,6 +1,6 @@
-import { GQLMutationResolvers } from "../../resolvers-types";
-import { environmentFactory } from "../../shared/services/environment.service";
-import axios from 'axios';
+// import { GQLMutationResolvers } from "../../resolvers-types";
+// import { environmentFactory } from "../../shared/services/environment.service";
+// import axios from 'axios';
 
 // export const cancelRegisterEventMutationResolver: GQLMutationResolvers['cancelRegisterEventMutation'] =
 //     async (obj, { data }, context) => {

@@ -1,4 +1,4 @@
-import { GQLViewerChangeAvatarMutationErrorResolvers, GQLViewerChangeAvatarMutationResultResolvers } from "../../../../resolvers-types";
+import { GQLViewerChangeAvatarMutationErrorResolvers, GQLViewerChangeAvatarMutationResultResolvers } from "../../../resolvers-types";
 
 export const viewerChangeAvatarMutationErrorResolvers: GQLViewerChangeAvatarMutationErrorResolvers = {
     message: (obj) => obj.message,

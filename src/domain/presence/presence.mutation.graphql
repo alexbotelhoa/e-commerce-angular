@@ -1,4 +1,3 @@
-
 type Mutation {
     presence(turma: String!): Boolean
 }

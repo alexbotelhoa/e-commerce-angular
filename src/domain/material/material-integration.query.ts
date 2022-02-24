@@ -1,5 +1,5 @@
-import { GQLQueryResolvers } from "../../../resolvers-types";
-import { callOccLogin } from "../../user/services/call-occ.service";
+import { GQLQueryResolvers } from "../../resolvers-types";
+import { callOccLogin } from "../user/services/call-occ.service";
 
 export const callOccLoginQueryResolver: GQLQueryResolvers['occLogin'] = async (obj, params, context) => {
         const user = context.currentUser;

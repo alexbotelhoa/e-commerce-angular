@@ -1,4 +1,4 @@
-import { GQLQueryResolvers, GQLThemeTotalResolvers } from "../../../resolvers-types";
+import { GQLQueryResolvers, GQLThemeTotalResolvers } from "../../resolvers-types";
 
 export const themeTotalQueryResolver: GQLQueryResolvers["themeTotal"] = async (obj, args, context) => {
     const result = await context.database.raw(`

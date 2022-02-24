@@ -1,7 +1,7 @@
 import { GQLQueryResolvers } from "../../../../resolvers-types";
+import { selectTheme } from '../../../../shared/repositories/theme.repository';
 import { getLevelById } from "../../../../shared/repositories/level.repository";
 import { selectLevelTheme } from '../../../../shared/repositories/level-theme.repository'
-import { selectTheme } from '../../../../shared/repositories/theme.repository'
 
 export const levelQueryResolver: GQLQueryResolvers['level'] = (obj, { id }, context) => {
     return getLevelById(context.database)(id);

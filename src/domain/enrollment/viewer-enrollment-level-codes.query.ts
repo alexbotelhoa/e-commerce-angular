@@ -1,8 +1,8 @@
-import { GQLQueryResolvers } from "../../../../resolvers-types";
-import { ENROLLMENT_TABLE } from "../../../../entities/enrollment.entity";
-import { CLASS_TABLE } from "../../../../entities/class.entity";
-import { ENROLLMENT_CLASS_TABLE } from "../../../../entities/enrollment-class.entity";
-import { LEVEL_CODE_TABLE } from "../../../../entities/level-code.entity";
+import { CLASS_TABLE } from "../../entities/class.entity";
+import { GQLQueryResolvers } from "../../resolvers-types";
+import { LEVEL_CODE_TABLE } from "../../entities/level-code.entity";
+import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
+import { ENROLLMENT_CLASS_TABLE } from "../../entities/enrollment-class.entity";
 
 export const viewerEnrollmentLevelCodesQueryResolver: GQLQueryResolvers['viewerEnrollmentLevelCodes'] = async (obj, params, context) => {
 

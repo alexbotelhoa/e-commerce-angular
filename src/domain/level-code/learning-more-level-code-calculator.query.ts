@@ -1,6 +1,6 @@
-import { GQLQueryResolvers } from "../../../resolvers-types";
-import { LevelCodeEntity } from "../../../entities/level-code.entity";
-import { selectLevelCode } from "../../../shared/repositories/level-code.repository";
+import { GQLQueryResolvers } from "../../resolvers-types";
+import { LevelCodeEntity } from "../../entities/level-code.entity";
+import { selectLevelCode } from "../../shared/repositories/level-code.repository";
 
 export const getLearningMoreLevelCodeCalculatorResolver: GQLQueryResolvers['learningMoreOption'] = async (obj, params, context) => {
     const isTeacher = context.currentUser?.roleIds.some(teacher => teacher === 2);

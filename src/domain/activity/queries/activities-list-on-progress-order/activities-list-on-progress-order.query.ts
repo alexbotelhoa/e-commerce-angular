@@ -1,5 +1,4 @@
 import { GQLQueryResolvers } from "../../../../resolvers-types";
-import { getActivityById } from "../../../../shared/repositories/activity.repository";
 
 export const activitiesListProgressQueryResolver: GQLQueryResolvers['activitiesListByProgressOrder'] = async (obj, params, context) => {
     const [results] = await context.readonlyDatabase.raw(`
