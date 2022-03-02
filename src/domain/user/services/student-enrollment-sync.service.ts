@@ -24,9 +24,9 @@ export const processStudentEnrollmentSync = (
     log: FastifyLoggerInstance
 ) => async (event: StudentEnrollmentSyncEvent): Promise<WebhookResponse> => {
     const userData = event.data.user;
-    if ("classId" in event.data) {
+    if ("ClassId" in event.data) {
 
-        const classFound = await getClassById(db)(event.data.classId);
+        const classFound = await getClassById(db)(event.data.ClassId);
         if (!classFound) {
             return {
                 message: "When passed ClassId, class must already be synced.",
@@ -41,7 +41,7 @@ export const processStudentEnrollmentSync = (
             };
         }
         const existingUser = await getUserById(db)(userData.id);
-        await upsertUserAndMakeEnrollment(existingUser, db, userData, existingLevelCode, event.data.classId);
+        await upsertUserAndMakeEnrollment(existingUser, db, userData, existingLevelCode, event.data.ClassId);
         return {
             success: true,
         };

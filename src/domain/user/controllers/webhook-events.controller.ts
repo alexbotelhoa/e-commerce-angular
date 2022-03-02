@@ -129,7 +129,7 @@ const UserDataType = t.type({
 
 export const StudentEnrollmentSyncEventData = t.type({
     user: UserDataType,
-    classId: t.string,
+    ClassId: t.string,
 });
 
 const StudentEnrollmentSyncEventType = t.type({
