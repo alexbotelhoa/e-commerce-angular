@@ -1154,7 +1154,7 @@ export type GQLUpdateUserRolesQueryInput = {
 };
 
 export type GQLUserRolesQueryInput = {
-  readonly ids: Maybe<ReadonlyArray<Scalars['ID']>>;
+  readonly userId: Maybe<Scalars['ID']>;
   readonly roleIds: Maybe<ReadonlyArray<Scalars['ID']>>;
 };
 

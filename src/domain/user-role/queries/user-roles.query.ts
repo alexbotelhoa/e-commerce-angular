@@ -4,8 +4,8 @@ import { selectUserRole } from "../../../shared/repositories/user-role.repositor
 export const userRolesQueryResolver: GQLQueryResolvers['userRoles'] = async (obj, { data }, context) => {
     const query = selectUserRole(context.readonlyDatabase);
     if (data) {
-        if (data.ids && data.ids.length > 0) {
-            query.whereIn('id', data.ids);
+        if (data.userId) {
+            query.where('userId', data.userId.toString());
         }
         if (data.roleIds && data.roleIds.length > 0) {
             query.whereIn('roleId', data.roleIds);

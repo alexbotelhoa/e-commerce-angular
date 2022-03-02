@@ -3,6 +3,6 @@ type Query {
 }
 
 input UserRolesQueryInput {
-    ids: [ID!]
+    userId: ID
     roleIds: [ID!]
 }
