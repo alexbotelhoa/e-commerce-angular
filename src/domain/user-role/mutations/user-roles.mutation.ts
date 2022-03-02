@@ -5,13 +5,15 @@ export const updateUserRolesMutationResolver: GQLMutationResolvers['updateUserRo
 
     const userId = data.userId;
 
-    await deleteUserRole(context.database)(builder => builder.andWhere({ userId: `${userId}` }));
+    await context.database.transaction(async trx => {
+        await deleteUserRole(trx)(builder => builder.andWhere({ userId: `${userId}` }));
 
-    await data.roleIds.map(role => {
-        insertUserRole(context.database)({
-            userId: userId.toString(),
-            roleId: role as RoleId
-        })
+        await data.roleIds.map(role => {
+            insertUserRole(trx)({
+                userId: userId.toString(),
+                roleId: role as RoleId
+            })
+        });
     });
 
     return true;
