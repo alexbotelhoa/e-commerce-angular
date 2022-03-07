@@ -1,4 +1,0 @@
-type Query {
-    newsletter(id: ID!): Newsletter
-    newslettersActive: [Newsletter!]!
-}

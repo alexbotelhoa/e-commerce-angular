@@ -83,7 +83,7 @@ export const userIsTeacherFieldResolver: GQLUserResolvers['isTeacher'] = async (
 
 type UserActivitiesCount = CountObj & { userId: number };
 
-export const userCountAtivitiesSorter = createDataloaderCountSort<UserActivitiesCount, string>('userId');
+export const userCountActivitiesSorter = createDataloaderCountSort<UserActivitiesCount, string>('userId');
 
 export const userAvailableActivitiesByIdLoader: DatabaseLoaderFactory<string, number, number> = {
     id: 'userAvailableActivitiesById',
@@ -97,7 +97,7 @@ export const userAvailableActivitiesByIdLoader: DatabaseLoaderFactory<string, nu
             .innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.levelCodeId`, `${LEVEL_CODE_TABLE}.id`)
             .whereIn(`${ENROLLMENT_TABLE}.userId`, ids)
             .groupBy(`${ENROLLMENT_TABLE}.userId`);
-        const sorted = userCountAtivitiesSorter(ids)(entities);
+        const sorted = userCountActivitiesSorter(ids)(entities);
         return sorted;
     },
 }
@@ -116,7 +116,7 @@ export const userCompletedActivitiesByIdLoader: DatabaseLoaderFactory<string, nu
                 .andWhere('completed', true)
                 .andWhere("classId", params)
                 .groupBy('userId');
-            const sorted = userCountAtivitiesSorter(ids)(entities);
+            const sorted = userCountActivitiesSorter(ids)(entities);
             return sorted;
         }
         const entities = await countActivityTimers(db)
@@ -124,12 +124,12 @@ export const userCompletedActivitiesByIdLoader: DatabaseLoaderFactory<string, nu
             .whereIn('userId', ids)
             .andWhere('completed', true)
             .groupBy('userId');
-        const sorted = userCountAtivitiesSorter(ids)(entities);
+        const sorted = userCountActivitiesSorter(ids)(entities);
         return sorted;
     },
 }
 
-const teacherClassesteacherClassesSorter = createDataloaderMultiSort<TeacherClassEntity, string>('teacherId');
+const teacherClassesTeacherClassesSorter = createDataloaderMultiSort<TeacherClassEntity, string>('teacherId');
 
 const teacherClassesDataloader: DatabaseLoaderFactory<string, TeacherClassEntity[]> = {
     id: 'teacherClassesByUserId',
@@ -137,7 +137,7 @@ const teacherClassesDataloader: DatabaseLoaderFactory<string, TeacherClassEntity
         const entities = await db(TEACHER_CLASS_TABLE)
             .whereIn(`${TEACHER_CLASS_TABLE}.teacherId`, ids);
 
-        const sortedEntities = teacherClassesteacherClassesSorter(ids)(entities);
+        const sortedEntities = teacherClassesTeacherClassesSorter(ids)(entities);
         return sortedEntities;
     }
 };
@@ -227,19 +227,20 @@ export const hasEcampusResolver: GQLUserResolvers["hasEcampus"] = async (obj, pa
     const enrollment = await selectEnrollment(context.readonlyDatabase).where(`userId`, "=", userId)
     if (enrollment.length === 0) return false;
     const ids = enrollment.map(i => i.id)
-    const Enclasses = await selectEnrollmentClass(context.readonlyDatabase).whereIn("enrollmentId", ids)
-    const classIds = Enclasses.map(c => c.classId)
+    const enrollmentClasses = await selectEnrollmentClass(context.readonlyDatabase).whereIn("enrollmentId", ids)
+    const classIds = enrollmentClasses.map(c => c.classId)
     const classes = await getClassesByIds(context.readonlyDatabase)(classIds)
     return classes.some(c => c.hasEcampus);
 }
+
 export const hasEyoungResolver: GQLUserResolvers["hasEyoung"] = async (obj, params, context) => {
     const userId = context.currentUser?.id;
     if (!userId) return false;
     const enrollment = await selectEnrollment(context.readonlyDatabase).where(`userId`, "=", userId)
     if (enrollment.length === 0) return false;
     const ids = enrollment.map(i => i.id)
-    const Enclasses = await selectEnrollmentClass(context.readonlyDatabase).whereIn("enrollmentId", ids)
-    const classIds = Enclasses.map(c => c.classId)
+    const enrollmentClasses = await selectEnrollmentClass(context.readonlyDatabase).whereIn("enrollmentId", ids)
+    const classIds = enrollmentClasses.map(c => c.classId)
     const classes = await getClassesByIds(context.readonlyDatabase)(classIds)
     return classes.some(c => c.hasEyoung);
 }

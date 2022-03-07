@@ -11,7 +11,7 @@ import { ClassWithLocationsFullDataType } from "../types/class-full-data.type";
 import { processStudentUpdateSync } from "../services/student-update-sync.service";
 import { processCourseMaterialSync } from "../services/course-material-sync.service";
 import { WebhookErrorResponse, WebhookResponse } from "../types/webhook-events.types";
-import { processUserRolesUpdateSync } from "../services/user-roles-update.service-sync";
+import { processUserRolesUpdateSync } from "../services/user-roles-update-sync.service";
 import { processStudentEnrollmentSync } from "../services/student-enrollment-sync.service";
 import { getLogById, insertLog, updateLog } from "../../../shared/repositories/log.repository";
 import { processStudentClassTransferSync } from "../services/student-class-transfer-sync.service";

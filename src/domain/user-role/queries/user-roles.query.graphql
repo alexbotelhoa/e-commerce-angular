@@ -1,0 +1,8 @@
+type Query {
+    userRoles(data: UserRolesQueryInput): [UserRole!]!
+}
+
+input UserRolesQueryInput {
+    userId: ID
+    roleIds: [ID!]
+}
