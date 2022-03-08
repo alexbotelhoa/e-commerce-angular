@@ -2132,7 +2132,7 @@ export type GQLStudentGradeResolvers<ContextType = GraphQLContext, ParentType ex
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type GQLPermissionIdResolvers = EnumResolverSignature<{ MANAGE_LEVEL: any, MANAGE_THEME: any, MANAGE_CYCLE: any, MANAGE_ACTIVITY: any, EXECUTE_ACTIVITY: any, MANAGE_COMMENTS: any, MANAGE_CLASS: any, MANAGE_CHALLENGE: any, MANAGE_NEWSLETTER: any, HORIZON_ONE: any, CHAT_ETUTOR: any, COURSES_ETUTOR: any, MY_QUESTIONS: any, MANAGE_MASTER: any }, GQLResolversTypes['PermissionId']>;
+export type GQLPermissionIdResolvers = EnumResolverSignature<{ MANAGE_LEVEL: any, MANAGE_THEME: any, MANAGE_CYCLE: any, MANAGE_ACTIVITY: any, EXECUTE_ACTIVITY: any, MANAGE_COMMENTS: any, MANAGE_CLASS: any, MANAGE_CHALLENGE: any, MANAGE_NEWSLETTER: any, MANAGE_MASTER: any, HORIZON_ONE: any, CHAT_ETUTOR: any, COURSES_ETUTOR: any, MY_QUESTIONS: any }, GQLResolversTypes['PermissionId']>;
 
 export type GQLRoleIdResolvers = EnumResolverSignature<{ MASTER: any, ADMIN: any, STUDENT: any, TEACHER: any, GUARDIAN: any, HORIZON_ONE: any, E_TUTOR: any }, GQLResolversTypes['RoleId']>;
 
