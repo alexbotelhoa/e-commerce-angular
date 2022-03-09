@@ -555,6 +555,7 @@ export type GQLQuery = {
   readonly theme: Maybe<GQLTheme>;
   readonly themeTotal: Maybe<ReadonlyArray<GQLThemeTotal>>;
   readonly themes: ReadonlyArray<GQLTheme>;
+  readonly user: Maybe<ReadonlyArray<GQLUser>>;
   readonly userRole: Maybe<GQLUserRole>;
   readonly userRoles: ReadonlyArray<GQLUserRole>;
   readonly viewerEnrollmentLevelCodes: ReadonlyArray<GQLLevelCode>;
@@ -739,6 +740,11 @@ export type GQLQuerythemeArgs = {
 
 export type GQLQuerythemeTotalArgs = {
   classId: Scalars['ID'];
+};
+
+
+export type GQLQueryuserArgs = {
+  data: Maybe<GQLUserQueryInput>;
 };
 
 
@@ -1154,6 +1160,11 @@ export type GQLUpdateUserRolesQueryInput = {
 };
 
 export type GQLUserRolesQueryInput = {
+  readonly userId: Maybe<Scalars['ID']>;
+  readonly roleIds: Maybe<ReadonlyArray<Scalars['ID']>>;
+};
+
+export type GQLUserQueryInput = {
   readonly userId: Maybe<Scalars['ID']>;
   readonly roleIds: Maybe<ReadonlyArray<Scalars['ID']>>;
 };
@@ -1713,6 +1724,7 @@ export type GQLResolversTypes = {
   ThemeTotal: ResolverTypeWrapper<GQLThemeTotal>;
   UpdateUserRolesQueryInput: GQLUpdateUserRolesQueryInput;
   UserRolesQueryInput: GQLUserRolesQueryInput;
+  UserQueryInput: GQLUserQueryInput;
   ActivityData: GQLResolversTypes['EmbeddedActivityData'] | GQLResolversTypes['HtmlActivityData'];
   ActivityTimer: ResolverTypeWrapper<ActivityTimerEntity>;
   EmbeddedActivityData: ResolverTypeWrapper<EmbeddedActivityDataEntity>;
@@ -1841,6 +1853,7 @@ export type GQLResolversParentTypes = {
   ThemeTotal: GQLThemeTotal;
   UpdateUserRolesQueryInput: GQLUpdateUserRolesQueryInput;
   UserRolesQueryInput: GQLUserRolesQueryInput;
+  UserQueryInput: GQLUserQueryInput;
   ActivityData: GQLResolversParentTypes['EmbeddedActivityData'] | GQLResolversParentTypes['HtmlActivityData'];
   ActivityTimer: ActivityTimerEntity;
   EmbeddedActivityData: EmbeddedActivityDataEntity;
@@ -2017,6 +2030,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   theme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQuerythemeArgs, 'id'>>;
   themeTotal: Resolver<Maybe<ReadonlyArray<GQLResolversTypes['ThemeTotal']>>, ParentType, ContextType, RequireFields<GQLQuerythemeTotalArgs, 'classId'>>;
   themes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType>;
+  user: Resolver<Maybe<ReadonlyArray<GQLResolversTypes['User']>>, ParentType, ContextType, RequireFields<GQLQueryuserArgs, never>>;
   userRole: Resolver<Maybe<GQLResolversTypes['UserRole']>, ParentType, ContextType, RequireFields<GQLQueryuserRoleArgs, 'id'>>;
   userRoles: Resolver<ReadonlyArray<GQLResolversTypes['UserRole']>, ParentType, ContextType, RequireFields<GQLQueryuserRolesArgs, never>>;
   viewerEnrollmentLevelCodes: Resolver<ReadonlyArray<GQLResolversTypes['LevelCode']>, ParentType, ContextType, RequireFields<GQLQueryviewerEnrollmentLevelCodesArgs, never>>;
