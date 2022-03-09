@@ -1,4 +1,5 @@
 enum RoleId {
+    MASTER
     ADMIN
     STUDENT
     TEACHER

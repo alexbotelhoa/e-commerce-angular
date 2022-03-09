@@ -3,16 +3,6 @@ import { Permission } from "../types/permission.type";
 import { objectKeys } from "../../../shared/utils/typed-object-keys.util";
 
 export const permissionsById: Record<PermissionId, Permission> = {
-    MANAGE_ACTIVITY: {
-        id: 'MANAGE_ACTIVITY',
-        name: 'Manage activity',
-        description: 'User can view, create, edit, enable/disable and delete activities.',
-    },
-    MANAGE_CYCLE: {
-        id: 'MANAGE_CYCLE',
-        name: 'Manage cycle',
-        description: 'User can view, create, edit, enable/disable and delete cycles.',
-    },
     MANAGE_LEVEL: {
         id: 'MANAGE_LEVEL',
         name: 'Manage level',
@@ -22,6 +12,16 @@ export const permissionsById: Record<PermissionId, Permission> = {
         id: 'MANAGE_THEME',
         name: 'Manage theme',
         description: 'User can view, create, edit, enable/disable and delete themes.',
+    },
+    MANAGE_CYCLE: {
+        id: 'MANAGE_CYCLE',
+        name: 'Manage cycle',
+        description: 'User can view, create, edit, enable/disable and delete cycles.',
+    },
+    MANAGE_ACTIVITY: {
+        id: 'MANAGE_ACTIVITY',
+        name: 'Manage activity',
+        description: 'User can view, create, edit, enable/disable and delete activities.',
     },
     EXECUTE_ACTIVITY: {
         id: 'EXECUTE_ACTIVITY',
@@ -47,6 +47,11 @@ export const permissionsById: Record<PermissionId, Permission> = {
         id: 'MANAGE_NEWSLETTER',
         name: 'Manage newsletter',
         description: `Manage newsletter`
+    },
+    MANAGE_MASTER: {
+        id: 'MANAGE_MASTER',
+        name: 'Manage master',
+        description: `Manage master`
     },
     HORIZON_ONE: {
         id: 'HORIZON_ONE',
