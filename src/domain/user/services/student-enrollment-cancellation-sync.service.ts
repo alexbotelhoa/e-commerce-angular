@@ -1,6 +1,8 @@
 import { FastifyLoggerInstance } from "fastify";
+
 import { DatabaseService } from "../../../shared/services/database.service";
 import { getClassById } from "../../../shared/repositories/class.repository";
+import { deleteMaterial } from "../../../shared/repositories/material.repository";
 import { deleteEnrollment, selectEnrollment } from "../../../shared/repositories/enrollment.repository";
 import { StudentEnrollmentCancellationSyncEvent, WebhookResponse } from "../types/webhook-events.types";
 import { deleteEnrollmentClass, selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
@@ -36,10 +38,19 @@ export const processStudentEnrollmentCancellationSync = (
     if (enrollmentClassToDelete) {
         log.info(event as any, 'Processing enrollment cancellation, found enrollment class for user, removing');
         await db.transaction(async trx => {
-            await deleteEnrollmentClass(trx)(where => where.andWhere('classId', data.classId).andWhere('enrollmentId', enrollment.id));
+            await deleteEnrollmentClass(trx)(query => query.andWhere('classId', data.classId).andWhere('enrollmentId', enrollment.id));
+
             if (allEnrollmentClasses.length === 1) {
-                await deleteEnrollment(trx)(where => where.andWhere('id', enrollment.id));
+                await deleteEnrollment(trx)(query => query.andWhere('id', enrollment.id));
             }
+
+            await deleteMaterial(trx)(query => {
+                query.where({classId: data.classId, userId: data.userId}).where(
+                    function() {
+                        this.where({isInternal: false}).orWhere({isInternal: true, acquiredLanguageBooster: false})
+                    }
+                );
+            })
         })
     } else {
         log.info(event as any, 'Processing enrollment cancellation, enrollment class for user not found, nothing to do');
