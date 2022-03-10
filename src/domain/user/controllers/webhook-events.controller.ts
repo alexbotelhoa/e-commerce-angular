@@ -104,6 +104,7 @@ const CourseMaterialSyncEventType = t.type({
 export const UserRolesUpdateSyncEventData = t.type({
     userId: t.string,
     rolesId: t.array(t.union([
+        t.literal(0),
         t.literal(1),
         t.literal(2),
         t.literal(3),

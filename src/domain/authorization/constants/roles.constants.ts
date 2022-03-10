@@ -2,6 +2,13 @@ import { Role } from "../types/role.type";
 import { RoleId } from "../enums/role-id.enum";
 import { objectKeys } from "../../../shared/utils/typed-object-keys.util";
 
+export const masterRole: Role = {
+    id: RoleId.MASTER,
+    name: 'Master',
+    permissionMap: {
+        MANAGE_MASTER: true,
+    }
+}
 export const adminRole: Role = {
     id: RoleId.ADMIN,
     name: 'Administrator',
@@ -61,6 +68,7 @@ export const guardianRole: Role = {
 }
 
 export const rolesById: Readonly<Record<RoleId, Role>> = {
+    [RoleId.MASTER]: masterRole,
     [RoleId.ADMIN]: adminRole,
     [RoleId.STUDENT]: studentRole,
     [RoleId.TEACHER]: teacherRole,

@@ -1,6 +1,7 @@
 import { GQLResolvers } from "../../resolvers-types";
 import { classQueryResolver } from "../../domain/class/class.query";
 import { countQueryResolver } from "../../domain/count/count.query";
+import { userQueryResolver } from "../../domain/user/query/user.query";
 import { backupQueryResolver } from '../../domain/backup/backup.query';
 import { classesQueryResolver } from "../../domain/class/classes.query";
 import { logQueryResolver } from "../../domain/log/queries/log.resolver";
@@ -58,9 +59,9 @@ import { viewerTeacherLevelCodesQueryResolver } from "../../domain/teacher/queri
 import { teacherClassesActivatedQueryResolver } from "../../domain/teacher/queries/teacher-classes-activated/teacher-classes-activated.resolvers";
 import { activitiesListProgressQueryResolver } from "../../domain/activity/queries/activities-list-on-progress-order/activities-list-on-progress-order.query";
 import { overallClassCompletedActivitiesQueryResolver } from "../../domain/teacher/queries/overall-class-completed-activities/overall-class-completed-activities.query";
-
 export const queryResolvers: GQLResolvers['Query'] = {
     logs: logQueryResolver,
+    user: userQueryResolver,
     cycle: cycleQueryResolver,
     class: classQueryResolver,
     count: countQueryResolver,
