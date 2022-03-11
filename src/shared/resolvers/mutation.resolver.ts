@@ -14,7 +14,6 @@ import { messageResolver } from "../../domain/chat/mutations/chat.mutation";
 import { auditResolver } from "../../domain/log/mutations/call-audit.mutation.resolver";
 import { chatMakeReadResolver } from "../../domain/chat/mutations/chat-make-read.mutation";
 import { finishOnboardMutationResolver } from "../../domain/finish-onboard/finish-onboard.mutation";
-import { updateUserRolesMutationResolver } from "../../domain/user-role/mutations/user-roles.mutation";
 import { upsertAnnotationResolver } from "../../domain/annotation/mutations/upsert-annotation.mutation";
 import { createLevelMutationResolver } from "../../domain/activity/mutations/level/create-level.mutation";
 import { createLevelCodeMutation } from "../../domain/activity/mutations/level/create-level-code.mutation";
@@ -34,6 +33,7 @@ import { createCommentOnActivityMutationResolver } from "../../domain/activity/m
 import { createChallengeMutationResolver, toggleChallengeState, updateChallengeMutationResolver } from "../../domain/challenge/mutations/challenge.mutation";
 import { createNewsletterMutationResolver, toggleNewsletterState, updateNewsletterMutationResolver } from "../../domain/newsletter/mutations/newsletter.mutation";
 import { toggleActivityState, createEmbeddedActivityMutationResolver, createHtmlActivityMutationResolver } from "../../domain/activity/mutations/activity/activity.mutation";
+import { updateUserRolesMutationResolver } from "../../domain/user-role/mutations/update-user-roles.mutation";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,

@@ -316,7 +316,7 @@ export type GQLMutationupdateThemeArgs = {
 
 
 export type GQLMutationupdateUserRolesArgs = {
-  data: GQLUpdateUserRolesQueryInput;
+  data: GQLUpdateUserRolesInput;
 };
 
 
@@ -1155,9 +1155,10 @@ export type GQLThemeTotal = {
   readonly totalCompleted: Scalars['Int'];
 };
 
-export type GQLUpdateUserRolesQueryInput = {
+export type GQLUpdateUserRolesInput = {
+  readonly isNewUser: Scalars['Boolean'];
   readonly userId: Scalars['String'];
-  readonly roleIds: ReadonlyArray<Scalars['Int']>;
+  readonly roleIds: Maybe<ReadonlyArray<RoleId>>;
 };
 
 export type GQLUserRolesQueryInput = {
@@ -1723,7 +1724,7 @@ export type GQLResolversTypes = {
   TeacherClassesQueryInput: GQLTeacherClassesQueryInput;
   ViewerTeacherLevelCodesFilterInput: GQLViewerTeacherLevelCodesFilterInput;
   ThemeTotal: ResolverTypeWrapper<GQLThemeTotal>;
-  UpdateUserRolesQueryInput: GQLUpdateUserRolesQueryInput;
+  UpdateUserRolesInput: GQLUpdateUserRolesInput;
   UserRolesQueryInput: GQLUserRolesQueryInput;
   UserQueryInput: GQLUserQueryInput;
   ActivityData: GQLResolversTypes['EmbeddedActivityData'] | GQLResolversTypes['HtmlActivityData'];
@@ -1852,7 +1853,7 @@ export type GQLResolversParentTypes = {
   TeacherClassesQueryInput: GQLTeacherClassesQueryInput;
   ViewerTeacherLevelCodesFilterInput: GQLViewerTeacherLevelCodesFilterInput;
   ThemeTotal: GQLThemeTotal;
-  UpdateUserRolesQueryInput: GQLUpdateUserRolesQueryInput;
+  UpdateUserRolesInput: GQLUpdateUserRolesInput;
   UserRolesQueryInput: GQLUserRolesQueryInput;
   UserQueryInput: GQLUserQueryInput;
   ActivityData: GQLResolversParentTypes['EmbeddedActivityData'] | GQLResolversParentTypes['HtmlActivityData'];
