@@ -1,4 +1,5 @@
 import { FastifyLoggerInstance } from "fastify";
+
 import { MaterialEntity } from "../../../entities/material.entity";
 import { getUserById } from "../../../shared/repositories/user.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
@@ -38,8 +39,10 @@ export const processCourseMaterialSync = (
     }
 
     materialData.CourseMaterials.forEach(async (material: any) => {
-        const [hasMaterial] = await selectMaterial(readonlyDatabase).where("userId", "=", userId)
-        .andWhere("isbn", "=", material.isbn).andWhere("classId", "=", materialData.classId);
+        const [hasMaterial] = await selectMaterial(readonlyDatabase)
+            .where("userId", "=", userId)
+            .andWhere("isbn", "=", material.isbn)
+            .andWhere("classId", "=", materialData.classId);
         if (hasMaterial) {
             await updateMaterial(db)({
                 ...baseMaterialInfo,
@@ -53,7 +56,7 @@ export const processCourseMaterialSync = (
                 coverImg: material.coverImg,
                 publisher: material.publisher,
                 languageBank: material.languageBank,
-            })(qb => qb.where("id", hasMaterial.id))
+            })(builder => builder.where("id", hasMaterial.id));
         } else {
             await insertMaterial(db)({
                 ...baseMaterialInfo,
@@ -67,20 +70,23 @@ export const processCourseMaterialSync = (
                 coverImg: material.coverImg,
                 publisher: material.publisher,
                 languageBank: material.languageBank,
-            })
+            });
         }
     });
 
     const studentMaterials = await selectMaterial(readonlyDatabase)
         .where("userId", "=", userId)
         .andWhere("classId", "=", materialData.classId);
-
     const activeIds = studentMaterials.filter(m => materialData.CourseMaterials.some((item: any) => item.isbn === m.isbn)).map(i => i.id);
     if (studentMaterials.length > 0 ) {
         if (activeIds.length > 0) {
-            await updateMaterial(db)({ active: false })(qb => qb.where("userId", userId).andWhere("classId", "=", materialData.classId).whereNotIn("id", activeIds))
+            await updateMaterial(db)({
+                active: false,
+            })(builder => builder.where("userId", userId).andWhere("classId", "=", materialData.classId).whereNotIn("id", activeIds));
         } else {
-            await updateMaterial(db)({ active: false })(qb => qb.where("userId", userId).andWhere("classId", "=", materialData.classId));
+            await updateMaterial(db)({
+                active: false,
+            })(builder => builder.where("userId", userId).andWhere("classId", "=", materialData.classId));
         }
     }
 
