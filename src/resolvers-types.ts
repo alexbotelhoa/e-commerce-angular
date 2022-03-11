@@ -1007,6 +1007,7 @@ export type GQLAuditInput = {
 
 export type GQLLogsQueryInput = {
   readonly ids: Maybe<ReadonlyArray<Scalars['ID']>>;
+  readonly userId: Maybe<Scalars['String']>;
   readonly search: Maybe<Scalars['String']>;
   readonly perPage: Maybe<Scalars['ID']>;
   readonly page: Maybe<Scalars['ID']>;

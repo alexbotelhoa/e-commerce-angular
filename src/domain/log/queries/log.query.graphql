@@ -4,6 +4,7 @@ type Query {
 
 input LogsQueryInput {
     ids: [ID!]
+    userId: String
     search: String
     perPage: ID
     page: ID

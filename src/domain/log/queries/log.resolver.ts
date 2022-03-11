@@ -7,15 +7,17 @@ export const logQueryResolver: GQLQueryResolvers['logs'] = async (obj, { data },
     const offset = perPage ? ((data?.page ? Number(data?.page) : 1) - 1) * Number(perPage) : 0
     const orderBy =  data?.orderBy === 'ASC' ? 'ASC' : 'DESC';
     if (data) {
-        if (data.search) {
-            query.where("key", "like", `%${data.search}%`)
-            query.orWhere("body", "like", `%${data.search}%`)
-        }
         if (data.ids && data.ids.length > 0) {
             query.whereIn('id', data.ids);
         }
+        if (data.userId) {
+            query.where("body", "like", `%${data.userId}%`)
+        }
+        if (data.search) {
+            query.where("body", "like", `%${data.search}%`)
+        }
         query.limit(perPage)
-        .offset(offset);
+        query.offset(offset);
     }
     query.orderBy('createdAt', orderBy);
     return await query;
