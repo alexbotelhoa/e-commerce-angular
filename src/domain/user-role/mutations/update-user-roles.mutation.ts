@@ -9,24 +9,38 @@ export const updateUserRolesMutationResolver: GQLMutationResolvers['updateUserRo
     const roleIds = data.roleIds;
     const currentUser = context.currentUser;
 
-    const isEditingLoggedUser = currentUser && currentUser?.id === userId;
-    const isIncludingMaster = roleIds && roleIds.includes(RoleId.MASTER);
+    const rolesNotAllowed = [(
+        roleIds?.includes(RoleId.TEACHER.toString()) ||
+        roleIds?.includes(RoleId.STUDENT.toString()) ||
+        roleIds?.includes(RoleId.GUARDIAN.toString()) ||
+        roleIds?.includes(RoleId.HORIZON_ONE.toString())
+    )].some(yes => yes);
+
+    if (rolesNotAllowed) {
+        throw new Error("Roles not allowed");
+    }
 
     if (roleIds && roleIds.length === 0) {
         throw new Error("Roles not found");
     }
     
     if (isNewUser) {
-        const userRoles = await selectUserRole(context.readonlyDatabase).
-                                    where('userId', '=', userId).
-                                    whereIn('roleId', roles);
-                                    
+        const userRoles = await selectUserRole(context.readonlyDatabase)
+            .where('userId', userId)
+            .whereIn('roleId', roles);
+    
         if (userRoles && userRoles.length > 0) {
             throw new Error("User already exists");
         }
     } else {
+        const isEditingLoggedUser = currentUser && currentUser?.id === userId;
+        const isIncludingMaster = roleIds && (
+            roleIds.includes(RoleId.MASTER.toString()) &&
+            roleIds.includes(RoleId.ADMIN.toString())
+            );
+
         if (isEditingLoggedUser && !isIncludingMaster) {
-            throw new Error("Can't remove role master");
+            throw new Error("Can't remove role master or admin");
         }
     }
 
@@ -36,7 +50,7 @@ export const updateUserRolesMutationResolver: GQLMutationResolvers['updateUserRo
                                                 whereIn('roleId', roles));
 
         if (roleIds) {
-            await roleIds.map((role: RoleId) => {
+            await roleIds.map((role: any) => {
                 insertUserRole(trx)({
                     userId: userId.toString(),
                     roleId: role as RoleId

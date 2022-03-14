@@ -5,5 +5,5 @@ type Mutation {
 input UpdateUserRolesInput {
     isNewUser: Boolean!
     userId: String!
-    roleIds: [RoleId!]
+    roleIds: [ID!]
 }
