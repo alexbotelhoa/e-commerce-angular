@@ -10,10 +10,10 @@ export const updateUserRolesMutationResolver: GQLMutationResolvers['updateUserRo
     const currentUser = context.currentUser;
 
     const rolesNotAllowed = [(
-        roleIds?.includes(RoleId.TEACHER.toString()) ||
-        roleIds?.includes(RoleId.STUDENT.toString()) ||
-        roleIds?.includes(RoleId.GUARDIAN.toString()) ||
-        roleIds?.includes(RoleId.HORIZON_ONE.toString())
+        roleIds?.includes(RoleId.TEACHER) ||
+        roleIds?.includes(RoleId.STUDENT) ||
+        roleIds?.includes(RoleId.GUARDIAN) ||
+        roleIds?.includes(RoleId.HORIZON_ONE)
     )].some(yes => yes);
 
     if (rolesNotAllowed) {
@@ -35,8 +35,8 @@ export const updateUserRolesMutationResolver: GQLMutationResolvers['updateUserRo
     } else {
         const isEditingLoggedUser = currentUser && currentUser?.id === userId;
         const isIncludingMaster = roleIds && (
-            roleIds.includes(RoleId.MASTER.toString()) &&
-            roleIds.includes(RoleId.ADMIN.toString())
+            roleIds.includes(RoleId.MASTER) &&
+            roleIds.includes(RoleId.ADMIN)
             );
 
         if (isEditingLoggedUser && !isIncludingMaster) {
@@ -50,7 +50,7 @@ export const updateUserRolesMutationResolver: GQLMutationResolvers['updateUserRo
                                                 whereIn('roleId', roles));
 
         if (roleIds) {
-            await roleIds.map((role: any) => {
+            await roleIds.map((role: RoleId) => {
                 insertUserRole(trx)({
                     userId: userId.toString(),
                     roleId: role as RoleId

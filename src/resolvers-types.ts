@@ -1158,7 +1158,7 @@ export type GQLThemeTotal = {
 export type GQLUpdateUserRolesInput = {
   readonly isNewUser: Scalars['Boolean'];
   readonly userId: Scalars['String'];
-  readonly roleIds: Maybe<ReadonlyArray<Scalars['ID']>>;
+  readonly roleIds: Maybe<ReadonlyArray<RoleId>>;
 };
 
 export type GQLUserRolesQueryInput = {
