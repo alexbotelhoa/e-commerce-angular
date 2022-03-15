@@ -34,7 +34,7 @@ import { createChallengeMutationResolver, toggleChallengeState, updateChallengeM
 import { createNewsletterMutationResolver, toggleNewsletterState, updateNewsletterMutationResolver } from "../../domain/newsletter/mutations/newsletter.mutation";
 import { toggleActivityState, createEmbeddedActivityMutationResolver, createHtmlActivityMutationResolver } from "../../domain/activity/mutations/activity/activity.mutation";
 import { updateUserRolesMutationResolver } from "../../domain/user-role/mutations/update-user-roles.mutation";
-import { deleteActivityTimerMutationResolver } from "../../domain/activity/mutations/activity/activity-timer.mutation";
+import { deleteActivityTimerMutationResolver } from "../../domain/activity/mutations/activity/delete-activity-timer.mutation";
 
 const cycleEntityResolvers: Pick<GQLMutationResolvers, 'createCycle' | 'activateCycle' | 'deactivateCycle' | 'addActivitiesToCycle' | 'deleteActivityFromCycle'> = {
     createCycle: createCycleMutationResolver,

@@ -3,19 +3,19 @@ import { deleteAllActivityTimers, selectActivityTimer } from "../../../../shared
 import { getClassById } from "../../../../shared/repositories/class.repository";
 
 export const deleteActivityTimerMutationResolver: GQLMutationResolvers['deleteActivityTimer'] = async (obj, { data }, context) => {
-    const userId = data.userId;
-    const classId = data.classId;
+    const userId = data?.userId;
+    const classId = data?.classId;
     const classExists = await getClassById(context.database)(classId);
 
     if (!classExists) {
         throw new Error('Class not found');
     }
 
-    const [userIsInClass] = await selectActivityTimer(context.database).
+    const [isUserInClass] = await selectActivityTimer(context.database).
                                             where("userId", userId).
                                             andWhere("classId", classId);
 
-    if (!userIsInClass) {
+    if (!isUserInClass) {
         throw new Error('User not in this Class');
     }
 
