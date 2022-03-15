@@ -1,0 +1,8 @@
+type Query {
+    activityTimer(data: activityTimerQueryInput): ActivityTimer
+}
+
+input activityTimerQueryInput {
+    userId: ID!,
+    classId: ID!
+}

@@ -59,9 +59,11 @@ import { viewerTeacherLevelCodesQueryResolver } from "../../domain/teacher/queri
 import { teacherClassesActivatedQueryResolver } from "../../domain/teacher/queries/teacher-classes-activated/teacher-classes-activated.resolvers";
 import { activitiesListProgressQueryResolver } from "../../domain/activity/queries/activities-list-on-progress-order/activities-list-on-progress-order.query";
 import { overallClassCompletedActivitiesQueryResolver } from "../../domain/teacher/queries/overall-class-completed-activities/overall-class-completed-activities.query";
+import { activityTimerQueryResolver } from "../../domain/activity/queries/activity/activity-timer.query";
 export const queryResolvers: GQLResolvers['Query'] = {
     logs: logQueryResolver,
     user: userQueryResolver,
+    activityTimer: activityTimerQueryResolver,
     cycle: cycleQueryResolver,
     class: classQueryResolver,
     count: countQueryResolver,

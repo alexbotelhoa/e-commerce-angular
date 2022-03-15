@@ -508,6 +508,7 @@ export type GQLQuery = {
   readonly activitiesListByProgressOrder: ReadonlyArray<GQLActivitiesListByProgressOrder>;
   readonly activity: Maybe<GQLActivityUnion>;
   readonly activityComments: ReadonlyArray<GQLActivityComment>;
+  readonly activityTimer: Maybe<GQLActivityTimer>;
   readonly availableActivitiesForCycle: ReadonlyArray<GQLActivityUnion>;
   readonly availableThemes: ReadonlyArray<GQLTheme>;
   readonly avatars: ReadonlyArray<GQLAvatar>;
@@ -588,6 +589,11 @@ export type GQLQueryactivityArgs = {
 
 export type GQLQueryactivityCommentsArgs = {
   data: GQLActivityCommentsQueryInput;
+};
+
+
+export type GQLQueryactivityTimerArgs = {
+  data: Maybe<GQLactivityTimerQueryInput>;
 };
 
 
@@ -777,6 +783,11 @@ export type GQLActivitiesListByProgressOrder = {
 export type GQLActivityCommentsQueryInput = {
   readonly activityId: Scalars['ID'];
   readonly classIds: Maybe<ReadonlyArray<Scalars['ID']>>;
+};
+
+export type GQLactivityTimerQueryInput = {
+  readonly userId: Scalars['ID'];
+  readonly classId: Scalars['ID'];
 };
 
 export type GQLLevelThemesQueryInput = {
@@ -1186,6 +1197,7 @@ export type GQLActivityTimer = {
   readonly classId: Scalars['ID'];
   readonly cycleActivity: GQLCycleActivity;
   readonly currentUser: GQLUser;
+  readonly completedActivities: Scalars['String'];
 };
 
 export type GQLEmbeddedActivityData = GQLActivityData & {
@@ -1677,6 +1689,7 @@ export type GQLResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   ActivitiesListByProgressOrder: ResolverTypeWrapper<GQLActivitiesListByProgressOrder>;
   ActivityCommentsQueryInput: GQLActivityCommentsQueryInput;
+  activityTimerQueryInput: GQLactivityTimerQueryInput;
   LevelThemesQueryInput: GQLLevelThemesQueryInput;
   AvailableThemesInputData: GQLAvailableThemesInputData;
   Class: ResolverTypeWrapper<ClassEntity>;
@@ -1808,6 +1821,7 @@ export type GQLResolversParentTypes = {
   Query: {};
   ActivitiesListByProgressOrder: GQLActivitiesListByProgressOrder;
   ActivityCommentsQueryInput: GQLActivityCommentsQueryInput;
+  activityTimerQueryInput: GQLactivityTimerQueryInput;
   LevelThemesQueryInput: GQLLevelThemesQueryInput;
   AvailableThemesInputData: GQLAvailableThemesInputData;
   Class: ClassEntity;
@@ -1985,6 +1999,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   activitiesListByProgressOrder: Resolver<ReadonlyArray<GQLResolversTypes['ActivitiesListByProgressOrder']>, ParentType, ContextType, RequireFields<GQLQueryactivitiesListByProgressOrderArgs, 'courseId'>>;
   activity: Resolver<Maybe<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryactivityArgs, 'id'>>;
   activityComments: Resolver<ReadonlyArray<GQLResolversTypes['ActivityComment']>, ParentType, ContextType, RequireFields<GQLQueryactivityCommentsArgs, 'data'>>;
+  activityTimer: Resolver<Maybe<GQLResolversTypes['ActivityTimer']>, ParentType, ContextType, RequireFields<GQLQueryactivityTimerArgs, never>>;
   availableActivitiesForCycle: Resolver<ReadonlyArray<GQLResolversTypes['ActivityUnion']>, ParentType, ContextType, RequireFields<GQLQueryavailableActivitiesForCycleArgs, 'cycleId'>>;
   availableThemes: Resolver<ReadonlyArray<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLQueryavailableThemesArgs, 'availableThemesInputData'>>;
   avatars: Resolver<ReadonlyArray<GQLResolversTypes['Avatar']>, ParentType, ContextType>;
@@ -2270,6 +2285,7 @@ export type GQLActivityTimerResolvers<ContextType = GraphQLContext, ParentType e
   classId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   cycleActivity: Resolver<GQLResolversTypes['CycleActivity'], ParentType, ContextType>;
   currentUser: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
+  completedActivities: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
