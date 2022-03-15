@@ -1,0 +1,9 @@
+type Mutation {
+    deleteActivityTimer(data: DeleteActivityTimerInput!): Boolean!
+}
+
+input DeleteActivityTimerInput {
+    userId: String!
+    classId: String!
+}
+

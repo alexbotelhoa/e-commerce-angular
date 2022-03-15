@@ -88,6 +88,7 @@ export type GQLMutation = {
   readonly deactivateTheme: Maybe<GQLTheme>;
   readonly deleteActivityComment: GQLDeleteActivityCommentResult;
   readonly deleteActivityFromCycle: GQLCycle;
+  readonly deleteActivityTimer: Scalars['Boolean'];
   readonly deleteCycleFromLevelTheme: GQLLevelTheme;
   readonly deleteThemeFromLevel: GQLLevel;
   readonly finishOnboard: GQLUser;
@@ -245,6 +246,11 @@ export type GQLMutationdeleteActivityFromCycleArgs = {
 };
 
 
+export type GQLMutationdeleteActivityTimerArgs = {
+  data: GQLDeleteActivityTimerInput;
+};
+
+
 export type GQLMutationdeleteCycleFromLevelThemeArgs = {
   cycleId: Scalars['ID'];
 };
@@ -332,6 +338,11 @@ export type GQLMutationupsertOrRemoveUserInterestArgs = {
 
 export type GQLMutationviewerChangeAvatarArgs = {
   data: GQLViewerChangeAvatarInput;
+};
+
+export type GQLDeleteActivityTimerInput = {
+  readonly userId: Scalars['String'];
+  readonly classId: Scalars['String'];
 };
 
 export type GQLCreateEmbeddedActivityInput = {
@@ -1656,6 +1667,7 @@ export type GQLResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  DeleteActivityTimerInput: GQLDeleteActivityTimerInput;
   CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   CreateHtmlActivityInput: GQLCreateHtmlActivityInput;
   EmbeddedActivityDataInput: GQLEmbeddedActivityDataInput;
@@ -1788,6 +1800,7 @@ export type GQLResolversParentTypes = {
   ID: Scalars['ID'];
   Boolean: Scalars['Boolean'];
   String: Scalars['String'];
+  DeleteActivityTimerInput: GQLDeleteActivityTimerInput;
   CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   CreateHtmlActivityInput: GQLCreateHtmlActivityInput;
   EmbeddedActivityDataInput: GQLEmbeddedActivityDataInput;
@@ -1947,6 +1960,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   deactivateTheme: Resolver<Maybe<GQLResolversTypes['Theme']>, ParentType, ContextType, RequireFields<GQLMutationdeactivateThemeArgs, 'id'>>;
   deleteActivityComment: Resolver<GQLResolversTypes['DeleteActivityCommentResult'], ParentType, ContextType, RequireFields<GQLMutationdeleteActivityCommentArgs, 'data'>>;
   deleteActivityFromCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationdeleteActivityFromCycleArgs, 'cycleActivityId'>>;
+  deleteActivityTimer: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<GQLMutationdeleteActivityTimerArgs, 'data'>>;
   deleteCycleFromLevelTheme: Resolver<GQLResolversTypes['LevelTheme'], ParentType, ContextType, RequireFields<GQLMutationdeleteCycleFromLevelThemeArgs, 'cycleId'>>;
   deleteThemeFromLevel: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationdeleteThemeFromLevelArgs, 'levelThemeId'>>;
   finishOnboard: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
