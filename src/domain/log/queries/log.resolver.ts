@@ -6,6 +6,7 @@ export const logQueryResolver: GQLQueryResolvers['logs'] = async (obj, { data },
     const perPage =  data?.perPage && parseFloat(data.perPage) || 10;
     const offset = perPage ? ((data?.page ? Number(data?.page) : 1) - 1) * Number(perPage) : 0
     const orderBy =  data?.orderBy === 'ASC' ? 'ASC' : 'DESC';
+
     if (data) {
         if (data.ids && data.ids.length > 0) {
             query.whereIn('id', data.ids);
@@ -20,5 +21,6 @@ export const logQueryResolver: GQLQueryResolvers['logs'] = async (obj, { data },
         query.offset(offset);
     }
     query.orderBy('createdAt', orderBy);
+
     return await query;
 }

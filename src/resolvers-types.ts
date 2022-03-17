@@ -340,11 +340,6 @@ export type GQLMutationviewerChangeAvatarArgs = {
   data: GQLViewerChangeAvatarInput;
 };
 
-export type GQLDeleteActivityTimerInput = {
-  readonly userId: Scalars['String'];
-  readonly classId: Scalars['String'];
-};
-
 export type GQLCreateEmbeddedActivityInput = {
   readonly name: Scalars['String'];
   readonly description: Maybe<Scalars['String']>;
@@ -368,6 +363,11 @@ export type GQLEmbeddedActivityDataInput = {
 
 export type GQLHtmlActivityDataInput = {
   readonly html: Scalars['String'];
+};
+
+export type GQLDeleteActivityTimerInput = {
+  readonly userId: Scalars['String'];
+  readonly classId: Scalars['String'];
 };
 
 export type GQLUpdateEmbeddedActivityInput = {
@@ -1667,12 +1667,12 @@ export type GQLResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   String: ResolverTypeWrapper<Scalars['String']>;
-  DeleteActivityTimerInput: GQLDeleteActivityTimerInput;
   CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   CreateHtmlActivityInput: GQLCreateHtmlActivityInput;
   EmbeddedActivityDataInput: GQLEmbeddedActivityDataInput;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   HtmlActivityDataInput: GQLHtmlActivityDataInput;
+  DeleteActivityTimerInput: GQLDeleteActivityTimerInput;
   UpdateEmbeddedActivityInput: GQLUpdateEmbeddedActivityInput;
   CompleteActivityInput: GQLCompleteActivityInput;
   CompleteActivityResult: GQLResolversTypes['ActivityTimer'] | GQLResolversTypes['SimpleError'];
@@ -1800,12 +1800,12 @@ export type GQLResolversParentTypes = {
   ID: Scalars['ID'];
   Boolean: Scalars['Boolean'];
   String: Scalars['String'];
-  DeleteActivityTimerInput: GQLDeleteActivityTimerInput;
   CreateEmbeddedActivityInput: GQLCreateEmbeddedActivityInput;
   CreateHtmlActivityInput: GQLCreateHtmlActivityInput;
   EmbeddedActivityDataInput: GQLEmbeddedActivityDataInput;
   Int: Scalars['Int'];
   HtmlActivityDataInput: GQLHtmlActivityDataInput;
+  DeleteActivityTimerInput: GQLDeleteActivityTimerInput;
   UpdateEmbeddedActivityInput: GQLUpdateEmbeddedActivityInput;
   CompleteActivityInput: GQLCompleteActivityInput;
   CompleteActivityResult: GQLResolversParentTypes['ActivityTimer'] | GQLResolversParentTypes['SimpleError'];
