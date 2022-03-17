@@ -24,6 +24,8 @@ import { getClassById, insertClass, updateClass } from "../../../shared/reposito
 import { getLevelCodeById, insertLevelCode, } from "../../../shared/repositories/level-code.repository";
 import { insertMeeting, selectMeeting, updateMeeting } from "../../../shared/repositories/meeting.repository";
 import { deleteTeacherClass, insertTeacherClass, selectTeacherClass } from "../../../shared/repositories/teacher-class.repository";
+import { updateEnrollment } from "../../../shared/repositories/enrollment.repository";
+import { selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 
 export const processClassSync = (
     db: DatabaseService,
@@ -83,6 +85,9 @@ export const processClassSync = (
         const hasCampus = getOneOrNull((await readonlyDatabase.select<CampusEntity[]>([`${CAMPUS_TABLE}.*`]).from(CAMPUS_TABLE).where(`${CAMPUS_TABLE}.name`, classData.campus)));
         const hasLocal = getOneOrNull((await readonlyDatabase.select<LocalEntity[]>([`${LOCAL_TABLE}.*`]).from(LOCAL_TABLE).where(`${LOCAL_TABLE}.name`, classData.local)));
         const fullClassDataDivergent = isFullClassDataDivergent(existingClass, classData);
+        const hasEnrollmentClass = await selectEnrollmentClass(readonlyDatabase).where('classId', classData.id);
+        console.log("hasEnrollmentClass: ", hasEnrollmentClass)
+
         if (fullClassDataDivergent || (!hasRegional || !hasCampus || !hasLocal)) {
             const { campusId, localId, regionalId } = await updateRegionCampusLocal(db, classData, hasRegional, hasCampus, hasLocal);
             const times = {
@@ -106,6 +111,13 @@ export const processClassSync = (
                 ...times,
             })(builder => builder.andWhere('id', classData.id));
         }
+
+        hasEnrollmentClass.map(async (enrollment) => {
+            await updateEnrollment(db)({
+                levelCodeId: classData.level.id
+            })(builder => builder.where('id', enrollment.enrollmentId));
+        })
+
         await processTeacherData(db, classData);
         await processMeetingData(db, readonlyDatabase, classData, redis);
 
