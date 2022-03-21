@@ -776,7 +776,7 @@ export type GQLQueryuserRolesArgs = {
 
 
 export type GQLQueryviewerEnrollmentLevelCodesArgs = {
-  filters: Maybe<GQLViewerEnrollmenLevelCodestFilterInput>;
+  filters: Maybe<GQLViewerEnrollmentLevelCodesFilterInput>;
 };
 
 
@@ -1003,7 +1003,7 @@ export type GQLcountQueryInput = {
   readonly search: Maybe<Scalars['String']>;
 };
 
-export type GQLViewerEnrollmenLevelCodestFilterInput = {
+export type GQLViewerEnrollmentLevelCodesFilterInput = {
   readonly last30days: Maybe<Scalars['Boolean']>;
   readonly userId: Maybe<Scalars['ID']>;
 };
@@ -1166,7 +1166,7 @@ export type GQLTeacherClassesQueryInput = {
 };
 
 export type GQLViewerTeacherLevelCodesFilterInput = {
-  readonly last30days: Maybe<Scalars['Boolean']>;
+  readonly classActive: Maybe<Scalars['Boolean']>;
   readonly userId: Maybe<Scalars['ID']>;
 };
 
@@ -1418,7 +1418,7 @@ export type GQLLevelCodeviewerClassesArgs = {
 };
 
 export type GQLLevelCodeViewTeacherClassFilterInput = {
-  readonly active: Maybe<Scalars['Boolean']>;
+  readonly classActive: Maybe<Scalars['Boolean']>;
   readonly userId: Maybe<Scalars['ID']>;
 };
 
@@ -1728,7 +1728,7 @@ export type GQLResolversTypes = {
   ChatStudentsQueryInput: GQLChatStudentsQueryInput;
   ClassesQueryInput: GQLClassesQueryInput;
   countQueryInput: GQLcountQueryInput;
-  ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
+  ViewerEnrollmentLevelCodesFilterInput: GQLViewerEnrollmentLevelCodesFilterInput;
   UpsertUserInterestInput: GQLUpsertUserInterestInput;
   InterestPaginationData: GQLInterestPaginationData;
   learningMoreOptionsInput: GQLlearningMoreOptionsInput;
@@ -1859,7 +1859,7 @@ export type GQLResolversParentTypes = {
   ChatStudentsQueryInput: GQLChatStudentsQueryInput;
   ClassesQueryInput: GQLClassesQueryInput;
   countQueryInput: GQLcountQueryInput;
-  ViewerEnrollmenLevelCodestFilterInput: GQLViewerEnrollmenLevelCodestFilterInput;
+  ViewerEnrollmentLevelCodesFilterInput: GQLViewerEnrollmentLevelCodesFilterInput;
   UpsertUserInterestInput: GQLUpsertUserInterestInput;
   InterestPaginationData: GQLInterestPaginationData;
   learningMoreOptionsInput: GQLlearningMoreOptionsInput;

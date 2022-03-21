@@ -1,10 +1,10 @@
 type Query {
   viewerEnrollmentLevelCodes(
-    filters: ViewerEnrollmenLevelCodestFilterInput
+    filters: ViewerEnrollmentLevelCodesFilterInput
   ): [LevelCode!]!
 }
 
-input ViewerEnrollmenLevelCodestFilterInput {
+input ViewerEnrollmentLevelCodesFilterInput {
   last30days: Boolean
   userId: ID
 }

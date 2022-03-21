@@ -67,8 +67,10 @@ export const levelCodeViewerTeacherClassesByLevelCodeIdLoader: DatabaseLoaderFac
             .andWhere(`${TEACHER_CLASS_TABLE}.teacherId`, params.userId)
             .whereIn(`${CLASS_TABLE}.levelCodeId`, ids);
 
-        if (params.filters?.active) {
+        if (params.filters?.classActive) {
             query.andWhere(`${CLASS_TABLE}.endDate`, '>=', db.raw('DATE_ADD(CURRENT_DATE(), INTERVAL - 30 DAY)'));
+        } else {
+            query.andWhere(`${CLASS_TABLE}.endDate`, '<', db.raw('DATE_ADD(CURRENT_DATE(), INTERVAL - 30 DAY)'));
         }
 
         const entities: TeacherClassWithLevelCodeId[] = await query;
