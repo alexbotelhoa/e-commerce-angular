@@ -2,7 +2,7 @@ import { GQLQueryResolvers } from "../../../resolvers-types";
 import { selectUser } from "../../../shared/repositories/user.repository";
 
 export const userQueryResolver: GQLQueryResolvers['user'] = async (obj, { data }, context) => {
-    let result = [];
+    let result: any[] = [];
     if (data) {
         const userId = data.userId;
         if (userId) {
@@ -12,6 +12,7 @@ export const userQueryResolver: GQLQueryResolvers['user'] = async (obj, { data }
         if (roleIds && roleIds.length > 0) {
             result = await context.database.
                     select('u.*').
+                    distinct().
                     from('user as u').
                     join('user_role as ur', 'ur.userId', 'u.id').
                     whereIn('ur.roleId', roleIds);

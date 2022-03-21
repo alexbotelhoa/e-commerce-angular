@@ -14,7 +14,7 @@ type LevelCode {
 }
 
 input LevelCodeViewTeacherClassFilterInput {
-  active: Boolean
+  classActive: Boolean
   userId: ID
 }
 

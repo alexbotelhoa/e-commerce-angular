@@ -17,4 +17,14 @@ export const activityTimerResolvers: GQLActivityTimerResolvers = {
     ...activityTimerEntityResolvers,
     cycleActivity: async (obj, params, context) => (await getCycleActivityById(context.database)(obj.cycleActivityId))!,
     currentUser: async (obj, params, context) => (await getUserById(context.database)(obj.userId))!,
+    completedActivities: async (obj, params, context) => {
+        const result = await context.database.
+                            count('aT.completed', { as: 'completedActivities' }).
+                            from('activity_timer as aT').
+                            where('aT.userId', obj.userId).
+                            andWhere('aT.classId', obj.classId).
+                            andWhere('aT.completed', 1).
+                            groupBy('aT.completed');
+        return result[0].completedActivities;
+    },
 }

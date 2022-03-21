@@ -1,5 +1,6 @@
 import { Redis } from "ioredis";
 import { FastifyLoggerInstance } from "fastify";
+
 import { getUserById } from "../../../shared/repositories/user.repository";
 import { DatabaseService } from "../../../shared/services/database.service";
 import { getClassById } from "../../../shared/repositories/class.repository";
@@ -27,6 +28,7 @@ export const processStudentClassTransferSync = (
             success: false,
         };
     }
+
     const existingLevelCode = await getLevelCodeById(db)(existingClass.levelCodeId);
     if (!existingLevelCode) {
         return {
@@ -34,17 +36,20 @@ export const processStudentClassTransferSync = (
             success: false,
         };
     }
-    const user = await getUserById(db)(userId)
+
+    const user = await getUserById(db)(userId);
     if (!user) {
         return {
             message: "User Don't found.",
             success: false,
         };
     }
+
     await transferEnrollment(db, userId, existingLevelCode, data.oldClassId, newClassId, log, event);
     if (redisClient) {
-        await redisClient.del("meeting-" + userId)
+        await redisClient.del("meeting-" + userId);
     }
+
     return {
         success: true,
     };
@@ -62,35 +67,30 @@ async function transferEnrollment(
     log: FastifyLoggerInstance,
     event: StudentClassTransferSyncEvent
 ) {
-    const enrollments = await selectEnrollment(db).andWhere('userId', userId).andWhere('levelCodeId', levelData.id);
     let enrollmentId: number;
-
+    const enrollments = await selectEnrollment(db).andWhere('userId', userId).andWhere('levelCodeId', levelData.id);
     if (enrollments.length == 1) {
         enrollmentId = enrollments[0].id;
     } else {
         if (enrollments.length > 1) {
-            const ids = enrollments.map(i => i.id)
-            const enrollmentsClasses = await selectEnrollmentClass(db).whereIn("enrollmentId", ids)
-            const enrollmentClassesId = enrollmentsClasses.map(item => item.id)
-            await deleteEnrollment(db)(qb => qb.whereIn("id", ids))
-            await deleteEnrollmentClass(db)(qb => qb.whereIn("id", enrollmentClassesId))
-            enrollmentId = await insertEnrollment(db)({
-                levelCodeId: levelData.id,
-                userId: userId,
-            });
+            const ids = enrollments.map(i => i.id);
+            const enrollmentsClasses = await selectEnrollmentClass(db).whereIn("enrollmentId", ids);
+            const enrollmentClassesId = enrollmentsClasses.map(item => item.id);
+
+            await deleteEnrollment(db)(builder => builder.whereIn("id", ids));
+            await deleteEnrollmentClass(db)(builder => builder.whereIn("id", enrollmentClassesId));
+
+            enrollmentId = await insertEnrollment(db)({ levelCodeId: levelData.id, userId: userId });
             const enrollmentClassToCreate: Partial<EnrollmentClassEntity>[] = enrollmentsClasses.map(i => {
                 return {
                     classId: i.classId,
-                    enrollmentId: enrollmentId
+                    enrollmentId: enrollmentId,
                 }
             });
 
-            await insertEnrollmentClass(db)(enrollmentClassToCreate)
+            await insertEnrollmentClass(db)(enrollmentClassToCreate);
         } else {
-            enrollmentId = await insertEnrollment(db)({
-                levelCodeId: levelData.id,
-                userId: userId,
-            });
+            enrollmentId = await insertEnrollment(db)({ levelCodeId: levelData.id, userId: userId });
         }
     }
     
@@ -99,57 +99,49 @@ async function transferEnrollment(
         const oldLevelCode = await getLevelCodeById(db)(oldClass?.levelCodeId);
         if (oldLevelCode?.id) {
             const enrollmentsOfOldClass = await selectEnrollment(db).andWhere('userId', userId).andWhere('levelCodeId', oldLevelCode.id);
-            const enrollmentsIdsOfOldClasses = enrollmentsOfOldClass.map(item => item.id)
-            const oldClassEnrollment = await selectEnrollmentClass(db)
-                .whereIn('enrollmentId', enrollmentsIdsOfOldClasses)
-                .andWhere('classId', oldClassId);
+            const enrollmentsIdsOfOldClasses = enrollmentsOfOldClass.map(item => item.id);
+            const oldClassEnrollment = await selectEnrollmentClass(db).whereIn('enrollmentId', enrollmentsIdsOfOldClasses).andWhere('classId', oldClassId);
             if (oldClassEnrollment.length > 0) {
-                await deleteEnrollmentClass(db)(query => query.whereIn('id', oldClassEnrollment.map(item => item.id)));
+                await deleteEnrollmentClass(db)(builder => builder.whereIn('id', oldClassEnrollment.map(item => item.id)));
             }
         }
     }
 
-    const [existingEnrollmentClass] = await selectEnrollmentClass(db)
-        .andWhere('classId', newClassId)
-        .andWhere('enrollmentId', enrollmentId);
+    const [existingEnrollmentClass] = await selectEnrollmentClass(db).andWhere('classId', newClassId).andWhere('enrollmentId', enrollmentId);
     const hasToInsertEnrollmentClass = !existingEnrollmentClass;
     if (hasToInsertEnrollmentClass) {
         if (oldClass?.levelCodeId) {
             const newLevelCode = await getLevelCodeById(db)(levelData.id);
             const oldLevelCode = await getLevelCodeById(db)(oldClass?.levelCodeId);
             if (oldLevelCode && oldLevelCode.levelId && newLevelCode?.levelId) {
-                const levelOldClass = await getLevelById(db)(oldLevelCode.levelId)
+                const levelOldClass = await getLevelById(db)(oldLevelCode.levelId);
                 const levelNewClass = await getLevelById(db)(newLevelCode?.levelId);
-
                 if (levelOldClass?.id === levelNewClass?.id) {
-                    const activitiesToTransitionToNewClass = await selectActivityTimer(db)
-                        .where('classId', oldClassId)
-                        .andWhere('userId', userId);
-                    const activityTimerEntitiesToSave = activitiesToTransitionToNewClass
-                        .map<Omit<ActivityTimerEntity, 'id'>>(saved => ({
-                            classId: newClassId,
-                            completed: saved.completed,
-                            completionTime: saved.completionTime,
-                            cycleActivityId: saved.cycleActivityId,
-                            startTime: saved.startTime,
-                            userId: saved.userId,
-                        }));
+                    const activitiesToTransitionToNewClass = await selectActivityTimer(db).where('classId', oldClassId).andWhere('userId', userId);
+                    const activityTimerEntitiesToSave = activitiesToTransitionToNewClass.map<Omit<ActivityTimerEntity, 'id'>>(saved => ({
+                        classId: newClassId,
+                        completed: saved.completed,
+                        completionTime: saved.completionTime,
+                        cycleActivityId: saved.cycleActivityId,
+                        startTime: saved.startTime,
+                        userId: saved.userId,
+                    }));
                     const hasToSaveActivityTimerEntities = activityTimerEntitiesToSave.length > 0;
                     if (hasToSaveActivityTimerEntities) {
                         await insertActivityTimer(db)(activityTimerEntitiesToSave);
-                        await deleteActivityTimer(db)(qb => qb.where('classId', oldClassId).andWhere('userId', userId))
+                        await deleteActivityTimer(db)(builder => builder.where('classId', oldClassId).andWhere('userId', userId));
                     }
                 }
             }
         }
 
         if (hasToInsertEnrollmentClass) {
-            await insertEnrollmentClass(db)({
-                classId: newClassId,
-                enrollmentId: enrollmentId,
-            });
+            await insertEnrollmentClass(db)({ classId: newClassId, enrollmentId: enrollmentId });
         }
     } else {
-        log.info(event as any, 'User is already enrolled in class.');
+        log.info(
+            event as any,
+            'User is already enrolled in class.',
+        );
     }
 }

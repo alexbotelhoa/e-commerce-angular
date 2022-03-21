@@ -49,14 +49,13 @@ const userUserRoleDataloader: DatabaseLoaderFactory<string, UserRoleEntity[]> = 
     id: 'userUserRoleByUserId',
     batchFn: db => async (ids) => {
         const entities = await selectUserRole(db).whereIn('userId', ids);
-        const sortedEntities = userUserRoleSorter(ids)(entities);
-        return sortedEntities;
+        return  userUserRoleSorter(ids)(entities);
     }
 };
 
 export const userUserRolesResolver: GQLUserResolvers['userRoles'] = async (obj, params, context) => {
     const dataloader = context.getDatabaseLoader(userUserRoleDataloader, undefined);
-    return dataloader.load(obj.id);
+    return await dataloader.load(obj.id);
 }
 
 export const userRolesResolver: GQLUserResolvers['roles'] = async (obj, params, context) => {

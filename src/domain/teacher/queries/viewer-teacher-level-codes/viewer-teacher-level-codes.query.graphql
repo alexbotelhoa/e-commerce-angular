@@ -1,10 +1,8 @@
 type Query {
-  viewerTeacherLevelCodes(
-    filters: ViewerTeacherLevelCodesFilterInput
-  ): [LevelCode!]!
+  viewerTeacherLevelCodes(filters: ViewerTeacherLevelCodesFilterInput): [LevelCode!]!
 }
 
 input ViewerTeacherLevelCodesFilterInput {
-  last30days: Boolean
+  classActive: Boolean
   userId: ID
 }

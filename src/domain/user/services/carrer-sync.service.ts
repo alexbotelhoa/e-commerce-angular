@@ -14,32 +14,53 @@ export const processCarrerSync = (
     const carrers = event.data
     for (const carrer of carrers) {
         if (carrer.roles && carrer.roles.length === 0) {
-            await updatePermission(db)({ active: false, updatedAt: db.fn.now() as any })(qb => qb.where("carrerId", carrer.carrer))
-            await updateCarrer(db)({ active: false, updatedAt: db.fn.now() as any })(qb => qb.where("carrerId", carrer.carrer))
-        } else {
-            const dbCarrer = getOneOrNull(await selectCarrer(db).where("carrerId", carrer.carrer))
-            if (!dbCarrer) {
-                const idCarrer = await insertCarrer(db)({
-                    active: true,
-                    carrerId: carrer.carrer,
-                })
-                const permissions: Partial<PermissionEntity>[] = mapPermissionsByRoles(carrer.roles, idCarrer, carrer.carrer)
-                await insertPermission(db)(permissions)
-                const rolesToActivate = carrer.roles;
-                await updatePermission(db)({ active: false, updatedAt: db.fn.now() as any })(qb => qb.whereNotIn("name", rolesToActivate).andWhere("carrerId", carrer.carrer))
 
+            await updatePermission(db)({
+                active: false,
+                updatedAt: db.fn.now() as any,
+            })(builder => builder.where("carrerId", carrer.carrer));
+
+            await updateCarrer(db)({
+                active: false,
+                updatedAt: db.fn.now() as any,
+            })(builder => builder.where("carrerId", carrer.carrer));
+
+        } else {
+            const dbCarrer = getOneOrNull(await selectCarrer(db).where("carrerId", carrer.carrer));
+            if (!dbCarrer) {
+                const idCarrer = await insertCarrer(db)({ active: true, carrerId: carrer.carrer });
+                const permissions: Partial<PermissionEntity>[] = mapPermissionsByRoles(carrer.roles, idCarrer, carrer.carrer);
+                await insertPermission(db)(permissions);
+
+                const rolesToActivate = carrer.roles;
+                await updatePermission(db)({
+                    active: false,
+                    updatedAt: db.fn.now() as any,
+                })(builder => builder.whereNotIn("name", rolesToActivate).andWhere("carrerId", carrer.carrer));
             } else {
-                await updateCarrer(db)({ active: true, updatedAt: db.fn.now() as any })(qb => qb.where("carrerId", carrer.carrer))
-                const permissions: Partial<PermissionEntity>[] = mapPermissionsByRoles(carrer.roles, parseFloat(dbCarrer.id), carrer.carrer)
+                await updateCarrer(db)({
+                    active: true,
+                    updatedAt: db.fn.now() as any,
+                })(builder => builder.where("carrerId", carrer.carrer));
+
+                const permissions: Partial<PermissionEntity>[] = mapPermissionsByRoles(carrer.roles, parseFloat(dbCarrer.id), carrer.carrer);
                 for (const permission of permissions) {
-                    const permissionDb: PermissionEntity | null = getOneOrNull(await selectPermission(db).where("carrerId", carrer.carrer).andWhere("name", permission.name))
+                    const permissionDb: PermissionEntity | null = getOneOrNull(await selectPermission(db).where("carrerId", carrer.carrer).andWhere("name", permission.name));
                     if (!permissionDb) {
-                        await insertPermission(db)(permission)
+                        await insertPermission(db)(permission);
                     }
                 }
+
                 const rolesToDisable = carrer.roles;
-                await updatePermission(db)({ active: true, updatedAt: db.fn.now() as any })(qb => qb.whereIn("name", rolesToDisable).andWhere("carrerId", carrer.carrer))
-                await updatePermission(db)({ active: false, updatedAt: db.fn.now() as any })(qb => qb.whereNotIn("name", rolesToDisable).andWhere("carrerId", carrer.carrer))
+                await updatePermission(db)({
+                    active: true,
+                    updatedAt: db.fn.now() as any,
+                })(builder => builder.whereIn("name", rolesToDisable).andWhere("carrerId", carrer.carrer));
+
+                await updatePermission(db)({ 
+                    active: false,
+                    updatedAt: db.fn.now() as any,
+                })(builder => builder.whereNotIn("name", rolesToDisable).andWhere("carrerId", carrer.carrer));
             }
         }
     }

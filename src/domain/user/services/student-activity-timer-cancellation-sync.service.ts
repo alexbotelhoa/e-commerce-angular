@@ -1,4 +1,5 @@
 import { FastifyLoggerInstance } from "fastify";
+
 import { DatabaseService } from "../../../shared/services/database.service";
 import { getClassById } from "../../../shared/repositories/class.repository";
 import { WebhookResponse, StudentActivityTimerCancellationSyncEvent } from "../types/webhook-events.types";
@@ -10,11 +11,10 @@ export const processStudentActivityTimerCancellationSync = (
 ) => async (event: StudentActivityTimerCancellationSyncEvent): Promise<WebhookResponse> => {
     const data = event.data;
     const existingClass = await getClassById(db)(data.classId);
-
     if (!existingClass) {
         log.info(
             event as any,
-            "Class is not yet registered."
+            "Class is not yet registered.",
         );
         return {
             success: false,
@@ -22,14 +22,11 @@ export const processStudentActivityTimerCancellationSync = (
         };
     }
 
-    const [exitingActivities] = await selectActivityTimer(db)
-        .andWhere("userId", data.userId)
-        .andWhere("classId", data.classId);
-
+    const [exitingActivities] = await selectActivityTimer(db).andWhere("userId", data.userId).andWhere("classId", data.classId);
     if (!exitingActivities) {
         log.info(
             event as any,
-            "User is not activity completed in this class, so there is nothing to do, exiting."
+            "User is not activity completed in this class, so there is nothing to do, exiting.",
         );
         return {
             success: false,
@@ -39,10 +36,11 @@ export const processStudentActivityTimerCancellationSync = (
 
     log.info(
         event as any,
-        'Processing activity completed cancellation, found enrollment class for user, removing'
+        'Processing activity completed cancellation, found enrollment class for user, removing',
     );
+
     await db.transaction(async trx => {
-        await deleteActivityTimer(trx)(where => where.andWhere("userId", data.userId).andWhere("classId", data.classId));
+        await deleteActivityTimer(trx)(builder => builder.andWhere("userId", data.userId).andWhere("classId", data.classId));
     })
 
     return {

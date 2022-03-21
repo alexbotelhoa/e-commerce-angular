@@ -13,47 +13,55 @@ export const processStudentEnrollmentCancellationSync = (
 ) => async (event: StudentEnrollmentCancellationSyncEvent): Promise<WebhookResponse> => {
     const data = event.data;
     const existingClass = await getClassById(db)(data.classId);
-
     if (!existingClass) {
-        log.info(event as any, 'Class is not yet registered.')
+        log.info(
+            event as any,
+            'Class is not yet registered.',
+        )
         return {
             success: false,
-            message: 'Class is not yet registered.'
+            message: 'Class is not yet registered.',
         };
     }
 
     const [enrollment] = await selectEnrollment(db).andWhere('userId', data.userId).andWhere('levelCodeId', existingClass.levelCodeId);
-
     if (!enrollment) {
-        log.info(event as any, 'User is not enrolled in this level code, so there is nothing to do, exiting.');
+        log.info(
+            event as any,
+            'User is not enrolled in this level code, so there is nothing to do, exiting.',
+        );
         return {
             success: false,
-            message: 'User is not enrolled in this level code, so there is nothing to do, exiting.'
+            message: 'User is not enrolled in this level code, so there is nothing to do, exiting.',
         }
     }
 
     const allEnrollmentClasses = await selectEnrollmentClass(db).andWhere('enrollmentId', enrollment.id);
     const enrollmentClassToDelete = allEnrollmentClasses.find(enrollmentClass => enrollmentClass.classId === data.classId);
-
     if (enrollmentClassToDelete) {
-        log.info(event as any, 'Processing enrollment cancellation, found enrollment class for user, removing');
+        log.info(
+            event as any,
+            'Processing enrollment cancellation, found enrollment class for user, removing',
+        );
         await db.transaction(async trx => {
-            await deleteEnrollmentClass(trx)(query => query.andWhere('classId', data.classId).andWhere('enrollmentId', enrollment.id));
+            await deleteEnrollmentClass(trx)(builder => builder.andWhere('classId', data.classId).andWhere('enrollmentId', enrollment.id));
 
             if (allEnrollmentClasses.length === 1) {
-                await deleteEnrollment(trx)(query => query.andWhere('id', enrollment.id));
+                await deleteEnrollment(trx)(builder => builder.andWhere('id', enrollment.id));
             }
 
-            await deleteMaterial(trx)(query => {
-                query.where({classId: data.classId, userId: data.userId}).where(
-                    function() {
-                        this.where({isInternal: false}).orWhere({isInternal: true, acquiredLanguageBooster: false})
-                    }
-                );
-            })
+            await deleteMaterial(trx)(builder => builder.where({
+                classId: data.classId,
+                userId: data.userId,
+            }).where(function() {
+                this.where({isInternal: false}).orWhere({isInternal: true, acquiredLanguageBooster: false});
+            }));
         })
     } else {
-        log.info(event as any, 'Processing enrollment cancellation, enrollment class for user not found, nothing to do');
+        log.info(
+            event as any,
+            'Processing enrollment cancellation, enrollment class for user not found, nothing to do',
+        );
     }
 
     return {

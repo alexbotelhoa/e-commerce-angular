@@ -8,4 +8,5 @@ type ActivityTimer {
     classId: ID!
     cycleActivity: CycleActivity!
     currentUser: User!
+    completedActivities: String!
 }
