@@ -4,6 +4,7 @@ import { ActivityEntity } from "../../entities/activity.entity";
 import { GQLCycleActivityResolvers } from "../../resolvers-types";
 import { selectActivity } from "../repositories/activity.repository";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
+import { RoleId } from './../../domain/authorization/enums/role-id.enum';
 import { CycleActivityEntity } from "../../entities/cycle-activity.entity";
 import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 import { selectActivityTimer } from "../repositories/activity-timer.repository";
@@ -81,16 +82,34 @@ export const cycleActivityUserHasCompletedLoader: DatabaseLoaderFactory<number, 
     }
 }
 
+export const cycleActivityUserHasCompletedLoaderTeacher: DatabaseLoaderFactory<number, boolean, boolean, string> = {
+    id: 'cycleActivityUserHasCompleted',
+    batchFn: (db, userId) => async (cycleActivityIds) => {
+        const entities = await selectActivityTimer(db)
+            .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `classId`)
+            .whereIn('cycleActivityId', cycleActivityIds)
+            .andWhere('userId', userId)
+            .andWhere('completed', true);
+        
+        const sorted = cycleActivityUserHasCompletedSorter(cycleActivityIds)(entities);
+        return sorted.map(Boolean);
+    }
+}
+
 const cycleActivityViewerHasCompletedFieldResolver: GQLCycleActivityResolvers['viewerHasCompleted'] = async (obj, params, context) => {
     const user = context.currentUser;
+    const isTeacher = user?.roleIds.includes(RoleId.TEACHER)
+
     if (!user) {
         return false;
     }
-    return context.getDatabaseLoader(cycleActivityUserHasCompletedLoader, user.id).load(obj.id);
+
+    return context.getDatabaseLoader(isTeacher ? cycleActivityUserHasCompletedLoaderTeacher : cycleActivityUserHasCompletedLoader, user.id).load(obj.id);
 }
 
 const cycleActivityStudentHasCompletedFieldResolver: GQLCycleActivityResolvers['studentHasCompleted'] = async (obj, params, context) => {
-    return context.getDatabaseLoader(cycleActivityUserHasCompletedLoader, params.studentId).load(obj.id);
+    const isTeacher = context.currentUser?.roleIds.includes(RoleId.TEACHER);
+    return context.getDatabaseLoader(isTeacher ? cycleActivityUserHasCompletedLoaderTeacher : cycleActivityUserHasCompletedLoader, params.studentId).load(obj.id);
 }
 
 export const cycleActivityResolvers: GQLCycleActivityResolvers = {
