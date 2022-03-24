@@ -1,7 +1,14 @@
 type Class {
     studentGrades(data: ClassStudentGradesInput): [ClassStudentGrade!]!
+    status: ClassStatus!
 }
 
 input ClassStudentGradesInput {
     studentIds: [ID!]
+}
+
+enum ClassStatus {
+    NOT_STARTED
+    ACTIVE
+    FINISHED
 }

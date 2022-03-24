@@ -1,9 +1,9 @@
 import { ClassEntity } from "../../entities/class.entity";
-import { GQLClassResolvers } from "../../resolvers-types";
-import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 import { LevelCodeEntity } from "../../entities/level-code.entity";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
+import { GQLClassResolvers, GQLClassStatus } from "../../resolvers-types";
 import { getLevelCodesByIds } from "../repositories/level-code.repository";
+import { createDataloaderSingleSort } from "../utils/dataloader-single-sort";
 import { classStudentGradesFieldResolver } from "../../domain/activity/resolvers/class/class-student-grades.type.resolver";
 
 const classEntityResolvers: Pick<GQLClassResolvers, keyof ClassEntity> = {
@@ -41,8 +41,30 @@ export const classLevelCodeResolver: GQLClassResolvers['levelCode'] = async (obj
     return levelCodes;
 }
 
+export const classStatusResolver: GQLClassResolvers['status'] = async (obj) => {
+    const now = new Date();
+    now.setHours(0,0,0,0);
+
+    const classStartDate = new Date(obj.startDate || '');
+    classStartDate.setDate(classStartDate.getDate() - 30);
+
+    const classEndDate = new Date(obj.endDate || '');
+    classEndDate.setDate(classEndDate.getDate() + 29);
+
+    const isNotInitial = now < classStartDate ? GQLClassStatus.NOT_STARTED : null;
+    const isActive = now >= classStartDate && now <= classEndDate ? GQLClassStatus.ACTIVE : null;
+    const isFinished = now > classEndDate ? GQLClassStatus.FINISHED : null;
+
+    return [
+        isNotInitial,
+        isActive,
+        isFinished,
+    ].find(status => !!status) as GQLClassStatus;
+}
+
 export const classResolvers: GQLClassResolvers = {
     ...classEntityResolvers,
     levelCode: classLevelCodeResolver,
     studentGrades: classStudentGradesFieldResolver,
+    status: classStatusResolver
 }

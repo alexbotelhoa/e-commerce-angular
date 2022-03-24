@@ -37,8 +37,6 @@ import { StudentGrade } from './domain/activity/types/student-grade.type';
 import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
@@ -828,6 +826,7 @@ export type GQLClass = {
   readonly regionalId: Maybe<Scalars['ID']>;
   readonly sessionId: Maybe<Scalars['ID']>;
   readonly startDate: Maybe<Scalars['DateTime']>;
+  readonly status: GQLClassStatus;
   readonly studentGrades: ReadonlyArray<GQLClassStudentGrade>;
 };
 
@@ -839,6 +838,12 @@ export type GQLClassstudentGradesArgs = {
 export type GQLClassStudentGradesInput = {
   readonly studentIds: Maybe<ReadonlyArray<Scalars['ID']>>;
 };
+
+export enum GQLClassStatus {
+  NOT_STARTED = 'NOT_STARTED',
+  ACTIVE = 'ACTIVE',
+  FINISHED = 'FINISHED'
+}
 
 export type GQLUser = {
   readonly __typename?: 'User';
@@ -1706,6 +1711,7 @@ export type GQLResolversTypes = {
   AvailableThemesInputData: GQLAvailableThemesInputData;
   Class: ResolverTypeWrapper<ClassEntity>;
   ClassStudentGradesInput: GQLClassStudentGradesInput;
+  ClassStatus: GQLClassStatus;
   User: ResolverTypeWrapper<UserEntity>;
   ActivityType: ResolverTypeWrapper<ActivityType>;
   EmbeddedActivity: ResolverTypeWrapper<ActivityEntity>;
@@ -2093,6 +2099,7 @@ export type GQLClassResolvers<ContextType = GraphQLContext, ParentType extends G
   regionalId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
   sessionId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
   startDate: Resolver<Maybe<GQLResolversTypes['DateTime']>, ParentType, ContextType>;
+  status: Resolver<GQLResolversTypes['ClassStatus'], ParentType, ContextType>;
   studentGrades: Resolver<ReadonlyArray<GQLResolversTypes['ClassStudentGrade']>, ParentType, ContextType, RequireFields<GQLClassstudentGradesArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
