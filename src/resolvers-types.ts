@@ -1313,6 +1313,7 @@ export type GQLChatMessage = {
   readonly updatedAt: Scalars['DateTime'];
   readonly createdAt: Scalars['DateTime'];
   readonly user: GQLUser;
+  readonly levelCode: GQLLevelCode;
 };
 
 export type GQLChat = {
@@ -2407,6 +2408,7 @@ export type GQLChatMessageResolvers<ContextType = GraphQLContext, ParentType ext
   updatedAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   user: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
+  levelCode: Resolver<GQLResolversTypes['LevelCode'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
