@@ -31,6 +31,8 @@ import { countCycleActivities } from "../repositories/cycle-activity.repository"
 import { getRoleById } from "../../domain/authorization/constants/roles.constants";
 import { selectEnrollmentClass } from "../repositories/enrollment-class.repository";
 import { totalProgressChecksByClassIdLoader } from "../../domain/activity/resolvers/user/user.total-progress-checks-completed-for-class.resolver";
+import { MATERIAL_TABLE } from "../../entities/material.entity";
+import { CLASS_TABLE } from "../../entities/class.entity";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
@@ -246,8 +248,27 @@ export const hasEyoungResolver: GQLUserResolvers["hasEyoung"] = async (obj, para
 
 export const materialsResolver: GQLUserResolvers["materials"] = async (obj, params, context) => {
     const userId = context.currentUser?.id;
-    const materials = await selectMaterial(context.readonlyDatabase).where("userId", userId);
-    return materials as any;
+    if (!userId) return [];
+
+    const materialsFuture = await context.readonlyDatabase
+        .select(`${MATERIAL_TABLE}.*`)
+        .from(MATERIAL_TABLE)
+        .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${MATERIAL_TABLE}.classId`)
+        .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.id`, `${CLASS_TABLE}.levelCodeId`)
+        .andWhere(`${MATERIAL_TABLE}.userId`, userId)
+        .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
+        .orderBy(`${CLASS_TABLE}.endDate`, 'asc');
+
+    const materialsPassed = await context.readonlyDatabase
+        .select(`${MATERIAL_TABLE}.*`)
+        .from(MATERIAL_TABLE)
+        .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${MATERIAL_TABLE}.classId`)
+        .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.id`, `${CLASS_TABLE}.levelCodeId`)
+        .andWhere(`${MATERIAL_TABLE}.userId`, userId)
+        .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) > 29`)
+        .orderBy(`${CLASS_TABLE}.endDate`, 'desc');
+
+    return [...materialsFuture,...materialsPassed];
 }
 
 export const userResolvers: GQLUserResolvers = {
