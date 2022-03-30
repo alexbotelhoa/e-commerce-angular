@@ -18,14 +18,14 @@ import { ClassSyncEvent, WebhookResponse } from "../types/webhook-events.types";
 import { insertRegional } from "../../../shared/repositories/regional.repository";
 import { upsertCountEntity } from "../../../shared/repositories/count.repository";
 import { RegionalEntity, REGIONAL_TABLE } from "../../../entities/regional.entity";
+import { updateEnrollment } from "../../../shared/repositories/enrollment.repository";
+import { selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 import { insertUserRole, selectUserRole } from "../../../shared/repositories/user-role.repository";
 import { getUserById, insertUser, updateUser } from "../../../shared/repositories/user.repository";
 import { getClassById, insertClass, updateClass } from "../../../shared/repositories/class.repository";
 import { getLevelCodeById, insertLevelCode, } from "../../../shared/repositories/level-code.repository";
 import { insertMeeting, selectMeeting, updateMeeting } from "../../../shared/repositories/meeting.repository";
 import { deleteTeacherClass, insertTeacherClass, selectTeacherClass } from "../../../shared/repositories/teacher-class.repository";
-import { updateEnrollment } from "../../../shared/repositories/enrollment.repository";
-import { selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 
 export const processClassSync = (
     db: DatabaseService,
@@ -86,7 +86,6 @@ export const processClassSync = (
         const hasLocal = getOneOrNull((await readonlyDatabase.select<LocalEntity[]>([`${LOCAL_TABLE}.*`]).from(LOCAL_TABLE).where(`${LOCAL_TABLE}.name`, classData.local)));
         const fullClassDataDivergent = isFullClassDataDivergent(existingClass, classData);
         const hasEnrollmentClass = await selectEnrollmentClass(readonlyDatabase).where('classId', classData.id);
-        console.log("hasEnrollmentClass: ", hasEnrollmentClass)
 
         if (fullClassDataDivergent || (!hasRegional || !hasCampus || !hasLocal)) {
             const { campusId, localId, regionalId } = await updateRegionCampusLocal(db, classData, hasRegional, hasCampus, hasLocal);
