@@ -1,6 +1,8 @@
+import { CLASS_TABLE } from "../../entities/class.entity";
 import { CYCLE_TABLE } from "../../entities/cycle.entity";
 import { AvatarEntity } from "../../entities/avatar.entity";
 import { ACTIVITY_TABLE } from "../../entities/activity.entity";
+import { MATERIAL_TABLE } from "../../entities/material.entity";
 import { UserRoleEntity } from "../../entities/user-role.entity";
 import { LEVEL_CODE_TABLE } from "../../entities/level-code.entity";
 import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
@@ -31,8 +33,6 @@ import { countCycleActivities } from "../repositories/cycle-activity.repository"
 import { getRoleById } from "../../domain/authorization/constants/roles.constants";
 import { selectEnrollmentClass } from "../repositories/enrollment-class.repository";
 import { totalProgressChecksByClassIdLoader } from "../../domain/activity/resolvers/user/user.total-progress-checks-completed-for-class.resolver";
-import { MATERIAL_TABLE } from "../../entities/material.entity";
-import { CLASS_TABLE } from "../../entities/class.entity";
 
 const userEntityResolvers: Pick<GQLUserResolvers, keyof UserEntity> = {
     id: obj => obj.id.toString(),
