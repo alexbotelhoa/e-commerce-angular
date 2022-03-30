@@ -37,8 +37,7 @@ export const myLevelQueryResolver: GQLQueryResolvers['myLevels'] = async (obj, p
         .andWhere(`${LEVEL_CODE_TABLE}.active`, true)
         .andWhere(`${CLASS_TABLE}.hasActivated`, true)
         .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) > 29`)
-        .orderBy(`${CLASS_TABLE}.endDate`, 'desc')
-        .groupBy(`${LEVEL_TABLE}.id`);
+        .orderBy(`${CLASS_TABLE}.endDate`, 'desc');
 
     return [...classFuture,...classPassed]
 }
