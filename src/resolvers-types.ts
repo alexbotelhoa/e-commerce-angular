@@ -720,6 +720,11 @@ export type GQLQuerylevelThemesArgs = {
 };
 
 
+export type GQLQuerylevelsArgs = {
+  data: Maybe<GQLLevelsQueryInput>;
+};
+
+
 export type GQLQuerylogsArgs = {
   data: Maybe<GQLLogsQueryInput>;
 };
@@ -808,6 +813,10 @@ export type GQLLevelThemesQueryInput = {
 
 export type GQLAvailableThemesInputData = {
   readonly levelId: Scalars['ID'];
+};
+
+export type GQLLevelsQueryInput = {
+  readonly name: Maybe<Scalars['String']>;
 };
 
 export type GQLClass = {
@@ -1712,6 +1721,7 @@ export type GQLResolversTypes = {
   activityTimerQueryInput: GQLactivityTimerQueryInput;
   LevelThemesQueryInput: GQLLevelThemesQueryInput;
   AvailableThemesInputData: GQLAvailableThemesInputData;
+  LevelsQueryInput: GQLLevelsQueryInput;
   Class: ResolverTypeWrapper<ClassEntity>;
   ClassStudentGradesInput: GQLClassStudentGradesInput;
   ClassStatus: GQLClassStatus;
@@ -1846,6 +1856,7 @@ export type GQLResolversParentTypes = {
   activityTimerQueryInput: GQLactivityTimerQueryInput;
   LevelThemesQueryInput: GQLLevelThemesQueryInput;
   AvailableThemesInputData: GQLAvailableThemesInputData;
+  LevelsQueryInput: GQLLevelsQueryInput;
   Class: ClassEntity;
   ClassStudentGradesInput: GQLClassStudentGradesInput;
   User: UserEntity;
@@ -2054,7 +2065,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   levelCodes: Resolver<ReadonlyArray<GQLResolversTypes['LevelCode']>, ParentType, ContextType>;
   levelTheme: Resolver<Maybe<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQuerylevelThemeArgs, 'id'>>;
   levelThemes: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQuerylevelThemesArgs, 'data'>>;
-  levels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
+  levels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType, RequireFields<GQLQuerylevelsArgs, never>>;
   logs: Resolver<ReadonlyArray<GQLResolversTypes['Log']>, ParentType, ContextType, RequireFields<GQLQuerylogsArgs, never>>;
   meet: Resolver<Maybe<GQLResolversTypes['Meeting']>, ParentType, ContextType, RequireFields<GQLQuerymeetArgs, 'id'>>;
   myEnrollments: Resolver<ReadonlyArray<GQLResolversTypes['Enrollment']>, ParentType, ContextType>;
