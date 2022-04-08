@@ -22,7 +22,7 @@ export const myLevelQueryResolver: GQLQueryResolvers['myLevels'] = async (obj, p
         .andWhere(`${LEVEL_TABLE}.active`, true)
         .andWhere(`${LEVEL_CODE_TABLE}.active`, true)
         .andWhere(`${CLASS_TABLE}.hasActivated`, true)
-        .andWhereRaw(`${CLASS_TABLE}.endDate >= CURDATE()`)
+        .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
         .orderBy(`${CLASS_TABLE}.endDate`, 'asc');
 
     const classPassed = await context.readonlyDatabase
@@ -36,8 +36,8 @@ export const myLevelQueryResolver: GQLQueryResolvers['myLevels'] = async (obj, p
         .andWhere(`${LEVEL_TABLE}.active`, true)
         .andWhere(`${LEVEL_CODE_TABLE}.active`, true)
         .andWhere(`${CLASS_TABLE}.hasActivated`, true)
-        .andWhereRaw(`${CLASS_TABLE}.endDate < CURDATE()`)
-        .groupBy(`${LEVEL_TABLE}.id`);
+        .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) > 29`)
+        .orderBy(`${CLASS_TABLE}.endDate`, 'desc');
 
     return [...classFuture,...classPassed]
 }

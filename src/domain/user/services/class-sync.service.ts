@@ -18,6 +18,8 @@ import { ClassSyncEvent, WebhookResponse } from "../types/webhook-events.types";
 import { insertRegional } from "../../../shared/repositories/regional.repository";
 import { upsertCountEntity } from "../../../shared/repositories/count.repository";
 import { RegionalEntity, REGIONAL_TABLE } from "../../../entities/regional.entity";
+import { updateEnrollment } from "../../../shared/repositories/enrollment.repository";
+import { selectEnrollmentClass } from "../../../shared/repositories/enrollment-class.repository";
 import { insertUserRole, selectUserRole } from "../../../shared/repositories/user-role.repository";
 import { getUserById, insertUser, updateUser } from "../../../shared/repositories/user.repository";
 import { getClassById, insertClass, updateClass } from "../../../shared/repositories/class.repository";
@@ -83,6 +85,8 @@ export const processClassSync = (
         const hasCampus = getOneOrNull((await readonlyDatabase.select<CampusEntity[]>([`${CAMPUS_TABLE}.*`]).from(CAMPUS_TABLE).where(`${CAMPUS_TABLE}.name`, classData.campus)));
         const hasLocal = getOneOrNull((await readonlyDatabase.select<LocalEntity[]>([`${LOCAL_TABLE}.*`]).from(LOCAL_TABLE).where(`${LOCAL_TABLE}.name`, classData.local)));
         const fullClassDataDivergent = isFullClassDataDivergent(existingClass, classData);
+        const hasEnrollmentClass = await selectEnrollmentClass(readonlyDatabase).where('classId', classData.id);
+
         if (fullClassDataDivergent || (!hasRegional || !hasCampus || !hasLocal)) {
             const { campusId, localId, regionalId } = await updateRegionCampusLocal(db, classData, hasRegional, hasCampus, hasLocal);
             const times = {
@@ -106,6 +110,13 @@ export const processClassSync = (
                 ...times,
             })(builder => builder.andWhere('id', classData.id));
         }
+
+        hasEnrollmentClass.map(async (enrollment) => {
+            await updateEnrollment(db)({
+                levelCodeId: classData.level.id
+            })(builder => builder.where('id', enrollment.enrollmentId));
+        })
+
         await processTeacherData(db, classData);
         await processMeetingData(db, readonlyDatabase, classData, redis);
 

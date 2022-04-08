@@ -1,6 +1,8 @@
+import { CLASS_TABLE } from "../../entities/class.entity";
 import { CYCLE_TABLE } from "../../entities/cycle.entity";
 import { AvatarEntity } from "../../entities/avatar.entity";
 import { ACTIVITY_TABLE } from "../../entities/activity.entity";
+import { MATERIAL_TABLE } from "../../entities/material.entity";
 import { UserRoleEntity } from "../../entities/user-role.entity";
 import { LEVEL_CODE_TABLE } from "../../entities/level-code.entity";
 import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
@@ -246,8 +248,27 @@ export const hasEyoungResolver: GQLUserResolvers["hasEyoung"] = async (obj, para
 
 export const materialsResolver: GQLUserResolvers["materials"] = async (obj, params, context) => {
     const userId = context.currentUser?.id;
-    const materials = await selectMaterial(context.readonlyDatabase).where("userId", userId);
-    return materials as any;
+    if (!userId) return [];
+
+    const materialsFuture = await context.readonlyDatabase
+        .select(`${MATERIAL_TABLE}.*`)
+        .from(MATERIAL_TABLE)
+        .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${MATERIAL_TABLE}.classId`)
+        .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.id`, `${CLASS_TABLE}.levelCodeId`)
+        .andWhere(`${MATERIAL_TABLE}.userId`, userId)
+        .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
+        .orderBy(`${CLASS_TABLE}.endDate`, 'asc');
+
+    const materialsPassed = await context.readonlyDatabase
+        .select(`${MATERIAL_TABLE}.*`)
+        .from(MATERIAL_TABLE)
+        .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${MATERIAL_TABLE}.classId`)
+        .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.id`, `${CLASS_TABLE}.levelCodeId`)
+        .andWhere(`${MATERIAL_TABLE}.userId`, userId)
+        .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) > 29`)
+        .orderBy(`${CLASS_TABLE}.endDate`, 'desc');
+
+    return [...materialsFuture,...materialsPassed];
 }
 
 export const userResolvers: GQLUserResolvers = {

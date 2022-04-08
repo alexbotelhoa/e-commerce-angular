@@ -23,8 +23,11 @@ const levelCodeResolver: GQLChatResolvers['levelCode'] = async (obj, params, con
   query.innerJoin(ENROLLMENT_CLASS_TABLE, `${ENROLLMENT_CLASS_TABLE}.classId`, `${CLASS_TABLE}.id`)
   query.innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.id`, `${ENROLLMENT_CLASS_TABLE}.enrollmentId`)
   query.where(`${ENROLLMENT_TABLE}.userId`, "like", obj.userId)
-  query.orderBy(`${CLASS_TABLE}.startDate`, "desc")
-  query.limit(1)
+  query.andWhere(`${LEVEL_CODE_TABLE}.active`, true)
+  query.andWhere(`${CLASS_TABLE}.hasActivated`, true)
+  query.andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
+  query.orderBy(`${CLASS_TABLE}.endDate`, 'asc')
+  query.limit(1);
   return await query as any;
 }
 
