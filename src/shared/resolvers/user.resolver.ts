@@ -16,7 +16,6 @@ import { TeacherClassEntity, TEACHER_CLASS_TABLE } from "../../entities/teacher-
 import { CountObj } from "../types/count-obj.type";
 import { getClassesByIds } from "../repositories/class.repository";
 import { getAvatarsByIds } from "../repositories/avatar.repository";
-import { selectMaterial } from "../repositories/material.repository";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
 import { selectUserRole } from "../repositories/user-role.repository";
 import { getInterestById } from "../repositories/interest.repository";
@@ -250,13 +249,33 @@ export const materialsResolver: GQLUserResolvers["materials"] = async (obj, para
     const userId = context.currentUser?.id;
     if (!userId) return [];
 
+    let queryRawFuture = ``;
+    let queryRawPassed = ``;
+
+    const countActiveClass = await context.readonlyDatabase
+        .count('* as countClasses')
+        .from(MATERIAL_TABLE)
+        .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${MATERIAL_TABLE}.classId`)
+        .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.id`, `${CLASS_TABLE}.levelCodeId`)
+        .andWhere(`${MATERIAL_TABLE}.userId`, userId)
+        .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
+        .andWhereRaw(`DATEDIFF(${CLASS_TABLE}.startDate, CURDATE()) < 31`);
+
+    if (countActiveClass[0].countClasses > 1) {
+        queryRawFuture = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29 AND ${CLASS_TABLE}.endDate > CURDATE()`;
+        queryRawPassed = `${CLASS_TABLE}.endDate < CURDATE()`;
+    } else {
+        queryRawFuture = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`;
+        queryRawPassed = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) > 31`;
+    }
+
     const materialsFuture = await context.readonlyDatabase
         .select(`${MATERIAL_TABLE}.*`)
         .from(MATERIAL_TABLE)
         .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${MATERIAL_TABLE}.classId`)
         .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.id`, `${CLASS_TABLE}.levelCodeId`)
         .andWhere(`${MATERIAL_TABLE}.userId`, userId)
-        .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
+        .andWhereRaw(`${queryRawFuture}`)
         .orderBy(`${CLASS_TABLE}.endDate`, 'asc');
 
     const materialsPassed = await context.readonlyDatabase
@@ -265,7 +284,7 @@ export const materialsResolver: GQLUserResolvers["materials"] = async (obj, para
         .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${MATERIAL_TABLE}.classId`)
         .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.id`, `${CLASS_TABLE}.levelCodeId`)
         .andWhere(`${MATERIAL_TABLE}.userId`, userId)
-        .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) > 29`)
+        .andWhereRaw(`${queryRawPassed}`)
         .orderBy(`${CLASS_TABLE}.endDate`, 'desc');
 
     return [...materialsFuture,...materialsPassed];
