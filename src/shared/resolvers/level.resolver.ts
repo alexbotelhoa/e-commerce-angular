@@ -56,18 +56,16 @@ const levelCodesResolver: GQLLevelResolvers['codes'] = async (obj, params, conte
 }
 
 const levelViewerEnrollmentClassesFieldResolver: GQLLevelResolvers['viewerClasses'] = async (obj, params, context) => {
-    const user = context.currentUser;
-    if (!user) {
-        return [];
-    }
+    const userId = context.currentUser?.id;
+    if (!userId) return [];
 
-    const entities = await context.database.select([`${ENROLLMENT_CLASS_TABLE}.*`, `${LEVEL_CODE_TABLE}.levelId`])
-    .from(ENROLLMENT_CLASS_TABLE)
-    .innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.id`, `${ENROLLMENT_CLASS_TABLE}.enrollmentId`)
-    .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.id`, `${ENROLLMENT_TABLE}.levelCodeId`)
-    .where(`${LEVEL_CODE_TABLE}.levelId`, "=" ,obj.id)
-    .andWhere(`${ENROLLMENT_TABLE}.userId`, user.id);
-    return entities;
+    return await context.readonlyDatabase
+        .select([`${ENROLLMENT_CLASS_TABLE}.*`, `${LEVEL_CODE_TABLE}.levelId`])
+        .from(ENROLLMENT_CLASS_TABLE)
+        .innerJoin(ENROLLMENT_TABLE, `${ENROLLMENT_TABLE}.id`, `${ENROLLMENT_CLASS_TABLE}.enrollmentId`)
+        .innerJoin(LEVEL_CODE_TABLE, `${LEVEL_CODE_TABLE}.id`, `${ENROLLMENT_TABLE}.levelCodeId`)
+        .where(`${LEVEL_CODE_TABLE}.levelId`, obj.id)
+        .andWhere(`${ENROLLMENT_TABLE}.userId`, userId);
 }
 
 type TotalCycleActivitiesQueryResult = CountObj & Pick<LevelThemeEntity, 'levelId'>;
@@ -89,6 +87,10 @@ const levelTotalCycleActivitiesByLevelIdLoader: DatabaseLoaderFactory<number, nu
         const sorted = totalCycleActivitiesSorter(ids)(entities);
         return sorted;
     }
+}
+
+const levelTotalActivitiesFieldResolver: GQLLevelResolvers['totalActivities'] = async (obj, params, context) => {
+    return context.getDatabaseLoader(levelTotalCycleActivitiesByLevelIdLoader, undefined).load(obj.id);
 }
 
 const levelViewerTotalCompletedActivitiesSorter = createDataloaderCountSort<TotalCycleActivitiesQueryResult, number>('levelId');
@@ -114,10 +116,6 @@ const levelViewerTotalCompletedActivitiesByLevelIdLoader: DatabaseLoaderFactory<
         const sorted = levelViewerTotalCompletedActivitiesSorter(ids)(entities);
         return sorted;
     }
-}
-
-const levelTotalActivitiesFieldResolver: GQLLevelResolvers['totalActivities'] = async (obj, params, context) => {
-    return context.getDatabaseLoader(levelTotalCycleActivitiesByLevelIdLoader, undefined).load(obj.id);
 }
 
 const levelViewerTotalCompletedActivitiesFieldResolver: GQLLevelResolvers['viewerTotalCompletedActivities'] = async (obj, params, context) => {
@@ -164,8 +162,8 @@ export const levelResolvers: GQLLevelResolvers = {
     ...levelEntityResolvers,
     levelThemes: levelThemesResolver,
     codes: levelCodesResolver,
-    viewerClasses: levelViewerEnrollmentClassesFieldResolver,
     totalActivities: levelTotalActivitiesFieldResolver,
+    viewerClasses: levelViewerEnrollmentClassesFieldResolver,
     viewerTotalCompletedActivities: levelViewerTotalCompletedActivitiesFieldResolver,
     viewerNextUnfinishedActivity: levelViewerNextUnfinishedActivityFieldResolver,
 }
