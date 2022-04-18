@@ -1,6 +1,7 @@
 import { getUserById } from "../repositories/user.repository";
 import { GQLChatMessageResolvers } from "../../resolvers-types";
 import { ChatMessageEntity } from "../../entities/chat-message.entity";
+import { getLevelCodeById } from "../repositories/level-code.repository";
 
 const chatMessageEntityResolvers: Pick<GQLChatMessageResolvers, keyof ChatMessageEntity> = {
   id: obj => obj.id,
@@ -18,7 +19,13 @@ const chatMessageEntityResolvers: Pick<GQLChatMessageResolvers, keyof ChatMessag
   updatedAt: (obj) => obj.updatedAt && new Date(obj.updatedAt).toISOString(),
 }
 
+export const levelCodeResolver: GQLChatMessageResolvers["levelCode"] = async (obj, params, context) => {
+  const levelCodeId = obj.levelCodeId;
+  return levelCodeId ? await getLevelCodeById(context.readonlyDatabase)(levelCodeId) as any : {};
+}
+
 export const chatMessageResolvers: GQLChatMessageResolvers = {
   ...chatMessageEntityResolvers,
   user: async (obj, params, context) => (await getUserById(context.readonlyDatabase)(obj.userId))!,
+  levelCode: levelCodeResolver,
 }

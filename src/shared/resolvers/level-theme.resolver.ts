@@ -6,6 +6,7 @@ import { getThemeById } from "../repositories/theme.repository";
 import { LevelThemeEntity } from "../../entities/level-theme.entity";
 import { DatabaseLoaderFactory } from "../types/database-loader.type";
 import { CycleEntity, CYCLE_TABLE } from "../../entities/cycle.entity";
+import { RoleId } from './../../domain/authorization/enums/role-id.enum';
 import { createDataloaderCountSort } from "../utils/dataloader-count-sort";
 import { createDataloaderMultiSort } from "../utils/dataloader-multi-sort";
 import { selectCycle, countCycles } from "../repositories/cycle.repository";
@@ -120,8 +121,27 @@ const levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoader
             .groupBy(`${CYCLE_TABLE}.levelThemeId`, `${ACTIVITY_TIMER_TABLE}.classId`)
             .orderBy('count(*)', 'asc');
 
-        const sorted = levelThemeViewerTotalCompletedActivitiesSorter(ids)(entities);
-        return sorted;
+        return levelThemeViewerTotalCompletedActivitiesSorter(ids)(entities);
+    }
+}
+
+const levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoaderTeacher: DatabaseLoaderFactory<number, number, number, string> = {
+    id: 'levelThemeUserTotalCompletedResourcesByLevelThemeId',
+    batchFn: (db, userId) => async (ids) => {
+        const entities: LevelThemeTotalActivitiesQueryResult[] = await db
+            .count('*')
+            .select([`${CYCLE_TABLE}.levelThemeId`, `${ACTIVITY_TIMER_TABLE}.classId`])
+            .from(ACTIVITY_TIMER_TABLE)
+            .innerJoin(CYCLE_ACTIVITY_TABLE, `${CYCLE_ACTIVITY_TABLE}.id`, `${ACTIVITY_TIMER_TABLE}.cycleActivityId`)
+            .innerJoin(CYCLE_TABLE, `${CYCLE_TABLE}.id`, `${CYCLE_ACTIVITY_TABLE}.cycleId`)
+            .innerJoin(CLASS_TABLE, `${CLASS_TABLE}.id`, `${ACTIVITY_TIMER_TABLE}.classId`)
+            .whereIn(`${CYCLE_TABLE}.levelThemeId`, ids)
+            .andWhere(`${ACTIVITY_TIMER_TABLE}.completed`, true)
+            .andWhere(`${ACTIVITY_TIMER_TABLE}.userId`, userId)
+            .groupBy(`${CYCLE_TABLE}.levelThemeId`, `${ACTIVITY_TIMER_TABLE}.classId`)
+            .orderBy('count(*)', 'asc');
+
+        return levelThemeViewerTotalCompletedActivitiesSorter(ids)(entities);
     }
 }
 
@@ -131,12 +151,13 @@ export const levelThemeViewerTotalCompletedActivitiesFieldResolver: GQLLevelThem
         return 0;
     }
 
+    const isTeacher = user?.roleIds.includes(RoleId.TEACHER);
     const [
         totalActivities,
         totalStudentCompletedActivities
     ] = await Promise.all([
         context.getDatabaseLoader(levelThemeTotalResourcesByLevelThemeIdLoader, undefined).load(obj.id),
-        context.getDatabaseLoader(levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, user.id).load(obj.id),
+        context.getDatabaseLoader(isTeacher ? levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoaderTeacher : levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, user.id).load(obj.id),
     ]);
 
     if (totalStudentCompletedActivities > totalActivities) {
@@ -146,12 +167,13 @@ export const levelThemeViewerTotalCompletedActivitiesFieldResolver: GQLLevelThem
 }
 
 export const levelThemeStudentTotalCompletedActivitiesFieldResolver: GQLLevelThemeResolvers['studentTotalCompletedActivities'] = async (obj, params, context) => {
+    const isTeacher = context.currentUser?.roleIds.includes(RoleId.TEACHER);
     const [
         totalActivities,
         totalStudentCompletedActivities
     ] = await Promise.all([
         context.getDatabaseLoader(levelThemeTotalResourcesByLevelThemeIdLoader, undefined).load(obj.id),
-        context.getDatabaseLoader(levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, params.studentId).load(obj.id),
+        context.getDatabaseLoader(isTeacher ? levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoaderTeacher : levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader, params.studentId).load(obj.id),
     ]);
     if (totalStudentCompletedActivities > totalActivities) {
         return totalActivities;

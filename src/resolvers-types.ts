@@ -720,6 +720,11 @@ export type GQLQuerylevelThemesArgs = {
 };
 
 
+export type GQLQuerylevelsArgs = {
+  data: Maybe<GQLLevelsQueryInput>;
+};
+
+
 export type GQLQuerylogsArgs = {
   data: Maybe<GQLLogsQueryInput>;
 };
@@ -810,6 +815,10 @@ export type GQLAvailableThemesInputData = {
   readonly levelId: Scalars['ID'];
 };
 
+export type GQLLevelsQueryInput = {
+  readonly name: Maybe<Scalars['String']>;
+};
+
 export type GQLClass = {
   readonly __typename?: 'Class';
   readonly campusId: Maybe<Scalars['ID']>;
@@ -828,6 +837,7 @@ export type GQLClass = {
   readonly regionalId: Maybe<Scalars['ID']>;
   readonly sessionId: Maybe<Scalars['ID']>;
   readonly startDate: Maybe<Scalars['DateTime']>;
+  readonly status: GQLClassStatus;
   readonly studentGrades: ReadonlyArray<GQLClassStudentGrade>;
 };
 
@@ -839,6 +849,12 @@ export type GQLClassstudentGradesArgs = {
 export type GQLClassStudentGradesInput = {
   readonly studentIds: Maybe<ReadonlyArray<Scalars['ID']>>;
 };
+
+export enum GQLClassStatus {
+  NOT_STARTED = 'NOT_STARTED',
+  ACTIVE = 'ACTIVE',
+  FINISHED = 'FINISHED'
+}
 
 export type GQLUser = {
   readonly __typename?: 'User';
@@ -1306,6 +1322,7 @@ export type GQLChatMessage = {
   readonly updatedAt: Scalars['DateTime'];
   readonly createdAt: Scalars['DateTime'];
   readonly user: GQLUser;
+  readonly levelCode: GQLLevelCode;
 };
 
 export type GQLChat = {
@@ -1704,8 +1721,10 @@ export type GQLResolversTypes = {
   activityTimerQueryInput: GQLactivityTimerQueryInput;
   LevelThemesQueryInput: GQLLevelThemesQueryInput;
   AvailableThemesInputData: GQLAvailableThemesInputData;
+  LevelsQueryInput: GQLLevelsQueryInput;
   Class: ResolverTypeWrapper<ClassEntity>;
   ClassStudentGradesInput: GQLClassStudentGradesInput;
+  ClassStatus: GQLClassStatus;
   User: ResolverTypeWrapper<UserEntity>;
   ActivityType: ResolverTypeWrapper<ActivityType>;
   EmbeddedActivity: ResolverTypeWrapper<ActivityEntity>;
@@ -1837,6 +1856,7 @@ export type GQLResolversParentTypes = {
   activityTimerQueryInput: GQLactivityTimerQueryInput;
   LevelThemesQueryInput: GQLLevelThemesQueryInput;
   AvailableThemesInputData: GQLAvailableThemesInputData;
+  LevelsQueryInput: GQLLevelsQueryInput;
   Class: ClassEntity;
   ClassStudentGradesInput: GQLClassStudentGradesInput;
   User: UserEntity;
@@ -2045,7 +2065,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   levelCodes: Resolver<ReadonlyArray<GQLResolversTypes['LevelCode']>, ParentType, ContextType>;
   levelTheme: Resolver<Maybe<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQuerylevelThemeArgs, 'id'>>;
   levelThemes: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQuerylevelThemesArgs, 'data'>>;
-  levels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType>;
+  levels: Resolver<ReadonlyArray<GQLResolversTypes['Level']>, ParentType, ContextType, RequireFields<GQLQuerylevelsArgs, never>>;
   logs: Resolver<ReadonlyArray<GQLResolversTypes['Log']>, ParentType, ContextType, RequireFields<GQLQuerylogsArgs, never>>;
   meet: Resolver<Maybe<GQLResolversTypes['Meeting']>, ParentType, ContextType, RequireFields<GQLQuerymeetArgs, 'id'>>;
   myEnrollments: Resolver<ReadonlyArray<GQLResolversTypes['Enrollment']>, ParentType, ContextType>;
@@ -2093,6 +2113,7 @@ export type GQLClassResolvers<ContextType = GraphQLContext, ParentType extends G
   regionalId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
   sessionId: Resolver<Maybe<GQLResolversTypes['ID']>, ParentType, ContextType>;
   startDate: Resolver<Maybe<GQLResolversTypes['DateTime']>, ParentType, ContextType>;
+  status: Resolver<GQLResolversTypes['ClassStatus'], ParentType, ContextType>;
   studentGrades: Resolver<ReadonlyArray<GQLResolversTypes['ClassStudentGrade']>, ParentType, ContextType, RequireFields<GQLClassstudentGradesArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -2398,6 +2419,7 @@ export type GQLChatMessageResolvers<ContextType = GraphQLContext, ParentType ext
   updatedAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
   user: Resolver<GQLResolversTypes['User'], ParentType, ContextType>;
+  levelCode: Resolver<GQLResolversTypes['LevelCode'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
