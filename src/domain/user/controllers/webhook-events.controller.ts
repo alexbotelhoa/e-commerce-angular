@@ -101,24 +101,6 @@ const CourseMaterialSyncEventType = t.type({
     data: CourseMaterialSyncEventData,
 });
 
-const UserDataType = t.type({
-    id: t.string,
-    name: t.string,
-    macId: t.union([t.string, t.null]),
-    macPass: t.union([t.string, t.null]),
-});
-
-export const StudentEnrollmentSyncEventData = t.type({
-    user: UserDataType,
-    ClassId: t.string,
-});
-
-const StudentEnrollmentSyncEventType = t.type({
-    id: t.string,
-    type: t.literal('STUDENT_ENROLLMENT'),
-    data: StudentEnrollmentSyncEventData,
-});
-
 export const UserRolesUpdateSyncEventData = t.type({
     userId: t.string,
     rolesId: t.array(t.union([
@@ -137,6 +119,24 @@ const UserRolesUpdateSyncEventType = t.type({
     id: t.string,
     type: t.literal("USER_ROLES_UPDATE"),
     data: UserRolesUpdateSyncEventData,
+});
+
+const UserDataType = t.type({
+    id: t.string,
+    name: t.string,
+    macId: t.union([t.string, t.null]),
+    macPass: t.union([t.string, t.null]),
+});
+
+export const StudentEnrollmentSyncEventData = t.type({
+    user: UserDataType,
+    ClassId: t.string,
+});
+
+const StudentEnrollmentSyncEventType = t.type({
+    id: t.string,
+    type: t.literal('STUDENT_ENROLLMENT'),
+    data: StudentEnrollmentSyncEventData,
 });
 
 export const StudentClassTransferSyncEventData = t.type({
