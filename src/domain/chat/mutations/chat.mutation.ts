@@ -44,7 +44,7 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
       firstMessage: payload.message?.replace(/<[^>]*>/g, '').slice(0, 100),
       dateMessage: dateNow.toISOString(),
       amountMessage: 1,
-      isRead: false //controla se o aluno viu a notificação
+      isRead: false
     } as ChatEntity);
   }
   else {
@@ -77,11 +77,11 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
   } as ChatMessageEntity;
 
   if (payload.classId && payload.cycleActivityId && payload.levelThemeId) {
-    const cycleActivity = await getCycleActivityById(context.readonlyDatabase)(payload.cycleActivityId);
     const classe = await getClassById(context.readonlyDatabase)(payload.classId);
     const levelCode = await getLevelCodeById(context.readonlyDatabase)(classe?.levelCodeId || 0);
     const levelTheme = await getLevelThemeById(context.readonlyDatabase)(payload.levelThemeId);
     const theme = await getThemeById(context.readonlyDatabase)(levelTheme?.themeId || 0);
+    const cycleActivity = await getCycleActivityById(context.readonlyDatabase)(payload.cycleActivityId);
     const cycle = await getCycleById(context.readonlyDatabase)(cycleActivity?.cycleId || 0);
     const activity = await getActivityById(context.readonlyDatabase)(cycleActivity?.activityId || 0);
 
@@ -89,11 +89,11 @@ export const messageResolver: GQLMutationResolvers["insertChat"] = async (_, { p
       throw new Error('');
     }
 
-    message.levelThemeId = payload.levelThemeId.toString();
-    message.cycleActivityId = cycleActivity.id.toString();
     message.levelCodeId = levelCode.id.toString();
     message.levelCodeName = levelCode.code;
+    message.levelThemeId = payload.levelThemeId.toString();
     message.levelThemeName = theme.name;
+    message.cycleActivityId = cycleActivity.id.toString();
     message.cycleActivityName = cycle.name;
     message.activityName = activity.name;
   }
