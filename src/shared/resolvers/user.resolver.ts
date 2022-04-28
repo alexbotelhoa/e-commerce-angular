@@ -262,7 +262,7 @@ export const materialsResolver: GQLUserResolvers["materials"] = async (obj, para
         .andWhereRaw(`DATEDIFF(${CLASS_TABLE}.startDate, CURDATE()) < 31`);
 
     if (countActiveClass[0].countClasses > 1) {
-        queryRawFuture = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29 AND ${CLASS_TABLE}.endDate > CURDATE()`;
+        queryRawFuture = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29 AND ${CLASS_TABLE}.endDate >= CURDATE()`;
         queryRawPassed = `${CLASS_TABLE}.endDate < CURDATE()`;
     } else {
         queryRawFuture = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`;

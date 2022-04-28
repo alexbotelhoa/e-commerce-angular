@@ -4,7 +4,6 @@ import { GQLQueryResolvers } from "../../resolvers-types";
 import { LEVEL_CODE_TABLE } from "../../entities/level-code.entity";
 import { ENROLLMENT_TABLE } from "../../entities/enrollment.entity";
 import { ENROLLMENT_CLASS_TABLE } from "../../entities/enrollment-class.entity";
-import { access } from "fs";
 
 export const myLevelQueryResolver: GQLQueryResolvers['myLevels'] = async (obj, params, context) => {
     const userId = context.currentUser?.id;
@@ -28,7 +27,7 @@ export const myLevelQueryResolver: GQLQueryResolvers['myLevels'] = async (obj, p
         .andWhereRaw(`DATEDIFF(${CLASS_TABLE}.startDate, CURDATE()) < 31`);
 
         if (countActiveClass[0].countClasses > 1) {
-            queryRawFuture = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29 AND ${CLASS_TABLE}.endDate > CURDATE()`;
+            queryRawFuture = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29 AND ${CLASS_TABLE}.endDate >= CURDATE()`;
             queryRawPassed = `${CLASS_TABLE}.endDate < CURDATE()`;
         } else {
             queryRawFuture = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`;
