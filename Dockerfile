@@ -10,6 +10,9 @@ COPY package.json ./
 
 RUN npm install
 
+RUN npm install pm2 -g
+RUN npm install typescript -g
+
 COPY . .
 
 EXPOSE 3000
