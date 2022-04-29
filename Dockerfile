@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:12-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -8,10 +8,7 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package.json ./
 
-RUN npm install 
-
-RUN npm install pm2 -g
-RUN npm install typescript -g
+RUN npm install
 
 COPY . .
 
