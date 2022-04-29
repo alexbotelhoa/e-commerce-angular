@@ -16,6 +16,7 @@ RUN npm install typescript -g
 RUN npm install fastify-redis -g
 RUN npm install fastify-multipart -g
 
+
 COPY . .
 
 EXPOSE 3000
