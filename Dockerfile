@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:12-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -12,9 +12,6 @@ RUN npm install
 
 RUN npm install pm2 -g
 RUN npm install typescript -g
-
-RUN npm install fastify-redis
-RUN npm install fastify-multipart
 
 COPY . .
 
