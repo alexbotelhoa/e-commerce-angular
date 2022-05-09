@@ -23,14 +23,14 @@ export const myLevelQueryResolver: GQLQueryResolvers['myLevels'] = async (obj, p
         .andWhere(`${LEVEL_TABLE}.active`, true)
         .andWhere(`${LEVEL_CODE_TABLE}.active`, true)
         .andWhere(`${CLASS_TABLE}.hasActivated`, true)
-        .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
-        .andWhereRaw(`DATEDIFF(${CLASS_TABLE}.startDate, CURDATE()) < 31`);
+        .andWhereRaw(`DATEDIFF(${CLASS_TABLE}.startDate, CURDATE()) < 31`)
+        .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 31`);
 
         if (countActiveClass[0].countClasses > 1) {
-            queryRawFuture = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29 AND ${CLASS_TABLE}.endDate >= CURDATE()`;
+            queryRawFuture = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 31 AND ${CLASS_TABLE}.endDate >= CURDATE()`;
             queryRawPassed = `${CLASS_TABLE}.endDate < CURDATE()`;
         } else {
-            queryRawFuture = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`;
+            queryRawFuture = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 31`;
             queryRawPassed = `DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) > 31`;
         }
     

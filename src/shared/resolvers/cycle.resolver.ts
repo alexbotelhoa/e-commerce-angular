@@ -109,8 +109,8 @@ export const cycleUserHasCompletedLoader
             .whereIn(`${CYCLE_ACTIVITY_TABLE}.cycleId`, ids)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.completed`, true)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.userId`, userId)
-            .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
             .andWhereRaw(`DATEDIFF(${CLASS_TABLE}.startDate, CURDATE()) < 31`)
+            .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 31`)
             .groupBy([`${CYCLE_ACTIVITY_TABLE}.cycleId`]);
         
             const sorted = cycleActivitiesSummaryByCycleIdSorter(ids)(entities);

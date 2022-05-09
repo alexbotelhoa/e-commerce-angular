@@ -116,8 +116,8 @@ const levelThemeUserTotalCompletedActivitiesByLevelThemeIdLoader: DatabaseLoader
             .whereIn(`${CYCLE_TABLE}.levelThemeId`, ids)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.completed`, true)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.userId`, userId)
-            .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
             .andWhereRaw(`DATEDIFF(${CLASS_TABLE}.startDate, CURDATE()) < 31`)
+            .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 31`)
             .groupBy(`${CYCLE_TABLE}.levelThemeId`, `${ACTIVITY_TIMER_TABLE}.classId`)
             .orderBy('count(*)', 'asc');
 
