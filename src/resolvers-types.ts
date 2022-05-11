@@ -37,8 +37,6 @@ import { StudentGrade } from './domain/activity/types/student-grade.type';
 import { GraphQLContext } from './shared/types/context.type';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
@@ -359,6 +357,7 @@ export type GQLCreateHtmlActivityInput = {
 export type GQLEmbeddedActivityDataInput = {
   readonly url: Scalars['String'];
   readonly height: Scalars['Int'];
+  readonly externalSite: Scalars['String'];
 };
 
 export type GQLHtmlActivityDataInput = {
@@ -1232,6 +1231,7 @@ export type GQLEmbeddedActivityData = GQLActivityData & {
   readonly activityId: Scalars['ID'];
   readonly url: Scalars['String'];
   readonly height: Scalars['Int'];
+  readonly externalSite: Scalars['String'];
 };
 
 export type GQLHtmlActivityData = GQLActivityData & {
@@ -2328,6 +2328,7 @@ export type GQLEmbeddedActivityDataResolvers<ContextType = GraphQLContext, Paren
   activityId: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   url: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   height: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>;
+  externalSite: Resolver<GQLResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

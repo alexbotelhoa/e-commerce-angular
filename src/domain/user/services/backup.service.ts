@@ -82,6 +82,7 @@ export interface IBackupCSV {
     activityEstimatedTime: string;
     activityEmbeddedUrl: string;
     activityEmbeddedHeight: number;
+    activityEmbeddedExternalSite: string;
 }
 
 
@@ -123,7 +124,8 @@ function getElementInLevel<T>(
           ca.activity && embeddeds.push({
             activityId: ca.activity.id,
             height: ca.activity.embedded_activity_data.height,
-            url: ca.activity.embedded_activity_data.url
+            url: ca.activity.embedded_activity_data.url,
+            externalSite: ca.activity.embedded_activity_data.externalSite
           });
         });
       });
@@ -190,7 +192,8 @@ const backupToLevel = (backupCSV: IBackupCSV[]): ILevel => {
       embedded_activity_data: {
         activityId: line.activityId,
         height: line.activityEmbeddedHeight,
-        url: line.activityEmbeddedUrl
+        url: line.activityEmbeddedUrl,
+        externalSite: line.activityEmbeddedExternalSite
       }
     }
 

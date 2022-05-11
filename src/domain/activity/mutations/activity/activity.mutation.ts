@@ -23,6 +23,7 @@ export const createEmbeddedActivityMutationResolver: GQLMutationResolvers['creat
             activityId: id,
             url: data.data.url,
             height: data.data.height,
+            externalSite: data.data.externalSite,
         });
         return id;
     });
