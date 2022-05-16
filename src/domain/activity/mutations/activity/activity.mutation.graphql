@@ -24,6 +24,7 @@ input CreateHtmlActivityInput {
 input EmbeddedActivityDataInput {
     url: String!
     height: Int!
+    externalSite: String!
 }
 
 input HtmlActivityDataInput {

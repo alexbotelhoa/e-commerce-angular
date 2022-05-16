@@ -5,6 +5,7 @@ export const embeddedActivityDataEntityResolvers: Pick<GQLEmbeddedActivityDataRe
     activityId: obj => obj.activityId.toString(),
     url: obj => obj.url,
     height: obj => obj.height,
+    externalSite: obj => obj.externalSite,
 }
 
 export const embeddedActivityDataResolvers: GQLEmbeddedActivityDataResolvers = {

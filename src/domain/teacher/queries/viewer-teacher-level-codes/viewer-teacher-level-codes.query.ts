@@ -16,9 +16,9 @@ export const viewerTeacherLevelCodesQueryResolver: GQLQueryResolvers['viewerTeac
         .andWhere('teacherId', user.id)
 
     if (filters?.classActive) {
-        query.andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
+        query.andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 31`)
     } else {
-        query.andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) > 29`)
+        query.andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) > 31`)
     }
         query.orderBy('code', 'ASC');
 

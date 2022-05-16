@@ -26,6 +26,7 @@ export const updateEmbeddedActivityMutationResolver: GQLMutationResolvers['updat
         await updateEmbeddedActivityData(trx)({
             url: data.data.url,
             height: data.data.height,
+            externalSite: data.data.externalSite,
         })(builder => builder.andWhere('activityId', data.id));
     })
 

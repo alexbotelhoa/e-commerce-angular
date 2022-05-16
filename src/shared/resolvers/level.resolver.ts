@@ -109,8 +109,8 @@ const levelViewerTotalCompletedActivitiesByLevelIdLoader: DatabaseLoaderFactory<
             .whereIn(`${LEVEL_THEME_TABLE}.levelId`, ids)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.completed`, true)
             .andWhere(`${ACTIVITY_TIMER_TABLE}.userId`, userId)
-            .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 29`)
             .andWhereRaw(`DATEDIFF(${CLASS_TABLE}.startDate, CURDATE()) < 31`)
+            .andWhereRaw(`DATEDIFF(CURDATE(), ${CLASS_TABLE}.endDate) < 31`)
             .groupBy(`${LEVEL_THEME_TABLE}.levelId`, `${ACTIVITY_TIMER_TABLE}.classId`);
 
         const sorted = levelViewerTotalCompletedActivitiesSorter(ids)(entities);
