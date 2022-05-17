@@ -1,0 +1,7 @@
+type Config {
+  id: ID!
+  chatMsgBeforeQuestion: String
+  chatMsgAfterQuestion: String
+  updatedAt: DateTime!
+  createdAt: DateTime!
+}
