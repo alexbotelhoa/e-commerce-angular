@@ -1,0 +1,8 @@
+type Mutation {
+  updateConfig(payload: UpdateConfigInput!): Boolean
+}
+
+input UpdateConfigInput {
+  chatMsgBeforeQuestion: String
+  chatMsgAfterQuestion: String
+}
