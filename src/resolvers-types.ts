@@ -95,6 +95,7 @@ export type GQLMutation = {
   readonly startActivity: GQLStartActivityResult;
   readonly updateBasicLevelInfo: GQLLevel;
   readonly updateChallenge: GQLChallenge;
+  readonly updateConfig: Maybe<Scalars['Boolean']>;
   readonly updateCycle: GQLCycle;
   readonly updateCycleActivitiesOrder: ReadonlyArray<GQLCycleActivity>;
   readonly updateCyclesOrder: ReadonlyArray<GQLCycle>;
@@ -281,6 +282,11 @@ export type GQLMutationupdateBasicLevelInfoArgs = {
 
 export type GQLMutationupdateChallengeArgs = {
   data: GQLUpdateChallengeInput;
+};
+
+
+export type GQLMutationupdateConfigArgs = {
+  payload: GQLUpdateConfigInput;
 };
 
 
@@ -535,6 +541,7 @@ export type GQLQuery = {
   readonly classLevelThemes: ReadonlyArray<GQLLevelTheme>;
   readonly classStudents: ReadonlyArray<GQLUser>;
   readonly classes: ReadonlyArray<GQLClass>;
+  readonly config: ReadonlyArray<Maybe<GQLConfig>>;
   readonly count: ReadonlyArray<GQLCount>;
   readonly currentUser: Maybe<GQLUser>;
   readonly cycle: Maybe<GQLCycle>;
@@ -1013,6 +1020,11 @@ export type GQLClassesQueryInput = {
   readonly search: Maybe<Scalars['String']>;
 };
 
+export type GQLUpdateConfigInput = {
+  readonly chatMsgBeforeQuestion: Maybe<Scalars['String']>;
+  readonly chatMsgAfterQuestion: Maybe<Scalars['String']>;
+};
+
 export type GQLcountQueryInput = {
   readonly ids: Maybe<ReadonlyArray<Scalars['ID']>>;
   readonly search: Maybe<Scalars['String']>;
@@ -1359,6 +1371,15 @@ export type GQLComment = {
   readonly text: Scalars['String'];
   readonly userId: Scalars['ID'];
   readonly parentId: Maybe<Scalars['ID']>;
+  readonly createdAt: Scalars['DateTime'];
+};
+
+export type GQLConfig = {
+  readonly __typename?: 'Config';
+  readonly id: Scalars['ID'];
+  readonly chatMsgBeforeQuestion: Maybe<Scalars['String']>;
+  readonly chatMsgAfterQuestion: Maybe<Scalars['String']>;
+  readonly updatedAt: Scalars['DateTime'];
   readonly createdAt: Scalars['DateTime'];
 };
 
@@ -1746,6 +1767,7 @@ export type GQLResolversTypes = {
   InsertChatInput: GQLInsertChatInput;
   ChatStudentsQueryInput: GQLChatStudentsQueryInput;
   ClassesQueryInput: GQLClassesQueryInput;
+  UpdateConfigInput: GQLUpdateConfigInput;
   countQueryInput: GQLcountQueryInput;
   ViewerEnrollmentLevelCodesFilterInput: GQLViewerEnrollmentLevelCodesFilterInput;
   UpsertUserInterestInput: GQLUpsertUserInterestInput;
@@ -1786,6 +1808,7 @@ export type GQLResolversTypes = {
   Chat: ResolverTypeWrapper<ChatEntity>;
   ActivityComment: ResolverTypeWrapper<ActivityCommentEntity>;
   Comment: GQLResolversTypes['ActivityComment'];
+  Config: ResolverTypeWrapper<GQLConfig>;
   Count: ResolverTypeWrapper<GQLCount>;
   CycleActivity: ResolverTypeWrapper<CycleActivityEntity>;
   EnrollmentClass: ResolverTypeWrapper<EnrollmentClassEntity>;
@@ -1878,6 +1901,7 @@ export type GQLResolversParentTypes = {
   InsertChatInput: GQLInsertChatInput;
   ChatStudentsQueryInput: GQLChatStudentsQueryInput;
   ClassesQueryInput: GQLClassesQueryInput;
+  UpdateConfigInput: GQLUpdateConfigInput;
   countQueryInput: GQLcountQueryInput;
   ViewerEnrollmentLevelCodesFilterInput: GQLViewerEnrollmentLevelCodesFilterInput;
   UpsertUserInterestInput: GQLUpsertUserInterestInput;
@@ -1918,6 +1942,7 @@ export type GQLResolversParentTypes = {
   Chat: ChatEntity;
   ActivityComment: ActivityCommentEntity;
   Comment: GQLResolversParentTypes['ActivityComment'];
+  Config: GQLConfig;
   Count: GQLCount;
   CycleActivity: CycleActivityEntity;
   EnrollmentClass: EnrollmentClassEntity;
@@ -1989,6 +2014,7 @@ export type GQLMutationResolvers<ContextType = GraphQLContext, ParentType extend
   startActivity: Resolver<GQLResolversTypes['StartActivityResult'], ParentType, ContextType, RequireFields<GQLMutationstartActivityArgs, 'data'>>;
   updateBasicLevelInfo: Resolver<GQLResolversTypes['Level'], ParentType, ContextType, RequireFields<GQLMutationupdateBasicLevelInfoArgs, 'data'>>;
   updateChallenge: Resolver<GQLResolversTypes['Challenge'], ParentType, ContextType, RequireFields<GQLMutationupdateChallengeArgs, 'data'>>;
+  updateConfig: Resolver<Maybe<GQLResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<GQLMutationupdateConfigArgs, 'payload'>>;
   updateCycle: Resolver<GQLResolversTypes['Cycle'], ParentType, ContextType, RequireFields<GQLMutationupdateCycleArgs, 'data'>>;
   updateCycleActivitiesOrder: Resolver<ReadonlyArray<GQLResolversTypes['CycleActivity']>, ParentType, ContextType, RequireFields<GQLMutationupdateCycleActivitiesOrderArgs, 'data'>>;
   updateCyclesOrder: Resolver<ReadonlyArray<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLMutationupdateCyclesOrderArgs, 'data'>>;
@@ -2050,6 +2076,7 @@ export type GQLQueryResolvers<ContextType = GraphQLContext, ParentType extends G
   classLevelThemes: Resolver<ReadonlyArray<GQLResolversTypes['LevelTheme']>, ParentType, ContextType, RequireFields<GQLQueryclassLevelThemesArgs, 'classId'>>;
   classStudents: Resolver<ReadonlyArray<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryclassStudentsArgs, 'data'>>;
   classes: Resolver<ReadonlyArray<GQLResolversTypes['Class']>, ParentType, ContextType, RequireFields<GQLQueryclassesArgs, never>>;
+  config: Resolver<ReadonlyArray<Maybe<GQLResolversTypes['Config']>>, ParentType, ContextType>;
   count: Resolver<ReadonlyArray<GQLResolversTypes['Count']>, ParentType, ContextType, RequireFields<GQLQuerycountArgs, never>>;
   currentUser: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>;
   cycle: Resolver<Maybe<GQLResolversTypes['Cycle']>, ParentType, ContextType, RequireFields<GQLQuerycycleArgs, 'id'>>;
@@ -2462,6 +2489,15 @@ export type GQLCommentResolvers<ContextType = GraphQLContext, ParentType extends
   createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
 };
 
+export type GQLConfigResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Config'] = GQLResolversParentTypes['Config']> = {
+  id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
+  chatMsgBeforeQuestion: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  chatMsgAfterQuestion: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
+  createdAt: Resolver<GQLResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GQLCountResolvers<ContextType = GraphQLContext, ParentType extends GQLResolversParentTypes['Count'] = GQLResolversParentTypes['Count']> = {
   id: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>;
   name: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>;
@@ -2728,6 +2764,7 @@ export type GQLResolvers<ContextType = GraphQLContext> = {
   Chat: GQLChatResolvers<ContextType>;
   ActivityComment: GQLActivityCommentResolvers<ContextType>;
   Comment: GQLCommentResolvers<ContextType>;
+  Config: GQLConfigResolvers<ContextType>;
   Count: GQLCountResolvers<ContextType>;
   CycleActivity: GQLCycleActivityResolvers<ContextType>;
   EnrollmentClass: GQLEnrollmentClassResolvers<ContextType>;

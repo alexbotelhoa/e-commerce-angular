@@ -11,6 +11,7 @@ import {
 
 import { presenceResolver } from "../../domain/presence/presence.mutation";
 import { messageResolver } from "../../domain/chat/mutations/chat.mutation";
+import { configMutationResolver } from "../../domain/config/mutations/config.mutation";
 import { auditResolver } from "../../domain/log/mutations/call-audit.mutation.resolver";
 import { chatMakeReadResolver } from "../../domain/chat/mutations/chat-make-read.mutation";
 import { finishOnboardMutationResolver } from "../../domain/finish-onboard/finish-onboard.mutation";
@@ -90,6 +91,7 @@ export const mutationResolvers: GQLResolvers['Mutation'] = {
     presence: presenceResolver,
     insertChat: messageResolver,
     chatMakeRead: chatMakeReadResolver,
+    updateConfig: configMutationResolver,
     createLevel: createLevelMutationResolver,
     updateCycle: updateCycleMutationResolver,
     createLevelCode: createLevelCodeMutation,

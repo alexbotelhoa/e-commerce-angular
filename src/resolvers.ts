@@ -12,6 +12,7 @@ import { themeResolvers } from "./shared/resolvers/theme.resolver";
 import { levelResolvers } from "./shared/resolvers/level.resolver";
 import { classResolvers } from "./shared/resolvers/class.resolver";
 import { localResolvers } from "./shared/resolvers/local.resolver";
+import { configResolvers } from './shared/resolvers/config.resolver';
 import { carrerResolvers } from "./shared/resolvers/carrer.resolver";
 import { campusResolvers } from "./shared/resolvers/campus.resolver";
 import { avatarResolvers } from "./shared/resolvers/avatar.resolver";
@@ -87,6 +88,7 @@ export const resolvers: Omit<GQLResolvers, InterfaceResolverKeys> = {
     Backup: backupResolvers,
     Carrer: carrerResolvers,
     Campus: campusResolvers,
+    Config: configResolvers,
     GradeTypeId: GradeTypeId,
     LevelTypeId: LevelTypeId,
     Meeting: meetingResolvers,

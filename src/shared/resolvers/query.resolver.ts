@@ -7,6 +7,7 @@ import { classesQueryResolver } from "../../domain/class/classes.query";
 import { logQueryResolver } from "../../domain/log/queries/log.resolver";
 import { getMeetQueryResolver } from "../../domain/meeting/get-meet.query";
 import { myLevelQueryResolver } from "../../domain/my-levels/my-levels.query";
+import { configQueryResolver } from "../../domain/config/queries/config.query";
 import { avatarsQueryResolver } from "../../domain/avatar/queries/avatars.query";
 import { getCarrersResolver } from "../../domain/carrer/carrer-permissions.query";
 import { levelQueryResolver } from "../../domain/activity/queries/level/level.query";
@@ -60,10 +61,10 @@ import { teacherClassesActivatedQueryResolver } from "../../domain/teacher/queri
 import { activitiesListProgressQueryResolver } from "../../domain/activity/queries/activities-list-on-progress-order/activities-list-on-progress-order.query";
 import { overallClassCompletedActivitiesQueryResolver } from "../../domain/teacher/queries/overall-class-completed-activities/overall-class-completed-activities.query";
 import { activityTimerQueryResolver } from "../../domain/activity/queries/activity/activity-timer.query";
+
 export const queryResolvers: GQLResolvers['Query'] = {
     logs: logQueryResolver,
     user: userQueryResolver,
-    activityTimer: activityTimerQueryResolver,
     cycle: cycleQueryResolver,
     class: classQueryResolver,
     count: countQueryResolver,
@@ -72,6 +73,7 @@ export const queryResolvers: GQLResolvers['Query'] = {
     Carrer: getCarrersResolver,
     meet: getMeetQueryResolver,
     backup: backupQueryResolver,
+    config: configQueryResolver,
     cycles: cyclesQueryResolver,
     themes: themesQueryResolver,
     levels: levelsQueryResolver,
@@ -102,6 +104,7 @@ export const queryResolvers: GQLResolvers['Query'] = {
     classCycles: classCyclesQueryResolver,
     chatStudents: chatStudentsQueryResolver,
     availableThemes: availableThemesResolver,
+    activityTimer: activityTimerQueryResolver,
     classStudents: classStudentsQueryResolver,
     cycleActivity: cycleActivityQueryResolver,
     myEnrollments: myEnrollmentsQueryResolver,
